@@ -18,3 +18,18 @@ output "vpc_cidr" {
   description = "CIDR block of the LangNation development VPC"
   value       = module.networking.vpc_cidr
 }
+
+output "public_subnet_ids" {
+  description = "Public subnet IDs for the development environment"
+  value       = module.networking.public_subnet_ids
+}
+
+output "private_app_subnet_ids" {
+  description = "Private application subnet IDs for the development environment"
+  value       = module.networking.private_app_subnet_ids
+}
+
+output "private_db_subnet_ids" {
+  description = "Private database subnet IDs for the development environment"
+  value       = module.networking.private_db_subnet_ids
+}
