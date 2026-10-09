@@ -33,3 +33,13 @@ output "private_db_subnet_ids" {
   description = "Private database subnet IDs for the development environment"
   value       = module.networking.private_db_subnet_ids
 }
+
+output "internet_gateway_id" {
+  description = "Internet Gateway ID for the development environment"
+  value       = module.networking.internet_gateway_id
+}
+
+output "public_route_table_id" {
+  description = "Public route table ID for the development environment"
+  value       = module.networking.public_route_table_id
+}
