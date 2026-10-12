@@ -18,3 +18,11 @@ module "security" {
   project_name = var.project_name
   environment  = var.environment
 }
+
+# Connect the Container module
+module "container" {
+  source = "../../modules/container"
+
+  project_name = var.project_name
+  environment  = var.environment
+}

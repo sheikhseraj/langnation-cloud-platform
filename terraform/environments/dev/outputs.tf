@@ -80,3 +80,14 @@ output "db_security_group_id" {
   description = "Database security group ID for the development environment"
   value       = module.security.db_security_group_id
 }
+
+# ECS cluster and service outputs / Expose the ECR Outputs
+output "ecr_repository_url" {
+  description = "ECR repository URL for the development environment"
+  value       = module.container.ecr_repository_url
+}
+
+output "ecr_repository_name" {
+  description = "ECR repository name for the development environment"
+  value       = module.container.ecr_repository_name
+}
