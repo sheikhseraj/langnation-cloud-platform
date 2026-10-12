@@ -43,3 +43,24 @@ output "public_route_table_id" {
   description = "Public route table ID for the development environment"
   value       = module.networking.public_route_table_id
 }
+
+# NAT and private route outputs
+output "nat_gateway_ids" {
+  description = "NAT Gateway IDs for the development environment"
+  value       = module.networking.nat_gateway_ids
+}
+
+output "nat_eip_ids" {
+  description = "NAT Elastic IP allocation IDs for the development environment"
+  value       = module.networking.nat_eip_ids
+}
+
+output "private_app_route_table_ids" {
+  description = "Private application route table IDs for the development environment"
+  value       = module.networking.private_app_route_table_ids
+}
+
+output "private_db_route_table_ids" {
+  description = "Private database route table IDs for the development environment"
+  value       = module.networking.private_db_route_table_ids
+}
