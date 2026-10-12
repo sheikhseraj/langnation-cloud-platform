@@ -12,3 +12,17 @@ resource "aws_ecr_repository" "app" {
     Name = "${var.project_name}-${var.environment}-app"
   }
 }
+
+# Add the ECS Cluster
+resource "aws_ecs_cluster" "main" {
+  name = "${var.project_name}-${var.environment}-cluster"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+
+  tags = {
+    Name = "${var.project_name}-${var.environment}-cluster"
+  }
+}

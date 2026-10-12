@@ -91,3 +91,19 @@ output "ecr_repository_name" {
   description = "ECR repository name for the development environment"
   value       = module.container.ecr_repository_name
 }
+
+# Expose them from dev
+output "ecs_cluster_id" {
+  description = "ECS cluster ID for the development environment"
+  value       = module.container.ecs_cluster_id
+}
+
+output "ecs_cluster_name" {
+  description = "ECS cluster name for the development environment"
+  value       = module.container.ecs_cluster_name
+}
+
+output "ecs_cluster_arn" {
+  description = "ECS cluster ARN for the development environment"
+  value       = module.container.ecs_cluster_arn
+}
