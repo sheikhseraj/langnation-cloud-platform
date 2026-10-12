@@ -1,0 +1,13 @@
+
+{
+  "name": "langnation-cloud-platform",
+  "version": "1.0.0",
+  "description": "LangNation AWS Cloud Platform Capstone application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

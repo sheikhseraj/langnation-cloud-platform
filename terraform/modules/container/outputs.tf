@@ -25,4 +25,25 @@ output "ecs_cluster_arn" {
   value       = aws_ecs_cluster.main.arn
 }
 
+# Add ECS task execution role outputs
+output "ecs_task_execution_role_arn" {
+  description = "ARN of the ECS task execution IAM role"
+  value       = aws_iam_role.ecs_task_execution.arn
+}
 
+# Add CloudWatch Log Group output
+output "cloudwatch_log_group_name" {
+  description = "CloudWatch Log Group used by the ECS application"
+  value       = aws_cloudwatch_log_group.app.name
+}
+
+# Add ECS task definition outputs
+output "ecs_task_definition_arn" {
+  description = "ARN of the ECS Fargate task definition"
+  value       = aws_ecs_task_definition.app.arn
+}
+
+output "ecs_task_definition_family" {
+  description = "Family name of the ECS Fargate task definition"
+  value       = aws_ecs_task_definition.app.family
+}

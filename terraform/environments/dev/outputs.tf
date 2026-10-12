@@ -107,3 +107,26 @@ output "ecs_cluster_arn" {
   description = "ECS cluster ARN for the development environment"
   value       = module.container.ecs_cluster_arn
 }
+
+# Expose the ECS task execution role ARN
+output "ecs_task_execution_role_arn" {
+  description = "ECS task execution role ARN for the development environment"
+  value       = module.container.ecs_task_execution_role_arn
+}
+
+# Exposing the CloudWatch Log Group name
+output "cloudwatch_log_group_name" {
+  description = "CloudWatch Log Group name for the development environment"
+  value       = module.container.cloudwatch_log_group_name
+}
+
+# Exposing the ECS task definition ARN and family name
+output "ecs_task_definition_arn" {
+  description = "ECS task definition ARN for the development environment"
+  value       = module.container.ecs_task_definition_arn
+}
+
+output "ecs_task_definition_family" {
+  description = "ECS task definition family for the development environment"
+  value       = module.container.ecs_task_definition_family
+}
