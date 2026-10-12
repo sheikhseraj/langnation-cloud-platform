@@ -64,3 +64,19 @@ output "private_db_route_table_ids" {
   description = "Private database route table IDs for the development environment"
   value       = module.networking.private_db_route_table_ids
 }
+
+# Security group outputs
+output "alb_security_group_id" {
+  description = "ALB security group ID for the development environment"
+  value       = module.security.alb_security_group_id
+}
+
+output "ecs_security_group_id" {
+  description = "ECS security group ID for the development environment"
+  value       = module.security.ecs_security_group_id
+}
+
+output "db_security_group_id" {
+  description = "Database security group ID for the development environment"
+  value       = module.security.db_security_group_id
+}

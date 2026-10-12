@@ -9,3 +9,12 @@ module "networking" {
   project_name             = var.project_name
   environment              = var.environment
 }
+
+# Connect the Security module
+module "security" {
+  source = "../../modules/security"
+
+  vpc_id       = module.networking.vpc_id
+  project_name = var.project_name
+  environment  = var.environment
+}
