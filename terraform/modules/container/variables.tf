@@ -61,3 +61,22 @@ variable "target_group_arn" {
   description = "ARN of the ALB target group used by the ECS service"
   type        = string
 }
+
+# Add Service Auto Scaling variables
+variable "autoscaling_min_capacity" {
+  description = "Minimum number of ECS tasks maintained by Service Auto Scaling"
+  type        = number
+  default     = 2
+}
+
+variable "autoscaling_max_capacity" {
+  description = "Maximum number of ECS tasks allowed by Service Auto Scaling"
+  type        = number
+  default     = 4
+}
+
+variable "autoscaling_cpu_target" {
+  description = "Target average ECS service CPU utilization percentage"
+  type        = number
+  default     = 50
+}

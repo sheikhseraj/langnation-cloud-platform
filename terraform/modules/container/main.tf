@@ -27,7 +27,7 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
-# Create the IAM role for ECS task execution / Add the IAM role
+# Create the IAM role for ECS task execution
 resource "aws_iam_role" "ecs_task_execution" {
   name = "${var.project_name}-${var.environment}-ecs-task-execution-role"
 
@@ -52,7 +52,7 @@ resource "aws_iam_role" "ecs_task_execution" {
   }
 }
 
-# Attach the Amazon ECS Task Execution Role Policy to the ECS task execution role / Attach AWS's execution policy
+# Attach AWS ECS Task Execution Role policy
 resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
   role       = aws_iam_role.ecs_task_execution.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
@@ -120,13 +120,14 @@ resource "aws_ecs_service" "app" {
   launch_type   = "FARGATE"
   desired_count = var.desired_count
 
-  # Attach the Target Group to the ECS Service
+  # Attach the ALB Target Group to the ECS Service
   load_balancer {
     target_group_arn = var.target_group_arn
     container_name   = "langnation-app"
     container_port   = var.container_port
   }
 
+  # Run Fargate tasks only in the private application subnets
   network_configuration {
     subnets          = var.private_app_subnet_ids
     security_groups  = [var.ecs_security_group_id]
@@ -137,7 +138,44 @@ resource "aws_ecs_service" "app" {
     aws_iam_role_policy_attachment.ecs_task_execution
   ]
 
+  # Auto Scaling controls the live desired count after deployment
+  lifecycle {
+    ignore_changes = [
+      desired_count
+    ]
+  }
+
   tags = {
     Name = "${var.project_name}-${var.environment}-app-service"
+  }
+}
+
+# Register the ECS Service with Application Auto Scaling
+resource "aws_appautoscaling_target" "ecs_service" {
+  max_capacity = var.autoscaling_max_capacity
+  min_capacity = var.autoscaling_min_capacity
+
+  resource_id = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.app.name}"
+
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+# Scale the ECS Service based on average CPU utilization
+resource "aws_appautoscaling_policy" "ecs_cpu" {
+  name               = "${var.project_name}-${var.environment}-cpu-target"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_service.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_service.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_service.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+
+    target_value       = var.autoscaling_cpu_target
+    scale_out_cooldown = 60
+    scale_in_cooldown  = 300
   }
 }
