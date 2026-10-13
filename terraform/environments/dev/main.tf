@@ -37,6 +37,9 @@ module "container" {
   # Set the desired count of ECS Fargate tasks to 2 for the development environment
   desired_count = 2
 
+  # Temporary Controlled Auto Scaling Test
+  autoscaling_cpu_target = 1
+
   # Add Explicit Module Dependency
   depends_on = [
     module.load_balancing
