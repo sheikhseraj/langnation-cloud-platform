@@ -120,6 +120,13 @@ resource "aws_ecs_service" "app" {
   launch_type   = "FARGATE"
   desired_count = var.desired_count
 
+  # Attach the Target Group to the ECS Service
+  load_balancer {
+    target_group_arn = var.target_group_arn
+    container_name   = "langnation-app"
+    container_port   = var.container_port
+  }
+
   network_configuration {
     subnets          = var.private_app_subnet_ids
     security_groups  = [var.ecs_security_group_id]

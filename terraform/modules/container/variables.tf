@@ -55,3 +55,9 @@ variable "desired_count" {
   type        = number
   default     = 1
 }
+
+# Add Target Group input to the container module
+variable "target_group_arn" {
+  description = "ARN of the ALB target group used by the ECS service"
+  type        = string
+}

@@ -141,3 +141,19 @@ output "ecs_service_id" {
   description = "ECS Fargate service ID for the development environment"
   value       = module.container.ecs_service_id
 }
+
+# Exposing the ALB outputs from the load_balancing module
+output "alb_dns_name" {
+  description = "Public DNS name of the Application Load Balancer"
+  value       = module.load_balancing.alb_dns_name
+}
+
+output "alb_arn" {
+  description = "ARN of the Application Load Balancer"
+  value       = module.load_balancing.alb_arn
+}
+
+output "target_group_arn" {
+  description = "ARN of the ALB target group"
+  value       = module.load_balancing.target_group_arn
+}
