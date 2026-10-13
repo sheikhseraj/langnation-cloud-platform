@@ -38,7 +38,7 @@ module "container" {
   desired_count = 2
 
   # Temporary Controlled Auto Scaling Test
-  autoscaling_cpu_target = 1
+  # autoscaling_cpu_target = 1
 
   # Add Explicit Module Dependency
   depends_on = [
