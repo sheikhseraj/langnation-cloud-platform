@@ -34,6 +34,9 @@ module "container" {
   # Pass the Target Group from dev
   target_group_arn = module.load_balancing.target_group_arn
 
+  # Set the desired count of ECS Fargate tasks to 2 for the development environment
+  desired_count = 2
+
   # Add Explicit Module Dependency
   depends_on = [
     module.load_balancing
