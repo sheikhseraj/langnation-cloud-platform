@@ -130,3 +130,14 @@ output "ecs_task_definition_family" {
   description = "ECS task definition family for the development environment"
   value       = module.container.ecs_task_definition_family
 }
+
+# Exposing the ECS service name and ID
+output "ecs_service_name" {
+  description = "ECS Fargate service name for the development environment"
+  value       = module.container.ecs_service_name
+}
+
+output "ecs_service_id" {
+  description = "ECS Fargate service ID for the development environment"
+  value       = module.container.ecs_service_id
+}

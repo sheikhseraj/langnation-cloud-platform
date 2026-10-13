@@ -110,3 +110,27 @@ resource "aws_ecs_task_definition" "app" {
     Name = "${var.project_name}-${var.environment}-app-task"
   }
 }
+
+# Create the ECS Service for the Fargate task
+resource "aws_ecs_service" "app" {
+  name            = "${var.project_name}-${var.environment}-app-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.app.arn
+
+  launch_type   = "FARGATE"
+  desired_count = var.desired_count
+
+  network_configuration {
+    subnets          = var.private_app_subnet_ids
+    security_groups  = [var.ecs_security_group_id]
+    assign_public_ip = false
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.ecs_task_execution
+  ]
+
+  tags = {
+    Name = "${var.project_name}-${var.environment}-app-service"
+  }
+}

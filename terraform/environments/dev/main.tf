@@ -26,6 +26,8 @@ module "container" {
   project_name = var.project_name
   environment  = var.environment
   aws_region   = var.aws_region
-}
 
-#
+  # Pass networking and security into the container module
+  private_app_subnet_ids = module.networking.private_app_subnet_ids
+  ecs_security_group_id  = module.security.ecs_security_group_id
+}

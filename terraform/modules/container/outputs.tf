@@ -47,3 +47,14 @@ output "ecs_task_definition_family" {
   description = "Family name of the ECS Fargate task definition"
   value       = aws_ecs_task_definition.app.family
 }
+
+# Add ECS service outputs
+output "ecs_service_name" {
+  description = "Name of the ECS Fargate application service"
+  value       = aws_ecs_service.app.name
+}
+
+output "ecs_service_id" {
+  description = "ID of the ECS Fargate application service"
+  value       = aws_ecs_service.app.id
+}

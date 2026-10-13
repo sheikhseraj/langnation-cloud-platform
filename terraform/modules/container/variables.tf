@@ -38,3 +38,20 @@ variable "image_tag" {
   type        = string
   default     = "dev"
 }
+
+# Add ECS Service variables
+variable "private_app_subnet_ids" {
+  description = "IDs of the private application subnets used by ECS Fargate"
+  type        = list(string)
+}
+
+variable "ecs_security_group_id" {
+  description = "ID of the security group attached to ECS Fargate tasks"
+  type        = string
+}
+
+variable "desired_count" {
+  description = "Number of ECS Fargate tasks the service should maintain"
+  type        = number
+  default     = 1
+}
