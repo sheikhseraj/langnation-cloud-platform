@@ -35,3 +35,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+
+# Protect node_modules from Git
+node_modules/
