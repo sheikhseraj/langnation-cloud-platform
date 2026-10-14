@@ -68,9 +68,11 @@ module "cicd" {
   project_name = var.project_name
   environment  = var.environment
 
-  github_owner      = var.github_owner
-  github_repository = var.github_repository
-  github_branch     = var.github_branch
+  github_owner         = var.github_owner
+  github_owner_id      = var.github_owner_id
+  github_repository    = var.github_repository
+  github_repository_id = var.github_repository_id
+  github_branch        = var.github_branch
 
   ecr_repository_arn          = module.container.ecr_repository_arn
   ecs_cluster_arn             = module.container.ecs_cluster_arn

@@ -70,3 +70,16 @@ variable "github_branch" {
   type        = string
   default     = "main"
 }
+
+# Add immutable GitHub identifiers to the dev environment
+variable "github_owner_id" {
+  description = "Immutable GitHub repository owner ID"
+  type        = string
+  default     = "242254883"
+}
+
+variable "github_repository_id" {
+  description = "Immutable GitHub repository ID"
+  type        = string
+  default     = "1407282665"
+}

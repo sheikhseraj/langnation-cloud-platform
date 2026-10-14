@@ -12,6 +12,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 # IAM role assumed by GitHub Actions through OIDC / deployment role
+# IAM role assumed by GitHub Actions through OIDC
 resource "aws_iam_role" "github_actions_deploy" {
   name = "${var.project_name}-${var.environment}-github-deploy-role"
 
@@ -32,7 +33,7 @@ resource "aws_iam_role" "github_actions_deploy" {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
 
-            "token.actions.githubusercontent.com:sub" = "repo:${var.github_owner}/${var.github_repository}:ref:refs/heads/${var.github_branch}"
+            "token.actions.githubusercontent.com:sub" = "repo:${var.github_owner}@${var.github_owner_id}/${var.github_repository}@${var.github_repository_id}:ref:refs/heads/${var.github_branch}"
           }
         }
       }

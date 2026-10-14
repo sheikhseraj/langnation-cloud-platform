@@ -46,3 +46,14 @@ variable "github_branch" {
   type        = string
   default     = "main"
 }
+
+# Define the GitHub Actions OpenID Connect Provider Inputs
+variable "github_owner_id" {
+  description = "Immutable GitHub repository owner ID"
+  type        = string
+}
+
+variable "github_repository_id" {
+  description = "Immutable GitHub repository ID"
+  type        = string
+}
