@@ -141,7 +141,8 @@ resource "aws_ecs_service" "app" {
   # Auto Scaling controls the live desired count after deployment
   lifecycle {
     ignore_changes = [
-      desired_count
+      desired_count,
+      task_definition
     ]
   }
 
