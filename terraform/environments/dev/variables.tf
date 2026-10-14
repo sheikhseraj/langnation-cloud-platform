@@ -51,3 +51,22 @@ variable "private_db_subnet_cidrs" {
     "10.0.22.0/24"
   ]
 }
+
+# Add GitHub variables to the dev environment
+variable "github_owner" {
+  description = "GitHub account or organization that owns the repository"
+  type        = string
+  default     = "sheikhseraj"
+}
+
+variable "github_repository" {
+  description = "GitHub repository used for CI/CD"
+  type        = string
+  default     = "langnation-cloud-platform"
+}
+
+variable "github_branch" {
+  description = "GitHub branch allowed to deploy to the dev environment"
+  type        = string
+  default     = "main"
+}

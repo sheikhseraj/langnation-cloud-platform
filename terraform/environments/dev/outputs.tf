@@ -157,3 +157,14 @@ output "target_group_arn" {
   description = "ARN of the ALB target group"
   value       = module.load_balancing.target_group_arn
 }
+
+# Exposing the GitHub Actions OIDC provider and role outputs from the cicd module
+output "github_actions_role_arn" {
+  description = "ARN of the IAM role used by GitHub Actions deployments"
+  value       = module.cicd.github_actions_role_arn
+}
+
+output "github_oidc_provider_arn" {
+  description = "ARN of the GitHub Actions OIDC provider"
+  value       = module.cicd.github_oidc_provider_arn
+}

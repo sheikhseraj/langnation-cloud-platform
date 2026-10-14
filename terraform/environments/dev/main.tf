@@ -60,3 +60,20 @@ module "load_balancing" {
   app_port          = 3000
   health_check_path = "/health"
 }
+
+# Connect the CI/CD module
+module "cicd" {
+  source = "../../modules/cicd"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  github_owner      = var.github_owner
+  github_repository = var.github_repository
+  github_branch     = var.github_branch
+
+  ecr_repository_arn          = module.container.ecr_repository_arn
+  ecs_cluster_arn             = module.container.ecs_cluster_arn
+  ecs_service_name            = module.container.ecs_service_name
+  ecs_task_execution_role_arn = module.container.ecs_task_execution_role_arn
+}
