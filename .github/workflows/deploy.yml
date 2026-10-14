@@ -1,0 +1,92 @@
+name: Deploy LangNation to ECS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "application/**"
+      - ".github/workflows/deploy.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: us-east-1
+
+  ECR_REPOSITORY: langnation-cloud-platform-dev-app
+
+  ECS_CLUSTER: langnation-cloud-platform-dev-cluster
+  ECS_SERVICE: langnation-cloud-platform-dev-app-service
+  ECS_TASK_DEFINITION: langnation-cloud-platform-dev-app
+
+  CONTAINER_NAME: langnation-app
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Configure AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: langnation-github-deploy
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set image URI
+        id: image
+        shell: bash
+        run: |
+          IMAGE_TAG="${GITHUB_SHA}"
+          IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_uri=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
+
+          echo "Deploying image: ${IMAGE_URI}"
+
+      - name: Build Docker image
+        working-directory: application
+        run: |
+          docker build \
+            -t "${{ steps.image.outputs.image_uri }}" \
+            .
+
+      - name: Push Docker image to ECR
+        run: |
+          docker push "${{ steps.image.outputs.image_uri }}"
+
+      - name: Download current ECS task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition "${ECS_TASK_DEFINITION}" \
+            --query taskDefinition \
+            > task-definition.json
+
+      - name: Render new image in ECS task definition
+        id: render-task-definition
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.image.outputs.image_uri }}
+
+      - name: Deploy new ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
