@@ -168,3 +168,30 @@ output "github_oidc_provider_arn" {
   description = "ARN of the GitHub Actions OIDC provider"
   value       = module.cicd.github_oidc_provider_arn
 }
+
+# Exposing the RDS database subnet group outputs from the database module
+output "db_subnet_group_name" {
+  description = "Name of the RDS database subnet group"
+  value       = module.database.db_subnet_group_name
+}
+
+output "db_subnet_group_arn" {
+  description = "ARN of the RDS database subnet group"
+  value       = module.database.db_subnet_group_arn
+}
+
+# Exposing the RDS database instance outputs from the database module
+output "db_endpoint" {
+  description = "RDS MySQL endpoint"
+  value       = module.database.db_endpoint
+}
+
+output "db_port" {
+  description = "RDS MySQL port"
+  value       = module.database.db_port
+}
+
+output "db_master_secret_arn" {
+  description = "ARN of the RDS master credential secret"
+  value       = module.database.db_master_secret_arn
+}

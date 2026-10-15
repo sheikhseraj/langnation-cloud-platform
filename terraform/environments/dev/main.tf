@@ -79,3 +79,14 @@ module "cicd" {
   ecs_service_name            = module.container.ecs_service_name
   ecs_task_execution_role_arn = module.container.ecs_task_execution_role_arn
 }
+
+# Database
+module "database" {
+  source = "../../modules/database"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  private_db_subnet_ids = module.networking.private_db_subnet_ids
+  db_security_group_id  = module.security.db_security_group_id
+}
