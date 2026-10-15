@@ -1,0 +1,141 @@
+name: Morning Sandbox Rebuild
+
+on:
+  schedule:
+    - cron: "30 7 * * *"
+      timezone: "Europe/Berlin"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform-rebuild:
+    name: Rebuild AWS Infrastructure
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Find HCP Terraform workspace
+        id: workspace
+        shell: bash
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+          TFC_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}
+          TFC_WORKSPACE: ${{ vars.TFC_WORKSPACE }}
+        run: |
+          set -euo pipefail
+
+          RESPONSE=$(curl --silent --show-error --fail \
+            --header "Authorization: Bearer ${TFC_TOKEN}" \
+            --header "Content-Type: application/vnd.api+json" \
+            "https://app.terraform.io/api/v2/organizations/${TFC_ORGANIZATION}/workspaces/${TFC_WORKSPACE}")
+
+          WORKSPACE_ID=$(echo "${RESPONSE}" | jq -r '.data.id')
+
+          if [ -z "${WORKSPACE_ID}" ] || [ "${WORKSPACE_ID}" = "null" ]; then
+            echo "Could not determine HCP Terraform workspace ID."
+            exit 1
+          fi
+
+          echo "workspace_id=${WORKSPACE_ID}" >> "$GITHUB_OUTPUT"
+          echo "Found workspace: ${TFC_WORKSPACE}"
+
+      - name: Start HCP Terraform morning rebuild
+        id: terraform-run
+        shell: bash
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+          WORKSPACE_ID: ${{ steps.workspace.outputs.workspace_id }}
+        run: |
+          set -euo pipefail
+
+          PAYLOAD=$(jq -n \
+            --arg workspace_id "${WORKSPACE_ID}" \
+            '{
+              data: {
+                type: "runs",
+                attributes: {
+                  message: "Automated morning sandbox rebuild",
+                  "auto-apply": true
+                },
+                relationships: {
+                  workspace: {
+                    data: {
+                      type: "workspaces",
+                      id: $workspace_id
+                    }
+                  }
+                }
+              }
+            }')
+
+          RESPONSE=$(curl --silent --show-error --fail \
+            --request POST \
+            --header "Authorization: Bearer ${TFC_TOKEN}" \
+            --header "Content-Type: application/vnd.api+json" \
+            --data "${PAYLOAD}" \
+            "https://app.terraform.io/api/v2/runs")
+
+          RUN_ID=$(echo "${RESPONSE}" | jq -r '.data.id')
+
+          if [ -z "${RUN_ID}" ] || [ "${RUN_ID}" = "null" ]; then
+            echo "HCP Terraform run was not created."
+            exit 1
+          fi
+
+          echo "run_id=${RUN_ID}" >> "$GITHUB_OUTPUT"
+          echo "Terraform run created: ${RUN_ID}"
+
+      - name: Wait for Terraform rebuild
+        shell: bash
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+          RUN_ID: ${{ steps.terraform-run.outputs.run_id }}
+        run: |
+          set -euo pipefail
+
+          echo "Waiting for HCP Terraform run ${RUN_ID}..."
+
+          for attempt in {1..180}; do
+            RESPONSE=$(curl --silent --show-error --fail \
+              --header "Authorization: Bearer ${TFC_TOKEN}" \
+              --header "Content-Type: application/vnd.api+json" \
+              "https://app.terraform.io/api/v2/runs/${RUN_ID}")
+
+            STATUS=$(echo "${RESPONSE}" | jq -r '.data.attributes.status')
+
+            echo "Attempt ${attempt}: Terraform status = ${STATUS}"
+
+            case "${STATUS}" in
+              applied)
+                echo "Terraform rebuild completed successfully."
+                exit 0
+                ;;
+
+              planned_and_finished)
+                echo "Terraform found no infrastructure changes."
+                exit 0
+                ;;
+
+              errored|canceled|force_canceled|discarded)
+                echo "Terraform rebuild failed with status: ${STATUS}"
+                exit 1
+                ;;
+
+              needs_confirmation)
+                echo "Terraform is waiting for manual confirmation."
+                echo "The morning run was expected to auto-apply."
+                exit 1
+                ;;
+            esac
+
+            sleep 30
+          done
+
+          echo "Timed out waiting for Terraform."
+          exit 1
