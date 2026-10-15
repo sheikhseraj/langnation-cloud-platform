@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   terraform-rebuild:
@@ -139,3 +140,9 @@ jobs:
 
           echo "Timed out waiting for Terraform."
           exit 1
+
+  deploy-application:
+    name: Restore LangNation Application
+    needs: terraform-rebuild
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit

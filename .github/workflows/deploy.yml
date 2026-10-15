@@ -10,6 +10,8 @@ on:
 
   workflow_dispatch:
 
+  workflow_call:
+
 permissions:
   contents: read
   id-token: write
@@ -24,6 +26,8 @@ env:
   ECS_TASK_DEFINITION: langnation-cloud-platform-dev-app
 
   CONTAINER_NAME: langnation-app
+
+  ALB_NAME: langnation-cloud-platform-dev-lb
 
 jobs:
   deploy:
@@ -90,3 +94,45 @@ jobs:
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
+      - name: Verify application health through ALB
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ALB_DNS=$(aws elbv2 describe-load-balancers \
+            --names "${ALB_NAME}" \
+            --region "${AWS_REGION}" \
+            --query "LoadBalancers[0].DNSName" \
+            --output text)
+
+          if [ -z "${ALB_DNS}" ] || [ "${ALB_DNS}" = "None" ]; then
+            echo "Could not determine the ALB DNS name."
+            exit 1
+          fi
+
+          HEALTH_URL="http://${ALB_DNS}/health"
+
+          echo "Checking application health:"
+          echo "${HEALTH_URL}"
+
+          for attempt in {1..30}; do
+            echo "Health check attempt ${attempt}/30..."
+
+            if RESPONSE=$(curl --silent --show-error --fail \
+              --connect-timeout 5 \
+              --max-time 10 \
+              "${HEALTH_URL}"); then
+
+              echo "Response: ${RESPONSE}"
+
+              if echo "${RESPONSE}" | jq -e '.status == "healthy"' > /dev/null; then
+                echo "LangNation application is healthy and ready."
+                exit 0
+              fi
+            fi
+
+            sleep 10
+          done
+
+          echo "Application did not become healthy within the expected time."
+          exit 1
