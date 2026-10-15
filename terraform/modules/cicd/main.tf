@@ -11,7 +11,6 @@ resource "aws_iam_openid_connect_provider" "github" {
   }
 }
 
-# IAM role assumed by GitHub Actions through OIDC / deployment role
 # IAM role assumed by GitHub Actions through OIDC
 resource "aws_iam_role" "github_actions_deploy" {
   name = "${var.project_name}-${var.environment}-github-deploy-role"
@@ -46,7 +45,6 @@ resource "aws_iam_role" "github_actions_deploy" {
 }
 
 # Least-privilege permissions used by the GitHub Actions deployment workflow
-# Create the deployment policy
 resource "aws_iam_role_policy" "github_actions_deploy" {
   name = "${var.project_name}-${var.environment}-github-deploy-policy"
   role = aws_iam_role.github_actions_deploy.id
@@ -104,6 +102,17 @@ resource "aws_iam_role_policy" "github_actions_deploy" {
         ]
 
         Resource = "${replace(var.ecs_cluster_arn, ":cluster/", ":service/")}/${var.ecs_service_name}"
+      },
+
+      {
+        Sid    = "ReadApplicationLoadBalancer"
+        Effect = "Allow"
+
+        Action = [
+          "elasticloadbalancing:DescribeLoadBalancers"
+        ]
+
+        Resource = "*"
       },
 
       {
