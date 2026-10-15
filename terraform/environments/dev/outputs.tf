@@ -195,3 +195,14 @@ output "db_master_secret_arn" {
   description = "ARN of the RDS master credential secret"
   value       = module.database.db_master_secret_arn
 }
+
+# Exposing the S3 storage bucket outputs from the storage module
+output "storage_bucket_name" {
+  description = "Name of the private LangNation S3 storage bucket"
+  value       = module.storage.bucket_name
+}
+
+output "storage_bucket_arn" {
+  description = "ARN of the private LangNation S3 storage bucket"
+  value       = module.storage.bucket_arn
+}

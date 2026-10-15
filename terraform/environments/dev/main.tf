@@ -90,3 +90,11 @@ module "database" {
   private_db_subnet_ids = module.networking.private_db_subnet_ids
   db_security_group_id  = module.security.db_security_group_id
 }
+
+# Storage
+module "storage" {
+  source = "../../modules/storage"
+
+  project_name = var.project_name
+  environment  = var.environment
+}
