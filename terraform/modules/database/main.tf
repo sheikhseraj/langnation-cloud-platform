@@ -37,7 +37,7 @@ resource "aws_db_instance" "main" {
   multi_az            = true
 
   backup_retention_period = 7
-  copy_tags_to_snapshot    = true
+  copy_tags_to_snapshot   = true
 
   auto_minor_version_upgrade = true
 
