@@ -83,3 +83,10 @@ variable "github_repository_id" {
   type        = string
   default     = "1407282665"
 }
+
+# Add a variable for the primary public hostname for the LangNation AWS cloud environment
+variable "cloud_domain_name" {
+  description = "Primary public hostname for the LangNation AWS cloud environment"
+  type        = string
+  default     = "cloud.namienterprises.in"
+}

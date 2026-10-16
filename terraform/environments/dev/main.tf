@@ -98,3 +98,17 @@ module "storage" {
   project_name = var.project_name
   environment  = var.environment
 }
+
+# Edge / HTTPS
+module "edge" {
+  source = "../../modules/edge"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  domain_name = var.cloud_domain_name
+
+  subject_alternative_names = [
+    "*.${var.cloud_domain_name}"
+  ]
+}

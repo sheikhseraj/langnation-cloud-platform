@@ -206,3 +206,14 @@ output "storage_bucket_arn" {
   description = "ARN of the private LangNation S3 storage bucket"
   value       = module.storage.bucket_arn
 }
+
+# Exposing the ACM certificate outputs from the edge module
+output "edge_certificate_arn" {
+  description = "ARN of the ACM edge certificate"
+  value       = module.edge.certificate_arn
+}
+
+output "edge_certificate_validation_options" {
+  description = "DNS validation records for the ACM edge certificate"
+  value       = module.edge.domain_validation_options
+}
