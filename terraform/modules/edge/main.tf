@@ -154,7 +154,7 @@ resource "aws_cloudfront_distribution" "app" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.edge.arn
+    acm_certificate_arn      = aws_acm_certificate_validation.edge.certificate_arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }
@@ -167,7 +167,19 @@ resource "aws_cloudfront_distribution" "app" {
   }
 
   depends_on = [
-    aws_acm_certificate.edge,
+    aws_acm_certificate_validation.edge,
     aws_wafv2_web_acl.edge
   ]
+}
+
+# Wait until ACM has successfully validated the certificate.
+# The required DNS validation CNAME already exists persistently
+# in the personal AWS Route 53 hosted zone.
+resource "aws_acm_certificate_validation" "edge" {
+  certificate_arn = aws_acm_certificate.edge.arn
+
+  validation_record_fqdns = distinct([
+    for option in aws_acm_certificate.edge.domain_validation_options :
+    option.resource_record_name
+  ])
 }

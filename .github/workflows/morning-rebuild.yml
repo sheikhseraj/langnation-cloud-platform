@@ -2,7 +2,12 @@ name: Morning Sandbox Rebuild
 
 on:
   schedule:
-    - cron: "30 7 * * *"
+    # Primary morning rebuild
+    - cron: "37 7 * * *"
+      timezone: "Europe/Berlin"
+
+    # Fallback run in case GitHub missed or delayed the primary schedule
+    - cron: "17 8 * * *"
       timezone: "Europe/Berlin"
 
   workflow_dispatch:
@@ -11,11 +16,79 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: morning-sandbox-rebuild
+  cancel-in-progress: false
+
 jobs:
+  should-run:
+    name: Check Whether Recovery Is Needed
+    runs-on: ubuntu-latest
+
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+
+    steps:
+      - name: Decide whether rebuild is required
+        id: check
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          set -euo pipefail
+
+          # Manual runs always perform a full rebuild.
+          if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
+            echo "Manual run requested."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # The primary 07:37 schedule always runs.
+          if [ "${SCHEDULE}" = "37 7 * * *" ]; then
+            echo "Primary morning schedule."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # The 08:17 schedule is only a fallback.
+          # If the application is already healthy, do not rebuild again.
+          echo "Fallback schedule detected."
+          echo "Checking existing LangNation endpoint..."
+
+          if RESPONSE=$(curl \
+            --silent \
+            --show-error \
+            --fail \
+            --connect-timeout 5 \
+            --max-time 10 \
+            "https://cloud.namienterprises.in/health"); then
+
+            echo "Response: ${RESPONSE}"
+
+            if echo "${RESPONSE}" | jq -e '.status == "healthy"' > /dev/null; then
+              echo "Application is already healthy."
+              echo "Fallback rebuild is not required."
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          echo "Application is not healthy."
+          echo "Fallback recovery will run."
+          echo "run=true" >> "$GITHUB_OUTPUT"
+
   terraform-rebuild:
     name: Rebuild AWS Infrastructure
+    needs: should-run
+    if: needs.should-run.outputs.run == 'true'
+
     runs-on: ubuntu-latest
     timeout-minutes: 90
+
+    outputs:
+      workspace_id: ${{ steps.workspace.outputs.workspace_id }}
 
     steps:
       - name: Checkout repository
@@ -31,7 +104,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          RESPONSE=$(curl --silent --show-error --fail \
+          RESPONSE=$(curl \
+            --silent \
+            --show-error \
+            --fail \
             --header "Authorization: Bearer ${TFC_TOKEN}" \
             --header "Content-Type: application/vnd.api+json" \
             "https://app.terraform.io/api/v2/organizations/${TFC_ORGANIZATION}/workspaces/${TFC_WORKSPACE}")
@@ -75,7 +151,10 @@ jobs:
               }
             }')
 
-          RESPONSE=$(curl --silent --show-error --fail \
+          RESPONSE=$(curl \
+            --silent \
+            --show-error \
+            --fail \
             --request POST \
             --header "Authorization: Bearer ${TFC_TOKEN}" \
             --header "Content-Type: application/vnd.api+json" \
@@ -103,7 +182,10 @@ jobs:
           echo "Waiting for HCP Terraform run ${RUN_ID}..."
 
           for attempt in {1..180}; do
-            RESPONSE=$(curl --silent --show-error --fail \
+            RESPONSE=$(curl \
+              --silent \
+              --show-error \
+              --fail \
               --header "Authorization: Bearer ${TFC_TOKEN}" \
               --header "Content-Type: application/vnd.api+json" \
               "https://app.terraform.io/api/v2/runs/${RUN_ID}")
@@ -144,5 +226,162 @@ jobs:
   deploy-application:
     name: Restore LangNation Application
     needs: terraform-rebuild
+
+    if: needs.terraform-rebuild.result == 'success'
+
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
+
+  sync-dns:
+    name: Sync Persistent Route 53 DNS
+
+    needs:
+      - terraform-rebuild
+      - deploy-application
+
+    if: |
+      needs.terraform-rebuild.result == 'success' &&
+      needs.deploy-application.result == 'success'
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Read CloudFront domain from HCP Terraform
+        id: cloudfront
+        shell: bash
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+          WORKSPACE_ID: ${{ needs.terraform-rebuild.outputs.workspace_id }}
+        run: |
+          set -euo pipefail
+
+          echo "Reading CloudFront domain from HCP Terraform..."
+
+          for attempt in {1..30}; do
+            HTTP_CODE=$(curl \
+              --silent \
+              --show-error \
+              --output hcp-outputs.json \
+              --write-out "%{http_code}" \
+              --header "Authorization: Bearer ${TFC_TOKEN}" \
+              --header "Content-Type: application/vnd.api+json" \
+              "https://app.terraform.io/api/v2/workspaces/${WORKSPACE_ID}/current-state-version-outputs")
+
+            if [ "${HTTP_CODE}" = "200" ]; then
+              CLOUDFRONT_DOMAIN=$(jq -r '
+                .data[]
+                | select(.attributes.name == "cloudfront_domain_name")
+                | .attributes.value
+              ' hcp-outputs.json | head -n 1)
+
+              if [ -n "${CLOUDFRONT_DOMAIN}" ] && \
+                 [ "${CLOUDFRONT_DOMAIN}" != "null" ]; then
+
+                echo "CloudFront domain: ${CLOUDFRONT_DOMAIN}"
+                echo "cloudfront_domain=${CLOUDFRONT_DOMAIN}" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            fi
+
+            echo "CloudFront output not ready yet."
+            echo "Attempt ${attempt}/30..."
+            sleep 10
+          done
+
+          echo "Could not obtain cloudfront_domain_name from HCP Terraform."
+          exit 1
+
+      - name: Configure Personal AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.PERSONAL_AWS_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: langnation-route53-sync
+
+      - name: Update cloud.namienterprises.in
+        id: route53
+        shell: bash
+        env:
+          ROUTE53_ZONE_ID: ${{ vars.ROUTE53_ZONE_ID }}
+          CLOUDFRONT_DOMAIN: ${{ steps.cloudfront.outputs.cloudfront_domain }}
+        run: |
+          set -euo pipefail
+
+          echo "Updating persistent DNS..."
+          echo "cloud.namienterprises.in -> ${CLOUDFRONT_DOMAIN}"
+
+          cat > change-batch.json <<EOF
+          {
+            "Comment": "Automated LangNation morning CloudFront DNS synchronization",
+            "Changes": [
+              {
+                "Action": "UPSERT",
+                "ResourceRecordSet": {
+                  "Name": "cloud.namienterprises.in.",
+                  "Type": "CNAME",
+                  "TTL": 300,
+                  "ResourceRecords": [
+                    {
+                      "Value": "${CLOUDFRONT_DOMAIN}"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+          EOF
+
+          CHANGE_ID=$(aws route53 change-resource-record-sets \
+            --hosted-zone-id "${ROUTE53_ZONE_ID}" \
+            --change-batch file://change-batch.json \
+            --query "ChangeInfo.Id" \
+            --output text)
+
+          if [ -z "${CHANGE_ID}" ] || [ "${CHANGE_ID}" = "None" ]; then
+            echo "Route 53 change was not created."
+            exit 1
+          fi
+
+          echo "Route 53 change ID: ${CHANGE_ID}"
+          echo "Waiting for DNS change to reach INSYNC..."
+
+          aws route53 wait resource-record-sets-changed \
+            --id "${CHANGE_ID}"
+
+          echo "Route 53 DNS synchronization completed."
+
+      - name: Verify public HTTPS health
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          HEALTH_URL="https://cloud.namienterprises.in/health"
+
+          echo "Waiting for public DNS and CloudFront..."
+          echo "${HEALTH_URL}"
+
+          for attempt in {1..36}; do
+            echo "Health check attempt ${attempt}/36..."
+
+            if RESPONSE=$(curl \
+              --silent \
+              --show-error \
+              --fail \
+              --connect-timeout 5 \
+              --max-time 10 \
+              "${HEALTH_URL}"); then
+
+              echo "Response: ${RESPONSE}"
+
+              if echo "${RESPONSE}" | jq -e '.status == "healthy"' > /dev/null; then
+                echo "LangNation public HTTPS endpoint is healthy."
+                exit 0
+              fi
+            fi
+
+            sleep 10
+          done
+
+          echo "Public HTTPS endpoint did not become healthy."
+          exit 1
