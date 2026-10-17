@@ -27,8 +27,6 @@ env:
 
   CONTAINER_NAME: langnation-app
 
-  ALB_NAME: langnation-cloud-platform-dev-lb
-
 jobs:
   deploy:
     name: Build and Deploy
@@ -199,25 +197,28 @@ jobs:
 
           echo "ECS task counts are healthy."
 
-      - name: Verify application health through ALB
+      - name: Verify application health through CloudFront
         shell: bash
         run: |
           set -euo pipefail
 
-          ALB_DNS=$(aws elbv2 describe-load-balancers \
-            --names "${ALB_NAME}" \
-            --region "${AWS_REGION}" \
-            --query "LoadBalancers[0].DNSName" \
+          echo "Discovering CloudFront distribution..."
+
+          CLOUDFRONT_DOMAIN=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?Aliases.Items[?@=='cloud.namienterprises.in']].DomainName | [0]" \
             --output text)
 
-          if [ -z "${ALB_DNS}" ] || [ "${ALB_DNS}" = "None" ]; then
-            echo "Could not determine the ALB DNS name."
+          if [ -z "${CLOUDFRONT_DOMAIN}" ] || [ "${CLOUDFRONT_DOMAIN}" = "None" ]; then
+            echo "Could not determine the CloudFront distribution domain."
             exit 1
           fi
 
-          HEALTH_URL="http://${ALB_DNS}/health"
+          echo "CloudFront domain:"
+          echo "${CLOUDFRONT_DOMAIN}"
 
-          echo "Checking application health:"
+          HEALTH_URL="https://${CLOUDFRONT_DOMAIN}/health"
+
+          echo "Checking application health through CloudFront:"
           echo "${HEALTH_URL}"
 
           for attempt in {1..30}; do
@@ -234,7 +235,7 @@ jobs:
               echo "Response: ${RESPONSE}"
 
               if echo "${RESPONSE}" | jq -e '.status == "healthy"' > /dev/null; then
-                echo "LangNation application is healthy and ready."
+                echo "LangNation application is healthy through CloudFront."
                 exit 0
               fi
             fi
@@ -242,5 +243,5 @@ jobs:
             sleep 10
           done
 
-          echo "Application did not become healthy within the expected time."
+          echo "Application did not become healthy through CloudFront."
           exit 1
