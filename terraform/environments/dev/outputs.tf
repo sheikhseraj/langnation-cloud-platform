@@ -217,3 +217,25 @@ output "edge_certificate_validation_options" {
   description = "DNS validation records for the ACM edge certificate"
   value       = module.edge.domain_validation_options
 }
+
+# Exposing the AWS WAF Web ACL outputs from the edge module
+output "edge_waf_arn" {
+  description = "ARN of the CloudFront WAF Web ACL"
+  value       = module.edge.web_acl_arn
+}
+
+# Exposing the CloudFront distribution outputs from the edge module
+output "cloudfront_distribution_id" {
+  description = "ID of the LangNation CloudFront distribution"
+  value       = module.edge.cloudfront_distribution_id
+}
+
+output "cloudfront_domain_name" {
+  description = "CloudFront distribution domain name"
+  value       = module.edge.cloudfront_domain_name
+}
+
+output "cloudfront_hosted_zone_id" {
+  description = "CloudFront hosted zone ID"
+  value       = module.edge.cloudfront_hosted_zone_id
+}

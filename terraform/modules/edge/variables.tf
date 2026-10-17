@@ -19,3 +19,9 @@ variable "subject_alternative_names" {
   type        = list(string)
   default     = []
 }
+
+# Variable for the Application Load Balancer DNS name used as the CloudFront origin
+variable "alb_dns_name" {
+  description = "DNS name of the Application Load Balancer used as the CloudFront origin"
+  type        = string
+}

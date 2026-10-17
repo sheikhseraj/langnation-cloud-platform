@@ -111,4 +111,6 @@ module "edge" {
   subject_alternative_names = [
     "*.${var.cloud_domain_name}"
   ]
+
+  alb_dns_name = module.load_balancing.alb_dns_name
 }
