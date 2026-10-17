@@ -105,11 +105,11 @@ resource "aws_iam_role_policy" "github_actions_deploy" {
       },
 
       {
-        Sid    = "ReadApplicationLoadBalancer"
+        Sid    = "ReadCloudFrontDistribution"
         Effect = "Allow"
 
         Action = [
-          "elasticloadbalancing:DescribeLoadBalancers"
+          "cloudfront:ListDistributions"
         ]
 
         Resource = "*"
