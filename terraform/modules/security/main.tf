@@ -1,3 +1,9 @@
+# AWS-managed prefix list containing CloudFront origin-facing servers.
+# This allows the ALB to accept traffic only from CloudFront.
+data "aws_ec2_managed_prefix_list" "cloudfront_origin_facing" {
+  name = "com.amazonaws.global.cloudfront.origin-facing"
+}
+
 # ALB Security Group
 resource "aws_security_group" "alb" {
   name        = "${var.project_name}-${var.environment}-alb-sg"
@@ -9,28 +15,17 @@ resource "aws_security_group" "alb" {
   }
 }
 
-# Allow inbound HTTP traffic from the internet to the ALB
+# Allow HTTP traffic to the ALB only from CloudFront origin-facing servers
 resource "aws_vpc_security_group_ingress_rule" "alb_http" {
   security_group_id = aws_security_group.alb.id
 
-  cidr_ipv4   = "0.0.0.0/0"
+  prefix_list_id = data.aws_ec2_managed_prefix_list.cloudfront_origin_facing.id
+
   from_port   = 80
   to_port     = 80
   ip_protocol = "tcp"
 
-  description = "Allow HTTP from the internet"
-}
-
-# Allow inbound HTTPS traffic from the internet to the ALB
-resource "aws_vpc_security_group_ingress_rule" "alb_https" {
-  security_group_id = aws_security_group.alb.id
-
-  cidr_ipv4   = "0.0.0.0/0"
-  from_port   = 443
-  to_port     = 443
-  ip_protocol = "tcp"
-
-  description = "Allow HTTPS from the internet"
+  description = "Allow HTTP only from CloudFront origin-facing servers"
 }
 
 # ECS Security Group
@@ -67,7 +62,7 @@ resource "aws_vpc_security_group_egress_rule" "ecs_outbound" {
   description = "Allow ECS tasks outbound access"
 }
 
-# ALB outbound to ECS
+# Allow ALB outbound traffic only to ECS tasks on the application port
 resource "aws_vpc_security_group_egress_rule" "alb_to_ecs" {
   security_group_id = aws_security_group.alb.id
 
@@ -80,7 +75,7 @@ resource "aws_vpc_security_group_egress_rule" "alb_to_ecs" {
   description = "Allow ALB traffic to ECS tasks"
 }
 
-# Create the Database Security Group
+# Database Security Group
 resource "aws_security_group" "db" {
   name        = "${var.project_name}-${var.environment}-db-sg"
   description = "Security group for the application database"
@@ -91,7 +86,7 @@ resource "aws_security_group" "db" {
   }
 }
 
-# database ingress rule
+# Allow database traffic only from ECS tasks
 resource "aws_vpc_security_group_ingress_rule" "db_from_ecs" {
   security_group_id = aws_security_group.db.id
 
