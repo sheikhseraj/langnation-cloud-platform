@@ -53,6 +53,8 @@ jobs:
         id: image
         shell: bash
         run: |
+          set -euo pipefail
+
           IMAGE_TAG="${GITHUB_SHA}"
           IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:${IMAGE_TAG}"
 
@@ -63,17 +65,26 @@ jobs:
 
       - name: Build Docker image
         working-directory: application
+        shell: bash
         run: |
+          set -euo pipefail
+
           docker build \
             -t "${{ steps.image.outputs.image_uri }}" \
             .
 
       - name: Push Docker image to ECR
+        shell: bash
         run: |
+          set -euo pipefail
+
           docker push "${{ steps.image.outputs.image_uri }}"
 
       - name: Download current ECS task definition
+        shell: bash
         run: |
+          set -euo pipefail
+
           aws ecs describe-task-definition \
             --task-definition "${ECS_TASK_DEFINITION}" \
             --query taskDefinition \
@@ -93,7 +104,101 @@ jobs:
           task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+          wait-for-service-stability: false
+
+      - name: Wait for ECS service stability
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Waiting for ECS service to reach steady state..."
+
+          aws ecs wait services-stable \
+            --cluster "${ECS_CLUSTER}" \
+            --services "${ECS_SERVICE}"
+
+          echo "ECS service reached steady state."
+
+      - name: Verify deployed image
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          EXPECTED_IMAGE="${{ steps.image.outputs.image_uri }}"
+
+          echo "Expected image:"
+          echo "${EXPECTED_IMAGE}"
+
+          TASK_DEFINITION_ARN=$(aws ecs describe-services \
+            --cluster "${ECS_CLUSTER}" \
+            --services "${ECS_SERVICE}" \
+            --query "services[0].taskDefinition" \
+            --output text)
+
+          if [ -z "${TASK_DEFINITION_ARN}" ] || [ "${TASK_DEFINITION_ARN}" = "None" ]; then
+            echo "Could not determine the active ECS task definition."
+            exit 1
+          fi
+
+          echo "Active task definition:"
+          echo "${TASK_DEFINITION_ARN}"
+
+          DEPLOYED_IMAGE=$(aws ecs describe-task-definition \
+            --task-definition "${TASK_DEFINITION_ARN}" \
+            --query "taskDefinition.containerDefinitions[?name=='${CONTAINER_NAME}'].image | [0]" \
+            --output text)
+
+          echo "Deployed image:"
+          echo "${DEPLOYED_IMAGE}"
+
+          if [ "${DEPLOYED_IMAGE}" != "${EXPECTED_IMAGE}" ]; then
+            echo "ERROR: ECS is not using the expected Git commit image."
+            echo "Expected: ${EXPECTED_IMAGE}"
+            echo "Actual:   ${DEPLOYED_IMAGE}"
+            exit 1
+          fi
+
+          echo "Correct Git SHA image is deployed."
+
+      - name: Verify ECS service counts
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          DESIRED=$(aws ecs describe-services \
+            --cluster "${ECS_CLUSTER}" \
+            --services "${ECS_SERVICE}" \
+            --query "services[0].desiredCount" \
+            --output text)
+
+          RUNNING=$(aws ecs describe-services \
+            --cluster "${ECS_CLUSTER}" \
+            --services "${ECS_SERVICE}" \
+            --query "services[0].runningCount" \
+            --output text)
+
+          PENDING=$(aws ecs describe-services \
+            --cluster "${ECS_CLUSTER}" \
+            --services "${ECS_SERVICE}" \
+            --query "services[0].pendingCount" \
+            --output text)
+
+          echo "Desired tasks: ${DESIRED}"
+          echo "Running tasks: ${RUNNING}"
+          echo "Pending tasks: ${PENDING}"
+
+          if [ "${RUNNING}" -ne "${DESIRED}" ]; then
+            echo "ERROR: Running task count does not match desired task count."
+            exit 1
+          fi
+
+          if [ "${PENDING}" -ne 0 ]; then
+            echo "ERROR: ECS still has pending tasks."
+            exit 1
+          fi
+
+          echo "ECS task counts are healthy."
+
       - name: Verify application health through ALB
         shell: bash
         run: |
@@ -118,7 +223,10 @@ jobs:
           for attempt in {1..30}; do
             echo "Health check attempt ${attempt}/30..."
 
-            if RESPONSE=$(curl --silent --show-error --fail \
+            if RESPONSE=$(curl \
+              --silent \
+              --show-error \
+              --fail \
               --connect-timeout 5 \
               --max-time 10 \
               "${HEALTH_URL}"); then
