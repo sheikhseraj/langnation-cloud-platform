@@ -239,3 +239,24 @@ output "cloudfront_hosted_zone_id" {
   description = "CloudFront hosted zone ID"
   value       = module.edge.cloudfront_hosted_zone_id
 }
+
+# Exposing the Cognito User Pool outputs from the authentication module
+output "cognito_user_pool_id" {
+  description = "ID of the LangNation Cognito User Pool"
+  value       = module.authentication.user_pool_id
+}
+
+output "cognito_user_pool_arn" {
+  description = "ARN of the LangNation Cognito User Pool"
+  value       = module.authentication.user_pool_arn
+}
+
+output "cognito_user_pool_endpoint" {
+  description = "Endpoint of the LangNation Cognito User Pool"
+  value       = module.authentication.user_pool_endpoint
+}
+
+output "cognito_user_pool_client_id" {
+  description = "Client ID used by the LangNation web application"
+  value       = module.authentication.user_pool_client_id
+}

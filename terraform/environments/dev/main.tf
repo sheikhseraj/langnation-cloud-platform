@@ -114,3 +114,11 @@ module "edge" {
 
   alb_dns_name = module.load_balancing.alb_dns_name
 }
+
+# Authentication / Connect Cognito to the DEV environment
+module "authentication" {
+  source = "../../modules/authentication"
+
+  project_name = var.project_name
+  environment  = var.environment
+}
