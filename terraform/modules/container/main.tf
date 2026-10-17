@@ -86,6 +86,18 @@ resource "aws_ecs_task_definition" "app" {
       image     = "${aws_ecr_repository.app.repository_url}:${var.image_tag}"
       essential = true
 
+      # Cognito configuration used by the Node.js JWT verifier
+      environment = [
+        {
+          name  = "COGNITO_USER_POOL_ID"
+          value = var.cognito_user_pool_id
+        },
+        {
+          name  = "COGNITO_CLIENT_ID"
+          value = var.cognito_client_id
+        }
+      ]
+
       portMappings = [
         {
           containerPort = var.container_port
@@ -138,7 +150,8 @@ resource "aws_ecs_service" "app" {
     aws_iam_role_policy_attachment.ecs_task_execution
   ]
 
-  # Auto Scaling controls the live desired count after deployment
+  # Auto Scaling controls desired count.
+  # GitHub Actions controls deployed task-definition revisions.
   lifecycle {
     ignore_changes = [
       desired_count,

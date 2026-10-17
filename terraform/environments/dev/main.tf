@@ -1,4 +1,3 @@
-
 module "networking" {
   source = "../../modules/networking"
 
@@ -31,16 +30,19 @@ module "container" {
   private_app_subnet_ids = module.networking.private_app_subnet_ids
   ecs_security_group_id  = module.security.ecs_security_group_id
 
-  # Pass the Target Group from dev
+  # Pass the Target Group from the load balancing module
   target_group_arn = module.load_balancing.target_group_arn
 
-  # Set the desired count of ECS Fargate tasks to 2 for the development environment
+  # Pass Cognito authentication configuration to ECS
+  cognito_user_pool_id = module.authentication.user_pool_id
+  cognito_client_id    = module.authentication.user_pool_client_id
+
+  # Development environment runs two ECS tasks
   desired_count = 2
 
   # Temporary Controlled Auto Scaling Test
   # autoscaling_cpu_target = 1
 
-  # Add Explicit Module Dependency
   depends_on = [
     module.load_balancing
   ]
@@ -115,7 +117,7 @@ module "edge" {
   alb_dns_name = module.load_balancing.alb_dns_name
 }
 
-# Authentication / Connect Cognito to the DEV environment
+# Authentication / Cognito
 module "authentication" {
   source = "../../modules/authentication"
 

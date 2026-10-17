@@ -1,4 +1,3 @@
-# Add container module variables
 variable "project_name" {
   description = "Project name used for resource naming"
   type        = string
@@ -9,7 +8,6 @@ variable "environment" {
   type        = string
 }
 
-# Add Task Definition variables
 variable "aws_region" {
   description = "AWS region where container resources are deployed"
   type        = string
@@ -39,7 +37,6 @@ variable "image_tag" {
   default     = "dev"
 }
 
-# Add ECS Service variables
 variable "private_app_subnet_ids" {
   description = "IDs of the private application subnets used by ECS Fargate"
   type        = list(string)
@@ -56,13 +53,11 @@ variable "desired_count" {
   default     = 1
 }
 
-# Add Target Group input to the container module
 variable "target_group_arn" {
   description = "ARN of the ALB target group used by the ECS service"
   type        = string
 }
 
-# Add Service Auto Scaling variables
 variable "autoscaling_min_capacity" {
   description = "Minimum number of ECS tasks maintained by Service Auto Scaling"
   type        = number
@@ -79,4 +74,15 @@ variable "autoscaling_cpu_target" {
   description = "Target average ECS service CPU utilization percentage"
   type        = number
   default     = 50
+}
+
+# Cognito authentication configuration
+variable "cognito_user_pool_id" {
+  description = "ID of the Cognito User Pool used by the application"
+  type        = string
+}
+
+variable "cognito_client_id" {
+  description = "ID of the Cognito App Client used by the application"
+  type        = string
 }
