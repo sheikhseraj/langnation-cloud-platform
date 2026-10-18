@@ -25,7 +25,7 @@ The current platform includes:
 - CloudFront-only ALB access
 - Amazon Cognito authentication
 - JWT-protected application endpoints
-- automated sandbox recovery and DNS synchronization
+- automated recovery after manual training-sandbox activation, including DNS synchronization
 
 ---
 
@@ -111,7 +111,7 @@ Operational automation is documented separately from the milestone implementatio
 
 - [OP01 — Automated Morning Sandbox Recovery](operations/OP01-automated-morning-sandbox-recovery.md)
 
-The recovery workflow rebuilds the disposable AWS sandbox, restores the application deployment and synchronizes the recreated CloudFront endpoint with persistent Route 53 DNS.
+The training sandbox itself must first be activated manually. Once an active AWS session is available, the recovery workflow rebuilds the disposable AWS infrastructure, restores the application deployment and synchronizes the recreated CloudFront endpoint with persistent Route 53 DNS.
 
 ---
 

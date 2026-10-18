@@ -151,10 +151,16 @@ Each milestone includes the design reasoning, my Excalidraw architecture sketch,
 
 The AWS training sandbox removes resources regularly, so I designed the environment to be reproducible rather than dependent on manually preserved infrastructure.
 
-The recovery flow is:
+**Operational prerequisite:** the neue-fische training sandbox must be activated manually before AWS API access is available. The recovery workflow cannot activate the educational sandbox itself. Once an active sandbox session exists, the workflow automates the infrastructure rebuild, application deployment, DNS synchronization and public health validation.
+
+The successful recovery flow is:
 
 ```text
-Scheduled GitHub workflow
+Manual: activate training sandbox
+        ↓
+active AWS session available
+        ↓
+Scheduled or manually triggered GitHub workflow
         ↓
 HCP Terraform rebuild
         ↓
@@ -282,7 +288,7 @@ Direct ALB request                  → blocked / timeout
 ECS baseline                       → 2 desired / 2 running
 Auto Scaling test                  → 2 → 4 running tasks
 CI/CD                              → Git SHA image deployed and verified
-Morning recovery                   → full manual end-to-end run passed
+Morning recovery                   → full end-to-end run passed after sandbox activation
 ```
 
 These checks are documented in the individual milestone files rather than treating a successful Terraform apply as the only proof of completion.

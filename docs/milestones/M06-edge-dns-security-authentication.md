@@ -1,12 +1,12 @@
 # LangNation Cloud Platform
 ## Milestone 6 — Edge, DNS, Security & Authentication
 
-**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS
-**Course:** AWS Cloud Computing with AI Bootcamp
-**Environment:** Development (`dev`)
-**AWS Region:** `us-east-1`
-**Public Capstone Endpoint:** `cloud.namienterprises.in`
-**Infrastructure as Code:** Terraform
+**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS<br>
+**Course:** AWS Cloud Computing with AI Bootcamp<br>
+**Environment:** Development (`dev`)<br>
+**AWS Region:** `us-east-1`<br>
+**Public Capstone Endpoint:** `cloud.namienterprises.in`<br>
+**Infrastructure as Code:** Terraform<br>
 **Status:** ✅ Complete
 
 ---
@@ -496,6 +496,8 @@ The nightly sandbox cleanup means edge resources such as CloudFront and ACM can 
 
 The recovery workflow therefore also handles public DNS.
 
+**Operational prerequisite:** the neue-fische training sandbox must be activated manually before AWS API access is available. The scheduled workflow can trigger automatically, but it cannot activate the educational sandbox. Once the sandbox session is active, the remaining recovery sequence is automated.
+
 ### Schedule
 
 ```text
@@ -508,7 +510,11 @@ The fallback skips the rebuild when the endpoint is already healthy.
 ### Recovery flow
 
 ```text
-Scheduled GitHub workflow
+Manual: activate training sandbox
+        ↓
+active AWS session available
+        ↓
+Scheduled or manually triggered GitHub workflow
         ↓
 HCP Terraform rebuild
         ↓
@@ -531,7 +537,7 @@ No long-lived personal AWS access keys are stored in GitHub.
 
 ### Validation status
 
-A complete manual `workflow_dispatch` run was validated successfully:
+Before activation, recovery attempts produced explicit-deny errors because the training sandbox session was inactive. After manually activating the sandbox, a complete `workflow_dispatch` run was validated successfully:
 
 ```text
 Check Whether Recovery Is Needed   PASS
@@ -540,7 +546,7 @@ Restore LangNation Application     PASS
 Sync Persistent Route 53 DNS       PASS
 ```
 
-The scheduled primary/fallback behavior is implemented; observing additional real scheduled runs remains useful ongoing operational evidence rather than a missing implementation requirement.
+The scheduled primary/fallback behavior is implemented. Both schedules still depend on an active training-sandbox session; sandbox activation itself remains manual. Observing additional real scheduled runs remains useful ongoing operational evidence rather than a missing implementation requirement.
 
 For the full recovery design, see:
 
@@ -765,4 +771,4 @@ The next implementation phase is **Milestone 7 — Serverless & Event-Driven Arc
 
 ## Interview / Presentation Summary
 
-> In Milestone 6 I added the secure edge and authentication layer to the LangNation platform. I kept authoritative DNS in a persistent Route 53 hosted zone outside the disposable training sandbox, then placed CloudFront, ACM and AWS WAF in front of the existing ALB. I hardened the origin by allowing ALB port 80 only from the AWS-managed CloudFront origin-facing prefix list, which prevents users from bypassing WAF through the ALB DNS name. I also added Cognito and implemented JWT verification in the Node.js API, where `/health` stays public and `/protected` returns 401 without a token and 200 with a valid access token. Finally, I extended the recovery automation so after Terraform recreates CloudFront, GitHub Actions discovers the new distribution, updates persistent Route 53 through a restricted cross-account OIDC role and verifies the public HTTPS health endpoint.
+> In Milestone 6 I added the secure edge and authentication layer to the LangNation platform. I kept authoritative DNS in a persistent Route 53 hosted zone outside the disposable training sandbox, then placed CloudFront, ACM and AWS WAF in front of the existing ALB. I hardened the origin by allowing ALB port 80 only from the AWS-managed CloudFront origin-facing prefix list, which prevents users from bypassing WAF through the ALB DNS name. I also added Cognito and implemented JWT verification in the Node.js API, where `/health` stays public and `/protected` returns 401 without a token and 200 with a valid access token. The training sandbox itself still requires manual activation; once its AWS session is active, the recovery automation can recreate the edge infrastructure, discover the new CloudFront distribution, update persistent Route 53 through a restricted cross-account OIDC role and verify the public HTTPS health endpoint.

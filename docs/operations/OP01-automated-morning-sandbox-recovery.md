@@ -1,13 +1,13 @@
 # LangNation Cloud Platform
 ## OP01 — Automated Morning Sandbox Recovery
 
-**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS
-**Course:** AWS Cloud Computing with AI Bootcamp
-**Document Type:** Operations Automation
-**Scope:** Automated recovery of the disposable development environment
-**Environment:** Development (`dev`)
-**Primary Schedule:** 07:37 Europe/Berlin
-**Fallback Schedule:** 08:17 Europe/Berlin
+**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS<br>
+**Course:** AWS Cloud Computing with AI Bootcamp<br>
+**Document Type:** Operations Automation<br>
+**Scope:** Automated recovery after manual activation of the disposable development environment<br>
+**Environment:** Development (`dev`)<br>
+**Primary Schedule:** 07:37 Europe/Berlin<br>
+**Fallback Schedule:** 08:17 Europe/Berlin<br>
 **Status:** ✅ Implemented and manually validated end to end
 
 ---
@@ -30,7 +30,13 @@ Terraform can recreate AWS resources, but Terraform does not restore the Docker 
 
 The public DNS record also needs to follow the newly recreated CloudFront distribution.
 
-The goal of OP01 is therefore to recover the complete working environment automatically before the development day starts.
+The goal of OP01 is therefore to automate the complete recovery sequence after the training sandbox has been activated.
+
+### Operational prerequisite
+
+The **neue-fische training sandbox must be activated manually** before AWS API access is available. GitHub Actions and HCP Terraform cannot activate the educational sandbox itself.
+
+Once the sandbox has issued an active AWS session, OP01 automates the remaining recovery steps: infrastructure rebuild, application deployment, CloudFront discovery, Route 53 synchronization and public health validation.
 
 ---
 
@@ -47,7 +53,11 @@ The goal of OP01 is therefore to recover the complete working environment automa
 The complete recovery path is:
 
 ```text
-07:37 primary schedule
+Manual prerequisite: activate training sandbox
+        ↓
+Active AWS session available
+        ↓
+07:37 primary schedule or manual workflow_dispatch
         ↓
 GitHub Actions
         ↓
@@ -96,7 +106,7 @@ The recovery design therefore uses:
 → fallback check
 ```
 
-The primary run performs the recovery workflow.
+The primary run performs the recovery workflow **only when the training sandbox session is active**. The schedules trigger GitHub Actions, but they do not activate the neue-fische sandbox. If the sandbox is inactive, AWS API calls cannot proceed and the recovery must be rerun after manual sandbox activation.
 
 The fallback first checks:
 
@@ -336,8 +346,12 @@ The CNAME uses a short TTL so the hostname can follow rebuilt CloudFront infrast
 Nightly sandbox cleanup
         ↓
 AWS workload resources disappear
+        ↓
+Manual: activate neue-fische training sandbox
+        ↓
+Active AWS session available
 
-07:37 Europe/Berlin
+07:37 Europe/Berlin or manual workflow_dispatch
         ↓
 Primary GitHub recovery run
         ↓
@@ -380,7 +394,9 @@ skip       full recovery
 
 ## 13. Manual End-to-End Validation
 
-The complete recovery workflow was tested manually with `workflow_dispatch`.
+The complete recovery workflow was tested manually with `workflow_dispatch`. Before the training sandbox was activated, HCP Terraform received explicit-deny errors on AWS read operations. After the sandbox was activated, the same recovery path completed successfully.
+
+This validates an important boundary: **sandbox activation is manual; recovery after activation is automated.**
 
 Validated stages:
 
@@ -535,7 +551,11 @@ manually repair public DNS
 After OP01:
 
 ```text
-07:37 primary
+Manual: activate training sandbox
+        ↓
+active AWS session
+        ↓
+07:37 primary or manual trigger
         ↓
 automatic infrastructure recovery
         ↓
@@ -554,10 +574,10 @@ health check
 recover only if needed
 ```
 
-The disposable training environment can now be recovered as one coordinated operational workflow.
+After the training sandbox is manually activated, the disposable environment can be recovered as one coordinated operational workflow.
 
 ---
 
 ## Interview / Presentation Summary
 
-> My AWS training sandbox removes resources overnight, so I automated the complete recovery process. A primary GitHub Actions workflow runs at 07:37 Europe/Berlin, with a fallback at 08:17 that first checks whether the application is already healthy. The workflow calls the HCP Terraform API to rebuild the infrastructure using an isolated auto-apply run, then invokes the reusable deployment workflow to rebuild the Docker image, push the Git-SHA-tagged image to ECR and restore the ECS service. After the edge infrastructure is recreated, the workflow reads the current CloudFront domain from Terraform outputs, assumes a least-privilege cross-account Route 53 role through OIDC, updates `cloud.namienterprises.in`, waits for DNS to become `INSYNC` and finally verifies the public HTTPS `/health` endpoint. Normal Terraform development still keeps global auto-apply disabled, so automatic apply is limited to this recovery workflow.
+> My AWS training sandbox removes resources overnight. The sandbox itself must be activated manually because GitHub Actions cannot start the educational sandbox. Once an active AWS session exists, I automated the remaining recovery process. A primary GitHub Actions workflow runs at 07:37 Europe/Berlin, with a fallback at 08:17 that first checks whether the application is already healthy. The workflow calls the HCP Terraform API to rebuild the infrastructure using an isolated auto-apply run, then invokes the reusable deployment workflow to rebuild the Docker image, push the Git-SHA-tagged image to ECR and restore the ECS service. After the edge infrastructure is recreated, the workflow reads the current CloudFront domain from Terraform outputs, assumes a least-privilege cross-account Route 53 role through OIDC, updates `cloud.namienterprises.in`, waits for DNS to become `INSYNC` and finally verifies the public HTTPS `/health` endpoint. Normal Terraform development still keeps global auto-apply disabled, so automatic apply is limited to this recovery workflow.

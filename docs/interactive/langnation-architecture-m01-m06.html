@@ -170,7 +170,7 @@ body[data-theme="dark"] .overviewStatus{color:#a9b7c9}
         <div class="node" id="taskdef" data-kind="cicd"><div class="name">ECS Task Definition</div><div class="small">Versioned image + env + logging</div></div>
         <div class="node" id="tfcode" data-kind="infra"><div class="name">Terraform Code</div><div class="small">environments/dev + reusable modules<br>networking · security · container · load_balancing · cicd · database · storage · edge · authentication</div></div>
         <div class="node" id="hcp" data-kind="infra"><div class="name">HCP Terraform</div><div class="small">Workspace: langnation-capstone-dev<br>Authoritative remote state · plan · apply</div></div>
-        <div class="node" id="morning" data-kind="storage"><div class="name">Morning Recovery Workflow</div><div class="small">07:37 primary · 08:17 fallback</div></div>
+        <div class="node" id="morning" data-kind="storage"><div class="name">Morning Recovery Workflow</div><div class="small">07:37 primary · 08:17 fallback<br>requires active training sandbox</div></div>
       </div>
     </section>
 
@@ -359,7 +359,7 @@ web:'<b>Public request:</b> follow the request from the user to Route 53, throug
 auth:'<b>Authentication:</b> the normal web path reaches the API, then the application validates the Cognito access token before allowing the protected response.',
 cicd:'<b>CI/CD:</b> follow a Git push through GitHub Actions, OIDC, Docker/ECR, a new task definition, rolling ECS deployment and public health verification.',
 data:'<b>Data:</b> ECS gets credentials from Secrets Manager, connects to RDS MySQL, the primary synchronously maintains the Multi-AZ standby, and S3/CloudWatch are accessed privately over HTTPS.',
-recovery:'<b>Morning recovery:</b> rebuild the disposable sandbox with HCP Terraform, restore the application, discover the new CloudFront endpoint, update persistent Route 53 through the restricted cross-account role, then verify public HTTPS.',
+recovery:'<b>Morning recovery:</b> the neue-fische training sandbox must first be activated manually. Once an active AWS session exists, HCP Terraform rebuilds the disposable infrastructure, GitHub Actions restores the application, persistent Route 53 is synchronized, and public HTTPS is verified.',
 iac:'<b>Terraform / IaC:</b> infrastructure is defined in reusable Terraform modules. Local work is validated from environments/dev, while HCP Terraform is the authoritative plan/apply and remote-state layer that provisions the sandbox AWS resources.'
 };
 
@@ -374,7 +374,7 @@ web:['User requests cloud.namienterprises.in','Route 53 resolves the CloudFront 
 auth:['User reaches the API through Route 53 → CloudFront/WAF → ALB','Protected endpoint requires Authorization: Bearer <token>','Application verifies the Cognito access token','Valid token returns the protected response','Missing or invalid token returns HTTP 401'],
 cicd:['Developer pushes code to main','GitHub Actions assumes AWS role through OIDC','Docker image is built and pushed to ECR with Git SHA','Current task definition is downloaded and rendered with the new image','ECS performs rolling deployment','Workflow waits for service stability','Workflow verifies deployed image SHA and running task count','Public /health endpoint is verified'],
 data:['ECS task requests RDS credentials from Secrets Manager','ECS connects to RDS MySQL on TCP 3306','RDS primary maintains synchronous Multi-AZ standby','Application can access private S3 object storage over HTTPS','Application logs and container metrics go to CloudWatch'],
-recovery:['07:37 scheduled workflow checks/rebuilds infrastructure','HCP Terraform creates an auto-apply recovery run','Reusable deployment workflow restores the application','Workflow discovers the new CloudFront distribution domain','GitHub assumes restricted personal-AWS Route 53 role through OIDC','cloud.namienterprises.in CNAME is UPSERTed to the new CloudFront domain','Workflow waits for Route 53 change to become INSYNC','Public HTTPS /health is verified','08:17 fallback runs only when the site is still unhealthy'],
+recovery:['Manual prerequisite: activate the neue-fische training sandbox','07:37 scheduled workflow or manual trigger starts recovery','HCP Terraform creates an auto-apply recovery run','Reusable deployment workflow restores the application','Workflow discovers the new CloudFront distribution domain','GitHub assumes restricted personal-AWS Route 53 role through OIDC','cloud.namienterprises.in CNAME is UPSERTed to the new CloudFront domain','Workflow waits for Route 53 change to become INSYNC','Public HTTPS /health is verified','08:17 fallback runs only when the site is still unhealthy'],
 iac:['Edit Terraform under terraform/environments/dev and terraform/modules','Run local terraform fmt and terraform validate','Commit and push the infrastructure change','HCP Terraform creates the plan using remote state','Review/apply the HCP Terraform run','Terraform provisions the relevant AWS modules and resources','The resulting infrastructure becomes the reproducible baseline for application deployment']
 };
 
