@@ -38,3 +38,5 @@ Thumbs.db
 
 # Protect node_modules from Git
 node_modules/
+# Local project research and working files
+Research/
