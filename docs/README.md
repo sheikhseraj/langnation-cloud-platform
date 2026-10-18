@@ -84,13 +84,24 @@ This folder contains focused diagrams for:
 
 ## Interactive Architecture
 
-The interactive architecture for Milestones 1–6 is available here:
+[▶ Open the Live Interactive M1–M6 Architecture](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-m01-m06.html)
 
-[Open interactive architecture file](interactive/langnation-architecture-m01-m06.html)
+The live walkthrough lets reviewers explore the implemented platform milestone by milestone and follow the main end-to-end flows:
 
-It includes milestone-specific views and end-to-end platform flows.
+- Milestones M1–M6
+- Public web request flow
+- CI/CD deployment flow
+- Cognito authentication flow
+- Database & storage flow
+- Terraform / IaC provisioning
+- Morning sandbox recovery
+- Light/dark mode
+- Animation speed controls
+- Fullscreen presentation mode
 
-> When viewed directly in a GitHub repository, HTML is shown as a file rather than executed as a live application. It can be opened locally in a browser, and it can later be published through GitHub Pages.
+Source file:
+
+[View the interactive HTML source](interactive/langnation-architecture-m01-m06.html)
 
 ---
 

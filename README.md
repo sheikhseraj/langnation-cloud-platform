@@ -9,6 +9,12 @@ The project started with a VPC and network isolation, then moved the application
 **Infrastructure:** Terraform + HCP Terraform
 **Application deployment:** GitHub Actions + AWS OIDC
 
+## Live Interactive Architecture
+
+[▶ Open the Interactive M1–M6 Architecture](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-m01-m06.html)
+
+Explore the implemented architecture milestone by milestone, or follow the end-to-end Web, CI/CD, Authentication, Data, Terraform and Morning Recovery flows.
+
 ---
 
 ## Architecture
@@ -252,13 +258,12 @@ Start here:
 
 Useful sections:
 
-- [Interactive architecture](docs/interactive/langnation-architecture-m01-m06.html)
+- [Live Interactive Architecture](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-m01-m06.html)
+- [Interactive architecture source](docs/interactive/langnation-architecture-m01-m06.html)
 - [Operations / recovery](docs/operations/OP01-automated-morning-sandbox-recovery.md)
 - [Milestone 6 validation evidence](docs/evidence/M06-validation-evidence-checklist.md)
 - [Progress presentation — PDF](docs/presentation/LangNation_M1-M6_Monday_Presentation.pdf)
 - [Progress presentation — PowerPoint](docs/presentation/LangNation_M1-M6_Monday_Presentation.pptx)
-
-> GitHub displays an HTML file as source. The interactive architecture can be opened locally in a browser and can later be published through GitHub Pages for direct browser use.
 
 ---
 
