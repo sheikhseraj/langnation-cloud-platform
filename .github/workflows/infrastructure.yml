@@ -1,0 +1,310 @@
+name: Infrastructure AWS
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Choose infrastructure action"
+        required: true
+        type: choice
+        options:
+          - Plan
+          - Rebuild
+          - Destroy
+
+      confirmation:
+        description: "For Destroy only, type: DESTROY DEV"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: langnation-dev-infrastructure
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Infrastructure Action
+    runs-on: ubuntu-latest
+
+    outputs:
+      action: ${{ steps.validate.outputs.action }}
+
+    env:
+      EXPECTED_ORGANIZATION: cloudforge-capstone
+      EXPECTED_WORKSPACE: langnation-capstone-dev
+
+    steps:
+      - name: Validate selected action
+        id: validate
+        shell: bash
+        env:
+          ACTION: ${{ inputs.action }}
+          CONFIRMATION: ${{ inputs.confirmation }}
+          TFC_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}
+          TFC_WORKSPACE: ${{ vars.TFC_WORKSPACE }}
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "LANGNATION AWS INFRASTRUCTURE"
+          echo "========================================"
+          echo "Action      : ${ACTION}"
+          echo "Environment : dev"
+          echo "Organization: ${TFC_ORGANIZATION}"
+          echo "Workspace   : ${TFC_WORKSPACE}"
+          echo "========================================"
+
+          if [ "${TFC_ORGANIZATION}" != "${EXPECTED_ORGANIZATION}" ]; then
+            echo "Unexpected HCP Terraform organization."
+            exit 1
+          fi
+
+          if [ "${TFC_WORKSPACE}" != "${EXPECTED_WORKSPACE}" ]; then
+            echo "Unexpected HCP Terraform workspace."
+            exit 1
+          fi
+
+          if [ "${ACTION}" = "Destroy" ]; then
+            if [ "${CONFIRMATION}" != "DESTROY DEV" ]; then
+              echo "Destroy confirmation is incorrect."
+              echo "Expected exactly: DESTROY DEV"
+              exit 1
+            fi
+          fi
+
+          echo "action=${ACTION}" >> "$GITHUB_OUTPUT"
+          echo "Validation successful."
+
+  terraform:
+    name: ${{ inputs.action }} Development Infrastructure
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    env:
+      TFC_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}
+      TFC_WORKSPACE: ${{ vars.TFC_WORKSPACE }}
+
+    steps:
+      - name: Find HCP Terraform workspace
+        id: workspace
+        shell: bash
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          RESPONSE=$(curl \
+            --silent \
+            --show-error \
+            --fail \
+            --header "Authorization: Bearer ${TFC_TOKEN}" \
+            --header "Content-Type: application/vnd.api+json" \
+            "https://app.terraform.io/api/v2/organizations/${TFC_ORGANIZATION}/workspaces/${TFC_WORKSPACE}")
+
+          WORKSPACE_ID=$(echo "${RESPONSE}" | jq -r '.data.id')
+          WORKSPACE_NAME=$(echo "${RESPONSE}" | jq -r '.data.attributes.name')
+          LOCKED=$(echo "${RESPONSE}" | jq -r '.data.attributes.locked')
+          ALLOW_DESTROY=$(echo "${RESPONSE}" | jq -r '.data.attributes["allow-destroy-plan"]')
+          IS_DESTROYABLE=$(echo "${RESPONSE}" | jq -r '.data.attributes.actions["is-destroyable"] // false')
+
+          if [ -z "${WORKSPACE_ID}" ] || [ "${WORKSPACE_ID}" = "null" ]; then
+            echo "Could not determine HCP Terraform workspace ID."
+            exit 1
+          fi
+
+          if [ "${WORKSPACE_NAME}" != "langnation-capstone-dev" ]; then
+            echo "Unexpected workspace returned by HCP Terraform."
+            exit 1
+          fi
+
+          if [ "${LOCKED}" = "true" ]; then
+            echo "Workspace is currently locked."
+            exit 1
+          fi
+
+          if [ "${{ inputs.action }}" = "Destroy" ]; then
+            if [ "${ALLOW_DESTROY}" != "true" ]; then
+              echo "Destroy plans are disabled for this workspace."
+              exit 1
+            fi
+
+            if [ "${IS_DESTROYABLE}" != "true" ]; then
+              echo "Workspace is not currently destroyable."
+              exit 1
+            fi
+          fi
+
+          echo "workspace_id=${WORKSPACE_ID}" >> "$GITHUB_OUTPUT"
+
+          echo "Workspace validated:"
+          echo "  Name: ${WORKSPACE_NAME}"
+          echo "  ID:   ${WORKSPACE_ID}"
+
+      - name: Create HCP Terraform run
+        id: terraform-run
+        shell: bash
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+          WORKSPACE_ID: ${{ steps.workspace.outputs.workspace_id }}
+          ACTION: ${{ inputs.action }}
+        run: |
+          set -euo pipefail
+
+          if [ "${ACTION}" = "Plan" ]; then
+            MESSAGE="Manual LangNation dev infrastructure plan"
+            AUTO_APPLY=false
+            IS_DESTROY=false
+
+          elif [ "${ACTION}" = "Rebuild" ]; then
+            MESSAGE="Manual LangNation dev infrastructure rebuild"
+            AUTO_APPLY=true
+            IS_DESTROY=false
+
+          elif [ "${ACTION}" = "Destroy" ]; then
+            MESSAGE="Manual LangNation dev infrastructure destroy"
+            AUTO_APPLY=true
+            IS_DESTROY=true
+
+          else
+            echo "Unsupported action: ${ACTION}"
+            exit 1
+          fi
+
+          PAYLOAD=$(jq -n \
+            --arg workspace_id "${WORKSPACE_ID}" \
+            --arg message "${MESSAGE}" \
+            --argjson auto_apply "${AUTO_APPLY}" \
+            --argjson is_destroy "${IS_DESTROY}" \
+            '{
+              data: {
+                type: "runs",
+                attributes: {
+                  message: $message,
+                  "auto-apply": $auto_apply,
+                  "is-destroy": $is_destroy
+                },
+                relationships: {
+                  workspace: {
+                    data: {
+                      type: "workspaces",
+                      id: $workspace_id
+                    }
+                  }
+                }
+              }
+            }')
+
+          RESPONSE=$(curl \
+            --silent \
+            --show-error \
+            --fail \
+            --request POST \
+            --header "Authorization: Bearer ${TFC_TOKEN}" \
+            --header "Content-Type: application/vnd.api+json" \
+            --data "${PAYLOAD}" \
+            "https://app.terraform.io/api/v2/runs")
+
+          RUN_ID=$(echo "${RESPONSE}" | jq -r '.data.id')
+
+          if [ -z "${RUN_ID}" ] || [ "${RUN_ID}" = "null" ]; then
+            echo "HCP Terraform run was not created."
+            exit 1
+          fi
+
+          echo "run_id=${RUN_ID}" >> "$GITHUB_OUTPUT"
+
+          echo "========================================"
+          echo "HCP Terraform run created"
+          echo "Action: ${ACTION}"
+          echo "Run ID: ${RUN_ID}"
+          echo "========================================"
+
+      - name: Wait for HCP Terraform
+        shell: bash
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+          RUN_ID: ${{ steps.terraform-run.outputs.run_id }}
+          ACTION: ${{ inputs.action }}
+        run: |
+          set -euo pipefail
+
+          echo "Waiting for HCP Terraform run ${RUN_ID}..."
+
+          for attempt in {1..180}; do
+
+            RESPONSE=$(curl \
+              --silent \
+              --show-error \
+              --fail \
+              --header "Authorization: Bearer ${TFC_TOKEN}" \
+              --header "Content-Type: application/vnd.api+json" \
+              "https://app.terraform.io/api/v2/runs/${RUN_ID}")
+
+            STATUS=$(echo "${RESPONSE}" | jq -r '.data.attributes.status')
+
+            echo "Attempt ${attempt}: ${STATUS}"
+
+            case "${STATUS}" in
+
+              applied)
+                echo "${ACTION} completed successfully."
+                exit 0
+                ;;
+
+              planned_and_finished)
+                echo "Terraform plan completed successfully."
+                exit 0
+                ;;
+
+              planned)
+                if [ "${ACTION}" = "Plan" ]; then
+                  echo "Terraform plan completed."
+                  echo "No infrastructure changes were applied."
+                  exit 0
+                fi
+                ;;
+
+              errored|canceled|force_canceled|discarded)
+                echo "Terraform run failed with status: ${STATUS}"
+                exit 1
+                ;;
+
+              needs_confirmation)
+                if [ "${ACTION}" = "Plan" ]; then
+                  echo "Terraform plan completed."
+                  echo "No infrastructure changes were applied."
+                  exit 0
+                fi
+
+                echo "Terraform unexpectedly requires confirmation."
+                exit 1
+                ;;
+            esac
+
+            sleep 30
+          done
+
+          echo "Timed out waiting for HCP Terraform."
+          exit 1
+
+      - name: Final summary
+        shell: bash
+        env:
+          ACTION: ${{ inputs.action }}
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "LANGNATION INFRASTRUCTURE RESULT"
+          echo "========================================"
+          echo "Action: ${ACTION}"
+          echo "Environment: dev"
+          echo "HCP workspace preserved"
+          echo "Personal AWS account untouched"
+          echo "Route 53 untouched"
+          echo "langnation.com untouched"
+          echo "========================================"
