@@ -17,7 +17,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: morning-sandbox-rebuild
+  group: langnation-dev-infrastructure
   cancel-in-progress: false
 
 jobs:

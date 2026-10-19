@@ -86,3 +86,10 @@ variable "cognito_client_id" {
   description = "ID of the Cognito App Client used by the application"
   type        = string
 }
+
+# ECR repository configuration
+variable "force_delete" {
+  description = "Allow Terraform to delete the ECR repository even when it contains images"
+  type        = bool
+  default     = false
+}

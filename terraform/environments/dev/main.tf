@@ -26,6 +26,9 @@ module "container" {
   environment  = var.environment
   aws_region   = var.aws_region
 
+  # Disposable development environment: allow ECR cleanup during destroy
+  force_delete = true
+
   # Pass networking and security into the container module
   private_app_subnet_ids = module.networking.private_app_subnet_ids
   ecs_security_group_id  = module.security.ecs_security_group_id
@@ -99,6 +102,9 @@ module "storage" {
 
   project_name = var.project_name
   environment  = var.environment
+
+  # Disposable development environment: allow S3 cleanup during destroy
+  force_destroy = true
 }
 
 # Edge / HTTPS

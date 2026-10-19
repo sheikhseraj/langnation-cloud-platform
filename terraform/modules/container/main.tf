@@ -1,6 +1,7 @@
 # Create the ECR repository
 resource "aws_ecr_repository" "app" {
-  name = "${var.project_name}-${var.environment}-app"
+  name         = "${var.project_name}-${var.environment}-app"
+  force_delete = var.force_delete
 
   image_tag_mutability = "MUTABLE"
 

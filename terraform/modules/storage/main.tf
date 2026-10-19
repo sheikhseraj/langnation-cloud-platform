@@ -8,7 +8,8 @@ locals {
 
 # Private application storage bucket
 resource "aws_s3_bucket" "storage" {
-  bucket = local.storage_bucket_name
+  bucket        = local.storage_bucket_name
+  force_destroy = var.force_destroy
 
   tags = {
     Name        = local.storage_bucket_name

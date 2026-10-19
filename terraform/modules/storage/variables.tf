@@ -8,3 +8,10 @@ variable "environment" {
   description = "Deployment environment"
   type        = string
 }
+
+# S3 bucket configuration variables
+variable "force_destroy" {
+  description = "Allow Terraform to delete the S3 bucket even when it contains objects"
+  type        = bool
+  default     = false
+}
