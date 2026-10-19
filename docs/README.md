@@ -1,6 +1,6 @@
 # LangNation Cloud Platform — Project Documentation
 
-This folder contains the architecture, milestone documentation, operational notes, validation evidence and presentation material for the LangNation Cloud Platform AWS capstone.
+This folder contains the architecture, milestone documentation, operational notes, validation evidence, learning guides and presentation material for the LangNation Cloud Platform AWS capstone.
 
 The project was built step by step during the **AWS Cloud Computing with AI Bootcamp**. Milestones 1–6 are currently implemented and documented.
 
@@ -128,6 +128,19 @@ Current documentation includes:
 - [Milestone 6 validation evidence checklist](evidence/M06-validation-evidence-checklist.md)
 
 Milestone documents also contain their own implementation and validation sections.
+
+---
+
+## Learning Guides
+
+The `guides/` folder contains supporting study material created to make the platform easier to understand, revise and explain.
+
+- [LangNation AWS Tools Guide](guides/LangNation_AWS_Tools_Guide.pdf)
+- [LangNation Cloud Project Study Guide — M1–M6](guides/LangNation_Cloud_Project_Study_Guide_M1-M6.pdf)
+
+The **AWS Tools Guide** gives a service-by-service explanation of the main AWS tools used in the project, including what each service does, why it is used and where it fits in the architecture.
+
+The **Cloud Project Study Guide** explains the implemented platform milestone by milestone, including architecture flow, AWS service choices, connections between services, troubleshooting experience, root causes, fixes and lessons learned.
 
 ---
 

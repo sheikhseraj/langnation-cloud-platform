@@ -246,6 +246,7 @@ The ECS service lifecycle ignores runtime `task_definition` and `desired_count` 
 └── docs/
     ├── architecture/
     ├── evidence/
+    ├── guides/
     ├── interactive/
     ├── milestones/
     ├── operations/
@@ -270,6 +271,28 @@ Useful sections:
 - [Milestone 6 validation evidence](docs/evidence/M06-validation-evidence-checklist.md)
 - [Progress presentation — PDF](docs/presentation/LangNation_M1-M6_Monday_Presentation.pdf)
 - [Progress presentation — PowerPoint](docs/presentation/LangNation_M1-M6_Monday_Presentation.pptx)
+- [LangNation AWS Tools Guide](docs/guides/LangNation_AWS_Tools_Guide.pdf)
+- [LangNation Cloud Project Study Guide — M1–M6](docs/guides/LangNation_Cloud_Project_Study_Guide_M1-M6.pdf)
+
+---
+
+## 📚 Project Learning Guides
+
+These guides were created to make the project easier to understand, revise and explain. They summarize the AWS services, architecture decisions, implementation flow, troubleshooting experience and lessons learned while building the LangNation Cloud Platform.
+
+### 📘 LangNation AWS Tools Guide
+
+A service-by-service reference explaining the main AWS tools used in the project, what each service does, why it is used and where it fits in the architecture.
+
+[Open the LangNation AWS Tools Guide](docs/guides/LangNation_AWS_Tools_Guide.pdf)
+
+### 📗 LangNation Cloud Project Study Guide — M1–M6
+
+A milestone-by-milestone learning guide covering the complete implemented platform from networking through containers, load balancing, CI/CD, data services, edge security, authentication and sandbox recovery.
+
+It also includes the problems encountered during implementation, the root causes, the fixes and key lessons from each milestone.
+
+[Open the LangNation Cloud Project Study Guide — M1–M6](docs/guides/LangNation_Cloud_Project_Study_Guide_M1-M6.pdf)
 
 ---
 
