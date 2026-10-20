@@ -62,13 +62,15 @@ jobs:
                 { waitUntil: "domcontentloaded", timeout: 90_000 },
               );
 
-              await page.getByPlaceholder("Login ID", { exact: true }).fill(
+              // The portal renders a second, duplicate Login ID input. Target
+              // the visible primary field by its unique DOM id.
+              await page.locator("#userName:visible").fill(
                 process.env.CLOUDLABS_LOGIN_ID,
               );
-              await page.getByPlaceholder("Password", { exact: true }).fill(
+              await page.locator('input[type="password"]:visible').first().fill(
                 process.env.CLOUDLABS_PASSWORD,
               );
-              await page.getByRole("button", { name: /^Sign in$/i }).click();
+              await page.getByRole("button", { name: /^Sign in$/i }).first().click();
 
               await page.getByText("AWS Account Lab", { exact: true }).waitFor({
                 state: "visible",
