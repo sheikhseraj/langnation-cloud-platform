@@ -1,6 +1,13 @@
 # ============================================================
+# Current AWS Region
+# ============================================================
+
+data "aws_region" "current" {}
+
+# ============================================================
 # SQS Queues for Document Processing
 # ============================================================
+
 locals {
   document_queue_name     = "${var.project_name}-${var.environment}-document-events"
   document_dlq_name       = "${var.project_name}-${var.environment}-document-events-dlq"
@@ -54,7 +61,7 @@ resource "aws_sqs_queue" "document_events" {
 }
 
 # ============================================================
-# Restrict DLQ usage to the main document queue
+# Restrict DLQ Usage to the Main Document Queue
 # ============================================================
 
 resource "aws_sqs_queue_redrive_allow_policy" "document_dlq" {
@@ -62,6 +69,7 @@ resource "aws_sqs_queue_redrive_allow_policy" "document_dlq" {
 
   redrive_allow_policy = jsonencode({
     redrivePermission = "byQueue"
+
     sourceQueueArns = [
       aws_sqs_queue.document_events.arn
     ]
@@ -129,6 +137,9 @@ resource "aws_iam_role_policy" "document_processor" {
     Version = "2012-10-17"
 
     Statement = [
+      # --------------------------------------------------------
+      # Milestone 7 - Consume messages from SQS
+      # --------------------------------------------------------
       {
         Sid    = "ReadAndDeleteSQSMessages"
         Effect = "Allow"
@@ -142,6 +153,9 @@ resource "aws_iam_role_policy" "document_processor" {
         Resource = aws_sqs_queue.document_events.arn
       },
 
+      # --------------------------------------------------------
+      # Milestone 7 - Write Lambda logs
+      # --------------------------------------------------------
       {
         Sid    = "WriteLambdaLogs"
         Effect = "Allow"
@@ -152,6 +166,48 @@ resource "aws_iam_role_policy" "document_processor" {
         ]
 
         Resource = "${aws_cloudwatch_log_group.document_processor.arn}:*"
+      },
+
+      # --------------------------------------------------------
+      # Milestone 8 - Read source documents from S3
+      # --------------------------------------------------------
+      {
+        Sid    = "ReadSourceDocuments"
+        Effect = "Allow"
+
+        Action = [
+          "s3:GetObject"
+        ]
+
+        Resource = "${var.storage_bucket_arn}/*"
+      },
+
+      # --------------------------------------------------------
+      # Milestone 8 - Generate embeddings with Amazon Bedrock
+      # --------------------------------------------------------
+      {
+        Sid    = "InvokeTitanEmbeddings"
+        Effect = "Allow"
+
+        Action = [
+          "bedrock:InvokeModel"
+        ]
+
+        Resource = "arn:aws:bedrock:${data.aws_region.current.region}::foundation-model/${var.bedrock_embedding_model_id}"
+      },
+
+      # --------------------------------------------------------
+      # Milestone 8 - Store embeddings in S3 Vectors
+      # --------------------------------------------------------
+      {
+        Sid    = "WriteKnowledgeVectors"
+        Effect = "Allow"
+
+        Action = [
+          "s3vectors:PutVectors"
+        ]
+
+        Resource = var.vector_index_arn
       }
     ]
   })
@@ -188,7 +244,12 @@ resource "aws_lambda_function" "document_processor" {
 
   environment {
     variables = {
-      FAILURE_TEST_PREFIX = "fail/"
+      FAILURE_TEST_PREFIX        = "fail/"
+      STORAGE_BUCKET_NAME        = var.storage_bucket_name
+      VECTOR_BUCKET_NAME         = var.vector_bucket_name
+      VECTOR_INDEX_NAME          = var.vector_index_name
+      BEDROCK_EMBEDDING_MODEL_ID = var.bedrock_embedding_model_id
+      EMBEDDING_DIMENSIONS       = "1024"
     }
   }
 

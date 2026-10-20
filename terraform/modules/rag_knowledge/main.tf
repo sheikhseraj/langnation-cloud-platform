@@ -33,6 +33,14 @@ resource "aws_s3vectors_index" "knowledge" {
   dimension       = 1024
   distance_metric = "cosine"
 
+  # Store the original text chunk with the vector.
+  # It is returned during retrieval but is not used as a search filter.
+  metadata_configuration {
+    non_filterable_metadata_keys = [
+      "source_text"
+    ]
+  }
+
   tags = merge(
     var.tags,
     {

@@ -1,3 +1,7 @@
+# ============================================================
+# Networking
+# ============================================================
+
 module "networking" {
   source = "../../modules/networking"
 
@@ -5,20 +9,28 @@ module "networking" {
   public_subnet_cidrs      = var.public_subnet_cidrs
   private_app_subnet_cidrs = var.private_app_subnet_cidrs
   private_db_subnet_cidrs  = var.private_db_subnet_cidrs
-  project_name             = var.project_name
-  environment              = var.environment
-}
 
-# Connect the Security module
-module "security" {
-  source = "../../modules/security"
-
-  vpc_id       = module.networking.vpc_id
   project_name = var.project_name
   environment  = var.environment
 }
 
-# Connect the Container module
+# ============================================================
+# Security
+# ============================================================
+
+module "security" {
+  source = "../../modules/security"
+
+  vpc_id = module.networking.vpc_id
+
+  project_name = var.project_name
+  environment  = var.environment
+}
+
+# ============================================================
+# Container Platform
+# ============================================================
+
 module "container" {
   source = "../../modules/container"
 
@@ -26,17 +38,15 @@ module "container" {
   environment  = var.environment
   aws_region   = var.aws_region
 
-  # Disposable development environment: allow ECR cleanup during destroy
+  # Disposable development environment:
+  # allow ECR cleanup during destroy
   force_delete = true
 
-  # Pass networking and security into the container module
   private_app_subnet_ids = module.networking.private_app_subnet_ids
   ecs_security_group_id  = module.security.ecs_security_group_id
 
-  # Pass the Target Group from the load balancing module
   target_group_arn = module.load_balancing.target_group_arn
 
-  # Pass Cognito authentication configuration to ECS
   cognito_user_pool_id = module.authentication.user_pool_id
   cognito_client_id    = module.authentication.user_pool_client_id
 
@@ -51,7 +61,10 @@ module "container" {
   ]
 }
 
-# Connect the Load Balancing module
+# ============================================================
+# Load Balancing
+# ============================================================
+
 module "load_balancing" {
   source = "../../modules/load_balancing"
 
@@ -66,7 +79,10 @@ module "load_balancing" {
   health_check_path = "/health"
 }
 
-# Connect the CI/CD module
+# ============================================================
+# CI/CD
+# ============================================================
+
 module "cicd" {
   source = "../../modules/cicd"
 
@@ -85,7 +101,10 @@ module "cicd" {
   ecs_task_execution_role_arn = module.container.ecs_task_execution_role_arn
 }
 
+# ============================================================
 # Database
+# ============================================================
+
 module "database" {
   source = "../../modules/database"
 
@@ -96,29 +115,25 @@ module "database" {
   db_security_group_id  = module.security.db_security_group_id
 }
 
+# ============================================================
 # Storage
+# ============================================================
+
 module "storage" {
   source = "../../modules/storage"
 
   project_name = var.project_name
   environment  = var.environment
 
-  # Disposable development environment: allow S3 cleanup during destroy
+  # Disposable development environment:
+  # allow S3 cleanup during destroy
   force_destroy = true
 }
 
-# Event-driven document processing
-module "event_processing" {
-  source = "../../modules/event_processing"
+# ============================================================
+# Milestone 8 - RAG Knowledge Vector Storage
+# ============================================================
 
-  project_name = var.project_name
-  environment  = var.environment
-
-  # Process document events from the private LangNation storage bucket
-  storage_bucket_name = module.storage.bucket_name
-}
-
-# RAG knowledge vector storage
 module "rag_knowledge" {
   source = "../../modules/rag_knowledge"
 
@@ -127,7 +142,33 @@ module "rag_knowledge" {
   aws_account_id = data.aws_caller_identity.current.account_id
 }
 
+# ============================================================
+# Milestone 7 + Milestone 8 - Event-Driven Document Processing
+# ============================================================
+
+module "event_processing" {
+  source = "../../modules/event_processing"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  # Source documents
+  storage_bucket_name = module.storage.bucket_name
+  storage_bucket_arn  = module.storage.bucket_arn
+
+  # RAG vector storage
+  vector_bucket_name = module.rag_knowledge.vector_bucket_name
+  vector_index_name  = module.rag_knowledge.vector_index_name
+  vector_index_arn   = module.rag_knowledge.vector_index_arn
+
+  # Embedding model
+  bedrock_embedding_model_id = "amazon.titan-embed-text-v2:0"
+}
+
+# ============================================================
 # Edge / HTTPS
+# ============================================================
+
 module "edge" {
   source = "../../modules/edge"
 
@@ -143,7 +184,10 @@ module "edge" {
   alb_dns_name = module.load_balancing.alb_dns_name
 }
 
+# ============================================================
 # Authentication / Cognito
+# ============================================================
+
 module "authentication" {
   source = "../../modules/authentication"
 

@@ -1,4 +1,5 @@
 # Variables for the event processing module
+
 variable "project_name" {
   description = "Project name used for resource naming"
   type        = string
@@ -39,7 +40,10 @@ variable "max_receive_count" {
   default     = 3
 }
 
-# Lambda function settings
+# ============================================================
+# Lambda Function Settings
+# ============================================================
+
 variable "lambda_timeout_seconds" {
   description = "Maximum execution time for the document processor Lambda"
   type        = number
@@ -58,8 +62,41 @@ variable "lambda_log_retention_days" {
   default     = 7
 }
 
-# S3 bucket settings
+# ============================================================
+# S3 Source Document Storage
+# ============================================================
+
 variable "storage_bucket_name" {
   description = "Name of the S3 bucket that produces document events"
   type        = string
+}
+
+# ============================================================
+# Milestone 8 - RAG Knowledge Pipeline
+# ============================================================
+
+variable "storage_bucket_arn" {
+  description = "ARN of the S3 bucket containing source documents"
+  type        = string
+}
+
+variable "vector_bucket_name" {
+  description = "Name of the S3 Vectors bucket"
+  type        = string
+}
+
+variable "vector_index_name" {
+  description = "Name of the S3 Vectors knowledge index"
+  type        = string
+}
+
+variable "vector_index_arn" {
+  description = "ARN of the S3 Vectors knowledge index"
+  type        = string
+}
+
+variable "bedrock_embedding_model_id" {
+  description = "Amazon Bedrock embedding model ID"
+  type        = string
+  default     = "amazon.titan-embed-text-v2:0"
 }

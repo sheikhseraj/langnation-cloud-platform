@@ -40,3 +40,7 @@ Thumbs.db
 node_modules/
 # Local project research and working files
 Research/
+
+# Python cache
+__pycache__/
+*.pyc
