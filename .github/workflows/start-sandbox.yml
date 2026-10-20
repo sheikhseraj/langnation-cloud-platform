@@ -64,7 +64,9 @@ jobs:
 
               // Log only safe page and field metadata if the expected form is
               // missing. Never log input values or the full URL query string.
-              const loginInput = page.locator("#userName:visible");
+              // Login ID is the email field. Select its visible placeholder,
+              // since the page also contains a hidden duplicate input.
+              const loginInput = page.locator('input[placeholder="Login ID"]:visible').first();
               try {
                 await loginInput.waitFor({ state: "visible", timeout: 10_000 });
               } catch {
