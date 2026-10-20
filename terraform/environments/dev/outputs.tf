@@ -319,3 +319,27 @@ output "s3_object_created_rule_arn" {
   description = "ARN of the EventBridge rule for S3 object-created events"
   value       = module.event_processing.s3_object_created_rule_arn
 }
+
+# ============================================================
+# Milestone 8 - RAG Knowledge Vector Storage Outputs
+# ============================================================
+
+output "rag_vector_bucket_name" {
+  description = "Name of the S3 Vectors bucket used by the RAG pipeline"
+  value       = module.rag_knowledge.vector_bucket_name
+}
+
+output "rag_vector_bucket_arn" {
+  description = "ARN of the S3 Vectors bucket used by the RAG pipeline"
+  value       = module.rag_knowledge.vector_bucket_arn
+}
+
+output "rag_vector_index_name" {
+  description = "Name of the LangNation RAG vector index"
+  value       = module.rag_knowledge.vector_index_name
+}
+
+output "rag_vector_index_arn" {
+  description = "ARN of the LangNation RAG vector index"
+  value       = module.rag_knowledge.vector_index_arn
+}

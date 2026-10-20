@@ -118,6 +118,15 @@ module "event_processing" {
   storage_bucket_name = module.storage.bucket_name
 }
 
+# RAG knowledge vector storage
+module "rag_knowledge" {
+  source = "../../modules/rag_knowledge"
+
+  project_name   = var.project_name
+  environment    = var.environment
+  aws_account_id = data.aws_caller_identity.current.account_id
+}
+
 # Edge / HTTPS
 module "edge" {
   source = "../../modules/edge"
