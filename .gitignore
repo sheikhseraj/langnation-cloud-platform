@@ -44,3 +44,6 @@ Research/
 # Python cache
 __pycache__/
 *.pyc
+
+# Playwright debug screenshots from the sandbox automation
+debug/

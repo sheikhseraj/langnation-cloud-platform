@@ -2,11 +2,21 @@ name: Start neue fische AWS Sandbox
 
 on:
   schedule:
-    # Run every day at 06:00 Germany time, including daylight-saving changes.
+    # 06:00 Germany time. GitHub applies the IANA zone, so CET/CEST is handled.
     - cron: "0 6 * * *"
       timezone: "Europe/Berlin"
 
+    # Fallback run: scheduled workflows can be delayed when GitHub is busy.
+    # Starting an already-running lab is a no-op, so a second attempt is safe.
+    - cron: "40 6 * * *"
+      timezone: "Europe/Berlin"
+
   workflow_dispatch:
+    inputs:
+      debug:
+        description: "Upload screenshots (warning: these can show lab credentials)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -15,90 +25,67 @@ concurrency:
   group: neue-fische-sandbox-start
   cancel-in-progress: false
 
+env:
+  PLAYWRIGHT_VERSION: "1.64.1"
+
 jobs:
   start-sandbox:
     name: Sign in and start AWS Account Lab
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
 
     steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Install Playwright and Chromium
-        shell: bash
-        run: |
-          set -euo pipefail
-          PLAYWRIGHT_DIR="${RUNNER_TEMP}/cloudlabs-playwright"
-          npm install --prefix "${PLAYWRIGHT_DIR}" --no-save playwright
-          "${PLAYWRIGHT_DIR}/node_modules/.bin/playwright" install --with-deps chromium
-
-      - name: Sign in and start the lab if it is stopped
+      - name: Verify the required secrets exist
         shell: bash
         env:
           CLOUDLABS_LOGIN_ID: ${{ secrets.CLOUDLABS_LOGIN_ID }}
           CLOUDLABS_PASSWORD: ${{ secrets.CLOUDLABS_PASSWORD }}
         run: |
           set -euo pipefail
-
           if [[ -z "${CLOUDLABS_LOGIN_ID}" || -z "${CLOUDLABS_PASSWORD}" ]]; then
-            echo "Required GitHub Actions secrets are missing."
-            echo "Add CLOUDLABS_LOGIN_ID and CLOUDLABS_PASSWORD in repository Settings > Secrets and variables > Actions."
+            echo "::error::Missing CLOUDLABS_LOGIN_ID and/or CLOUDLABS_PASSWORD."
+            echo "Add them under Settings > Secrets and variables > Actions > New repository secret."
             exit 1
           fi
+          echo "Both secrets are present."
 
-          NODE_PATH="${RUNNER_TEMP}/cloudlabs-playwright/node_modules" node <<'NODE'
-          const { chromium } = require("playwright");
+      - name: Restore cached Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ env.PLAYWRIGHT_VERSION }}
 
-          (async () => {
-            const browser = await chromium.launch({ headless: true });
-            const page = await browser.newPage();
+      - name: Install Playwright and Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Install at the repository root: ESM imports resolve by walking up from
+          # the script, and unlike CommonJS they ignore NODE_PATH.
+          npm install --no-save --no-package-lock "playwright@${PLAYWRIGHT_VERSION}"
+          npx playwright install --with-deps chromium
 
-            try {
-              await page.goto(
-                "https://cloudlabs.nuvepro.com/company/Neuefische/home",
-                { waitUntil: "domcontentloaded", timeout: 90_000 },
-              );
+      - name: Start the lab if it is stopped
+        shell: bash
+        env:
+          CLOUDLABS_LOGIN_ID: ${{ secrets.CLOUDLABS_LOGIN_ID }}
+          CLOUDLABS_PASSWORD: ${{ secrets.CLOUDLABS_PASSWORD }}
+          CLOUDLABS_LAB_NAME: ${{ vars.CLOUDLABS_LAB_NAME || 'AWS Account Lab' }}
+          CLOUDLABS_DEBUG: ${{ inputs.debug && '1' || '0' }}
+        run: node scripts/start-sandbox.mjs
 
-              await page.getByPlaceholder("Login ID", { exact: true }).fill(
-                process.env.CLOUDLABS_LOGIN_ID,
-              );
-              await page.getByPlaceholder("Password", { exact: true }).fill(
-                process.env.CLOUDLABS_PASSWORD,
-              );
-              await page.getByRole("button", { name: /^Sign in$/i }).click();
-
-              await page.getByText("AWS Account Lab", { exact: true }).waitFor({
-                state: "visible",
-                timeout: 90_000,
-              });
-              await page.getByText("View Lab", { exact: true }).click();
-
-              const stopButton = page.getByText(/^Stop$/i).first();
-              const startButton = page.getByText(/^Start$/i).first();
-
-              if (await stopButton.isVisible().catch(() => false)) {
-                console.log("AWS Account Lab is already running; no click needed.");
-                return;
-              }
-
-              if (!(await startButton.isVisible().catch(() => false))) {
-                throw new Error("Neither Start nor Stop is visible on the lab page.");
-              }
-
-              await startButton.click();
-              await stopButton.waitFor({ state: "visible", timeout: 240_000 });
-              console.log("AWS Account Lab started successfully.");
-            } finally {
-              // Do not save screenshots, traces, or page contents: the lab page
-              // can display temporary AWS credentials.
-              await browser.close();
-            }
-          })().catch((error) => {
-            console.error("CloudLabs start automation failed.");
-            console.error(error.message);
-            process.exitCode = 1;
-          });
-          NODE
+      - name: Upload debug screenshots
+        if: ${{ always() && inputs.debug }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudlabs-debug
+          path: debug/
+          retention-days: 1
+          if-no-files-found: ignore
