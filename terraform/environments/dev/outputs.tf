@@ -260,3 +260,62 @@ output "cognito_user_pool_client_id" {
   description = "Client ID used by the LangNation web application"
   value       = module.authentication.user_pool_client_id
 }
+
+# ============================================================
+# Milestone 7 - Event-Driven Document Processing Outputs
+# ============================================================
+
+output "document_queue_arn" {
+  description = "ARN of the main document-processing SQS queue"
+  value       = module.event_processing.document_queue_arn
+}
+
+output "document_queue_url" {
+  description = "URL of the main document-processing SQS queue"
+  value       = module.event_processing.document_queue_url
+}
+
+output "document_dlq_arn" {
+  description = "ARN of the document-processing dead-letter queue"
+  value       = module.event_processing.document_dlq_arn
+}
+
+output "document_dlq_url" {
+  description = "URL of the document-processing dead-letter queue"
+  value       = module.event_processing.document_dlq_url
+}
+
+output "document_processor_function_name" {
+  description = "Name of the document processor Lambda function"
+  value       = module.event_processing.document_processor_function_name
+}
+
+output "document_processor_function_arn" {
+  description = "ARN of the document processor Lambda function"
+  value       = module.event_processing.document_processor_function_arn
+}
+
+output "document_processor_role_arn" {
+  description = "ARN of the document processor Lambda execution role"
+  value       = module.event_processing.document_processor_role_arn
+}
+
+output "document_processor_log_group_name" {
+  description = "CloudWatch log group for the document processor Lambda"
+  value       = module.event_processing.document_processor_log_group_name
+}
+
+output "document_event_source_mapping_uuid" {
+  description = "UUID of the SQS to Lambda event source mapping"
+  value       = module.event_processing.document_event_source_mapping_uuid
+}
+
+output "s3_object_created_rule_name" {
+  description = "Name of the EventBridge rule for S3 object-created events"
+  value       = module.event_processing.s3_object_created_rule_name
+}
+
+output "s3_object_created_rule_arn" {
+  description = "ARN of the EventBridge rule for S3 object-created events"
+  value       = module.event_processing.s3_object_created_rule_arn
+}

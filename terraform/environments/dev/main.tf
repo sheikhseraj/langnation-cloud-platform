@@ -107,6 +107,17 @@ module "storage" {
   force_destroy = true
 }
 
+# Event-driven document processing
+module "event_processing" {
+  source = "../../modules/event_processing"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  # Process document events from the private LangNation storage bucket
+  storage_bucket_name = module.storage.bucket_name
+}
+
 # Edge / HTTPS
 module "edge" {
   source = "../../modules/edge"
