@@ -62,11 +62,55 @@ jobs:
                 { waitUntil: "domcontentloaded", timeout: 90_000 },
               );
 
+              // Log only safe page and field metadata if the expected form is
+              // missing. Never log input values or the full URL query string.
+              const loginInput = page.locator("#userName:visible");
+              try {
+                await loginInput.waitFor({ state: "visible", timeout: 10_000 });
+              } catch {
+                const safeUrl = (rawUrl) => {
+                  try {
+                    const url = new URL(rawUrl);
+                    return `${url.origin}${url.pathname}`;
+                  } catch {
+                    return "unavailable";
+                  }
+                };
+                const diagnostics = await Promise.all(
+                  page.frames().map(async (frame) => ({
+                    url: safeUrl(frame.url()),
+                    fields: await frame.locator("input").evaluateAll((inputs) =>
+                      inputs
+                        .filter((input) => {
+                          const style = getComputedStyle(input);
+                          const rect = input.getBoundingClientRect();
+                          return style.visibility !== "hidden" &&
+                            style.display !== "none" &&
+                            rect.width > 0 &&
+                            rect.height > 0;
+                        })
+                        .map((input) => ({
+                          id: input.id || "",
+                          name: input.getAttribute("name") || "",
+                          type: input.getAttribute("type") || "",
+                          placeholder: input.getAttribute("placeholder") || "",
+                          ariaLabel: input.getAttribute("aria-label") || "",
+                        })),
+                    ),
+                  })),
+                );
+                console.error("Login form diagnostics (field values omitted):");
+                console.error(JSON.stringify({
+                  pageUrl: safeUrl(page.url()),
+                  pageTitle: await page.title(),
+                  frames: diagnostics,
+                }));
+                throw new Error("Visible #userName login field was not found.");
+              }
+
               // The portal renders a second, duplicate Login ID input. Target
               // the visible primary field by its unique DOM id.
-              await page.locator("#userName:visible").fill(
-                process.env.CLOUDLABS_LOGIN_ID,
-              );
+              await loginInput.fill(process.env.CLOUDLABS_LOGIN_ID);
               await page.locator('input[type="password"]:visible').first().fill(
                 process.env.CLOUDLABS_PASSWORD,
               );
