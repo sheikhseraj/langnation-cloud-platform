@@ -19,12 +19,17 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: langnation-dev-infrastructure
   cancel-in-progress: false
 
 jobs:
+
+  # ============================================================
+  # 1. VALIDATE REQUEST
+  # ============================================================
   validate:
     name: Validate Infrastructure Action
     runs-on: ubuntu-latest
@@ -78,17 +83,28 @@ jobs:
           echo "action=${ACTION}" >> "$GITHUB_OUTPUT"
           echo "Validation successful."
 
+
+  # ============================================================
+  # 2. TERRAFORM PLAN / REBUILD / DESTROY
+  # ============================================================
   terraform:
     name: ${{ inputs.action }} Development Infrastructure
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 90
 
+    outputs:
+      workspace_id: ${{ steps.workspace.outputs.workspace_id }}
+
     env:
       TFC_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}
       TFC_WORKSPACE: ${{ vars.TFC_WORKSPACE }}
 
     steps:
+
+      # --------------------------------------------------------
+      # Find HCP Terraform workspace
+      # --------------------------------------------------------
       - name: Find HCP Terraform workspace
         id: workspace
         shell: bash
@@ -127,6 +143,7 @@ jobs:
           fi
 
           if [ "${{ inputs.action }}" = "Destroy" ]; then
+
             if [ "${ALLOW_DESTROY}" != "true" ]; then
               echo "Destroy plans are disabled for this workspace."
               exit 1
@@ -136,6 +153,7 @@ jobs:
               echo "Workspace is not currently destroyable."
               exit 1
             fi
+
           fi
 
           echo "workspace_id=${WORKSPACE_ID}" >> "$GITHUB_OUTPUT"
@@ -144,6 +162,138 @@ jobs:
           echo "  Name: ${WORKSPACE_NAME}"
           echo "  ID:   ${WORKSPACE_ID}"
 
+
+      # --------------------------------------------------------
+      # REBUILD ONLY:
+      # Authenticate to persistent personal Route 53
+      # --------------------------------------------------------
+      - name: Configure Personal AWS credentials for DNS cleanup
+        if: ${{ inputs.action == 'Rebuild' }}
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.PERSONAL_AWS_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: langnation-route53-pre-rebuild
+
+
+      # --------------------------------------------------------
+      # REBUILD ONLY:
+      # Remove stale CloudFront CNAME
+      # --------------------------------------------------------
+      - name: Remove stale CloudFront DNS record
+        if: ${{ inputs.action == 'Rebuild' }}
+        shell: bash
+        env:
+          ROUTE53_ZONE_ID: ${{ vars.ROUTE53_ZONE_ID }}
+        run: |
+          set -euo pipefail
+
+          echo "Checking persistent Route 53 DNS..."
+
+          RECORD=$(aws route53 list-resource-record-sets \
+            --hosted-zone-id "${ROUTE53_ZONE_ID}" \
+            --query "ResourceRecordSets[?Name == 'cloud.namienterprises.in.' && Type == 'CNAME'] | [0]" \
+            --output json)
+
+          if [ "${RECORD}" = "null" ] || [ -z "${RECORD}" ]; then
+            echo "No cloud.namienterprises.in CNAME exists."
+            echo "No stale DNS cleanup required."
+            exit 0
+          fi
+
+          CURRENT_TARGET=$(echo "${RECORD}" | jq -r '.ResourceRecords[0].Value')
+
+          echo "Current DNS target:"
+          echo "cloud.namienterprises.in -> ${CURRENT_TARGET}"
+
+          # Safety protection:
+          # Never delete this record unless it currently points to CloudFront.
+          if [[ "${CURRENT_TARGET}" != *.cloudfront.net* ]]; then
+            echo "Safety check failed."
+            echo "The CNAME does not point to CloudFront."
+            echo "DNS record will NOT be deleted."
+            exit 1
+          fi
+
+          jq -n \
+            --argjson record "${RECORD}" \
+            '{
+              Comment: "Remove stale LangNation CloudFront CNAME before infrastructure rebuild",
+              Changes: [
+                {
+                  Action: "DELETE",
+                  ResourceRecordSet: $record
+                }
+              ]
+            }' > delete-dns.json
+
+          CHANGE_ID=$(aws route53 change-resource-record-sets \
+            --hosted-zone-id "${ROUTE53_ZONE_ID}" \
+            --change-batch file://delete-dns.json \
+            --query "ChangeInfo.Id" \
+            --output text)
+
+          if [ -z "${CHANGE_ID}" ] || [ "${CHANGE_ID}" = "None" ]; then
+            echo "Route 53 deletion request was not created."
+            exit 1
+          fi
+
+          echo "Route 53 change ID: ${CHANGE_ID}"
+          echo "Waiting for Route 53 deletion to become INSYNC..."
+
+          aws route53 wait resource-record-sets-changed \
+            --id "${CHANGE_ID}"
+
+          echo "Route 53 reports INSYNC."
+          echo "Stale cloud.namienterprises.in CNAME removed."
+
+
+      # --------------------------------------------------------
+      # REBUILD ONLY:
+      # Wait for cached public DNS record to disappear
+      # --------------------------------------------------------
+      - name: Wait for stale DNS cache to clear
+        if: ${{ inputs.action == 'Rebuild' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          DOMAIN="cloud.namienterprises.in"
+
+          if ! command -v dig >/dev/null 2>&1; then
+            echo "dig is unavailable on this runner."
+            echo "Waiting 330 seconds for previous DNS TTL to expire..."
+            sleep 330
+            exit 0
+          fi
+
+          echo "Waiting for stale public CNAME cache to disappear..."
+
+          for attempt in {1..36}; do
+
+            CLOUDFLARE_RESULT=$(dig +short CNAME "${DOMAIN}" @1.1.1.1 | tr -d '\r')
+            GOOGLE_RESULT=$(dig +short CNAME "${DOMAIN}" @8.8.8.8 | tr -d '\r')
+
+            echo "Attempt ${attempt}/36"
+            echo "Cloudflare resolver: ${CLOUDFLARE_RESULT:-<empty>}"
+            echo "Google resolver:     ${GOOGLE_RESULT:-<empty>}"
+
+            if [ -z "${CLOUDFLARE_RESULT}" ] && [ -z "${GOOGLE_RESULT}" ]; then
+              echo "Old CloudFront CNAME is no longer visible."
+              exit 0
+            fi
+
+            sleep 10
+          done
+
+          echo "Old DNS record is still cached after waiting."
+          echo "Stopping rebuild to avoid CloudFront CNAMEAlreadyExists."
+          exit 1
+
+
+      # --------------------------------------------------------
+      # Create HCP Terraform run
+      # --------------------------------------------------------
       - name: Create HCP Terraform run
         id: terraform-run
         shell: bash
@@ -155,23 +305,28 @@ jobs:
           set -euo pipefail
 
           if [ "${ACTION}" = "Plan" ]; then
+
             MESSAGE="Manual LangNation dev infrastructure plan"
             AUTO_APPLY=false
             IS_DESTROY=false
 
           elif [ "${ACTION}" = "Rebuild" ]; then
+
             MESSAGE="Manual LangNation dev infrastructure rebuild"
             AUTO_APPLY=true
             IS_DESTROY=false
 
           elif [ "${ACTION}" = "Destroy" ]; then
+
             MESSAGE="Manual LangNation dev infrastructure destroy"
             AUTO_APPLY=true
             IS_DESTROY=true
 
           else
+
             echo "Unsupported action: ${ACTION}"
             exit 1
+
           fi
 
           PAYLOAD=$(jq -n \
@@ -223,6 +378,10 @@ jobs:
           echo "Run ID: ${RUN_ID}"
           echo "========================================"
 
+
+      # --------------------------------------------------------
+      # Wait for Terraform
+      # --------------------------------------------------------
       - name: Wait for HCP Terraform
         shell: bash
         env:
@@ -280,18 +439,23 @@ jobs:
                   exit 0
                 fi
 
-                echo "Terraform unexpectedly requires confirmation."
+                echo "Terraform unexpectedly requires manual confirmation."
                 exit 1
                 ;;
             esac
 
             sleep 30
+
           done
 
           echo "Timed out waiting for HCP Terraform."
           exit 1
 
-      - name: Final summary
+
+      # --------------------------------------------------------
+      # Terraform stage summary
+      # --------------------------------------------------------
+      - name: Terraform stage summary
         shell: bash
         env:
           ACTION: ${{ inputs.action }}
@@ -299,12 +463,231 @@ jobs:
           set -euo pipefail
 
           echo "========================================"
-          echo "LANGNATION INFRASTRUCTURE RESULT"
+          echo "LANGNATION TERRAFORM RESULT"
           echo "========================================"
           echo "Action: ${ACTION}"
           echo "Environment: dev"
-          echo "HCP workspace preserved"
-          echo "Personal AWS account untouched"
-          echo "Route 53 untouched"
-          echo "langnation.com untouched"
+
+          if [ "${ACTION}" = "Plan" ]; then
+            echo "Plan completed."
+            echo "No infrastructure changes were applied."
+
+          elif [ "${ACTION}" = "Destroy" ]; then
+            echo "Terraform-managed sandbox infrastructure destroyed."
+            echo "HCP Terraform workspace preserved."
+            echo "Personal AWS account was not authenticated."
+            echo "Route 53 was not modified."
+            echo "langnation.com was not modified."
+
+          elif [ "${ACTION}" = "Rebuild" ]; then
+            echo "Terraform infrastructure rebuild completed."
+            echo "Application deployment will run next."
+            echo "Persistent DNS synchronization will run afterwards."
+          fi
+
           echo "========================================"
+
+
+  # ============================================================
+  # 3. REBUILD ONLY — RESTORE APPLICATION
+  # ============================================================
+  deploy-application:
+    name: Restore LangNation Application
+
+    needs:
+      - terraform
+
+    if: ${{ inputs.action == 'Rebuild' && needs.terraform.result == 'success' }}
+
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+
+
+  # ============================================================
+  # 4. REBUILD ONLY — SYNC DNS + VERIFY PUBLIC ENDPOINT
+  # ============================================================
+  sync-dns:
+    name: Sync Persistent Route 53 DNS
+
+    needs:
+      - terraform
+      - deploy-application
+
+    if: >-
+      ${{ inputs.action == 'Rebuild' &&
+          needs.terraform.result == 'success' &&
+          needs.deploy-application.result == 'success' }}
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+
+      # --------------------------------------------------------
+      # Read new CloudFront hostname from HCP state
+      # --------------------------------------------------------
+      - name: Read CloudFront domain from HCP Terraform
+        id: cloudfront
+        shell: bash
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+          WORKSPACE_ID: ${{ needs.terraform.outputs.workspace_id }}
+        run: |
+          set -euo pipefail
+
+          echo "Reading CloudFront domain from HCP Terraform..."
+
+          for attempt in {1..30}; do
+
+            HTTP_CODE=$(curl \
+              --silent \
+              --show-error \
+              --output hcp-outputs.json \
+              --write-out "%{http_code}" \
+              --header "Authorization: Bearer ${TFC_TOKEN}" \
+              --header "Content-Type: application/vnd.api+json" \
+              "https://app.terraform.io/api/v2/workspaces/${WORKSPACE_ID}/current-state-version-outputs")
+
+            if [ "${HTTP_CODE}" = "200" ]; then
+
+              CLOUDFRONT_DOMAIN=$(jq -r '
+                .data[]
+                | select(.attributes.name == "cloudfront_domain_name")
+                | .attributes.value
+              ' hcp-outputs.json | head -n 1)
+
+              if [ -n "${CLOUDFRONT_DOMAIN}" ] && \
+                 [ "${CLOUDFRONT_DOMAIN}" != "null" ]; then
+
+                echo "CloudFront domain: ${CLOUDFRONT_DOMAIN}"
+                echo "cloudfront_domain=${CLOUDFRONT_DOMAIN}" >> "$GITHUB_OUTPUT"
+                exit 0
+
+              fi
+            fi
+
+            echo "CloudFront output not ready yet."
+            echo "Attempt ${attempt}/30..."
+            sleep 10
+
+          done
+
+          echo "Could not obtain cloudfront_domain_name from HCP Terraform."
+          exit 1
+
+
+      # --------------------------------------------------------
+      # Authenticate to persistent personal Route 53
+      # --------------------------------------------------------
+      - name: Configure Personal AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.PERSONAL_AWS_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: langnation-route53-sync
+
+
+      # --------------------------------------------------------
+      # Point cloud.namienterprises.in to new CloudFront
+      # --------------------------------------------------------
+      - name: Update cloud.namienterprises.in
+        id: route53
+        shell: bash
+        env:
+          ROUTE53_ZONE_ID: ${{ vars.ROUTE53_ZONE_ID }}
+          CLOUDFRONT_DOMAIN: ${{ steps.cloudfront.outputs.cloudfront_domain }}
+        run: |
+          set -euo pipefail
+
+          echo "Updating persistent DNS..."
+          echo "cloud.namienterprises.in -> ${CLOUDFRONT_DOMAIN}"
+
+          cat > change-batch.json <<EOF
+          {
+            "Comment": "LangNation CloudFront DNS synchronization",
+            "Changes": [
+              {
+                "Action": "UPSERT",
+                "ResourceRecordSet": {
+                  "Name": "cloud.namienterprises.in.",
+                  "Type": "CNAME",
+                  "TTL": 300,
+                  "ResourceRecords": [
+                    {
+                      "Value": "${CLOUDFRONT_DOMAIN}"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+          EOF
+
+          CHANGE_ID=$(aws route53 change-resource-record-sets \
+            --hosted-zone-id "${ROUTE53_ZONE_ID}" \
+            --change-batch file://change-batch.json \
+            --query "ChangeInfo.Id" \
+            --output text)
+
+          if [ -z "${CHANGE_ID}" ] || [ "${CHANGE_ID}" = "None" ]; then
+            echo "Route 53 change was not created."
+            exit 1
+          fi
+
+          echo "Route 53 change ID: ${CHANGE_ID}"
+          echo "Waiting for DNS change to reach INSYNC..."
+
+          aws route53 wait resource-record-sets-changed \
+            --id "${CHANGE_ID}"
+
+          echo "Route 53 DNS synchronization completed."
+
+
+      # --------------------------------------------------------
+      # Verify complete public application recovery
+      # --------------------------------------------------------
+      - name: Verify public HTTPS health
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          HEALTH_URL="https://cloud.namienterprises.in/health"
+
+          echo "Waiting for public DNS and CloudFront..."
+          echo "${HEALTH_URL}"
+
+          for attempt in {1..36}; do
+
+            echo "Health check attempt ${attempt}/36..."
+
+            if RESPONSE=$(curl \
+              --silent \
+              --show-error \
+              --fail \
+              --connect-timeout 5 \
+              --max-time 10 \
+              "${HEALTH_URL}"); then
+
+              echo "Response: ${RESPONSE}"
+
+              if echo "${RESPONSE}" | jq -e '.status == "healthy"' > /dev/null; then
+
+                echo "========================================"
+                echo "LANGNATION FULL RECOVERY COMPLETE"
+                echo "========================================"
+                echo "Terraform infrastructure: READY"
+                echo "Application deployment:    READY"
+                echo "Persistent Route 53 DNS:    READY"
+                echo "Public HTTPS endpoint:      HEALTHY"
+                echo "========================================"
+
+                exit 0
+              fi
+            fi
+
+            sleep 10
+
+          done
+
+          echo "Public HTTPS endpoint did not become healthy."
+          exit 1
