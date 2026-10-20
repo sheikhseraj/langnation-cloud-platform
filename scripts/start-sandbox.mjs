@@ -1,11 +1,16 @@
 #!/usr/bin/env node
-// Signs in to CloudLabs and starts the AWS sandbox lab if it is not already running.
+// Signs in to CloudLabs and starts or stops the AWS sandbox lab.
+//
+//   Start: sign in, open the lab, start it if it is not already running.
+//   Stop:  sign in, open the lab, stop it if it is running, then log out.
 //
 // Usage:
-//   node scripts/start-sandbox.mjs            start the lab (needs credentials)
+//   node scripts/start-sandbox.mjs            run CLOUDLABS_ACTION (default Start)
+//   node scripts/start-sandbox.mjs --stop     stop the lab and log out
 //   node scripts/start-sandbox.mjs --check    verify the login selectors only, no sign-in
 //
 // Environment:
+//   CLOUDLABS_ACTION     "Start" or "Stop" (default "Start")
 //   CLOUDLABS_LOGIN_ID   required unless --check
 //   CLOUDLABS_PASSWORD   required unless --check
 //   CLOUDLABS_LAB_NAME   lab card to open (default "AWS Account Lab")
@@ -21,6 +26,10 @@ const HOME_URL =
   "https://cloudlabs.nuvepro.com/company/Neuefische/home";
 const LAB_NAME = process.env.CLOUDLABS_LAB_NAME || "AWS Account Lab";
 const CHECK_ONLY = process.argv.includes("--check");
+// Scheduled runs pass no action, so Start is the default.
+const ACTION = (
+  process.argv.includes("--stop") ? "stop" : process.env.CLOUDLABS_ACTION || "start"
+).toLowerCase();
 const DEBUG = process.env.CLOUDLABS_DEBUG === "1";
 const HEADFUL = process.env.CLOUDLABS_HEADFUL === "1";
 
@@ -64,7 +73,10 @@ async function firstVisible(locator, timeoutMs = 0) {
   const deadline = Date.now() + timeoutMs;
   do {
     for (const candidate of await locator.all()) {
-      if (await candidate.isVisible().catch(() => false)) return candidate;
+      const usable =
+        (await candidate.isVisible().catch(() => false)) &&
+        (await candidate.isEnabled().catch(() => true));
+      if (usable) return candidate;
     }
     if (Date.now() < deadline) await new Promise((r) => setTimeout(r, 1000));
   } while (Date.now() < deadline);
@@ -162,50 +174,95 @@ async function openLab(page) {
   await shoot(page, "lab-page");
 }
 
-async function startLab(page) {
-  const stop = await firstVisible(control(page, "Stop"), 30_000);
-  if (stop) {
-    log("Lab is already running (Stop is showing). Nothing to do.");
-    return;
-  }
-
-  const start = await firstVisible(control(page, "Start"), 30_000);
-  if (!start) {
-    await describePage(page);
-    await shoot(page, "no-start-button");
-    throw new Error("Neither Start nor Stop is visible on the lab page.");
-  }
-
-  await start.click();
-  log("Clicked Start, waiting for the lab to come up...");
-
-  // Some tenants pop a confirmation before provisioning begins.
+// Some tenants pop a confirmation before carrying the action out.
+async function confirmDialog(page, action) {
   const confirm = await firstVisible(
     control(page, "Yes").or(control(page, "Confirm")).or(control(page, "OK")),
     5_000,
   );
   if (confirm) {
     await confirm.click();
-    log("Confirmed the start dialog.");
+    log(`Confirmed the ${action} dialog.`);
+  }
+}
+
+// Start and Stop are symmetrical: the portal swaps one button for the other, so
+// seeing the opposite control means the lab is already in the state we want.
+async function runAction(page, { click, settled, state, waiting }) {
+  const already = await firstVisible(control(page, settled), 15_000);
+  if (already) {
+    log(`Lab is already ${state} ("${settled}" is showing). Nothing to do.`);
+    return;
   }
 
-  const running = await firstVisible(control(page, "Stop"), 600_000);
-  if (!running) {
+  const target = await firstVisible(control(page, click), 15_000);
+  if (!target) {
     await describePage(page);
-    await shoot(page, "start-timeout");
-    throw new Error("Start was clicked but the lab never reported as running.");
+    await shoot(page, "no-action-button");
+    throw new Error("Neither Start nor Stop is usable on the lab page.");
   }
-  log("AWS sandbox is running.");
-  await shoot(page, "running");
+
+  await target.click();
+  log(`Clicked ${click}, ${waiting}`);
+  await confirmDialog(page, click.toLowerCase());
+
+  const done = await firstVisible(control(page, settled), 600_000);
+  if (!done) {
+    await describePage(page);
+    await shoot(page, `${click.toLowerCase()}-timeout`);
+    throw new Error(`${click} was clicked but the lab never reported as ${state}.`);
+  }
+  log(`AWS sandbox is ${state}.`);
+  await shoot(page, state);
+}
+
+const startLab = (page) =>
+  runAction(page, {
+    click: "Start",
+    settled: "Stop",
+    state: "running",
+    waiting: "waiting for the lab to come up...",
+  });
+
+const stopLab = (page) =>
+  runAction(page, {
+    click: "Stop",
+    settled: "Start",
+    state: "stopped",
+    waiting: "waiting for the lab to shut down...",
+  });
+
+// Best effort: the runner is thrown away after the job, so a missing logout
+// control is not worth failing an otherwise successful stop.
+async function logOut(page) {
+  const direct = await firstVisible(
+    control(page, "Logout").or(control(page, "Log out")).or(control(page, "Sign out")),
+    5_000,
+  );
+
+  if (direct) {
+    await direct.click();
+    await page.waitForLoadState("networkidle", { timeout: 30_000 }).catch(() => {});
+    log("Logged out.");
+    return;
+  }
+
+  // List what was on offer so the real label can be added above next time.
+  log("No logout control found; closing the browser ends the session anyway.");
+  await describePage(page);
 }
 
 async function main() {
   if (!CHECK_ONLY) {
+    if (ACTION !== "start" && ACTION !== "stop") {
+      throw new Error(`CLOUDLABS_ACTION must be "Start" or "Stop", got "${ACTION}".`);
+    }
     for (const key of ["CLOUDLABS_LOGIN_ID", "CLOUDLABS_PASSWORD"]) {
       if (!process.env[key]) {
         throw new Error(`Missing required environment variable ${key}.`);
       }
     }
+    log(`Action: ${ACTION}`);
   }
 
   const browser = await chromium.launch({ headless: !HEADFUL });
@@ -226,7 +283,13 @@ async function main() {
 
     await signIn(page);
     await openLab(page);
-    await startLab(page);
+
+    if (ACTION === "stop") {
+      await stopLab(page);
+      await logOut(page);
+    } else {
+      await startLab(page);
+    }
   } finally {
     await browser.close();
   }
