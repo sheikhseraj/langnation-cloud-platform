@@ -42,13 +42,40 @@ module "container" {
   # allow ECR cleanup during destroy
   force_delete = true
 
+  # ==========================================================
+  # Networking
+  # ==========================================================
+
   private_app_subnet_ids = module.networking.private_app_subnet_ids
   ecs_security_group_id  = module.security.ecs_security_group_id
 
   target_group_arn = module.load_balancing.target_group_arn
 
+
+  # ==========================================================
+  # Authentication
+  # ==========================================================
+
   cognito_user_pool_id = module.authentication.user_pool_id
   cognito_client_id    = module.authentication.user_pool_client_id
+
+
+  # ==========================================================
+  # Milestone 9 - Lina AI / RAG Runtime
+  # ==========================================================
+
+  # Amazon Bedrock model used to create query embeddings.
+  bedrock_embedding_model_id = "amazon.titan-embed-text-v2:0"
+
+  # Reuse the S3 Vector infrastructure created in Milestone 8.
+  vector_bucket_name = module.rag_knowledge.vector_bucket_name
+  vector_index_name  = module.rag_knowledge.vector_index_name
+  vector_index_arn   = module.rag_knowledge.vector_index_arn
+
+
+  # ==========================================================
+  # ECS Capacity
+  # ==========================================================
 
   # Development environment runs two ECS tasks
   desired_count = 2
@@ -56,8 +83,14 @@ module "container" {
   # Temporary Controlled Auto Scaling Test
   # autoscaling_cpu_target = 1
 
+
+  # ==========================================================
+  # Dependencies
+  # ==========================================================
+
   depends_on = [
-    module.load_balancing
+    module.load_balancing,
+    module.rag_knowledge
   ]
 }
 

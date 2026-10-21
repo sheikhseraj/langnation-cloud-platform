@@ -1,3 +1,7 @@
+# ============================================================
+# General Project Configuration
+# ============================================================
+
 variable "project_name" {
   description = "Project name used for resource naming"
   type        = string
@@ -12,6 +16,11 @@ variable "aws_region" {
   description = "AWS region where container resources are deployed"
   type        = string
 }
+
+
+# ============================================================
+# ECS Container Configuration
+# ============================================================
 
 variable "container_port" {
   description = "Port exposed by the application container"
@@ -37,6 +46,17 @@ variable "image_tag" {
   default     = "dev"
 }
 
+variable "desired_count" {
+  description = "Number of ECS Fargate tasks the service should maintain"
+  type        = number
+  default     = 1
+}
+
+
+# ============================================================
+# ECS Networking
+# ============================================================
+
 variable "private_app_subnet_ids" {
   description = "IDs of the private application subnets used by ECS Fargate"
   type        = list(string)
@@ -47,16 +67,15 @@ variable "ecs_security_group_id" {
   type        = string
 }
 
-variable "desired_count" {
-  description = "Number of ECS Fargate tasks the service should maintain"
-  type        = number
-  default     = 1
-}
-
 variable "target_group_arn" {
   description = "ARN of the ALB target group used by the ECS service"
   type        = string
 }
+
+
+# ============================================================
+# ECS Auto Scaling
+# ============================================================
 
 variable "autoscaling_min_capacity" {
   description = "Minimum number of ECS tasks maintained by Service Auto Scaling"
@@ -76,7 +95,11 @@ variable "autoscaling_cpu_target" {
   default     = 50
 }
 
-# Cognito authentication configuration
+
+# ============================================================
+# Cognito Authentication
+# ============================================================
+
 variable "cognito_user_pool_id" {
   description = "ID of the Cognito User Pool used by the application"
   type        = string
@@ -87,9 +110,50 @@ variable "cognito_client_id" {
   type        = string
 }
 
-# ECR repository configuration
+
+# ============================================================
+# ECR Repository Configuration
+# ============================================================
+
 variable "force_delete" {
   description = "Allow Terraform to delete the ECR repository even when it contains images"
   type        = bool
   default     = false
+}
+
+
+# ============================================================
+# Milestone 9 - Lina AI / RAG Runtime
+# ============================================================
+
+# Titan Text Embeddings V2 model used to convert
+# student questions into 1024-dimensional vectors.
+variable "bedrock_embedding_model_id" {
+  description = "Amazon Bedrock embedding model used by Lina for semantic search"
+  type        = string
+  default     = "amazon.titan-embed-text-v2:0"
+}
+
+
+# Name of the S3 Vector bucket created in Milestone 8.
+variable "vector_bucket_name" {
+  description = "Name of the Amazon S3 Vector bucket containing LangNation knowledge vectors"
+  type        = string
+}
+
+
+# Name of the vector index inside the S3 Vector bucket.
+variable "vector_index_name" {
+  description = "Name of the Amazon S3 Vector index queried by Lina"
+  type        = string
+}
+
+
+# ARN of the vector index.
+#
+# Used by the ECS task IAM policy so Lina receives
+# least-privilege access only to the LangNation knowledge index.
+variable "vector_index_arn" {
+  description = "ARN of the Amazon S3 Vector index queried by the Lina RAG runtime"
+  type        = string
 }
