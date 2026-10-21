@@ -63,3 +63,9 @@ output "ecs_service_id" {
   description = "ID of the ECS Fargate application service"
   value       = aws_ecs_service.app.id
 }
+
+# ECS application task role output
+output "ecs_task_role_arn" {
+  description = "ARN of the ECS application task IAM role"
+  value       = aws_iam_role.ecs_task.arn
+}

@@ -128,10 +128,17 @@ module "cicd" {
   github_repository_id = var.github_repository_id
   github_branch        = var.github_branch
 
+  # Application deployment
   ecr_repository_arn          = module.container.ecr_repository_arn
   ecs_cluster_arn             = module.container.ecs_cluster_arn
   ecs_service_name            = module.container.ecs_service_name
+  ecs_task_role_arn           = module.container.ecs_task_role_arn
   ecs_task_execution_role_arn = module.container.ecs_task_execution_role_arn
+
+  # Milestone 9 - Reproducible database restore
+  db_restore_ecr_repository_arn  = module.database_restore.ecr_repository_arn
+  db_restore_task_definition_arn = module.database_restore.task_definition_arn
+  db_restore_execution_role_arn  = module.database_restore.execution_role_arn
 }
 
 # ============================================================
@@ -146,6 +153,42 @@ module "database" {
 
   private_db_subnet_ids = module.networking.private_db_subnet_ids
   db_security_group_id  = module.security.db_security_group_id
+}
+
+# ============================================================
+# Milestone 9 - Reproducible Database Restore
+# ============================================================
+#
+# Creates the dedicated ECR repository, CloudWatch logs,
+# execution role, and one-off ECS task definition used to
+# restore the sanitized LangNation demo database after each
+# sandbox rebuild.
+#
+# No AWS resource IDs are hard-coded.
+# ============================================================
+
+module "database_restore" {
+  source = "../../modules/database_restore"
+
+  project_name = var.project_name
+  environment  = var.environment
+  aws_region   = var.aws_region
+
+  # Current RDS values are discovered dynamically from
+  # the database module after every sandbox rebuild.
+  db_endpoint          = module.database.db_endpoint
+  db_port              = module.database.db_port
+  db_name              = module.database.db_name
+  db_master_secret_arn = module.database.db_master_secret_arn
+
+  expected_table_count = 58
+
+  # Training sandbox resources are disposable.
+  force_delete = true
+
+  depends_on = [
+    module.database
+  ]
 }
 
 # ============================================================

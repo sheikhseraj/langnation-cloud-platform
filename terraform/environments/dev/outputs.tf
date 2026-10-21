@@ -182,12 +182,12 @@ output "db_subnet_group_arn" {
 
 # Exposing the RDS database instance outputs from the database module
 output "db_endpoint" {
-  description = "RDS MySQL endpoint"
+  description = "RDS MariaDB endpoint"
   value       = module.database.db_endpoint
 }
 
 output "db_port" {
-  description = "RDS MySQL port"
+  description = "RDS MariaDB port"
   value       = module.database.db_port
 }
 
@@ -342,4 +342,61 @@ output "rag_vector_index_name" {
 output "rag_vector_index_arn" {
   description = "ARN of the LangNation RAG vector index"
   value       = module.rag_knowledge.vector_index_arn
+}
+
+# ============================================================
+# Miscellaneous outputs
+# ============================================================
+output "aws_region" {
+  description = "AWS region used by the development environment"
+  value       = var.aws_region
+}
+
+output "ecs_task_role_arn" {
+  description = "ARN of the ECS application task IAM role"
+  value       = module.container.ecs_task_role_arn
+}
+
+output "db_name" {
+  description = "Name of the MariaDB application database"
+  value       = module.database.db_name
+}
+
+# ============================================================
+# Milestone 9 - Database Restore Outputs
+# ============================================================
+
+output "db_restore_ecr_repository_name" {
+  description = "Name of the database restore ECR repository"
+  value       = module.database_restore.ecr_repository_name
+}
+
+output "db_restore_ecr_repository_url" {
+  description = "URL of the database restore ECR repository"
+  value       = module.database_restore.ecr_repository_url
+}
+
+output "db_restore_ecr_repository_arn" {
+  description = "ARN of the database restore ECR repository"
+  value       = module.database_restore.ecr_repository_arn
+}
+
+output "db_restore_task_definition_arn" {
+  description = "ARN of the database restore ECS task definition"
+  value       = module.database_restore.task_definition_arn
+}
+
+output "db_restore_task_definition_family" {
+  description = "Family name of the database restore ECS task definition"
+  value       = module.database_restore.task_definition_family
+}
+
+output "db_restore_execution_role_arn" {
+  description = "ARN of the database restore ECS task execution role"
+  value       = module.database_restore.execution_role_arn
+}
+
+output "db_restore_log_group_name" {
+  description = "CloudWatch log group used by database restore tasks"
+  value       = module.database_restore.cloudwatch_log_group_name
 }

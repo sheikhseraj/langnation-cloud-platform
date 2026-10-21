@@ -29,3 +29,9 @@ output "db_master_secret_arn" {
   description = "ARN of the AWS-managed RDS master credential secret"
   value       = aws_db_instance.main.master_user_secret[0].secret_arn
 }
+
+# Outputs for the RDS database name
+output "db_name" {
+  description = "Name of the MariaDB application database"
+  value       = aws_db_instance.main.db_name
+}

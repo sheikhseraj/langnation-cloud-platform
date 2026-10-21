@@ -498,7 +498,7 @@ jobs:
                 type: "runs",
                 attributes: {
                   message:
-                    "Automated morning LangNation M1-M8 sandbox rebuild",
+                    "Automated morning LangNation M1-M9 sandbox rebuild",
                   "auto-apply": true,
                   "is-destroy": false
                 },
@@ -636,7 +636,7 @@ jobs:
           echo "========================================"
           echo "LANGNATION TERRAFORM RECOVERY"
           echo "========================================"
-          echo "M1-M8 infrastructure: READY"
+          echo "M1-M9 infrastructure: READY"
           echo "Environment:            dev"
           echo "Application deploy:     NEXT"
           echo "Route 53 sync:          AFTER DEPLOY"
@@ -644,15 +644,390 @@ jobs:
 
 
   # ============================================================
-  # 3. RESTORE LANGNATION APPLICATION
+  # 3. RESTORE SANITIZED LANGNATION DATABASE
+  # ============================================================
+  restore-database:
+    name: Restore Sanitized LangNation Database
+
+    needs:
+      - terraform-rebuild
+
+    if: needs.terraform-rebuild.result == 'success'
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+
+    steps:
+
+      # --------------------------------------------------------
+      # Checkout repository
+      #
+      # Required because the sanitized SQL seed and restore
+      # Dockerfile are stored under database/.
+      # --------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+
+      # --------------------------------------------------------
+      # Read fresh restore infrastructure from HCP Terraform.
+      #
+      # The training sandbox recreates AWS resources, so no
+      # cluster ARN/name, subnet ID, security-group ID, ECR URL
+      # or task-definition revision is hard-coded here.
+      # --------------------------------------------------------
+      - name: Read database restore outputs from HCP Terraform
+        id: restore-outputs
+        shell: bash
+
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+          WORKSPACE_ID: ${{ needs.terraform-rebuild.outputs.workspace_id }}
+
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "READING DATABASE RESTORE INFRASTRUCTURE"
+          echo "========================================"
+
+          for attempt in {1..30}; do
+
+            HTTP_CODE=$(curl \
+              --silent \
+              --show-error \
+              --output hcp-outputs.json \
+              --write-out "%{http_code}" \
+              --header "Authorization: Bearer ${TFC_TOKEN}" \
+              --header "Content-Type: application/vnd.api+json" \
+              "https://app.terraform.io/api/v2/workspaces/${WORKSPACE_ID}/current-state-version-outputs")
+
+            if [ "${HTTP_CODE}" = "200" ]; then
+
+              AWS_REGION=$(jq -r '
+                .data[]
+                | select(.attributes.name == "aws_region")
+                | .attributes.value
+              ' hcp-outputs.json | head -n 1)
+
+              RESTORE_ECR_URL=$(jq -r '
+                .data[]
+                | select(.attributes.name == "db_restore_ecr_repository_url")
+                | .attributes.value
+              ' hcp-outputs.json | head -n 1)
+
+              RESTORE_TASK_DEFINITION=$(jq -r '
+                .data[]
+                | select(.attributes.name == "db_restore_task_definition_arn")
+                | .attributes.value
+              ' hcp-outputs.json | head -n 1)
+
+              ECS_CLUSTER=$(jq -r '
+                .data[]
+                | select(.attributes.name == "ecs_cluster_name")
+                | .attributes.value
+              ' hcp-outputs.json | head -n 1)
+
+              ECS_SECURITY_GROUP=$(jq -r '
+                .data[]
+                | select(.attributes.name == "ecs_security_group_id")
+                | .attributes.value
+              ' hcp-outputs.json | head -n 1)
+
+              PRIVATE_APP_SUBNETS_JSON=$(jq -c '
+                .data[]
+                | select(.attributes.name == "private_app_subnet_ids")
+                | .attributes.value
+              ' hcp-outputs.json | head -n 1)
+
+              if [ -n "${AWS_REGION}" ] &&
+                 [ "${AWS_REGION}" != "null" ] &&
+                 [ -n "${RESTORE_ECR_URL}" ] &&
+                 [ "${RESTORE_ECR_URL}" != "null" ] &&
+                 [ -n "${RESTORE_TASK_DEFINITION}" ] &&
+                 [ "${RESTORE_TASK_DEFINITION}" != "null" ] &&
+                 [ -n "${ECS_CLUSTER}" ] &&
+                 [ "${ECS_CLUSTER}" != "null" ] &&
+                 [ -n "${ECS_SECURITY_GROUP}" ] &&
+                 [ "${ECS_SECURITY_GROUP}" != "null" ] &&
+                 [ -n "${PRIVATE_APP_SUBNETS_JSON}" ] &&
+                 [ "${PRIVATE_APP_SUBNETS_JSON}" != "null" ]; then
+
+                echo "All database restore outputs are available."
+
+                echo "aws_region=${AWS_REGION}" >> "$GITHUB_OUTPUT"
+                echo "restore_ecr_url=${RESTORE_ECR_URL}" >> "$GITHUB_OUTPUT"
+                echo "restore_task_definition=${RESTORE_TASK_DEFINITION}" >> "$GITHUB_OUTPUT"
+                echo "ecs_cluster=${ECS_CLUSTER}" >> "$GITHUB_OUTPUT"
+                echo "ecs_security_group=${ECS_SECURITY_GROUP}" >> "$GITHUB_OUTPUT"
+                echo "private_app_subnets_json=${PRIVATE_APP_SUBNETS_JSON}" >> "$GITHUB_OUTPUT"
+
+                echo "========================================"
+                echo "RESTORE INFRASTRUCTURE"
+                echo "========================================"
+                echo "AWS region:          ${AWS_REGION}"
+                echo "Restore ECR:         ${RESTORE_ECR_URL}"
+                echo "Restore task:        ${RESTORE_TASK_DEFINITION}"
+                echo "ECS cluster:         ${ECS_CLUSTER}"
+                echo "ECS security group:  ${ECS_SECURITY_GROUP}"
+                echo "Private app subnets: ${PRIVATE_APP_SUBNETS_JSON}"
+                echo "========================================"
+
+                exit 0
+              fi
+            fi
+
+            echo "Database restore outputs are not ready yet."
+            echo "Attempt ${attempt}/30..."
+
+            sleep 10
+
+          done
+
+          echo "Could not obtain required database restore outputs."
+          exit 1
+
+
+      # --------------------------------------------------------
+      # Authenticate to the freshly recreated AWS sandbox.
+      # --------------------------------------------------------
+      - name: Configure AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v6
+
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ steps.restore-outputs.outputs.aws_region }}
+          role-session-name: langnation-database-restore
+
+
+      # --------------------------------------------------------
+      # Authenticate Docker to Amazon ECR.
+      # --------------------------------------------------------
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+
+      # --------------------------------------------------------
+      # Build the restore image.
+      #
+      # Build context:
+      # database/
+      #
+      # Dockerfile:
+      # database/restore/Dockerfile
+      #
+      # Sanitized seed:
+      # database/seed/langnation-capstone-sanitized.sql
+      # --------------------------------------------------------
+      - name: Build database restore image
+        shell: bash
+
+        env:
+          RESTORE_ECR_URL: ${{ steps.restore-outputs.outputs.restore_ecr_url }}
+
+        run: |
+          set -euo pipefail
+
+          IMAGE_URI="${RESTORE_ECR_URL}:latest"
+
+          echo "========================================"
+          echo "BUILDING DATABASE RESTORE IMAGE"
+          echo "========================================"
+          echo "Image: ${IMAGE_URI}"
+          echo "========================================"
+
+          docker build \
+            --file database/restore/Dockerfile \
+            --tag "${IMAGE_URI}" \
+            database
+
+
+      # --------------------------------------------------------
+      # Push the freshly built restore image.
+      # --------------------------------------------------------
+      - name: Push database restore image
+        shell: bash
+
+        env:
+          RESTORE_ECR_URL: ${{ steps.restore-outputs.outputs.restore_ecr_url }}
+
+        run: |
+          set -euo pipefail
+
+          IMAGE_URI="${RESTORE_ECR_URL}:latest"
+
+          echo "Pushing:"
+          echo "${IMAGE_URI}"
+
+          docker push "${IMAGE_URI}"
+
+          echo "Database restore image uploaded successfully."
+
+
+      # --------------------------------------------------------
+      # Launch the one-off Fargate restore task.
+      #
+      # It runs inside the private application subnets and uses
+      # the existing ECS application security group.
+      #
+      # No public IP is assigned.
+      # --------------------------------------------------------
+      - name: Run database restore Fargate task
+        id: restore-task
+        shell: bash
+
+        env:
+          ECS_CLUSTER: ${{ steps.restore-outputs.outputs.ecs_cluster }}
+          RESTORE_TASK_DEFINITION: ${{ steps.restore-outputs.outputs.restore_task_definition }}
+          PRIVATE_APP_SUBNETS_JSON: ${{ steps.restore-outputs.outputs.private_app_subnets_json }}
+          ECS_SECURITY_GROUP: ${{ steps.restore-outputs.outputs.ecs_security_group }}
+
+        run: |
+          set -euo pipefail
+
+          NETWORK_CONFIGURATION=$(jq -cn \
+            --argjson subnets "${PRIVATE_APP_SUBNETS_JSON}" \
+            --arg security_group "${ECS_SECURITY_GROUP}" \
+            '{
+              awsvpcConfiguration: {
+                subnets: $subnets,
+                securityGroups: [$security_group],
+                assignPublicIp: "DISABLED"
+              }
+            }')
+
+          echo "========================================"
+          echo "STARTING DATABASE RESTORE TASK"
+          echo "========================================"
+          echo "Cluster: ${ECS_CLUSTER}"
+          echo "Task:    ${RESTORE_TASK_DEFINITION}"
+          echo "SG:      ${ECS_SECURITY_GROUP}"
+          echo "========================================"
+
+          RUN_RESPONSE=$(aws ecs run-task \
+            --cluster "${ECS_CLUSTER}" \
+            --launch-type FARGATE \
+            --platform-version LATEST \
+            --task-definition "${RESTORE_TASK_DEFINITION}" \
+            --count 1 \
+            --network-configuration "${NETWORK_CONFIGURATION}" \
+            --output json)
+
+          FAILURES=$(echo "${RUN_RESPONSE}" | jq '.failures | length')
+
+          if [ "${FAILURES}" -ne 0 ]; then
+
+            echo "ECS failed to launch the database restore task."
+            echo "${RUN_RESPONSE}" | jq '.failures'
+
+            exit 1
+          fi
+
+          TASK_ARN=$(echo "${RUN_RESPONSE}" \
+            | jq -r '.tasks[0].taskArn // empty')
+
+          if [ -z "${TASK_ARN}" ]; then
+
+            echo "Could not determine database restore task ARN."
+            exit 1
+          fi
+
+          echo "task_arn=${TASK_ARN}" >> "$GITHUB_OUTPUT"
+
+          echo "Database restore task started:"
+          echo "${TASK_ARN}"
+
+
+      # --------------------------------------------------------
+      # Wait for the restore task and verify the exit code.
+      #
+      # restore.sh validates the database itself and exits 0 only
+      # when the expected 58 tables exist.
+      # --------------------------------------------------------
+      - name: Wait for database restore completion
+        shell: bash
+
+        env:
+          ECS_CLUSTER: ${{ steps.restore-outputs.outputs.ecs_cluster }}
+          TASK_ARN: ${{ steps.restore-task.outputs.task_arn }}
+
+        run: |
+          set -euo pipefail
+
+          echo "Waiting for database restore task to finish..."
+
+          aws ecs wait tasks-stopped \
+            --cluster "${ECS_CLUSTER}" \
+            --tasks "${TASK_ARN}"
+
+          TASK_RESULT=$(aws ecs describe-tasks \
+            --cluster "${ECS_CLUSTER}" \
+            --tasks "${TASK_ARN}" \
+            --output json)
+
+          LAST_STATUS=$(echo "${TASK_RESULT}" \
+            | jq -r '.tasks[0].lastStatus // "UNKNOWN"')
+
+          STOP_CODE=$(echo "${TASK_RESULT}" \
+            | jq -r '.tasks[0].stopCode // "UNKNOWN"')
+
+          STOPPED_REASON=$(echo "${TASK_RESULT}" \
+            | jq -r '.tasks[0].stoppedReason // "No stopped reason returned"')
+
+          EXIT_CODE=$(echo "${TASK_RESULT}" \
+            | jq -r '
+                .tasks[0].containers[]
+                | select(.name == "database-restore")
+                | .exitCode // "null"
+              ')
+
+          CONTAINER_REASON=$(echo "${TASK_RESULT}" \
+            | jq -r '
+                .tasks[0].containers[]
+                | select(.name == "database-restore")
+                | .reason // "No container reason returned"
+              ')
+
+          echo "========================================"
+          echo "DATABASE RESTORE RESULT"
+          echo "========================================"
+          echo "Task status:      ${LAST_STATUS}"
+          echo "Stop code:        ${STOP_CODE}"
+          echo "Stopped reason:   ${STOPPED_REASON}"
+          echo "Container reason: ${CONTAINER_REASON}"
+          echo "Exit code:        ${EXIT_CODE}"
+          echo "========================================"
+
+          if [ "${EXIT_CODE}" != "0" ]; then
+
+            echo "Database restore FAILED."
+            exit 1
+          fi
+
+          echo "========================================"
+          echo "DATABASE RESTORE COMPLETE"
+          echo "========================================"
+          echo "Sanitized seed:    RESTORED"
+          echo "Expected tables:   58"
+          echo "Validation:        PASSED"
+          echo "Database status:   READY"
+          echo "========================================"
+
+
+  # ============================================================
+  # 4. RESTORE LANGNATION APPLICATION
   # ============================================================
   deploy-application:
     name: Restore LangNation Application
 
     needs:
       - terraform-rebuild
+      - restore-database
 
-    if: needs.terraform-rebuild.result == 'success'
+    if: |
+      needs.terraform-rebuild.result == 'success' &&
+      needs.restore-database.result == 'success'
 
     uses: ./.github/workflows/deploy.yml
 
@@ -660,17 +1035,19 @@ jobs:
 
 
   # ============================================================
-  # 4. RESTORE PERSISTENT DNS + VERIFY PUBLIC APPLICATION
+  # 5. RESTORE PERSISTENT DNS + VERIFY PUBLIC APPLICATION
   # ============================================================
   sync-dns:
     name: Sync Persistent Route 53 DNS
 
     needs:
       - terraform-rebuild
+      - restore-database
       - deploy-application
 
     if: |
       needs.terraform-rebuild.result == 'success' &&
+      needs.restore-database.result == 'success' &&
       needs.deploy-application.result == 'success'
 
     runs-on: ubuntu-latest
@@ -869,7 +1246,7 @@ jobs:
                 echo "LANGNATION MORNING RECOVERY COMPLETE"
                 echo "========================================"
                 echo "Sandbox:                  READY"
-                echo "Terraform M1-M8:          READY"
+                echo "Terraform M1-M9:          READY"
                 echo "Application deployment:   READY"
                 echo "Persistent Route 53 DNS:  READY"
                 echo "Public HTTPS endpoint:    HEALTHY"
