@@ -1,0 +1,42 @@
+# German A1 — Articles and Nouns
+
+German nouns have grammatical gender.
+
+The definite articles are:
+der for masculine nouns,
+die for feminine nouns,
+das for neuter nouns.
+
+Examples:
+der Mann
+die Frau
+das Kind
+
+The indefinite articles are:
+ein for masculine nouns,
+eine for feminine nouns,
+ein for neuter nouns.
+
+Examples:
+ein Mann
+eine Frau
+ein Kind
+
+German nouns are always written with a capital letter.
+
+Examples:
+Haus
+Auto
+Schule
+Familie
+Sprache
+
+Plural nouns normally use the article die.
+
+Examples:
+die Männer
+die Frauen
+die Kinder
+die Häuser
+
+The article is an important part of a German noun and should normally be learned together with the noun.
