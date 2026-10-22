@@ -62,21 +62,21 @@ Milestone 12 therefore serves as the technical closing milestone of the capstone
 
 The Milestone 12 design sketch should highlight the final resilience model, including two ECS tasks across two Availability Zones, ALB routing and automatic task replacement.
 
-![Milestone 12 design sketch](../architecture/milestones/m12/design-sketch.png)
+![Milestone 12 design sketch](../architecture/milestones/M12/design-sketch.png)
 
 ### Final Milestone Architecture
 
 The final milestone architecture should show the completed production-style platform and the controlled-failure / recovery path.
 
-![Milestone 12 final architecture](../architecture/milestones/m12/milestone-architecture.png)
+![Milestone 12 final architecture](../architecture/milestones/M12/milestone-architecture.png)
 
 ### Platform Design After Milestone 12
 
 This is the final cumulative architecture for the complete capstone.
 
-![Milestone 12 cumulative design sketch](../architecture/milestones/m12/design-sketch-platform.png)
+![Milestone 12 cumulative design sketch](../architecture/milestones/M12/design-sketch-platform.png)
 
-![Platform after Milestone 12](../architecture/milestones/m12/platform-after-m12.png)
+![Platform after Milestone 12](../architecture/milestones/M12/platform-after-m12.png)
 
 A separate final master architecture can later be maintained under:
 
