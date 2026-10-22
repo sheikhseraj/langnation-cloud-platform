@@ -33,8 +33,25 @@ permissions:
 
 jobs:
 
+  # ============================================================
+  # M11 — PRE-DEPLOYMENT QUALITY GATES
+  # ============================================================
+
+  quality-gates:
+    name: Pre-Deployment Quality Gates
+    uses: ./.github/workflows/quality-gates.yml
+
+
+  # ============================================================
+  # BUILD AND DEPLOY
+  # ============================================================
+
   deploy:
     name: Build and Deploy
+
+    needs:
+      - quality-gates
+
     runs-on: ubuntu-latest
     timeout-minutes: 30
 

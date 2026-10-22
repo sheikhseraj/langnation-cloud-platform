@@ -1,0 +1,286 @@
+name: LangNation Quality Gates
+
+on:
+  # Called by deploy.yml before any ECS deployment.
+  workflow_call:
+
+  # Allows us to test this workflow manually.
+  workflow_dispatch:
+
+  # Pull requests must pass quality checks before merge.
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "demo-website/**"
+      - "terraform/**"
+      - ".github/workflows/quality-gates.yml"
+      - ".github/workflows/deploy.yml"
+
+  # Terraform-only pushes do not trigger deploy.yml,
+  # so run quality gates independently for those changes.
+  push:
+    branches:
+      - main
+    paths:
+      - "terraform/**"
+      - ".github/workflows/quality-gates.yml"
+
+
+permissions:
+  contents: read
+
+
+jobs:
+
+  # ============================================================
+  # 1. APPLICATION QUALITY
+  # ============================================================
+
+  application-quality:
+    name: Application Tests & Dependency Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    defaults:
+      run:
+        working-directory: demo-website
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+
+      # --------------------------------------------------------
+      # Match the production Docker runtime.
+      # Dockerfile uses node:20-alpine.
+      # --------------------------------------------------------
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: demo-website/package-lock.json
+
+
+      - name: Show runtime versions
+        run: |
+          node --version
+          npm --version
+
+
+      # --------------------------------------------------------
+      # Reproducible dependency installation.
+      # package-lock.json is authoritative.
+      # --------------------------------------------------------
+
+      - name: Install locked dependencies
+        run: npm ci
+
+
+      # --------------------------------------------------------
+      # Existing LangNation application quality suite.
+      # --------------------------------------------------------
+
+      - name: Run LangNation application checks
+        run: npm run check
+
+
+      # --------------------------------------------------------
+      # Block deployment for HIGH or CRITICAL production
+      # dependency vulnerabilities.
+      # --------------------------------------------------------
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+
+  # ============================================================
+  # 2. TERRAFORM QUALITY
+  # ============================================================
+
+  terraform-quality:
+    name: Terraform Format & Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+
+      # --------------------------------------------------------
+      # Keep CI aligned with the capstone Terraform version.
+      # --------------------------------------------------------
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.16.2"
+
+
+      - name: Show Terraform version
+        run: terraform version
+
+
+      # --------------------------------------------------------
+      # Validate formatting across all Terraform modules.
+      # --------------------------------------------------------
+
+      - name: Check Terraform formatting
+        run: terraform fmt -check -recursive terraform
+
+
+      # --------------------------------------------------------
+      # Initialize providers/modules without touching state.
+      # No plan/apply is executed here.
+      # --------------------------------------------------------
+
+      - name: Initialize Terraform for validation
+        run: |
+          terraform \
+            -chdir=terraform/environments/dev \
+            init \
+            -backend=false \
+            -input=false
+
+
+      - name: Validate Terraform configuration
+        run: |
+          terraform \
+            -chdir=terraform/environments/dev \
+            validate
+
+
+  # ============================================================
+  # 3. CONTAINER QUALITY
+  # ============================================================
+
+  container-quality:
+    name: Container Build, Smoke Test & Security
+    needs:
+      - application-quality
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+
+      # --------------------------------------------------------
+      # Prove the production Dockerfile actually builds.
+      # --------------------------------------------------------
+
+      - name: Build LangNation container
+        run: |
+          docker build \
+            --tag langnation-quality:${GITHUB_SHA} \
+            demo-website
+
+
+      # --------------------------------------------------------
+      # Start the image locally and verify its basic health
+      # endpoint before it is ever pushed to ECR.
+      # --------------------------------------------------------
+
+      - name: Run container smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker run \
+            --detach \
+            --name langnation-quality-test \
+            --publish 3000:3000 \
+            langnation-quality:${GITHUB_SHA}
+
+          cleanup() {
+            docker logs langnation-quality-test || true
+            docker rm --force langnation-quality-test || true
+          }
+
+          trap cleanup EXIT
+
+          echo "Waiting for container health endpoint..."
+
+          for attempt in {1..30}; do
+
+            if RESPONSE=$(curl \
+              --silent \
+              --show-error \
+              --fail \
+              http://127.0.0.1:3000/health); then
+
+              echo "${RESPONSE}"
+
+              if echo "${RESPONSE}" \
+                | jq -e '.status == "healthy"' \
+                > /dev/null; then
+
+                echo "Container smoke test passed."
+                exit 0
+              fi
+
+            fi
+
+            sleep 2
+          done
+
+          echo "Container did not become healthy."
+          exit 1
+
+
+      # --------------------------------------------------------
+      # Container vulnerability gate.
+      #
+      # CRITICAL vulnerabilities block deployment.
+      # HIGH vulnerabilities remain visible in scan output.
+      # --------------------------------------------------------
+
+      - name: Scan container for critical vulnerabilities
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: "langnation-quality:${{ github.sha }}"
+          format: "table"
+          severity: "CRITICAL"
+          ignore-unfixed: true
+          exit-code: "1"
+
+
+  # ============================================================
+  # 4. FINAL QUALITY GATE
+  # ============================================================
+
+  quality-gate:
+    name: Quality Gate Passed
+
+    needs:
+      - application-quality
+      - terraform-quality
+      - container-quality
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Confirm release eligibility
+        run: |
+          echo "========================================"
+          echo "LANGNATION QUALITY GATES PASSED"
+          echo "========================================"
+          echo "Application tests:     PASS"
+          echo "Dependency audit:      PASS"
+          echo "Terraform formatting:  PASS"
+          echo "Terraform validation:  PASS"
+          echo "Docker build:           PASS"
+          echo "Container smoke test:  PASS"
+          echo "Critical image scan:   PASS"
+          echo "========================================"
+          echo "Release is eligible for deployment."
+          echo "========================================"
