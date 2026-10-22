@@ -488,3 +488,31 @@ module "monitoring" {
 
   cloudfront_distribution_id = module.edge.cloudfront_distribution_id
 }
+
+# ============================================================
+# Milestone 10
+# Governance & Audit
+# ============================================================
+
+module "governance" {
+
+  source = "../../modules/governance"
+
+  project_name = var.project_name
+  environment  = var.environment
+  aws_region   = var.aws_region
+
+  # AWS identity is discovered dynamically.
+  aws_account_id = data.aws_caller_identity.current.account_id
+
+
+  # ----------------------------------------------------------
+  # Training Sandbox Retention
+  # ----------------------------------------------------------
+
+  log_retention_days = 30
+
+  # The training sandbox is disposable.
+  # Production audit storage should normally be retained.
+  force_destroy = true
+}

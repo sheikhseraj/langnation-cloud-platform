@@ -414,3 +414,22 @@ output "monitoring_alarm_names" {
   description = "CloudWatch operational alarm names"
   value       = module.monitoring.alarm_names
 }
+
+# ============================================================
+# Milestone 10 - Governance Outputs
+# ============================================================
+
+output "cloudtrail_name" {
+  description = "CloudTrail audit trail name"
+  value       = module.governance.trail_name
+}
+
+output "cloudtrail_arn" {
+  description = "CloudTrail audit trail ARN"
+  value       = module.governance.trail_arn
+}
+
+output "cloudtrail_audit_bucket_name" {
+  description = "S3 bucket containing CloudTrail audit logs"
+  value       = module.governance.audit_bucket_name
+}
