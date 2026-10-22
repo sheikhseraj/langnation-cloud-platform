@@ -53,14 +53,20 @@ jobs:
 
 
       # --------------------------------------------------------
-      # Match the production Docker runtime.
-      # Dockerfile uses node:20-alpine.
+      # CI test runtime.
+      #
+      # Some LangNation test fixtures use the built-in
+      # node:sqlite module, so the quality suite runs on
+      # Node.js 24.
+      #
+      # The production Docker image remains node:20-alpine
+      # and is validated separately by the container smoke test.
       # --------------------------------------------------------
 
-      - name: Set up Node.js 20
+      - name: Set up Node.js 24
         uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
           cache: npm
           cache-dependency-path: demo-website/package-lock.json
 

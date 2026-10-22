@@ -93,7 +93,7 @@ resource "aws_db_instance" "main" {
   # ----------------------------------------------------------
 
   backup_retention_period = 7
-  copy_tags_to_snapshot    = true
+  copy_tags_to_snapshot   = true
 
   # ----------------------------------------------------------
   # Maintenance
