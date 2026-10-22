@@ -66,21 +66,21 @@ Real LangNation Node.js application
 
 The Milestone 9 design sketch should show the real LangNation application connected to MariaDB and the Lina RAG runtime on top of the existing secure platform.
 
-![Milestone 9 design sketch](../architecture/milestones/m09/design-sketch.png)
+![Milestone 9 design sketch](../architecture/milestones/M09/design-sketch.png)
 
 ### Final Milestone Architecture
 
 The final milestone architecture should show the application, database restore path, runtime database connection and Lina retrieval/generation path.
 
-![Milestone 9 final architecture](../architecture/milestones/m09/milestone-architecture.png)
+![Milestone 9 final architecture](../architecture/milestones/M09/milestone-architecture.png)
 
 ### Platform Design After Milestone 9
 
 This cumulative view should show the complete platform through application integration, database recovery and grounded RAG.
 
-![Milestone 9 cumulative design sketch](../architecture/milestones/m09/design-sketch-platform.png)
+![Milestone 9 cumulative design sketch](../architecture/milestones/M09/design-sketch-platform.png)
 
-![Platform after Milestone 9](../architecture/milestones/m09/platform-after-m09.png)
+![Platform after Milestone 9](../architecture/milestones/M09/platform-after-m09.png)
 
 ---
 
