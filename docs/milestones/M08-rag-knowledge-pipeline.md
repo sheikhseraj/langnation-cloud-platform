@@ -83,21 +83,21 @@ Final AI answer generation is introduced in Milestone 9.
 
 The Milestone 8 design sketch should show the ingestion flow from the existing S3/EventBridge/SQS/Lambda pipeline into Bedrock embeddings and S3 Vectors.
 
-![Milestone 8 design sketch](../architecture/milestones/m08/design-sketch.png)
+![Milestone 8 design sketch](../architecture/milestones/M08/design-sketch.png)
 
 ### Final Milestone Architecture
 
 The final milestone architecture should show both the knowledge-ingestion path and semantic-query validation path.
 
-![Milestone 8 final architecture](../architecture/milestones/m08/milestone-architecture.png)
+![Milestone 8 final architecture](../architecture/milestones/M08/milestone-architecture.png)
 
 ### Platform Design After Milestone 8
 
 This cumulative view should show how the RAG knowledge layer extends the existing M1–M7 platform.
 
-![Milestone 8 cumulative design sketch](../architecture/milestones/m08/design-sketch-platform.png)
+![Milestone 8 cumulative design sketch](../architecture/milestones/M08/design-sketch-platform.png)
 
-![Platform after Milestone 8](../architecture/milestones/m08/platform-after-m08.png)
+![Platform after Milestone 8](../architecture/milestones/M08/platform-after-m08.png)
 
 ---
 
