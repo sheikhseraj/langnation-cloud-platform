@@ -64,21 +64,21 @@ This milestone therefore changed CI/CD from deployment automation into controlle
 
 The Milestone 11 design sketch should show the quality-gate workflow positioned before the existing application deployment path.
 
-![Milestone 11 design sketch](../architecture/milestones/m11/design-sketch.png)
+![Milestone 11 design sketch](../architecture/milestones/M11/design-sketch.png)
 
 ### Final Milestone Architecture
 
 The final milestone architecture should show the separate quality-gate jobs, the final gate decision and the downstream ECS deployment.
 
-![Milestone 11 final architecture](../architecture/milestones/m11/milestone-architecture.png)
+![Milestone 11 final architecture](../architecture/milestones/M11/milestone-architecture.png)
 
 ### Platform Design After Milestone 11
 
 This cumulative view should show CI/CD quality enforcement around the complete M1–M10 platform.
 
-![Milestone 11 cumulative design sketch](../architecture/milestones/m11/design-sketch-platform.png)
+![Milestone 11 cumulative design sketch](../architecture/milestones/M11/design-sketch-platform.png)
 
-![Platform after Milestone 11](../architecture/milestones/m11/platform-after-m11.png)
+![Platform after Milestone 11](../architecture/milestones/M11/platform-after-m11.png)
 
 ---
 
