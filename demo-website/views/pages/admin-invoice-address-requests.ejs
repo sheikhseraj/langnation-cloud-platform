@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>"><head><%- include('../partials/admin-head',{adTitle:'Invoice address requests',site}) %></head><body>
+<div class="ad-shell"><%- include('../partials/admin-side',{adCurrent:'payments'}) %><div class="ad-body">
+<%- include('../partials/admin-top',{adTitle:'Invoice address requests',adCrumbs:[{label:'Payments',href:'/admin/payments'},{label:'Address requests'}],adLogout:'/admin/logout'}) %>
+<main class="ad-main">
+<nav class="chips" aria-label="Payment sections"><a class="chip" href="/admin/payments">Payments</a><a class="chip" href="/admin/payments/address-requests" aria-current="page">Invoice address requests</a></nav>
+<p class="muted">Only student-submitted requests appear here. Approving creates a replacement address version; invoice amounts and payment history stay unchanged.</p>
+<% if(problem){ %><p class="notice notice-bad"><%= problem %></p><% } %><% if(done){ %><p class="notice notice-ok"><%= done %></p><% } %>
+<% if(!ready){ %><p class="notice notice-bad">The address request database update is unavailable.</p><% } %>
+<nav class="chips" aria-label="Request status"><% ['pending','approved','rejected'].forEach(k=>{ %><a class="chip" aria-pressed="<%= status===k %>" href="/admin/payments/address-requests?status=<%= k %>"><%= k==='pending'?'Awaiting review':k==='approved'?'Approved':'Declined' %></a><% }); %></nav>
+<% if(!rows.length){ %><p class="sp-empty">No requests in this section.</p><% } %>
+<div class="invoice-request-list"><% rows.forEach(r=>{ %><article class="ad-card">
+ <div class="row" style="justify-content:space-between;flex-wrap:wrap"><h2><%= r.number %> · <%= r.student_name %></h2><span class="pill"><%= r.status %></span></div>
+ <p class="muted"><%= r.student_ref %> · Request #<%= r.id %></p>
+ <div class="invoice-address-comparison">
+  <div class="invoice-address-box"><h3>Current address on invoice</h3><p class="muted"><%= r.current_recipient==='company'?'Company address':'Personal address' %></p><strong><%= r.current_name %></strong><p class="invoice-address-lines"><%= r.current_address||'Address not recorded' %></p></div>
+  <div class="invoice-address-box"><h3>Wanted address on invoice</h3><p class="muted"><%= r.wanted_recipient==='company'?'Company address':'Personal address' %></p><strong><%= r.wanted_name %></strong><p class="invoice-address-lines"><%= r.wanted_address %></p></div>
+ </div>
+ <a class="btn btn-sm" href="/admin/payments/address-requests/<%= r.id %>"><%= r.status==='pending'?'Review request':'View decision' %></a>
+</article><% }); %></div>
+</main></div></div><script src="/js/app.js?v=<%= site.assetVersion %>" defer></script></body></html>

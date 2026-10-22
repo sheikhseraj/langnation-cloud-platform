@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Account requests", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "requests" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Account requests",
+      adCrumbs: [{ label: "Admin" }, { label: "Account requests" }],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (notice) { %>
+        <p class="notice notice-ok"><%= notice %></p>
+      <% } %>
+
+      <%# Without this, an unreachable database looks exactly like having
+          no requests waiting — and somebody's request sits unanswered. %>
+      <% if (!dbOk) { %>
+        <p class="notice notice-bad">
+          The database is unreachable, so no requests can be shown. This is
+          not the same as there being none — nothing here is safe to act on
+          until it is back.
+        </p>
+      <% } %>
+
+      <div class="chips" style="margin-bottom:1.25rem">
+        <% [["pending","Waiting"],["approved","Approved"],["denied","Refused"]].forEach(function (pair) { %>
+          <a class="chip" href="/admin/requests?status=<%= pair[0] %>"
+             aria-pressed="<%= status === pair[0] ? 'true' : 'false' %>">
+            <%= pair[1] %> (<%= counts[pair[0]] || 0 %>)
+          </a>
+        <% }); %>
+      </div>
+
+      <% if (!rows.length) { %>
+        <div class="ad-card">
+          <p class="muted" style="margin:0">
+            <% if (status === "pending") { %>
+              Nothing waiting. New requests appear here and you are emailed when one arrives.
+            <% } else { %>
+              None yet.
+            <% } %>
+          </p>
+        </div>
+      <% } %>
+
+      <% rows.forEach(function (r) { %>
+        <div class="ad-card">
+          <div class="row" style="justify-content:space-between;align-items:flex-start;gap:1rem">
+            <div style="min-width:0">
+              <h3 style="margin:0 0 .2rem;font-size:1.05rem"><%= r.name %></h3>
+              <div class="muted" style="font-size:.86rem">
+                <a href="mailto:<%= r.email %>"><%= r.email %></a>
+                <% if (r.phone) { %> · <%= r.phone %><% } %>
+                <% if (r.country) { %> · <%= r.country %><% } %>
+              </div>
+            </div>
+            <div class="row" style="gap:.4rem;flex:0 0 auto">
+              <span class="pill<%= r.status === 'pending' ? ' pill-live' : '' %>"><%= r.status %></span>
+              <% if (r.spam_score >= 3) { %>
+                <%# Not blocked, but worth a second look before approving. %>
+                <span class="pill" style="color:var(--danger)">spam score <%= r.spam_score %></span>
+              <% } %>
+            </div>
+          </div>
+
+          <div style="margin-top:.9rem;padding-top:.85rem;border-top:1px solid var(--line)">
+            <div class="muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem">
+              Why they want an account
+            </div>
+            <div style="white-space:pre-wrap;font-size:.94rem;line-height:1.6"><%= r.purpose %></div>
+          </div>
+
+          <% if (r.status === "pending") { %>
+            <div class="row" style="gap:1.5rem;margin-top:1.1rem;align-items:flex-start;flex-wrap:wrap">
+              <form method="post" action="/admin/requests/decide">
+                <input type="hidden" name="id" value="<%= r.id %>">
+                <input type="hidden" name="decision" value="approve">
+                <button class="btn btn-sm" type="submit">Approve and invite</button>
+              </form>
+
+              <%# Refusing takes an optional note, which is sent to the
+                  applicant, so it is written for them to read. %>
+              <form method="post" action="/admin/requests/decide" class="row" style="gap:.45rem;flex:1;min-width:260px">
+                <input type="hidden" name="id" value="<%= r.id %>">
+                <input type="hidden" name="decision" value="deny">
+                <input type="text" name="note" maxlength="500" style="flex:1"
+                       placeholder="Optional note — the applicant reads this">
+                <button class="btn btn-sm btn-ghost" type="submit">Refuse</button>
+              </form>
+            </div>
+          <% } else { %>
+            <div class="muted" style="font-size:.84rem;margin-top:.9rem">
+              <%= r.status === "approved" ? "Approved" : "Refused" %>
+              <% if (r.decided_at) { %> on <%= new Date(r.decided_at).toISOString().slice(0,16).replace("T"," ") %><% } %>
+              <% if (r.status === "approved") { %>
+                · <%= r.used_at ? "account created" : "invitation not used yet" %>
+              <% } %>
+              <% if (r.decision_note) { %><br>Note sent: <%= r.decision_note %><% } %>
+            </div>
+          <% } %>
+        </div>
+      <% }); %>
+
+      <p class="muted" style="font-size:.85rem">
+        Approving emails a one-time link to choose a password. No account
+        exists until they use it, and the link expires after two weeks.
+      </p>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

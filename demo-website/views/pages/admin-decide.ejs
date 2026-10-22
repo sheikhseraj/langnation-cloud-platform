@@ -1,0 +1,107 @@
+<%#
+  The page the Approve and Decline buttons in the notification email
+  open.
+
+  The signed token in the URL is the authority, so no password is asked
+  for. Nothing has happened yet when this page loads — the button below
+  is what decides — because mail scanners fetch every link in a message
+  and would otherwise approve accounts on their own.
+
+  No sidebar: whoever follows this link came from an inbox to do one
+  thing, and a navigation they may not be signed in for is only in the
+  way.
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Account request", site: site }) %>
+</head>
+<body>
+
+<header class="ad-top">
+  <a class="brand" href="/" aria-label="LangNation">
+    <%- include("../partials/brand", { sub: "Account request" }) %>
+  </a>
+  <div class="ad-spacer"></div>
+  <a class="btn btn-sm btn-ghost" href="/admin/requests">All requests</a>
+</header>
+
+<main class="ad-main" style="max-width:620px;margin-inline:auto">
+
+  <% if (error) { %>
+    <div class="ad-card">
+      <p class="notice notice-bad" style="margin:0"><%= error %></p>
+    </div>
+  <% } %>
+
+  <% if (typeof done !== "undefined" && done) { %>
+    <div class="ad-card">
+      <p class="notice notice-ok" style="margin:0 0 1rem"><%= done %></p>
+      <a class="btn" href="/admin/requests">See the other requests</a>
+    </div>
+  <% } %>
+
+  <% if (request) { %>
+    <div class="ad-card">
+      <h2><%= request.status === "pending" ? (action === "approve" ? "Approve this request?" : "Decline this request?") : "This request" %></h2>
+
+      <div class="table-scroll">
+        <table>
+          <tbody>
+            <tr><td style="color:var(--muted)">Name</td><td><strong><%= request.name %></strong></td></tr>
+            <tr><td style="color:var(--muted)">Email</td><td><%= request.email %></td></tr>
+            <% if (request.country) { %><tr><td style="color:var(--muted)">Country</td><td><%= request.country %></td></tr><% } %>
+            <% if (request.phone) { %><tr><td style="color:var(--muted)">Phone</td><td><%= request.phone %></td></tr><% } %>
+            <tr><td style="color:var(--muted)">Status</td><td><span class="pill<%= request.status === 'pending' ? ' pill-live' : '' %>"><%= request.status %></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:1.1rem;padding-top:.9rem;border-top:1px solid var(--line)">
+        <div class="muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem">
+          Why they want an account
+        </div>
+        <div style="white-space:pre-wrap;font-size:.95rem;line-height:1.6"><%= request.purpose %></div>
+      </div>
+
+      <% if (request.status !== "pending" && !(typeof done !== "undefined" && done)) { %>
+        <%# Already decided — usually because the link was followed twice. %>
+        <p class="notice" style="margin-top:1.25rem">
+          This has already been <%= request.status === "approved" ? "approved" : "declined" %><% if (request.decided_at) { %>
+          on <%= new Date(request.decided_at).toISOString().slice(0,16).replace("T"," ") %><% } %>.
+          Nothing further has been sent.
+        </p>
+      <% } else if (token) { %>
+        <form method="post" action="/admin/requests/act/<%= encodeURIComponent(token) %>" style="margin-top:1.4rem">
+          <% if (action === "deny") { %>
+            <label class="field">
+              <span>Note for the applicant — optional, and they read it</span>
+              <input type="text" name="note" maxlength="500"
+                     placeholder="For example: we could not match this address to an enrolment.">
+            </label>
+          <% } %>
+
+          <button class="btn" type="submit">
+            <%= action === "approve" ? "Yes, approve and send the invitation" : "Yes, decline and let them know" %>
+          </button>
+          <a class="btn btn-ghost" href="/admin/requests">Cancel</a>
+        </form>
+
+        <p class="muted" style="font-size:.85rem;margin-top:1rem">
+          <% if (action === "approve") { %>
+            They will be emailed a one-time link to choose a password. No
+            account exists until they use it.
+          <% } else { %>
+            They will be emailed a short, polite note with a way to contact
+            the office. The request is kept, so this can be reversed.
+          <% } %>
+        </p>
+      <% } %>
+    </div>
+  <% } %>
+
+</main>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

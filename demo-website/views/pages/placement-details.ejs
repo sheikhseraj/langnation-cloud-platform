@@ -1,0 +1,104 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <p class="eyebrow"><%= track.from %> – <%= track.to %></p>
+    <h1><%= t("placement.detailsTitle") %></h1>
+
+    <%- include("../partials/placement-steps", { step: 2 }) %>
+
+    <p class="lead" style="margin-bottom:1.5rem"><%= t("placement.detailsLead") %></p>
+
+    <% if (errors && Object.keys(errors).length) { %>
+      <p class="notice notice-bad"><%= t("contact.error") %></p>
+    <% } %>
+
+    <form class="form" method="post" action="<%= lp('/placement-test/' + track.id + '/exam') %>" novalidate>
+      <%# Consent is carried forward signed, so the exam cannot be reached
+          without having accepted the terms. %>
+      <input type="hidden" name="consent" value="<%= consentToken %>">
+
+      <div class="hp" aria-hidden="true">
+        <label for="website">Leave this empty</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="form-row form-row-2">
+        <div class="field" <%- errors && errors.name ? 'data-invalid' : "" %>>
+          <label for="name"><%= t("contact.name") %> <span class="req">*</span></label>
+          <input type="text" id="name" name="name" value="<%= values.name || "" %>"
+                 required autocomplete="name" maxlength="120">
+          <% if (errors && errors.name) { %><span class="err"><%= t("contact.required") %></span><% } %>
+        </div>
+        <div class="field" <%- errors && errors.email ? 'data-invalid' : "" %>>
+          <label for="email"><%= t("contact.email") %> <span class="req">*</span></label>
+          <input type="email" id="email" name="email" value="<%= values.email || "" %>"
+                 required autocomplete="email" maxlength="180">
+          <% if (errors && errors.email) { %>
+            <span class="err"><%= errors.email === "invalid" ? t("contact.invalidEmail") : t("contact.required") %></span>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label for="phone_number"><%= t("contact.phone") %></label>
+          <%# Code and number apart, as on the account request form: the
+              code gets chosen rather than typed in one of six formats,
+              and the number field can then refuse anything but digits. %>
+          <div class="row" style="gap:.4rem;align-items:stretch">
+            <select id="phone_cc" name="phone_cc" data-enhance data-search-label="Filter codes…" style="flex:0 0 9.5rem"
+                    aria-label="<%= lang === "de" ? "Ländervorwahl" : "Country code" %>">
+              <option value=""><%= lang === "de" ? "Vorwahl" : "Code" %></option>
+              <% countries.forEach(function (c) { %>
+                <option value="<%= c.dial %>" <%= c.code === "DE" ? "selected" : "" %>><%= c.code %> +<%= c.dial %></option>
+              <% }); %>
+            </select>
+            <input type="tel" id="phone_number" data-digits-only name="phone_number" style="flex:1"
+                   inputmode="numeric" autocomplete="tel-national" maxlength="20"
+                   placeholder="176 1234567">
+          </div>
+          <p class="field-hint"><%= lang === "de" ? "Nur Ziffern." : "Digits only." %></p>
+        </div>
+        <div class="field">
+          <label for="country"><%= t("contact.country") %></label>
+          <select id="country" name="country" data-enhance data-search-label="Type a country…" autocomplete="country-name">
+            <option value=""><%= lang === "de" ? "Land wählen…" : "Select a country…" %></option>
+            <% countries.forEach(function (c) { %>
+              <option value="<%= lang === "de" ? c.de : c.en %>" data-alt="<%= lang === "de" ? c.en : c.de %>"
+                      <%= values.country === (lang === "de" ? c.de : c.en) ? "selected" : "" %>><%= lang === "de" ? c.de : c.en %></option>
+            <% }); %>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="address"><%= t("placement.address") %></label>
+        <textarea id="address" name="address" rows="2" maxlength="300"
+                  autocomplete="street-address"
+                  placeholder="<%= t('placement.addressPlaceholder') %>"><%= values.address || "" %></textarea>
+      </div>
+
+      <div>
+        <button class="btn" type="submit"><%= t("placement.detailsContinue") %> →</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+/* Keep the phone field to digits, as the account request form does.
+   The server strips anything else regardless; this just stops the field
+   accepting characters it will silently discard. */
+(function () {
+  var phone = document.getElementById("phone_number");
+  if (!phone) return;
+  phone.addEventListener("input", function () {
+    var cleaned = phone.value.replace(/[^0-9 ]/g, "");
+    if (cleaned !== phone.value) phone.value = cleaned;
+  });
+})();
+</script>
+
+<%- include("../partials/footer") %>

@@ -1,0 +1,56 @@
+<%- include("../../partials/portal-head", { title: "Forgotten password" }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <%- include("../../partials/login-switch", { current: "student", step: "forgot" }) %>
+    <h1>Forgotten password</h1>
+    <p class="sp-lead">
+      Tell us the address you sign in with and we will email you a link to
+      choose a new password.
+    </p>
+
+    <% if (error) { %>
+      <div class="notice notice-bad" style="margin-top:1.25rem"><%= error %></div>
+    <% } %>
+
+    <%#
+      The same answer whether or not that address has an account.
+      Anything else turns this form into a way of asking whether a given
+      person studies here, which is personal data — and the person who
+      really owns the mailbox finds out by looking in it.
+    %>
+    <% if (notice === "sent") { %>
+      <div class="notice notice-ok" style="margin-top:1.25rem">
+        <div>
+          <strong>Check your email.</strong>
+          If <%= values.email %> has an account with us, a link to choose a new
+          password is on its way. It works once and stops working in an hour.
+          <br><br>
+          Nothing has changed yet, and your current password still works until
+          you use the link.
+        </div>
+      </div>
+      <p class="muted" style="margin-top:1.25rem;font-size:.9rem">
+        Nothing arrived? Check the spam folder, then
+        <a href="/portal/forgot">try again</a> or
+        <a href="/contact">ask the office</a>.
+      </p>
+    <% } else { %>
+      <form class="form" method="post" action="/portal/forgot" style="margin-top:1.5rem">
+        <div class="field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" required autocomplete="email"
+                 maxlength="180" value="<%= values.email || '' %>"
+                 inputmode="email" spellcheck="false" autofocus>
+        </div>
+        <button class="btn btn-block" type="submit">Email me a link</button>
+      </form>
+    <% } %>
+
+    <p class="muted" style="margin-top:1.5rem;font-size:.9rem">
+      Remembered it? <a href="/portal/login">Sign in</a>.
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

@@ -1,0 +1,215 @@
+[
+ {
+  "id": "thueringen-1",
+  "number": 451,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Welches Wappen gehört zum Freistaat Thüringen?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/thueringen-1-1.webp",
+     "w": 196,
+     "h": 270
+    },
+    {
+     "src": "/img/einbuergerungstest/thueringen-1-2.webp",
+     "w": 220,
+     "h": 247
+    },
+    {
+     "src": "/img/einbuergerungstest/thueringen-1-3.webp",
+     "w": 220,
+     "h": 255
+    },
+    {
+     "src": "/img/einbuergerungstest/thueringen-1-4.webp",
+     "w": 233,
+     "h": 251
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ },
+ {
+  "id": "thueringen-2",
+  "number": 452,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Welches ist ein Landkreis in Thüringen?",
+  "answers": [
+   "Ammerland",
+   "Altötting",
+   "Nordfriesland",
+   "Wartburgkreis"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ },
+ {
+  "id": "thueringen-3",
+  "number": 453,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Für wie viele Jahre wird der Landtag in Thüringen gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ },
+ {
+  "id": "thueringen-4",
+  "number": 454,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Ab welchem Alter darf man in Thüringen bei Kommunalwahlen wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ },
+ {
+  "id": "thueringen-5",
+  "number": 455,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Welche Farben hat die Landesflagge von Thüringen?",
+  "answers": [
+   "blau-weiß-rot",
+   "weiß-rot",
+   "grün-weiß-rot",
+   "schwarz-gold"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ },
+ {
+  "id": "thueringen-6",
+  "number": 456,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Wo können Sie sich in Thüringen über politische Themen informieren?",
+  "answers": [
+   "bei den Kirchen",
+   "bei der Verbraucherzentrale",
+   "bei der Landeszentrale für politische Bildung",
+   "beim Ordnungsamt der Gemeinde"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ },
+ {
+  "id": "thueringen-7",
+  "number": 457,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Die Landeshauptstadt von Thüringen heißt …",
+  "answers": [
+   "Eisenach.",
+   "Erfurt.",
+   "Gera.",
+   "Jena."
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ },
+ {
+  "id": "thueringen-8",
+  "number": 458,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Welches Bundesland ist Thüringen?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 1,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/thueringen-8.webp",
+     "w": 722,
+     "h": 604
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ },
+ {
+  "id": "thueringen-9",
+  "number": 459,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef in Thüringen?",
+  "answers": [
+   "Erste Ministerin/Erster Minister",
+   "Premierministerin/Premierminister",
+   "Bürgermeisterin/Bürgermeister",
+   "Ministerpräsidentin/Ministerpräsident"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ },
+ {
+  "id": "thueringen-10",
+  "number": 460,
+  "type": "state",
+  "category": "Thüringen",
+  "question": "Welche Ministerin/welchen Minister hat Thüringen nicht?",
+  "answers": [
+   "Justizministerin/Justizminister",
+   "Außenministerin/Außenminister",
+   "Finanzministerin/Finanzminister",
+   "Innenministerin/Innenminister"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Thüringen"
+ }
+]

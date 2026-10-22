@@ -1,0 +1,78 @@
+<%- include("../../partials/teach-head", { title: "Choose your password", teacher: null }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <p class="eyebrow">Teacher portal</p>
+    <h1>Welcome, <%= invited.name %></h1>
+    <p class="lead">
+      The office has set up your account. Choose a password and you are in —
+      there is nothing else to confirm.
+    </p>
+
+    <%#
+      Name and email are shown but not editable. They come from the
+      account the office created, not from this form, so an intercepted
+      link cannot be turned into an account for somebody else.
+    %>
+    <div class="facts" style="margin-top:1.5rem">
+      <h3>Your account</h3>
+      <dl>
+        <div><dt>Name</dt><dd><%= invited.name %></dd></div>
+        <div><dt>Email</dt><dd><%= invited.email %></dd></div>
+        <div><dt>Role</dt><dd><%= invited.role === "teacher" ? "Teacher" : invited.role %></dd></div>
+      </dl>
+    </div>
+
+    <form class="form" method="post" action="/teach/invite/<%= encodeURIComponent(token) %>" style="margin-top:1.5rem">
+      <%- include("../../partials/password-field", {
+        id: "password", name: "password", label: "Choose a password",
+        autocomplete: "new-password", minlength: 10,
+        error: errors.password || null,
+        hint: "At least ten characters. A few unrelated words are easier to remember than a short jumble, and harder to guess.",
+      }) %>
+
+      <%#
+        The two things the terms are really about, said in one sentence
+        each before the link. A tick box over a link nobody opens is a
+        tick box, not an agreement — and these two clauses are the ones
+        the school would actually need to rely on.
+      %>
+      <div class="facts" style="margin-top:.25rem">
+        <h3>Before you agree</h3>
+        <ul style="margin:.4rem 0 0;padding-left:1.1rem;line-height:1.7;font-size:.92rem">
+          <li>
+            Everything the school gives you to teach with stays LangNation's
+            property. You may use it to teach LangNation students and for
+            nothing else — not to sell, not to publish, not in private
+            lessons of your own.
+          </li>
+          <li>
+            When you stop teaching for us, you return or delete all of it,
+            along with anything holding student data.
+          </li>
+          <li>
+            Your class lists hold real people's contact details. Keep this
+            password to yourself, and tell the office at once if you think
+            somebody else has it.
+          </li>
+        </ul>
+      </div>
+
+      <div style="margin-top:1.1rem">
+        <%- include("../../partials/terms-gate", {
+          termsTitle: termsTitle, termsPath: termsPath, termsHtml: termsHtml,
+          acceptError: errors.accept || null,
+        }) %>
+      </div>
+
+      <button class="btn btn-block" type="submit" style="margin-top:1.25rem">Set my password</button>
+    </form>
+
+    <p class="muted" style="font-size:.88rem;margin-top:1.5rem">
+      This link works once. If something goes wrong,
+      <a href="/contact">tell the office</a> and we will send a new one.
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

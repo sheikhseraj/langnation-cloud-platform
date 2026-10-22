@@ -1,0 +1,53 @@
+<%- include("../../partials/portal-head", { title: "Request received" }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <p class="eyebrow">Student portal</p>
+    <% var dup = typeof duplicate !== "undefined" && duplicate; %>
+
+    <% if (dup) { %>
+      <h1>You have already sent a request</h1>
+      <p class="lead">
+        <% if (dup === "approved") { %>
+          This address has already been approved. Check your email for the
+          link to set your password, including the spam folder.
+        <% } else { %>
+          We already have a request from this address and it is waiting to
+          be looked at. Please wait for the approval email.
+        <% } %>
+      </p>
+    <% } else { %>
+      <h1>Thank you — we have your request</h1>
+      <p class="lead">
+        Someone from the office will look at it and reply by email, usually
+        within a working day.
+      </p>
+    <% } %>
+
+    <%#
+      A submission the spam check refused lands here too, wording and
+      all, so a bot is never told it was caught. A repeat request is
+      now named explicitly above: staying silent about it made the form
+      look broken, which was worse than admitting an address has asked.
+    %>
+    <div class="notice" style="margin-top:1.5rem">
+      <div>
+        <strong>What happens next</strong>
+        <ul style="margin:.5rem 0 0 1.1rem;padding:0">
+          <li>We read what you wrote and decide.</li>
+          <li>If it is approved, you get an email with a link to choose your password.</li>
+          <li>If not, we write and tell you why, and how to reach us.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="muted" style="font-size:.88rem;margin-top:1.5rem">
+      Nothing arrived after a day or two? Check your spam folder, then
+      <a href="/contact">contact the office</a> — we would rather hear twice than not at all.
+    </p>
+
+    <a class="btn btn-ghost" href="/" style="margin-top:1rem">Back to the site</a>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

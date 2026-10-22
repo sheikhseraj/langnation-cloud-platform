@@ -1,0 +1,28 @@
+<%#
+  Lina.
+
+  Her portrait, made by tools/build-icons.js: a disc with the school's
+  own blurred background inside it. The white around that disc is cut
+  away in the build, where the circle is measured rather than assumed —
+  not hidden here with a border-radius, because the file is also what a
+  browser saves, shares and prints.
+
+  Two kinds, same picture at the two sizes it is shown at: `launcher`
+  for the round button in the corner of the page, `face` for the header
+  of the panel it opens. Each has a second file at twice the size, for
+  the dense screens that nearly all phones now have.
+
+  width and height are set so nothing jumps while she loads. Only the
+  panel's copy is lazy: the one in the corner is what a visitor sees
+  before anything is clicked, and it must not arrive late.
+
+  Expects: kind ("launcher" or "face"), w, h, site.
+%>
+<% const sizes = { launcher: [64, 128], face: [56, 112] }[kind]; %>
+<img class="ai-her is-<%= kind %>"
+     src="/icons/assistant-face-<%= sizes[0] %>.webp?v=<%= site.assetVersion %>"
+     srcset="/icons/assistant-face-<%= sizes[0] %>.webp?v=<%= site.assetVersion %> 1x,
+             /icons/assistant-face-<%= sizes[1] %>.webp?v=<%= site.assetVersion %> 2x"
+     width="<%= w %>" height="<%= h %>"
+     <%- kind === "face" ? 'loading="lazy"' : "" %>
+     alt="Lina" decoding="async">

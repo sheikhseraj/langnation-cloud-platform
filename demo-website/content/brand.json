@@ -1,0 +1,12 @@
+{
+  "variant": "crest",
+  "logo": {
+    "w": 55,
+    "h": 60,
+    "indent": 0
+  },
+  "footer": {
+    "w": 62,
+    "h": 68
+  }
+}

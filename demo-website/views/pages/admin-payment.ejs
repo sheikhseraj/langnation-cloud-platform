@@ -1,0 +1,567 @@
+<%
+  const money = (c, cur) => new Intl.NumberFormat("en-GB", {
+    style: "currency", currency: cur || "EUR",
+  }).format((Number(c) || 0) / 100);
+  const plain = (c) => ((Number(c) || 0) / 100).toFixed(2);
+  /* Takes a Date as well as a string. mysql2 returns DATE columns as
+     Date objects, and String(thatDate).slice(0, 10) is "Thu Oct 0" —
+     which rendered as "Invalid Date" down the whole payment history.
+     Normalised in lib/billing.js too; this is the second line of
+     defence, because a view should not break on a plain Date. */
+  const day = (v) => {
+    if (!v) return "—";
+    const iso = v instanceof Date
+      ? `${v.getFullYear()}-${String(v.getMonth() + 1).padStart(2, "0")}-${String(v.getDate()).padStart(2, "0")}`
+      : String(v).slice(0, 10);
+    const d = new Date(`${iso}T00:00:00Z`);
+    return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en-GB", {
+      day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  };
+  const today = new Date().toISOString().slice(0, 10);
+  const here = (opts = {}) => {
+    const p = new URLSearchParams();
+    const c = "course" in opts ? opts.course : pick;
+    if (c && c !== "all") p.set("course", c);
+    if (opts.n) { p.set("n", opts.n); p.set("total", opts.total); }
+    const s = p.toString();
+    return `/admin/payments/s/${who.id}` + (s ? "?" + s : "");
+  };
+  const parts = scope ? scope.parts : [];
+  const drafts = parts.filter((p) => p.state === "draft");
+  const live = parts.filter((p) => p.state !== "draft" && p.state !== "void");
+  const owing = live.filter((p) => p.owed > 0);
+  const shown = pick === "all" ? history : history.filter((h) => String(h.enrolment_id) === pick);
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: who.name + " · payments", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "payments" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: who.name,
+      adCrumbs: [
+        { label: "Admin", href: "/admin/dashboard" },
+        { label: "Payments", href: "/admin/payments" },
+        { label: who.name },
+      ],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (done) { %><p class="notice notice-ok"><%= done %></p><% } %>
+      <% if (problem) { %><p class="notice notice-bad"><%= problem %></p><% } %>
+
+      <%# Which course, or all of them.
+
+          One person with two courses is still one person with one
+          bank account, so "All courses" is the default: it is both
+          the whole picture and the place a single plan covering
+          everything is set up. %>
+      <div class="filters">
+        <div class="filter-group">
+          <span>Course</span>
+          <div class="chips">
+            <a class="chip" href="<%= here({ course: "all" }) %>"
+               aria-pressed="<%= pick === "all" ? "true" : "false" %>">
+              All courses (<%= courses.length %>)
+            </a>
+            <% courses.forEach(function (c) { %>
+              <a class="chip" href="<%= here({ course: String(c.id) }) %>"
+                 aria-pressed="<%= pick === String(c.id) ? "true" : "false" %>">
+                <%= c.title %><% if (c.batch) { %> · <%= c.batch %><% } %>
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+
+      <div class="ad-card">
+        <h2 style="margin:0;font-size:1.05rem">
+          <%= pick === "all" ? "Everything " + who.name + " is taking" : one.title %>
+        </h2>
+        <p class="muted" style="margin:.2rem 0 0;font-size:.85rem">
+          <% if (pick === "all") { %>
+            <%= courses.map(function (c) { return c.title + (c.batch ? " (" + c.batch + ")" : ""); }).join(" · ") || "no enrolments" %>
+          <% } else { %>
+            <%= one.batch || "no batch" %>
+          <% } %>
+          <% if (who.student_ref) { %> · <%= who.student_ref %><% } %>
+        </p>
+        <%
+          const shownTotal = pick === "all" ? everything.total : (scope ? scope.total : 0);
+          const shownPaid  = pick === "all" ? everything.paid  : (scope ? scope.paid  : 0);
+          const shownOwed  = pick === "all" ? everything.owed  : (scope ? scope.owed  : 0);
+          const nothingYet = !parts.length;
+        %>
+        <dl class="pay-sum">
+          <%# What it costs comes first and is always there. Three
+              zeros under "Billed / Paid / Remaining" is literally
+              true before anything is raised and tells nobody
+              anything; the number the office wants at that moment is
+              what this course charges. %>
+          <div><dt>Course fee</dt><dd><%= money(suggested) %></dd></div>
+          <div><dt>Billed</dt><dd><%= nothingYet ? "—" : money(shownTotal) %></dd></div>
+          <div><dt>Paid</dt><dd><%= nothingYet ? "—" : money(shownPaid) %></dd></div>
+          <div class="is-rest"><dt>Remaining</dt><dd><%= nothingYet ? "—" : money(shownOwed) %></dd></div>
+        </dl>
+        <% if (pick !== "all" && courses.length > 1) { %>
+          <%# Where this course sits in the whole account, so one
+              course's page is never read as the student's position. %>
+          <p class="muted" style="font-size:.82rem;margin:.9rem 0 0">
+            Across all <%= courses.length %> courses:
+            <strong><%= money(everything.total) %></strong> billed,
+            <strong><%= money(everything.paid) %></strong> paid,
+            <strong><%= money(everything.owed) %></strong> remaining.
+            <a href="<%= here({ course: "all" }) %>">See all courses</a>.
+          </p>
+        <% } %>
+      </div>
+
+      <% if (pick !== "all" && combined) { %>
+        <%# A combined plan belongs to no single course, so looking at
+            one course of it shows nothing — which reads as a bug
+            rather than as the answer. Say which it is. %>
+        <p class="notice">
+          <%= who.name %> is on <strong>one plan covering all their courses</strong>,
+          so there is nothing billed against this one on its own.
+          <a href="<%= here({ course: "all" }) %>">See all courses</a>.
+        </p>
+      <% } %>
+
+      <% if (pick === "all" && courses.length > 1 && !combined) { %>
+        <%# Per course, when each has its own plan. Shown here so the
+            office can see at a glance which of the two is behind. %>
+        <div class="ad-card">
+          <h3 class="pay-sub" style="margin-top:0">By course</h3>
+          <ol class="pay-list">
+            <% courses.forEach(function (c) { %>
+              <li class="pay-row<%= c.plan ? " is-" + (c.plan.state === "overdue" ? "overdue" : c.plan.state === "paid" ? "paid" : "due") : "" %>">
+                <span class="pay-n"><%= c.title %></span>
+                <span class="pay-amt">
+                  <%= money(c.plan ? c.plan.total : 0) %>
+                  <% if (c.plan && c.plan.paid) { %><small><%= money(c.plan.paid) %> paid</small><% } %>
+                </span>
+                <span class="pay-due"><%= c.plan && c.plan.next ? "Next " + day(c.plan.next.due) : "—" %></span>
+                <span class="pay-mark">
+                  <a href="<%= here({ course: String(c.id) }) %>"><%= c.plan ? label[c.plan.state] : "Not billed" %></a>
+                </span>
+              </li>
+            <% }); %>
+          </ol>
+        </div>
+      <% } %>
+
+      <% if (canSetUp) { %>
+        <div class="ad-card">
+          <h3 class="pay-sub" style="margin-top:0">
+            Set up a payment plan<% if (pick !== "all") { %> for <%= one.title %><% } %>
+          </h3>
+          <% if (pick === "all" && courses.length > 1) { %>
+            <p class="muted" style="font-size:.85rem;margin:0 0 .9rem">
+              One plan covering all <%= courses.length %> courses. Each instalment
+              is split between them on the invoice, so the money stays
+              attributable to the course that earned it — the student just sees
+              one amount to pay. To bill each course separately, pick it above
+              instead.
+            </p>
+          <% } %>
+          <form method="get" action="<%= here({ course: pick }) %>" class="pay-form">
+            <% if (pick !== "all") { %><input type="hidden" name="course" value="<%= pick %>"><% } %>
+            <label>
+              <span>Fee</span>
+              <input type="text" name="total" inputmode="decimal"
+                     value="<%= plain(total || suggested) %>" required>
+              <% if (suggested) { %>
+                <small>
+                  <% if (pick === "all" && courses.length > 1) { %>
+                    The <%= courses.length %> courses come to <%= money(suggested) %>.
+                  <% } else { %>
+                    The site currently charges <%= money(suggested) %>.
+                  <% } %>
+                </small>
+              <% } %>
+            </label>
+            <label>
+              <span>Instalments</span>
+              <select name="n">
+                <% [1,2,3,4,5,6,9,12].forEach(function (i) { %>
+                  <option value="<%= i %>"<%= Number(n) === i ? " selected" : "" %>>
+                    <%= i === 1 ? "Pay in full" : i + " instalments" %>
+                  </option>
+                <% }); %>
+              </select>
+            </label>
+            <button class="btn btn-sm" type="submit">Work it out</button>
+          </form>
+        </div>
+
+        <%# The other half of the question: they have already paid.
+            Four steps to write down one fact is four steps the office
+            will stop taking, so this is one — and it goes through the
+            same ledger as everything else, an invoice issued and a
+            payment that settles it, not a flag. %>
+        <div class="ad-card">
+          <h3 class="pay-sub" style="margin-top:0">Already paid in full</h3>
+          <p class="muted" style="font-size:.85rem;margin:0 0 .9rem">
+            For a fee that has already arrived. This raises the invoice, issues
+            it and records the payment in one go — there is nothing to issue
+            afterwards.
+          </p>
+          <form method="post" action="/admin/payments/settle" class="pay-form">
+            <input type="hidden" name="student_id" value="<%= who.id %>">
+            <input type="hidden" name="course" value="<%= pick %>">
+            <label>
+              <span>Amount received</span>
+              <input type="text" name="total" inputmode="decimal"
+                     value="<%= plain(suggested) %>" required>
+            </label>
+            <label>
+              <span>Method</span>
+              <select name="method" required>
+                <% Object.keys(methods).forEach(function (m) { %>
+                  <option value="<%= m %>"><%= methods[m] %></option>
+                <% }); %>
+              </select>
+            </label>
+            <label>
+              <span>Received on</span>
+              <input type="date" name="received_on" value="<%= today %>" max="<%= today %>" required>
+            </label>
+            <label>
+              <span>Reference</span>
+              <input type="text" name="reference" maxlength="160"
+                     placeholder="Bank reference or receipt number">
+            </label>
+            <button class="btn" type="submit">Record as paid in full</button>
+          </form>
+        </div>
+
+        <% if (preview) { %>
+          <div class="ad-card">
+            <h3 class="pay-sub" style="margin-top:0">
+              <%= preview.length === 1 ? "One payment" : preview.length + " instalments" %>
+            </h3>
+            <%# Editable before anything is written. Typing into one
+                row spreads what is left across the rows below it, so
+                the office only enters the numbers it cares about —
+                and the total is checked again on the server, which is
+                where it actually matters. %>
+            <form method="post" action="/admin/payments/plan"
+                  data-plan data-plan-total="<%= plain(total) %>">
+              <input type="hidden" name="student_id" value="<%= who.id %>">
+              <input type="hidden" name="course" value="<%= pick %>">
+              <input type="hidden" name="total" value="<%= plain(total) %>">
+              <ol class="pay-list">
+                <% preview.forEach(function (p, i) { %>
+                  <li class="pay-row pay-edit">
+                    <span class="pay-n"><%= preview.length === 1 ? "Full payment" : "Instalment " + (i + 1) %></span>
+                    <label class="sr-only" for="a<%= i %>">Amount</label>
+                    <input id="a<%= i %>" type="text" name="amount" inputmode="decimal"
+                           data-plan-amount value="<%= plain(p.amount) %>" required>
+                    <label class="sr-only" for="d<%= i %>">Due date</label>
+                    <input id="d<%= i %>" type="date" name="due_on"
+                           data-plan-due value="<%= p.due_on %>" required>
+                  </li>
+                <% }); %>
+              </ol>
+              <p class="pay-tally" data-plan-sum>
+                These add up to <%= money(preview.reduce(function (s, p) { return s + p.amount; }, 0)) %>,
+                against a fee of <%= money(total) %>.
+              </p>
+              <p style="margin-top:.9rem">
+                <button class="btn" type="submit" data-plan-go>Create as drafts</button>
+              </p>
+            </form>
+          </div>
+        <% } %>
+      <% } %>
+
+      <% if (drafts.length) { %>
+        <div class="ad-card">
+          <h3 class="pay-sub" style="margin-top:0">Drafted, not yet issued</h3>
+          <p class="muted" style="font-size:.85rem;margin:0 0 .8rem">
+            The student cannot see these. Issuing them hands out invoice numbers
+            and locks the amounts — after that a mistake is corrected with a
+            credit note, not an edit.
+          </p>
+          <ol class="pay-list">
+            <% drafts.forEach(function (p) { %>
+              <li class="pay-row">
+                <span class="pay-n">
+                  <%= p.instalment_of > 1 ? "Instalment " + p.instalment_no + " of " + p.instalment_of : "Full payment" %>
+                </span>
+                <span class="pay-amt"><%= money(p.total) %></span>
+                <span class="pay-due">Due <%= day(p.due) %></span>
+                <span class="pay-mark">Draft</span>
+              </li>
+            <% }); %>
+          </ol>
+          <div class="row" style="gap:.6rem;margin-top:.9rem;flex-wrap:wrap">
+            <form method="post" action="/admin/payments/issue">
+              <input type="hidden" name="student_id" value="<%= who.id %>">
+              <input type="hidden" name="course" value="<%= pick %>">
+              <button class="btn" type="submit">Issue <%= drafts.length %> invoice<%= drafts.length === 1 ? "" : "s" %></button>
+            </form>
+            <%# The way out. A draft has no number, was never issued
+                and the student has never seen it, so throwing it away
+                destroys no record -- and without this button a plan
+                drafted by mistake blocks the course for ever. %>
+            <form method="post" action="/admin/payments/discard">
+              <input type="hidden" name="student_id" value="<%= who.id %>">
+              <input type="hidden" name="course" value="<%= pick %>">
+              <button class="btn btn-ghost" type="submit">Discard and start again</button>
+            </form>
+          </div>
+        </div>
+      <% } %>
+
+      <%
+        /* Split, because they are two different questions. "What is
+           still owed" is what the office is chasing; "what has been
+           settled" is what it is checking against a bank statement.
+           One list ordered by date answers neither quickly. */
+        const unpaid = live.filter(function (p) { return p.owed > 0; });
+        const cleared = live.filter(function (p) { return p.owed <= 0; });
+      %>
+      <% if (unpaid.length) { %>
+        <div class="ad-card">
+          <h3 class="pay-sub" style="margin-top:0">
+            Unpaid invoices <span class="pay-count"><%= unpaid.length %></span>
+            <span class="pay-count-sum"><%= money(unpaid.reduce(function (n, p) { return n + p.owed; }, 0)) %> owed</span>
+          </h3>
+          <ol class="pay-list">
+            <% unpaid.forEach(function (p) { %>
+              <li class="pay-row is-<%= p.state %>">
+                <span class="pay-n">
+                  <% if (p.number) { %>
+                    <a href="/admin/payments/invoice/<%= p.id %>"><%= p.number %></a>
+                  <% } else { %>—<% } %>
+                  <% if (p.instalment_of > 1) { %>
+                    <small class="muted">· <%= p.instalment_no %> of <%= p.instalment_of %></small>
+                  <% } %>
+                  <% if (p.lines && p.lines.length > 1) { %>
+                    <%# What this instalment is for. A combined invoice
+                        belongs to no single course, so it says which
+                        courses it covers and for how much. %>
+                    <small class="pay-lines">
+                      <% p.lines.forEach(function (l) { %>
+                        <span><%= l.description.replace(/ — instalment .*/, "") %> <%= money(l.amount) %></span>
+                      <% }); %>
+                    </small>
+                  <% } %>
+                </span>
+                <span class="pay-amt">
+                  <%= money(p.total) %>
+                  <% if (p.partial) { %><small><%= money(p.paid) %> paid</small><% } %>
+                </span>
+                <span class="pay-due">Due <%= day(p.due) %></span>
+                <span class="pay-mark"><%= stateLabel[p.state] %></span>
+              </li>
+            <% }); %>
+          </ol>
+        </div>
+      <% } %>
+
+      <% if (cleared.length) { %>
+        <div class="ad-card">
+          <h3 class="pay-sub" style="margin-top:0">
+            Paid invoices <span class="pay-count"><%= cleared.length %></span>
+            <span class="pay-count-sum"><%= money(cleared.reduce(function (n, p) { return n + p.paid; }, 0)) %> received</span>
+          </h3>
+          <ol class="pay-list">
+            <% cleared.forEach(function (p) { %>
+              <li class="pay-row is-paid">
+                <span class="pay-n">
+                  <% if (p.number) { %>
+                    <a href="/admin/payments/invoice/<%= p.id %>"><%= p.number %></a>
+                  <% } else { %>—<% } %>
+                  <% if (p.instalment_of > 1) { %>
+                    <small class="muted">· <%= p.instalment_no %> of <%= p.instalment_of %></small>
+                  <% } %>
+                  <% if (p.lines && p.lines.length > 1) { %>
+                    <small class="pay-lines">
+                      <% p.lines.forEach(function (l) { %>
+                        <span><%= l.description.replace(/ — instalment .*/, "") %> <%= money(l.amount) %></span>
+                      <% }); %>
+                    </small>
+                  <% } %>
+                </span>
+                <span class="pay-amt"><%= money(p.total) %></span>
+                <span class="pay-due"><%= p.paid_on ? "Paid " + day(p.paid_on) : "Due " + day(p.due) %></span>
+                <span class="pay-mark"><%= stateLabel[p.state] %></span>
+              </li>
+            <% }); %>
+          </ol>
+        </div>
+      <% } %>
+
+      <% if (owing.length) { %>
+        <div class="ad-card">
+          <h3 class="pay-sub" style="margin-top:0">Record a payment</h3>
+          <%# A real transaction, not a status toggle: what arrived,
+              when, and by what route. The same row an online provider
+              would write one day. %>
+          <form method="post" action="/admin/payments/record" class="pay-form">
+            <input type="hidden" name="student_id" value="<%= who.id %>">
+            <input type="hidden" name="course" value="<%= pick %>">
+            <label>
+              <span>Against</span>
+              <%# data-owed, so choosing a different invoice fills in
+                  what IS owed on it. The amount stayed on the first
+                  one's figure otherwise, which is how a 250 gets
+                  recorded against a 500. Still typeable over: a part
+                  payment is the normal case. %>
+              <select name="invoice_id" required data-owes>
+                <% owing.forEach(function (p) { %>
+                  <option value="<%= p.id %>" data-owed="<%= plain(p.owed) %>">
+                    <%= p.number %><% if (p.instalment_of > 1) { %> · instalment <%= p.instalment_no %><% } %>
+                    — <%= money(p.owed) %> owed
+                  </option>
+                <% }); %>
+              </select>
+            </label>
+            <label>
+              <span>Amount</span>
+              <input type="text" name="amount" inputmode="decimal" data-owes-amount
+                     value="<%= plain(owing[0].owed) %>" required>
+              <small>Less than the full amount is fine — it is recorded as a part payment.</small>
+            </label>
+            <label>
+              <span>Method</span>
+              <select name="method" required>
+                <% Object.keys(methods).forEach(function (m) { %>
+                  <option value="<%= m %>"><%= methods[m] %></option>
+                <% }); %>
+              </select>
+            </label>
+            <label>
+              <span>Received on</span>
+              <input type="date" name="received_on" value="<%= today %>" max="<%= today %>" required>
+            </label>
+            <label>
+              <span>Reference</span>
+              <input type="text" name="reference" maxlength="160"
+                     placeholder="Bank reference or receipt number">
+              <small>Optional, but it is what stops the same transfer being banked twice.</small>
+            </label>
+            <label>
+              <span>Note</span>
+              <input type="text" name="note" maxlength="300" placeholder="Optional">
+            </label>
+            <button class="btn" type="submit">Record payment</button>
+          </form>
+        </div>
+      <% } %>
+
+      <% if (shown.length) { %>
+        <div class="ad-card">
+          <h3 class="pay-sub" style="margin-top:0">Payment history</h3>
+          <ol class="pay-list is-history">
+            <% shown.forEach(function (h) { %>
+              <%
+                const undone = Boolean(h.reversed_by);
+                const isUndo = Boolean(h.reverses_id);
+              %>
+              <li class="pay-row<%= undone ? " is-undone" : "" %><%= isUndo ? " is-undo" : "" %>">
+                <span class="pay-n">
+                  <%= day(h.received_on) %>
+                  <% if (isUndo) { %><small class="muted">· reversal</small><% } %>
+                </span>
+                <span class="pay-amt"><%= money(Math.round(Number(h.amount) * 100), h.currency) %></span>
+                <span class="pay-due">
+                  <%= methods[h.method] || h.method %><% if (h.number) { %> · <%= h.number %><% } %>
+                  <% if (h.note) { %><small class="pay-why"><%= h.note %></small><% } %>
+                </span>
+                <span class="pay-mark">
+                  <% if (undone) { %>
+                    <em>Reversed</em>
+                  <% } else if (isUndo) { %>
+                    <em>Put back</em>
+                  <% } else { %>
+                    <%# The reason is required, so the button opens a
+                        box rather than acting on a click -- and a
+                        double-click cannot reverse the same payment
+                        twice, because the database will not allow a
+                        second reversal of one row. %>
+                    <details class="pay-undo">
+                      <summary>Reverse</summary>
+                      <form method="post" action="/admin/payments/reverse">
+                        <input type="hidden" name="student_id" value="<%= who.id %>">
+                        <input type="hidden" name="course" value="<%= pick %>">
+                        <input type="hidden" name="payment_id" value="<%= h.id %>">
+                        <label class="sr-only" for="why<%= h.id %>">Why</label>
+                        <input id="why<%= h.id %>" type="text" name="reason" maxlength="300"
+                               placeholder="Why is this being put back?" required>
+                        <button class="btn btn-sm" type="submit">Put it back</button>
+                      </form>
+                    </details>
+                  <% } %>
+                </span>
+              </li>
+            <% }); %>
+          </ol>
+          <p class="muted" style="font-size:.82rem;margin:.9rem 0 0">
+            Nothing here is ever edited or deleted. Reversing a payment adds the
+            opposite of it and leaves both on the record, so the account reads as
+            what actually happened rather than as somebody's last word on it.
+          </p>
+        </div>
+      <% } %>
+
+      <% if (typeof trail !== "undefined" && trail && trail.length) { %>
+        <div class="ad-card">
+          <h3 class="pay-sub" style="margin-top:0">Changes</h3>
+          <%# Straight out of audit_log. Nothing in this feature can
+              move a number without writing a line here in the same
+              transaction, so this is not a summary of the history —
+              it is the history. %>
+          <ol class="pay-list is-history">
+            <% trail.forEach(function (a) {
+                 let d = a.detail;
+                 if (typeof d === "string") { try { d = JSON.parse(d); } catch (e) { d = {}; } }
+                 d = d || {};
+                 const WORDS = {
+                   "payment.recorded": "Payment recorded",
+                   "payment.reversed": "Payment reversed",
+                   "invoice.settled": "Invoiced and settled in full",
+                   "plan.drafted": "Plan drafted",
+                   "plan.issued": "Invoices issued",
+                 };
+            %>
+              <li class="pay-row<%= a.action === "payment.reversed" ? " is-undo" : "" %>">
+                <span class="pay-n">
+                  <%= new Date(a.created_at).toLocaleString("en-GB", {
+                        day: "numeric", month: "short", year: "numeric",
+                        hour: "2-digit", minute: "2-digit" }) %>
+                </span>
+                <span class="pay-amt"><%= d.amount ? money(Math.round(Number(d.amount) * 100)) : "" %></span>
+                <span class="pay-due">
+                  <%= WORDS[a.action] || a.action %>
+                  <% if (d.reason) { %><small class="pay-why"><%= d.reason %></small><% } %>
+                </span>
+                <span class="pay-mark"><%= d.number || d.method && (methods[d.method] || d.method) || "—" %></span>
+              </li>
+            <% }); %>
+          </ol>
+          <p class="muted" style="font-size:.82rem;margin:.9rem 0 0">
+            Who, honestly, is missing: the office signs in with one shared
+            password, so this records that a member of staff did it and cannot
+            say which. Individual logins would fix that.
+          </p>
+        </div>
+      <% } %>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

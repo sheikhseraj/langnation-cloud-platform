@@ -1,0 +1,162 @@
+{
+  "templateVersion": "1.0",
+  "meta": {
+    "lessonId": "REPLACE_WITH_STABLE_ID",
+    "slug": "REPLACE_WITH_SLUG",
+    "title": "REPLACE_WITH_TITLE",
+    "cefrLevel": "A1",
+    "courseId": null,
+    "chapterNumber": null,
+    "estimatedMinutes": 10,
+    "status": "draft",
+    "sourceReference": null,
+    "tags": []
+  },
+  "presentation": {
+    "eyebrow": "Lesen",
+    "subtitle": null,
+    "coverImage": null,
+    "instructions": "Lies den Text und beantworte danach die Aufgaben.",
+    "showProgress": true,
+    "showEstimatedTime": true
+  },
+  "reading": {
+    "language": "de",
+    "contentBlocks": [
+      {
+        "id": "p1",
+        "type": "paragraph",
+        "text": "REPLACE_WITH_READING_PARAGRAPH"
+      }
+    ],
+    "dictionaryInteraction": {
+      "enabled": true,
+      "singleWordActions": ["meaning", "listen", "save", "open_dictionary"],
+      "phraseActions": ["translate", "listen"],
+      "maxSelectionCharacters": 250
+    }
+  },
+  "exerciseSettings": {
+    "feedbackMode": "immediate",
+    "defaultMaxAttempts": 3,
+    "allowRetry": true,
+    "allowHint": true,
+    "revealSupportAfterAttempts": 2,
+    "randomizeQuestionOrder": false,
+    "randomizeOptionOrder": false,
+    "requireAllExercisesForCompletion": true
+  },
+  "exercises": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "position": 1,
+      "prompt": "REPLACE_WITH_QUESTION",
+      "options": [
+        {"id": "a", "text": "OPTION_A"},
+        {"id": "b", "text": "OPTION_B"},
+        {"id": "c", "text": "OPTION_C"},
+        {"id": "d", "text": "OPTION_D"}
+      ],
+      "answerKey": {
+        "correctOptionIds": ["a"]
+      },
+      "feedback": {
+        "correct": "Richtig!",
+        "incorrect": "Noch nicht richtig.",
+        "explanation": "REPLACE_WITH_SHORT_EXPLANATION"
+      },
+      "hints": [
+        "REPLACE_WITH_HINT_1",
+        "REPLACE_WITH_HINT_2_IF_NEEDED"
+      ],
+      "support": {
+        "blockId": "p1",
+        "anchorText": "REPLACE_WITH_EXACT_SUPPORTING_TEXT"
+      }
+    },
+    {
+      "id": "q2",
+      "type": "true_false",
+      "position": 2,
+      "prompt": "REPLACE_WITH_TRUE_FALSE_STATEMENT",
+      "answerKey": {
+        "correct": true
+      },
+      "feedback": {
+        "correct": "Richtig!",
+        "incorrect": "Noch nicht richtig.",
+        "explanation": "REPLACE_WITH_SHORT_EXPLANATION"
+      },
+      "hints": ["REPLACE_WITH_HINT"],
+      "support": {
+        "blockId": "p1",
+        "anchorText": "REPLACE_WITH_EXACT_SUPPORTING_TEXT"
+      }
+    },
+    {
+      "id": "q3",
+      "type": "fill_blank",
+      "position": 3,
+      "prompt": "REPLACE_WITH_SENTENCE_WITH_BLANK",
+      "answerKey": {
+        "acceptedAnswers": [
+          "PRIMARY_CORRECT_ANSWER",
+          "OTHER_EQUIVALENT_CORRECT_VARIANT_IF_VALID"
+        ],
+        "normalization": {
+          "trimWhitespace": true,
+          "caseSensitive": false,
+          "normalizeUnicode": true,
+          "ignoreFinalPunctuation": true
+        }
+      },
+      "feedback": {
+        "correct": "Richtig!",
+        "incorrect": "Noch nicht richtig.",
+        "explanation": "REPLACE_WITH_SHORT_EXPLANATION"
+      },
+      "hints": ["REPLACE_WITH_HINT"],
+      "support": {
+        "blockId": "p1",
+        "anchorText": "REPLACE_WITH_EXACT_SUPPORTING_TEXT"
+      }
+    },
+    {
+      "id": "q4",
+      "type": "short_answer",
+      "position": 4,
+      "prompt": "REPLACE_WITH_OPEN_QUESTION",
+      "answerKey": {
+        "acceptedAnswers": [
+          "FULL_CORRECT_ANSWER_1",
+          "FULL_CORRECT_ANSWER_2_IF_SEMANTICALLY_EQUIVALENT"
+        ],
+        "matchMode": "normalized_exact",
+        "normalization": {
+          "trimWhitespace": true,
+          "caseSensitive": false,
+          "normalizeUnicode": true,
+          "ignoreFinalPunctuation": true
+        }
+      },
+      "feedback": {
+        "correct": "Richtig!",
+        "incorrect": "Noch nicht richtig.",
+        "explanation": "REPLACE_WITH_MODEL_ANSWER_OR_EXPLANATION"
+      },
+      "hints": ["REPLACE_WITH_HINT"],
+      "support": {
+        "blockId": "p1",
+        "anchorText": "REPLACE_WITH_EXACT_SUPPORTING_TEXT"
+      }
+    }
+  ],
+  "completion": {
+    "successTitle": "Lesen abgeschlossen!",
+    "showFirstTryCount": true,
+    "showSavedVocabularyCount": true,
+    "showRetryLesson": true,
+    "showNextLesson": true
+  }
+}

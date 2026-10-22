@@ -1,0 +1,191 @@
+<% const hwBase = typeof locals.hwBase === "string" ? locals.hwBase : "/rootadmin"; const hwLabel = locals.hwLabel || "Aufgaben"; const readingAdmin = !!locals.readingAdmin; const csrfToken = locals.csrfToken || ""; %>
+<%#
+  How the class did, and what to say about it on Monday.
+
+  The page is in two halves and the first one is the point. A teacher
+  does not open this to find out who scored what — they open it to find
+  out what to go over again, and that is a fact about QUESTIONS, not
+  about students. So the questions come first, worst first, with what
+  people actually wrote.
+
+  Everything here is counted from FIRST attempts. Practice is unlimited
+  and a student who went back and got it right the second time has
+  learnt it — counting that as a pass would hide the one thing this
+  page exists to show.
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Results · " + ex.title, site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: readingAdmin ? "lesen" : "exercises", adArea: "content" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: ex.title,
+      adCrumbs: [
+        { label: "Root admin", href: "/rootadmin" },
+        { label: hwLabel, href: (hwBase + "/exercises") },
+        { label: ex.title, href: (hwBase + "/exercise/") + ex.id },
+        { label: "Results" },
+      ],
+      adLogout: "/rootadmin/logout",
+    }) %>
+
+    <main class="ad-main">
+    <% if(readingAdmin){ %><section class="ad-card"><h2>Assignment progress</h2><table><thead><tr><th>Student</th><th>Status</th><th>Required exercises</th><th>Completed at</th></tr></thead><tbody><% students.forEach(s=>{ %><tr><td><%= s.name %></td><td><%= s.status %></td><td><%= s.completed %> / <%= s.total %></td><td><%= at(s.lastAt) %></td></tr><% }) %></tbody></table></section><% } %>
+
+      <%
+        const attempted = students.filter((s) => s.tries > 0);
+        const notYet = students.filter((s) => !s.tries);
+        // Worst first. A question everybody got right is not what
+        // anybody opened this page for.
+        const asked = questions.filter((q) => q.seen > 0);
+        const ranked = [...asked].sort((a, b) => a.rate - b.rate || a.seq - b.seq);
+        const hard = ranked.filter((q) => q.rate !== null && q.rate < 60);
+      %>
+
+      <% if (!attempted.length) { %>
+        <div class="ad-card">
+          <p class="sp-empty">
+            Nobody has done this yet, so there is nothing to count.
+            <% if (notYet.length) { %>
+              <%= notYet.length %> <%= notYet.length === 1 ? "student is" : "students are" %>
+              on the batch and could.
+            <% } %>
+          </p>
+        </div>
+      <% } else { %>
+
+        <div class="ad-tiles">
+          <div class="ad-tile">
+            <span class="ad-tile-n"><%= attempted.length %><span class="muted">/<%= students.length %></span></span>
+            <span class="ad-tile-l">have done it</span>
+          </div>
+          <div class="ad-tile">
+            <span class="ad-tile-n"><%= classRate === null ? "—" : classRate + "%" %></span>
+            <span class="ad-tile-l">right, first go</span>
+          </div>
+          <div class="ad-tile">
+            <span class="ad-tile-n"><%= hard.length %></span>
+            <span class="ad-tile-l">
+              <%= hard.length === 1 ? "question to go over" : "questions to go over" %>
+            </span>
+          </div>
+        </div>
+
+        <%# The half that saves the time. %>
+        <div class="ad-card">
+          <div class="ad-card-head">
+            <h2>By question, hardest first</h2>
+            <a href="<%= hwBase %>/exercise/<%= ex.id %>">Edit the <%= readingAdmin?"Lesen":"homework" %></a>
+          </div>
+
+          <p class="muted" style="font-size:.85rem;margin-top:-.4rem">
+            First attempts only. Somebody who went back and got it right has
+            learnt it, and counting that here would hide what did not land.
+          </p>
+
+          <ul class="sp-list hw-qlist">
+            <% ranked.forEach(function (q) { %>
+              <%
+                const band = q.rate === null ? "" : q.rate >= 90 ? " is-good" : q.rate >= 60 ? " is-ok" : " is-poor";
+              %>
+              <li>
+                <div>
+                  <strong><span class="muted">Frage <%= q.seq %>.</span> <%= q.prompt %></strong>
+                  <div class="muted" style="font-size:.82rem">
+                    Richtig: <strong><%= q.answer %></strong>
+                  </div>
+
+                  <%# What they actually wrote. Six students writing the
+                      same wrong thing is one sentence on Monday; six
+                      different wrong answers is a question that was
+                      worded badly. %>
+                  <% if (q.wrong.length) { %>
+                    <div class="hw-wrong">
+                      wrote instead:
+                      <% q.wrong.forEach(function (w) { %>
+                        <span class="hw-wrong-one"><%= w.given %><% if (w.n > 1) { %> <span class="muted">×<%= w.n %></span><% } %></span>
+                      <% }); %>
+                    </div>
+                  <% } %>
+                </div>
+
+                <div class="sp-list-end">
+                  <span class="hw-badge<%= band %>"><%= q.got %>/<%= q.seen %></span>
+                </div>
+              </li>
+            <% }); %>
+          </ul>
+
+          <% if (questions.length > asked.length) { %>
+            <p class="muted" style="font-size:.84rem;margin-top:.8rem">
+              <%= questions.length - asked.length %>
+              <%= questions.length - asked.length === 1 ? "question has" : "questions have" %>
+              not been reached by anybody yet.
+            </p>
+          <% } %>
+        </div>
+
+        <%# And the other half, which is a register more than a result. %>
+        <div class="ad-card">
+          <div class="ad-card-head">
+            <h2>By student</h2>
+          </div>
+
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th style="text-align:right">Best</th>
+                  <th style="text-align:right">Goes</th>
+                  <th>Last done</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% students.forEach(function (s) { %>
+                  <tr>
+                    <td>
+                      <strong><%= s.name %></strong>
+                      <% if (s.ref) { %>
+                        <div class="muted" style="font-size:.78rem"><%= s.ref %></div>
+                      <% } %>
+                    </td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">
+                      <% if (s.best === null) { %>
+                        <span class="muted">—</span>
+                      <% } else { %>
+                        <%= s.best %>/<%= s.outOf %>
+                      <% } %>
+                    </td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">
+                      <%= s.tries || "—" %>
+                    </td>
+                    <td class="muted" style="font-size:.84rem">
+                      <%= s.lastAt ? at(s.lastAt) : "not yet" %>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+
+          <% if (notYet.length) { %>
+            <p class="muted" style="font-size:.84rem;margin-top:.8rem">
+              <%= notYet.length %> <%= notYet.length === 1 ? "person has" : "people have" %>
+              not started: <%= notYet.map((s) => s.name).join(", ") %>.
+            </p>
+          <% } %>
+        </div>
+      <% } %>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

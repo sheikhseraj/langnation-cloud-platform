@@ -1,0 +1,186 @@
+<%
+  const v = view;
+  const link = (slug, page) => {
+    const p = new URLSearchParams();
+    if (slug && slug !== "deutschland") p.set("land", slug);
+    if (page && page > 1) p.set("seite", String(page));
+    const q = p.toString();
+    return "/einbuergerungstest/fragen" + (q ? "?" + q : "");
+  };
+  const letter = (i) => "ABCD"[i] || String(i + 1);
+%>
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <p class="eyebrow">
+      <a href="/einbuergerungstest">Einbürgerungstest</a> · Fragenkatalog
+    </p>
+    <h1>Alle Fragen und Antworten</h1>
+    <p class="lead">
+      Der vollständige amtliche Fragenkatalog zum Nachlesen — jede Frage mit der
+      richtigen Antwort. Zum Üben mit Auswertung geht es
+      <a href="/einbuergerungstest">zur Übungsseite</a>.
+    </p>
+
+    <%#
+      Deutschland first, then the sixteen. The 300 general questions
+      apply wherever you live, so they are the default and the thing
+      most people came for; a Bundesland narrows it to its own ten.
+    %>
+    <nav class="eqf-areas" aria-label="Bereich wählen">
+      <p class="eqf-areas-label" id="eqf-area-label">Bereich</p>
+      <ul aria-labelledby="eqf-area-label">
+        <% v.areas.forEach(function (a) { %>
+          <li>
+            <a class="chip" href="<%= link(a.slug, 1) %>"
+               <%- a.slug === v.area.slug ? 'aria-current="page"' : "" %>>
+              <%= a.name %>
+              <span class="eqf-chip-n"><%= a.count %></span>
+            </a>
+          </li>
+        <% }); %>
+      </ul>
+    </nav>
+
+    <% if (v.pages > 1) { %>
+      <nav class="eqf-areas eqf-pages" aria-label="Fragenbereich wählen">
+        <p class="eqf-areas-label" id="eqf-page-label">
+          <%= v.area.isGeneral ? "Länderübergreifende Fragen" : "Fragen" %>
+        </p>
+        <ul aria-labelledby="eqf-page-label">
+          <% for (let i = 1; i <= v.pages; i++) {
+               const lo = (i - 1) * v.perPage + 1;
+               const hi = Math.min(i * v.perPage, v.total); %>
+            <li>
+              <a class="chip" href="<%= link(v.area.slug, i) %>"
+                 <%- i === v.page ? 'aria-current="page"' : "" %>><%= lo %> – <%= hi %></a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
+    <% } %>
+
+    <p class="eqf-count">
+      <strong><%= v.area.name %></strong> · Fragen <%= v.from %>–<%= v.to %>
+      von <%= v.total %>
+    </p>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="wrap">
+    <ol class="eqf-list">
+      <% v.questions.forEach(function (q) { %>
+        <li class="eqf-item" id="frage-<%= q.number %>">
+          <article>
+            <p class="eqf-no">
+              <span class="eqf-no-badge">Frage <%= q.number %></span>
+              <span class="eqf-cat"><%= q.category %></span>
+            </p>
+
+            <h2 class="eqf-q"><%= q.question %></h2>
+
+            <% if (q.image && q.image.files && q.image.files.length) { %>
+              <%# The picture IS the question here: the options are only
+                  "Bild 1".."Bild 4", so each one is numbered under its
+                  own image and the correct number is marked below. %>
+              <div class="eqf-figs<%= q.image.files.length > 1 ? " is-options" : "" %>">
+                <% q.image.files.forEach(function (f, i) { %>
+                  <figure>
+                    <img src="<%= f.src %>" width="<%= f.w %>" height="<%= f.h %>"
+                         loading="lazy" decoding="async"
+                         alt="<%= q.image.files.length > 1 ? "Bild " + (i + 1) + " zu Frage " + q.number : "Abbildung zu Frage " + q.number %>">
+                    <% if (q.image.files.length > 1) { %>
+                      <figcaption>Bild <%= i + 1 %></figcaption>
+                    <% } %>
+                  </figure>
+                <% }); %>
+              </div>
+              <% if (q.image.credit) { %>
+                <p class="eqf-credit"><%= q.image.credit %></p>
+              <% } %>
+            <% } %>
+
+            <ol class="eqf-answers">
+              <% q.answers.forEach(function (a, i) {
+                   const right = i === q.correctAnswer; %>
+                <li class="eqf-a<%= right ? " is-right" : "" %>">
+                  <%# The tick and the word carry the meaning; the green
+                      is only a summary of them. Colour alone would be
+                      unreadable to a colour-blind learner and invisible
+                      to a screen reader. %>
+                  <span class="eqf-mark" aria-hidden="true"><%= right ? "✓" : letter(i) %></span>
+                  <span class="eqf-text"><%= a %></span>
+                  <% if (right) { %>
+                    <span class="eqf-right-label">richtig</span>
+                  <% } %>
+                </li>
+              <% }); %>
+            </ol>
+
+            <%#
+              The English wording and the explanation, open rather than
+              behind a button. This page is for reading — somebody who
+              came here to check an answer wants the reason on the same
+              screen, and thirty <details> to click through would be
+              thirty clicks. The practice page, where the point is to
+              be tested, keeps them behind a button instead.
+            %>
+            <% const en = (v.extras && v.extras.en) ? v.extras.en[q.id] : null; %>
+            <% if (en) { %>
+              <details class="eqf-en">
+                <summary>In English</summary>
+                <p class="eqf-en-q"><%= en.question %></p>
+                <ol class="eqf-en-answers">
+                  <% (en.answers || []).forEach(function (a, i) { %>
+                    <li<%- i === q.correctAnswer ? ' class="is-right"' : "" %>>
+                      <span class="eqf-en-key"><%= letter(i) %></span>
+                      <span><%= a %></span>
+                    </li>
+                  <% }); %>
+                </ol>
+                <p class="eqf-en-note">
+                  Unofficial translation, to help you read the question. Only the
+                  German wording counts in the exam.
+                </p>
+              </details>
+            <% } %>
+
+            <% const note = (v.extras && v.extras.notes) ? v.extras.notes[q.id] : null; %>
+            <% if (note && note.de) { %>
+              <p class="eqf-why">
+                <span class="eqf-why-label">Warum?</span>
+                <%= note.de %>
+                <% if (note.ref) { %><span class="eqf-why-ref"><%= note.ref %></span><% } %>
+              </p>
+            <% } %>
+          </article>
+        </li>
+      <% }); %>
+    </ol>
+
+    <% if (v.pages > 1) { %>
+      <nav class="eqf-prevnext" aria-label="Seiten">
+        <% if (v.page > 1) { %>
+          <a class="btn btn-ghost" href="<%= link(v.area.slug, v.page - 1) %>">← Vorherige 30</a>
+        <% } else { %><span></span><% } %>
+        <span class="muted">Seite <%= v.page %> von <%= v.pages %></span>
+        <% if (v.page < v.pages) { %>
+          <a class="btn btn-ghost" href="<%= link(v.area.slug, v.page + 1) %>">Nächste 30 →</a>
+        <% } else { %><span></span><% } %>
+      </nav>
+    <% } %>
+
+    <p class="eqf-foot muted">
+      Fragen und Abbildungen aus dem amtlichen Gesamtfragenkatalog des Bundesamtes
+      für Migration und Flüchtlinge<% if (v.catalogue && v.catalogue.catalogueDate) { %>,
+      Stand <%= v.catalogue.catalogueDate %><% } %>.
+      LangNation ist ein unabhängiges Lernangebot und steht nicht in Verbindung mit
+      dem Bundesamt für Migration und Flüchtlinge.
+    </p>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

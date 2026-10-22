@@ -5,163 +5,734 @@ on:
     branches:
       - main
     paths:
-      - "application/**"
+      - "demo-website/**"
       - ".github/workflows/deploy.yml"
 
   workflow_dispatch:
 
   workflow_call:
 
+
+# ============================================================
+# Permissions
+# ============================================================
+#
+# contents: read
+#   Required to checkout the repository.
+#
+# id-token: write
+#   Required for GitHub Actions -> AWS OIDC authentication.
+#
+# No permanent AWS credentials are stored in GitHub.
+# ============================================================
+
 permissions:
   contents: read
   id-token: write
 
-env:
-  AWS_REGION: us-east-1
-
-  ECR_REPOSITORY: langnation-cloud-platform-dev-app
-
-  ECS_CLUSTER: langnation-cloud-platform-dev-cluster
-  ECS_SERVICE: langnation-cloud-platform-dev-app-service
-  ECS_TASK_DEFINITION: langnation-cloud-platform-dev-app
-
-  CONTAINER_NAME: langnation-app
 
 jobs:
+
   deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
 
     steps:
+
+      # ========================================================
+      # 1. Checkout Repository
+      # ========================================================
+
       - name: Checkout repository
         uses: actions/checkout@v7
 
+
+      # ========================================================
+      # 2. Discover Current Infrastructure from HCP Terraform
+      # ========================================================
+      #
+      # The AWS training sandbox is disposable.
+      #
+      # Therefore this workflow must NOT hard-code:
+      #
+      # - AWS account ID
+      # - AWS region
+      # - ECR repository URL
+      # - ECS cluster
+      # - ECS service
+      # - ECS task-definition revision
+      # - CloudFront distribution
+      #
+      # HCP Terraform is our persistent source of truth.
+      # ========================================================
+
+      - name: Read current infrastructure from HCP Terraform
+        id: infrastructure
+        shell: bash
+
+        env:
+          TFC_TOKEN: ${{ secrets.TFC_TOKEN }}
+          TFC_ORGANIZATION: ${{ vars.TFC_ORGANIZATION }}
+          TFC_WORKSPACE: ${{ vars.TFC_WORKSPACE }}
+
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "READING HCP TERRAFORM INFRASTRUCTURE"
+          echo "========================================"
+
+          if [ -z "${TFC_TOKEN}" ]; then
+            echo "TFC_TOKEN is not available."
+            exit 1
+          fi
+
+          if [ -z "${TFC_ORGANIZATION}" ]; then
+            echo "TFC_ORGANIZATION is not configured."
+            exit 1
+          fi
+
+          if [ -z "${TFC_WORKSPACE}" ]; then
+            echo "TFC_WORKSPACE is not configured."
+            exit 1
+          fi
+
+
+          # ----------------------------------------------------
+          # Find current HCP Terraform workspace
+          # ----------------------------------------------------
+
+          WORKSPACE_RESPONSE=$(curl \
+            --silent \
+            --show-error \
+            --fail \
+            --header "Authorization: Bearer ${TFC_TOKEN}" \
+            --header "Content-Type: application/vnd.api+json" \
+            "https://app.terraform.io/api/v2/organizations/${TFC_ORGANIZATION}/workspaces/${TFC_WORKSPACE}")
+
+
+          WORKSPACE_ID=$(echo "${WORKSPACE_RESPONSE}" \
+            | jq -r '.data.id // empty')
+
+
+          if [ -z "${WORKSPACE_ID}" ]; then
+            echo "Could not determine HCP Terraform workspace ID."
+            exit 1
+          fi
+
+
+          echo "Organization: ${TFC_ORGANIZATION}"
+          echo "Workspace:    ${TFC_WORKSPACE}"
+          echo "Workspace ID: ${WORKSPACE_ID}"
+
+
+          # ----------------------------------------------------
+          # Read current Terraform outputs
+          # ----------------------------------------------------
+
+          curl \
+            --silent \
+            --show-error \
+            --fail \
+            --header "Authorization: Bearer ${TFC_TOKEN}" \
+            --header "Content-Type: application/vnd.api+json" \
+            "https://app.terraform.io/api/v2/workspaces/${WORKSPACE_ID}/current-state-version-outputs" \
+            > hcp-outputs.json
+
+
+          # ----------------------------------------------------
+          # Helper function
+          # ----------------------------------------------------
+
+          get_output() {
+
+            local name="$1"
+
+            jq -r \
+              --arg name "${name}" \
+              '
+                .data[]
+                | select(.attributes.name == $name)
+                | .attributes.value
+              ' \
+              hcp-outputs.json \
+              | head -n 1
+          }
+
+
+          # ----------------------------------------------------
+          # Current disposable AWS infrastructure
+          # ----------------------------------------------------
+
+          AWS_REGION=$(get_output "aws_region")
+
+          ECR_REPOSITORY_URL=$(get_output "ecr_repository_url")
+
+          ECS_CLUSTER=$(get_output "ecs_cluster_name")
+
+          ECS_SERVICE=$(get_output "ecs_service_name")
+
+          ECS_TASK_DEFINITION=$(get_output "ecs_task_definition_arn")
+
+          CLOUDFRONT_DOMAIN=$(get_output "cloudfront_domain_name")
+
+
+          # ----------------------------------------------------
+          # Validate required values
+          # ----------------------------------------------------
+
+          validate_output() {
+
+            local name="$1"
+            local value="$2"
+
+            if [ -z "${value}" ] || \
+               [ "${value}" = "null" ] || \
+               [ "${value}" = "None" ]; then
+
+              echo "Required Terraform output is missing:"
+              echo "${name}"
+
+              exit 1
+            fi
+          }
+
+
+          validate_output "aws_region" "${AWS_REGION}"
+
+          validate_output \
+            "ecr_repository_url" \
+            "${ECR_REPOSITORY_URL}"
+
+          validate_output \
+            "ecs_cluster_name" \
+            "${ECS_CLUSTER}"
+
+          validate_output \
+            "ecs_service_name" \
+            "${ECS_SERVICE}"
+
+          validate_output \
+            "ecs_task_definition_arn" \
+            "${ECS_TASK_DEFINITION}"
+
+          validate_output \
+            "cloudfront_domain_name" \
+            "${CLOUDFRONT_DOMAIN}"
+
+
+          # ----------------------------------------------------
+          # Export workflow outputs
+          # ----------------------------------------------------
+
+          echo "workspace_id=${WORKSPACE_ID}" \
+            >> "$GITHUB_OUTPUT"
+
+          echo "aws_region=${AWS_REGION}" \
+            >> "$GITHUB_OUTPUT"
+
+          echo "ecr_repository_url=${ECR_REPOSITORY_URL}" \
+            >> "$GITHUB_OUTPUT"
+
+          echo "ecs_cluster=${ECS_CLUSTER}" \
+            >> "$GITHUB_OUTPUT"
+
+          echo "ecs_service=${ECS_SERVICE}" \
+            >> "$GITHUB_OUTPUT"
+
+          echo "ecs_task_definition=${ECS_TASK_DEFINITION}" \
+            >> "$GITHUB_OUTPUT"
+
+          echo "cloudfront_domain=${CLOUDFRONT_DOMAIN}" \
+            >> "$GITHUB_OUTPUT"
+
+
+          echo ""
+          echo "========================================"
+          echo "CURRENT DEPLOYMENT INFRASTRUCTURE"
+          echo "========================================"
+          echo "AWS region:       ${AWS_REGION}"
+          echo "ECR repository:   ${ECR_REPOSITORY_URL}"
+          echo "ECS cluster:      ${ECS_CLUSTER}"
+          echo "ECS service:      ${ECS_SERVICE}"
+          echo "Task definition:  ${ECS_TASK_DEFINITION}"
+          echo "CloudFront:       ${CLOUDFRONT_DOMAIN}"
+          echo "========================================"
+
+
+      # ========================================================
+      # 3. Authenticate to Current AWS Sandbox
+      # ========================================================
+
       - name: Configure AWS credentials with OIDC
         uses: aws-actions/configure-aws-credentials@v6
+
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ steps.infrastructure.outputs.aws_region }}
           role-session-name: langnation-github-deploy
+
+
+      # ========================================================
+      # 4. Verify AWS Identity
+      # ========================================================
+      #
+      # Useful deployment evidence.
+      #
+      # The workflow does not depend on a hard-coded account ID.
+      # ========================================================
+
+      - name: Verify AWS identity
+        shell: bash
+
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "AWS DEPLOYMENT IDENTITY"
+          echo "========================================"
+
+          aws sts get-caller-identity
+
+          echo "========================================"
+
+
+      # ========================================================
+      # 5. Login to Amazon ECR
+      # ========================================================
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Set image URI
+
+      # ========================================================
+      # 6. Create Immutable Docker Image URI
+      # ========================================================
+      #
+      # Each deployment receives the Git commit SHA as the
+      # Docker image tag.
+      #
+      # This gives traceability:
+      #
+      # Git commit
+      #      ↓
+      # Docker image
+      #      ↓
+      # ECS task definition
+      #      ↓
+      # Running application
+      #
+      # ========================================================
+
+      - name: Set application image URI
         id: image
         shell: bash
+
+        env:
+          ECR_REPOSITORY_URL: ${{ steps.infrastructure.outputs.ecr_repository_url }}
+
         run: |
           set -euo pipefail
 
           IMAGE_TAG="${GITHUB_SHA}"
-          IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:${IMAGE_TAG}"
 
-          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
-          echo "image_uri=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
+          IMAGE_URI="${ECR_REPOSITORY_URL}:${IMAGE_TAG}"
 
-          echo "Deploying image: ${IMAGE_URI}"
+          echo "image_tag=${IMAGE_TAG}" \
+            >> "$GITHUB_OUTPUT"
 
-      - name: Build Docker image
-        working-directory: application
+          echo "image_uri=${IMAGE_URI}" \
+            >> "$GITHUB_OUTPUT"
+
+
+          echo "========================================"
+          echo "APPLICATION IMAGE"
+          echo "========================================"
+          echo "Git SHA: ${IMAGE_TAG}"
+          echo "Image:   ${IMAGE_URI}"
+          echo "========================================"
+
+
+      # ========================================================
+      # 7. Build REAL LangNation Demo Website
+      # ========================================================
+      #
+      # Milestone 2 originally deployed:
+      #
+      # application/
+      #
+      # Milestone 9 now deploys:
+      #
+      # demo-website/
+      #
+      # This is the sanitized copy of the real LangNation
+      # website integrated with MariaDB and Lina RAG.
+      # ========================================================
+
+      - name: Build LangNation demo website image
+        working-directory: demo-website
         shell: bash
+
         run: |
           set -euo pipefail
+
+          echo "========================================"
+          echo "BUILDING LANGNATION DEMO WEBSITE"
+          echo "========================================"
+          echo "Build context: demo-website/"
+          echo "Image:"
+          echo "${{ steps.image.outputs.image_uri }}"
+          echo "========================================"
 
           docker build \
-            -t "${{ steps.image.outputs.image_uri }}" \
+            --tag "${{ steps.image.outputs.image_uri }}" \
             .
 
-      - name: Push Docker image to ECR
+
+      # ========================================================
+      # 8. Push Application Image
+      # ========================================================
+
+      - name: Push LangNation image to ECR
         shell: bash
+
         run: |
           set -euo pipefail
 
-          docker push "${{ steps.image.outputs.image_uri }}"
+          echo "Pushing application image..."
 
-      - name: Download current ECS task definition
+          docker push \
+            "${{ steps.image.outputs.image_uri }}"
+
+          echo "Application image uploaded successfully."
+
+
+      # ========================================================
+      # 9. Download Terraform-Managed ECS Task Definition
+      # ========================================================
+      #
+      # IMPORTANT:
+      #
+      # We intentionally use the task-definition ARN returned
+      # by HCP Terraform rather than blindly reading the
+      # currently running ECS service revision.
+      #
+      # The Terraform revision contains the Milestone 9 runtime
+      # configuration that we just applied:
+      #
+      # - DB_HOST
+      # - DB_PORT
+      # - DB_NAME
+      # - DB_USER secret
+      # - DB_PASSWORD secret
+      # - BEDROCK_EMBEDDING_MODEL_ID
+      # - BEDROCK_CHAT_MODEL_ID
+      # - VECTOR_BUCKET_NAME
+      # - VECTOR_INDEX_NAME
+      # - application task role
+      #
+      # GitHub changes ONLY the Docker image.
+      # ========================================================
+
+      - name: Download Terraform ECS task definition
+        id: task-definition
         shell: bash
+
+        env:
+          ECS_TASK_DEFINITION: ${{ steps.infrastructure.outputs.ecs_task_definition }}
+
         run: |
           set -euo pipefail
+
+          echo "Downloading Terraform-managed task definition:"
+          echo "${ECS_TASK_DEFINITION}"
+
 
           aws ecs describe-task-definition \
             --task-definition "${ECS_TASK_DEFINITION}" \
             --query taskDefinition \
             > task-definition.json
 
+
+          # ----------------------------------------------------
+          # Discover application container name dynamically
+          # ----------------------------------------------------
+
+          CONTAINER_NAME=$(jq -r \
+            '.containerDefinitions[0].name // empty' \
+            task-definition.json)
+
+
+          if [ -z "${CONTAINER_NAME}" ]; then
+            echo "Could not determine application container name."
+            exit 1
+          fi
+
+
+          echo "container_name=${CONTAINER_NAME}" \
+            >> "$GITHUB_OUTPUT"
+
+
+          echo "Application container:"
+          echo "${CONTAINER_NAME}"
+
+
+          # ----------------------------------------------------
+          # Evidence that M9 configuration exists
+          # ----------------------------------------------------
+
+          echo ""
+          echo "Task definition environment variables:"
+
+          jq -r \
+            '.containerDefinitions[0].environment[].name' \
+            task-definition.json \
+            | sort
+
+
+          echo ""
+          echo "Task definition secrets:"
+
+          jq -r \
+            '.containerDefinitions[0].secrets[].name' \
+            task-definition.json \
+            | sort
+
+
+      # ========================================================
+      # 10. Validate M9 Runtime Configuration
+      # ========================================================
+      #
+      # Stop the deployment immediately if the Terraform task
+      # definition does not contain the database/RAG settings.
+      #
+      # This prevents GitHub from accidentally deploying the
+      # real website on top of an old ECS task definition.
+      # ========================================================
+
+      - name: Validate MariaDB and Lina task configuration
+        shell: bash
+
+        run: |
+          set -euo pipefail
+
+
+          REQUIRED_ENVIRONMENT_VARIABLES=(
+            "AWS_REGION"
+            "DB_HOST"
+            "DB_PORT"
+            "DB_NAME"
+            "BEDROCK_EMBEDDING_MODEL_ID"
+            "BEDROCK_CHAT_MODEL_ID"
+            "VECTOR_BUCKET_NAME"
+            "VECTOR_INDEX_NAME"
+          )
+
+
+          REQUIRED_SECRETS=(
+            "DB_USER"
+            "DB_PASSWORD"
+          )
+
+
+          echo "========================================"
+          echo "VALIDATING M9 APPLICATION CONFIGURATION"
+          echo "========================================"
+
+
+          for VARIABLE in \
+            "${REQUIRED_ENVIRONMENT_VARIABLES[@]}"; do
+
+            if ! jq -e \
+              --arg name "${VARIABLE}" \
+              '
+                .containerDefinitions[0].environment[]
+                | select(.name == $name)
+              ' \
+              task-definition.json \
+              > /dev/null; then
+
+              echo "Missing environment variable:"
+              echo "${VARIABLE}"
+
+              exit 1
+            fi
+
+            echo "Environment variable present: ${VARIABLE}"
+          done
+
+
+          for SECRET in \
+            "${REQUIRED_SECRETS[@]}"; do
+
+            if ! jq -e \
+              --arg name "${SECRET}" \
+              '
+                .containerDefinitions[0].secrets[]
+                | select(.name == $name)
+              ' \
+              task-definition.json \
+              > /dev/null; then
+
+              echo "Missing ECS secret:"
+              echo "${SECRET}"
+
+              exit 1
+            fi
+
+            echo "Secret configuration present: ${SECRET}"
+          done
+
+
+          echo "========================================"
+          echo "M9 runtime configuration validated."
+          echo "========================================"
+
+
+      # ========================================================
+      # 11. Render Git SHA Image into Task Definition
+      # ========================================================
+
       - name: Render new image in ECS task definition
         id: render-task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
+
         with:
           task-definition: task-definition.json
-          container-name: ${{ env.CONTAINER_NAME }}
+
+          container-name: ${{ steps.task-definition.outputs.container_name }}
+
           image: ${{ steps.image.outputs.image_uri }}
+
+
+      # ========================================================
+      # 12. Deploy New ECS Task Definition
+      # ========================================================
 
       - name: Deploy new ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+
         with:
           task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
+
+          service: ${{ steps.infrastructure.outputs.ecs_service }}
+
+          cluster: ${{ steps.infrastructure.outputs.ecs_cluster }}
+
           wait-for-service-stability: false
+
+
+      # ========================================================
+      # 13. Wait for ECS Rolling Deployment
+      # ========================================================
 
       - name: Wait for ECS service stability
         shell: bash
+
+        env:
+          ECS_CLUSTER: ${{ steps.infrastructure.outputs.ecs_cluster }}
+          ECS_SERVICE: ${{ steps.infrastructure.outputs.ecs_service }}
+
         run: |
           set -euo pipefail
 
           echo "Waiting for ECS service to reach steady state..."
 
+
           aws ecs wait services-stable \
             --cluster "${ECS_CLUSTER}" \
             --services "${ECS_SERVICE}"
 
+
           echo "ECS service reached steady state."
+
+
+      # ========================================================
+      # 14. Verify Deployed Git SHA Image
+      # ========================================================
 
       - name: Verify deployed image
         shell: bash
+
+        env:
+          ECS_CLUSTER: ${{ steps.infrastructure.outputs.ecs_cluster }}
+          ECS_SERVICE: ${{ steps.infrastructure.outputs.ecs_service }}
+          CONTAINER_NAME: ${{ steps.task-definition.outputs.container_name }}
+
         run: |
           set -euo pipefail
 
+
           EXPECTED_IMAGE="${{ steps.image.outputs.image_uri }}"
+
 
           echo "Expected image:"
           echo "${EXPECTED_IMAGE}"
 
-          TASK_DEFINITION_ARN=$(aws ecs describe-services \
+
+          ACTIVE_TASK_DEFINITION=$(aws ecs describe-services \
             --cluster "${ECS_CLUSTER}" \
             --services "${ECS_SERVICE}" \
             --query "services[0].taskDefinition" \
             --output text)
 
-          if [ -z "${TASK_DEFINITION_ARN}" ] || [ "${TASK_DEFINITION_ARN}" = "None" ]; then
-            echo "Could not determine the active ECS task definition."
+
+          if [ -z "${ACTIVE_TASK_DEFINITION}" ] || \
+             [ "${ACTIVE_TASK_DEFINITION}" = "None" ]; then
+
+            echo "Could not determine active ECS task definition."
             exit 1
           fi
 
+
           echo "Active task definition:"
-          echo "${TASK_DEFINITION_ARN}"
+          echo "${ACTIVE_TASK_DEFINITION}"
+
 
           DEPLOYED_IMAGE=$(aws ecs describe-task-definition \
-            --task-definition "${TASK_DEFINITION_ARN}" \
+            --task-definition "${ACTIVE_TASK_DEFINITION}" \
             --query "taskDefinition.containerDefinitions[?name=='${CONTAINER_NAME}'].image | [0]" \
             --output text)
+
 
           echo "Deployed image:"
           echo "${DEPLOYED_IMAGE}"
 
+
           if [ "${DEPLOYED_IMAGE}" != "${EXPECTED_IMAGE}" ]; then
+
             echo "ERROR: ECS is not using the expected Git commit image."
-            echo "Expected: ${EXPECTED_IMAGE}"
-            echo "Actual:   ${DEPLOYED_IMAGE}"
+
+            echo "Expected:"
+            echo "${EXPECTED_IMAGE}"
+
+            echo "Actual:"
+            echo "${DEPLOYED_IMAGE}"
+
             exit 1
           fi
 
+
           echo "Correct Git SHA image is deployed."
+
+
+      # ========================================================
+      # 15. Verify ECS Service Counts
+      # ========================================================
 
       - name: Verify ECS service counts
         shell: bash
+
+        env:
+          ECS_CLUSTER: ${{ steps.infrastructure.outputs.ecs_cluster }}
+          ECS_SERVICE: ${{ steps.infrastructure.outputs.ecs_service }}
+
         run: |
           set -euo pipefail
+
 
           DESIRED=$(aws ecs describe-services \
             --cluster "${ECS_CLUSTER}" \
@@ -169,11 +740,13 @@ jobs:
             --query "services[0].desiredCount" \
             --output text)
 
+
           RUNNING=$(aws ecs describe-services \
             --cluster "${ECS_CLUSTER}" \
             --services "${ECS_SERVICE}" \
             --query "services[0].runningCount" \
             --output text)
+
 
           PENDING=$(aws ecs describe-services \
             --cluster "${ECS_CLUSTER}" \
@@ -181,48 +754,69 @@ jobs:
             --query "services[0].pendingCount" \
             --output text)
 
-          echo "Desired tasks: ${DESIRED}"
-          echo "Running tasks: ${RUNNING}"
-          echo "Pending tasks: ${PENDING}"
+
+          echo "========================================"
+          echo "ECS SERVICE COUNTS"
+          echo "========================================"
+          echo "Desired: ${DESIRED}"
+          echo "Running: ${RUNNING}"
+          echo "Pending: ${PENDING}"
+          echo "========================================"
+
 
           if [ "${RUNNING}" -ne "${DESIRED}" ]; then
-            echo "ERROR: Running task count does not match desired task count."
+
+            echo "ERROR: Running task count does not match desired count."
+
             exit 1
           fi
+
 
           if [ "${PENDING}" -ne 0 ]; then
+
             echo "ERROR: ECS still has pending tasks."
+
             exit 1
           fi
 
-          echo "ECS task counts are healthy."
+
+          echo "ECS service counts are healthy."
+
+
+      # ========================================================
+      # 16. Verify Application Health Through CloudFront
+      # ========================================================
+      #
+      # CloudFront domain is read directly from Terraform.
+      #
+      # No CloudFront distribution ID or custom domain is
+      # hard-coded in this deployment workflow.
+      # ========================================================
 
       - name: Verify application health through CloudFront
         shell: bash
+
+        env:
+          CLOUDFRONT_DOMAIN: ${{ steps.infrastructure.outputs.cloudfront_domain }}
+
         run: |
           set -euo pipefail
 
-          echo "Discovering CloudFront distribution..."
-
-          CLOUDFRONT_DOMAIN=$(aws cloudfront list-distributions \
-            --query "DistributionList.Items[?Aliases.Items[?@=='cloud.namienterprises.in']].DomainName | [0]" \
-            --output text)
-
-          if [ -z "${CLOUDFRONT_DOMAIN}" ] || [ "${CLOUDFRONT_DOMAIN}" = "None" ]; then
-            echo "Could not determine the CloudFront distribution domain."
-            exit 1
-          fi
-
-          echo "CloudFront domain:"
-          echo "${CLOUDFRONT_DOMAIN}"
 
           HEALTH_URL="https://${CLOUDFRONT_DOMAIN}/health"
 
-          echo "Checking application health through CloudFront:"
+
+          echo "========================================"
+          echo "APPLICATION HEALTH CHECK"
+          echo "========================================"
           echo "${HEALTH_URL}"
+          echo "========================================"
+
 
           for attempt in {1..30}; do
+
             echo "Health check attempt ${attempt}/30..."
+
 
             if RESPONSE=$(curl \
               --silent \
@@ -232,16 +826,54 @@ jobs:
               --max-time 10 \
               "${HEALTH_URL}"); then
 
-              echo "Response: ${RESPONSE}"
 
-              if echo "${RESPONSE}" | jq -e '.status == "healthy"' > /dev/null; then
-                echo "LangNation application is healthy through CloudFront."
+              echo "Response:"
+              echo "${RESPONSE}"
+
+
+              if echo "${RESPONSE}" \
+                | jq -e '.status == "healthy"' \
+                > /dev/null; then
+
+
+                echo "========================================"
+                echo "LANGNATION DEPLOYMENT HEALTHY"
+                echo "========================================"
+
                 exit 0
               fi
+
             fi
 
+
             sleep 10
+
           done
 
+
           echo "Application did not become healthy through CloudFront."
+
           exit 1
+
+
+      # ========================================================
+      # 17. Deployment Summary
+      # ========================================================
+
+      - name: Deployment summary
+        shell: bash
+
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "LANGNATION M9 APPLICATION DEPLOYMENT"
+          echo "========================================"
+          echo "Source:          demo-website/"
+          echo "Docker image:    ${{ steps.image.outputs.image_uri }}"
+          echo "MariaDB runtime: configured"
+          echo "Lina RAG:        configured"
+          echo "ECS service:     stable"
+          echo "CloudFront:      healthy"
+          echo "Deployment:      SUCCESS"
+          echo "========================================"

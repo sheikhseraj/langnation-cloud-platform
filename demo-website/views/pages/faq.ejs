@@ -1,0 +1,29 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.faq") %></p>
+      <h1><%= t("faq.title") %></h1>
+      <p class="lead"><%= t("faq.lead") %></p>
+    </div>
+
+    <div class="acc">
+      <% faqs.forEach(function (f, i) { %>
+        <details<%= i === 0 ? " open" : "" %>>
+          <summary><%= f.question %></summary>
+          <div class="acc-body prose"><%- f.answer %></div>
+        </details>
+      <% }); %>
+    </div>
+
+    <div class="band" style="margin-top:3rem">
+      <h2 style="font-size:clamp(1.4rem,3vw,1.9rem)"><%= t("faq.stillTitle") %></h2>
+      <p><%= t("faq.stillLead") %></p>
+      <a class="btn" href="<%= lp('/contact') %>"><%= t("cta.enquire") %></a>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

@@ -1,0 +1,34 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.gallery") %></p>
+      <h1><%= t("gallery.title") %></h1>
+      <p class="lead"><%= t("gallery.lead") %></p>
+    </div>
+
+    <%# A masonry-ish column layout: photos keep their own proportions
+        instead of being cropped into a uniform grid. %>
+    <div class="gallery">
+      <% gallery.forEach(function (g, i) { %>
+        <figure class="gallery-item">
+          <img src="<%= g.image.src %>"
+               <% if (g.image.srcset) { %>srcset="<%= g.image.srcset %>" sizes="(min-width:900px) 33vw, (min-width:600px) 50vw, 92vw"<% } %>
+               width="900" height="600"
+               loading="<%= i < 3 ? "eager" : "lazy" %>" decoding="async"
+               alt="<%= g.caption || "" %>">
+          <% if (g.caption || g.description) { %>
+            <figcaption>
+              <% if (g.caption) { %><strong><%= g.caption %></strong><% } %>
+              <% if (g.description) { %><span><%= g.description %></span><% } %>
+            </figcaption>
+          <% } %>
+        </figure>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

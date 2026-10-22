@@ -1,0 +1,26 @@
+<%
+ const details=locals.billingDetails||{ready:false,recipient:'student',company:'',address:'',personalAddress:'',companyAddress:''};
+ const values=locals.billingValues||{recipient:'student',company:details.company,address:details.personalAddress};
+%>
+<section class="sp-card billing-address" id="invoice-address" aria-labelledby="billing-address-title">
+ <h2 id="billing-address-title">Personal and company addresses</h2>
+ <p class="muted">New invoices use your saved company name and address when available. Otherwise, they use your personal address from your account.</p>
+ <% if(locals.billingNotice){ %><p class="notice notice-ok" role="status"><%= billingNotice %></p><% } %>
+ <% if(locals.billingError){ %><p class="notice notice-bad" role="alert"><%= billingError %></p><% } %>
+ <% if(!details.ready){ %><p class="muted">Address settings will be available after the database update.</p><% } %>
+ <form method="post" action="/portal/settings/billing-address" data-billing-address>
+  <input type="hidden" name="_csrf" value="<%= locals.billingCsrf||'' %>">
+  <fieldset<%- details.ready?'':' disabled' %>>
+   <label>Address to edit<select name="recipient" data-billing-recipient>
+    <option value="student" data-address="<%= details.personalAddress||'' %>"<%- values.recipient==='company'?'':' selected' %>>Personal address</option>
+    <option value="company" data-address="<%= details.companyAddress||'' %>"<%- values.recipient==='company'?' selected':'' %>>Company address</option>
+   </select></label>
+   <label data-billing-company>Company name<input type="text" name="company" maxlength="200" autocomplete="organization" value="<%= values.company||'' %>"></label>
+   <label>Complete address<textarea name="address" rows="4" maxlength="400" autocomplete="street-address" required aria-describedby="billing-address-hint"><%= values.address||'' %></textarea></label>
+   <p class="muted" id="billing-address-hint">Street and house number, postcode, city and country. Both addresses are saved separately.</p>
+   <button class="btn btn-sm" type="submit">Save address</button>
+  </fieldset>
+ </form>
+ <p class="muted billing-address-note">Issued invoices keep their recorded recipient and address. To change one, open that invoice and choose “Change address on invoice”. The office must approve the replacement.</p>
+</section>
+<script src="/js/billing-address.js?v=<%= site.assetVersion %>" defer></script>

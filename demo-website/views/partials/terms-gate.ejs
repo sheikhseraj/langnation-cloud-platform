@@ -1,0 +1,85 @@
+<%#
+  The tick box you cannot tick without reading.
+
+  Linking terms away asks somebody to leave the form, read, and come
+  back — which almost nobody does, and which makes the box a formality.
+  Here the text is put in front of them: the link opens a dialog with
+  the terms in it, Accept stays asleep until the panel has been scrolled
+  to the end, and pressing it is what ticks the box.
+
+  One partial rather than one copy per page, because a student creating
+  an account and a teacher creating an account should meet exactly the
+  same thing, and two copies of this drift the first time one of them is
+  improved.
+
+  Without JavaScript, or in a browser with no <dialog>, the link is an
+  ordinary link to the terms page and the box is an ordinary box. That
+  is the fallback, and it is why the link is an <a> and not a button:
+  a button that only works with script leaves somebody no way to read
+  what they are agreeing to.
+
+  Expects:
+    termsTitle   what the terms are called
+    termsPath    their own URL, for the fallback and for opening in a tab
+    termsHtml    the full text, or null to fall back to the plain link
+    acceptError  a server-side message, or null
+  Optional:
+    acceptId     default "accept"
+    acceptName   default "accept"
+    andPrivacy   default true — append "and the privacy policy"
+%>
+<%
+  const _id = typeof acceptId === "undefined" ? "accept" : acceptId;
+  const _name = typeof acceptName === "undefined" ? "accept" : acceptName;
+  const _privacy = typeof andPrivacy === "undefined" ? true : andPrivacy;
+  const _err = typeof acceptError === "undefined" ? null : acceptError;
+  const _html = typeof termsHtml === "undefined" ? null : termsHtml;
+%>
+<div data-terms-gate>
+  <label class="check" for="<%= _id %>">
+    <input type="checkbox" id="<%= _id %>" name="<%= _name %>" value="1" required
+           <%# Raw, not escaped: this emits an attribute, and the escaping
+               output tag would turn its quotes into &#34; and produce a
+               value rather than markup. The string is a constant here,
+               never anything that was submitted. %>
+           data-accept<%- _err ? ' aria-invalid="true"' : "" %>
+           aria-describedby="err-<%= _id %>">
+    <span>
+      I have read and accept the
+      <a href="<%= termsPath %>" target="_blank" rel="noopener" data-open-terms><%= termsTitle %></a><%
+        if (_privacy) { %> and the <a href="/privacy-policy" target="_blank" rel="noopener">privacy policy</a><% }
+      %>.
+    </span>
+  </label>
+  <p class="field-error" id="err-<%= _id %>"<%- _err ? "" : " hidden" %>><%= _err || "" %></p>
+
+  <% if (_html) { %>
+    <%#
+      A <dialog>, so the browser handles focus, Escape and the backdrop.
+      Doing that by hand is fiddly to get right and easy to get wrong
+      for anyone using a keyboard or a screen reader.
+    %>
+    <dialog class="ln-dialog ln-dialog-wide" data-terms-dialog aria-label="<%= termsTitle %>">
+      <h2 style="margin:0 0 .2rem;font-size:1.25rem"><%= termsTitle %></h2>
+      <p class="muted" style="margin:0 0 1rem;font-size:.85rem">
+        Scroll to the end to accept.
+      </p>
+
+      <div class="terms-scroll prose" data-terms-scroll tabindex="0">
+        <%- _html %>
+      </div>
+
+      <%# Filled in while the panel is being read. role=status so a
+          screen reader hears the progress without being interrupted. %>
+      <p class="muted" style="font-size:.8rem;margin:.8rem 0 0"
+         data-terms-progress role="status" aria-live="polite">
+        Please read to the end.
+      </p>
+
+      <div class="row" style="gap:.6rem;margin-top:.9rem;flex-wrap:wrap">
+        <button class="btn" type="button" data-terms-accept disabled>I accept</button>
+        <button class="btn btn-ghost" type="button" data-terms-decline>Decline</button>
+      </div>
+    </dialog>
+  <% } %>
+</div>

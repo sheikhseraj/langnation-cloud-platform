@@ -1,0 +1,551 @@
+<%#
+  One piece of homework, as a worksheet.
+
+  ── The layout ──────────────────────────────────────────────────────
+
+  The same three columns the LangNation blog uses, because it is the
+  right shape for this and a student should not have to learn a second
+  one: a list of everything on the left, the thing itself in the
+  middle, and what is on this page down the right.
+
+    Homework      ·  the worksheet  ·  On this page
+    (other chapters)                  (the questions, with their marks)
+
+  The site header stays. It carries the logo, the light/dark switch and
+  the way out, and this was the only page on the site without it —
+  which is how somebody ends up in a room with no door.
+
+  ── The worksheet ───────────────────────────────────────────────────
+
+  It used to be one question at a time. That is right for a language
+  app and wrong for this: these chapters come out of a paper workbook
+  where Übung A is six numbered gaps you fill in and then check, and
+  six gaps as six screens is six times the clicking for nothing.
+  mein-deutschbuch, lingua and german.net all put the whole exercise on
+  one page.
+
+  What none of them do is mark it as you go — they make you fill in
+  sixteen and press Check at the end, so somebody can repeat the same
+  mistake sixteen times before finding out. Here a row marks itself as
+  soon as it is finished and the explanation opens underneath it.
+
+  Numbered rows and the hint in its own right-hand column are lifted
+  from mein-deutschbuch's conjugation drill, which is the best laid out
+  of them: lining them up is what makes twenty of them scannable.
+
+  Works with JavaScript off — every row is its own form with a real
+  submit button. Duller, not broken.
+%>
+<%- include("../../partials/portal-head", { title: ex.title }) %>
+<% if (ex.learning) { %>
+  <%- include('../../partials/homework-learning') %>
+<% } else { %>
+
+<%
+  const answers = typeof done !== "undefined" && done ? done : {};
+  const answeredN = Object.keys(answers).length;
+  const rightN = Object.keys(answers).filter((k) => answers[k]).length;
+  const others = typeof siblings !== "undefined" && siblings ? siblings : [];
+
+  /* A closed attempt is read back, not written to.
+   *
+   * check() refuses an answer against a finished attempt — correctly,
+   * because the score has been taken. So when one is being shown, the
+   * sheet is locked: the answers are there to read, and the only thing
+   * on offer is to go again. Leaving the boxes live would let somebody
+   * type into a record that cannot accept it and be told nothing. */
+  const shut = typeof finished !== "undefined" && finished;
+
+  /* The filters, carried on by every link below. Defaulted rather
+     than assumed: this page is rendered by the test suite too.
+
+     Named apart from the locals they read. `const keep = typeof keep
+     ...` looks like it defaults itself and does not — the declaration
+     shadows the local for the whole scope, and `typeof` on a const in
+     its own dead zone throws rather than saying "undefined". */
+  const qs = typeof keep !== "undefined" && keep ? keep : "";
+  const qsFresh = typeof keepFresh !== "undefined" && keepFresh ? keepFresh : "?fresh=1";
+
+  // The hint a workbook puts after the sentence — "(sein)", "(haben,
+  // Prät.)". Lifted out so it can sit in a column of its own instead
+  // of trailing off the end, which is what lets a page of them line up.
+  const splitHint = (text) => {
+    const m = String(text || "").match(/^(.*?)\s*\(([^()]{1,40})\)\s*$/);
+    return m ? { prompt: m[1], hint: m[2] } : { prompt: text || "", hint: "" };
+  };
+
+  const esc = (s) => String(s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+%>
+
+<a class="skip-link" href="#hw-sheet">Skip to the questions</a>
+
+<div class="hw-shell wrap">
+
+  <%# ── Left: everything else they have been given ───────────────── %>
+  <div class="material-mobile-tools"><div class="material-mobile-back"><%- include('../../partials/study-back',{studyHref:'/portal/homework'+qs,studyLabel:"Meine Aufgaben"}) %></div><nav class="hw-aside hw-other" aria-label="Meine Aufgaben">
+    <details class="material-lesson-menu" data-responsive-menu data-menu-breakpoint="859" open><summary class="hw-aside-head"><span>Aufgaben</span><svg class="material-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></summary>
+    <ul class="hw-aside-list">
+      <% others.forEach(function (o) { %>
+        <%
+          /* Decided in lib/exercises (markOf) and not here — this list
+             and the contents page used to work it out separately and
+             came to different answers about the same chapter. */
+          const full = o.mark === "done";
+          const mark = o.mark ? " is-" + o.mark : "";
+        %>
+        <li>
+          <a class="hw-aside-one hw-chapter<%= mark %><%= Number(o.id) === Number(ex.id) ? " is-here" : "" %>"
+             href="/portal/homework/<%= o.id %><%= qs %>"
+             <%- Number(o.id) === Number(ex.id) ? 'aria-current="page"' : "" %>>
+            <span class="hw-chapter-box" aria-hidden="true">
+              <% if (full) { %>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+              <% } %>
+            </span>
+            <span class="hw-chapter-t"><%= o.title %></span>
+            <% if (mark) { %>
+              <span class="sr-only">— <%= full ? "done, " + o.best + " of " + o.questions : "started" %></span>
+            <% } %>
+          </a>
+        </li>
+      <% }); %>
+    </ul>
+    <p class="hw-aside-foot"><a href="/portal/homework<%= qs %>">Alle Aufgaben</a></p>
+  </details></nav></div>
+
+  <%# ── Middle: the worksheet ────────────────────────────────────── %>
+  <main class="hw-sheet-col" id="hw-sheet">
+
+    <%# The way out.
+        On a phone the left-hand list is hidden, so without this the
+        only way back to the portal was the browser's own back button
+        — and the header's face, which nobody reads as "out of here". %>
+    <%- include('../../partials/study-back',{studyHref:'/portal/homework'+qs,studyLabel:"Meine Aufgaben"}) %>
+
+    <%# Only the draft warning survives.
+        "Unlocked for you only" sat on every chapter this school sets,
+        because every one of them is given to chosen people — so it said
+        the same thing forty-one times and told a student nothing they
+        could act on. The draft case is different: a teacher trying
+        their own homework before the class gets it needs to know the
+        class cannot see it yet. %>
+    <% if (typeof unlocked !== "undefined" && unlocked
+           && typeof published !== "undefined" && !published) { %>
+      <p class="hw-unlocked">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0"/>
+        </svg>
+        Still a draft — nobody else can see this yet.
+      </p>
+    <% } %>
+
+    <div class="hw-intro">
+      <%# Which course this belongs to, then the batch, then the level.
+          The course matters to somebody taking two of them: chapter
+          numbers run over each other, and "A1 · Kapitel 03" on its own
+          says nothing about who set it.
+
+          Homework given to chosen people has none of the first two,
+          and printing the separator regardless left a lonely "· B1"
+          up here — hence filtering before joining. %>
+      <% const tag = [ex.course_title, ex.batch_code, ex.level].filter(Boolean).join(" · "); %>
+      <% if (tag) { %><p class="hw-eyebrow"><%= tag %></p><% } %>
+      <h1><%= ex.title %></h1>
+      <% if (ex.intro) { %><p class="hw-lead"><%= ex.intro %></p><% } %>
+    </div>
+
+    <%
+      /* The pages, and which one the reading text is on.
+       *
+       * ex.pages comes from the questions, so a reading page — which
+       * has none — is not in it and has to be added. A chapter with
+       * no ## at all has one page and reads exactly as it always did.
+       */
+      /* A chapter written before pages existed has a passage and no
+         page for it. It belongs on the first page, which is where it
+         has always been: above the questions. */
+      const passagePage = Number(ex.passagePage) || (ex.passage ? 1 : 0);
+
+      /* How many questions there are TO MARK.
+       *
+       * Not ex.questions.length any more. An open task is written,
+       * not answered, so counting it made a chapter say "0 of 37"
+       * when 23 could ever be marked — and, worse, meant the
+       * worksheet could never finish: the script waits for every
+       * question to be marked and fourteen of them never would be. */
+      const markedN = ex.questions.filter((q) => q.kind !== "open").length;
+      const nos = new Set((ex.pages || []).map((p) => p.no));
+      if (ex.passage && passagePage) nos.add(passagePage);
+      if (!nos.size) nos.add(1);
+      const byNo = new Map((ex.pages || []).map((p) => [p.no, p]));
+      /* The reading page has no questions, so it is not in ex.pages
+         and its heading is kept on the exercise instead. */
+      if (passagePage && !byNo.has(passagePage)) {
+        byNo.set(passagePage, { no: passagePage, title: ex.passageTitle || "", intro: "" });
+      }
+      const pages = [...nos].sort((a, b) => a - b).map((no) => ({
+        no,
+        title: (byNo.get(no) || {}).title || "",
+        intro: (byNo.get(no) || {}).intro || "",
+      }));
+      const paged = pages.length > 1;
+    %>
+
+    <%# When to mark.
+        Checking each answer as it is written is the better way to
+        learn and it is what this does by default — the correction
+        arrives at the moment of the mistake instead of sixteen
+        mistakes later. But a worksheet is also a thing people like to
+        fill in and then mark, the way the paper one works, and which
+        of those you want is not something a website gets to decide.
+        Hidden without JavaScript, where every row has its own button
+        and the choice does not arise. %>
+    <% if (!shut) { %>
+      <div class="hw-mode" data-hw-mode hidden>
+        <span class="hw-mode-label">Prüfen</span>
+        <div class="hw-mode-opts" role="group" aria-label="Wann geprüft wird">
+          <button class="hw-mode-btn" type="button" data-hw-mode-set="each" aria-pressed="true">
+            nach jeder Antwort
+          </button>
+          <button class="hw-mode-btn" type="button" data-hw-mode-set="end" aria-pressed="false">
+            am Ende
+          </button>
+        </div>
+      </div>
+    <% } %>
+
+    <%# One section per page.
+     *
+     * Every page is rendered. The script hides all but the current
+     * one and shows the pager; with no script the whole worksheet is
+     * on the page, which is what it was before and is still a
+     * perfectly good way to do homework. Nothing is behind a button
+     * that only exists when JavaScript runs.
+     %>
+    <% pages.forEach(function (pg, pgIx) { %>
+    <section class="hw-page" id="seite-<%= pg.no %>" data-hw-page="<%= pg.no %>">
+      <% if (paged) { %>
+        <p class="hw-page-of">Seite <%= pgIx + 1 %> von <%= pages.length %></p>
+      <% } %>
+      <% if (pg.title) { %><h2 class="hw-page-title"><%= pg.title %></h2><% } %>
+      <%# What this Übung asks for. Per page, because the chapter's
+          seven Übungen ask for seven different things. %>
+      <% if (pg.intro) { %><p class="hw-page-lead"><%= pg.intro %></p><% } %>
+
+      <% if (ex.passage && passagePage === pg.no) { %>
+        <section class="hw-passage">
+          <h2>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7z"/>
+            </svg>
+            Lies den Text
+          </h2>
+          <%# The illustration, when the chapter has one. Lazy and
+              sized, because it is the one heavy thing on the page and
+              it is on the last page of eight. %>
+          <% if (ex.passageImage) { %>
+            <img class="hw-passage-img" src="<%= ex.passageImage %>" alt=""
+                 loading="lazy" decoding="async" width="800" height="533">
+          <% } %>
+          <div class="hw-passage-text"><%= ex.passage %></div>
+        </section>
+      <% } %>
+
+    <ol class="hw-sheet<%= shut ? " is-finished" : "" %>">
+      <% ex.questions.filter(function (q) { return (Number(q.page) || 1) === pg.no; }).forEach(function (q) { %>
+        <%
+          const bits = splitHint(q.prompt);
+          const was = answers[q.id];
+          const state = was === undefined ? "" : was ? " is-right" : " is-wrong";
+        %>
+        <li class="hw-row<%= state %>" id="frage-<%= q.seq %>"
+            data-hw-q data-hw-id="<%= q.id %>" data-hw-seq="<%= q.seq %>"
+            data-hw-kind="<%= q.kind %>"<%= was !== undefined ? " data-hw-answered" : "" %>>
+          <form method="post" action="/portal/homework/<%= ex.id %>/check">
+            <input type="hidden" name="attempt" value="<%= attemptId %>">
+            <input type="hidden" name="question" value="<%= q.id %>">
+
+            <span class="hw-row-n" aria-hidden="true"><%= q.seq %></span>
+
+            <div class="hw-row-body">
+              <% if (q.image) { %>
+                <img class="hw-pic" src="<%= q.image %>" alt="" loading="lazy">
+              <% } %>
+
+              <p class="hw-prompt">
+                <% if (q.kind === "dropdown") { %>
+                  <% const parts = bits.prompt.split(/\[[^\][]*\]/); let g = 0; %>
+                  <% parts.forEach(function (part, pi) { %>
+                    <%- esc(part) %>
+                    <% if (pi < parts.length - 1) { const gap = q.gaps[g] || { options: [] }; g++; %>
+                      <select class="hw-drop" name="given"<%= shut ? " disabled" : "" %>
+                              aria-label="Choice <%= g %>, question <%= q.seq %>">
+                        <option value="">…</option>
+                        <% gap.options.forEach(function (o) { %>
+                          <option value="<%= o %>"><%= o %></option>
+                        <% }); %>
+                      </select>
+                    <% } %>
+                  <% }); %>
+
+                <% } else if (q.kind === "gap") { %>
+                  <% const chunks = bits.prompt.split(/_{3,}/); let n = 0; %>
+                  <% chunks.forEach(function (chunk, ci) { %>
+                    <%- esc(chunk) %>
+                    <% if (ci < chunks.length - 1) { n++; %>
+                      <input class="hw-blank" type="text" name="given" autocomplete="off"
+                             autocapitalize="off" spellcheck="false"<%= shut ? " disabled" : "" %>
+                             aria-label="Answer <%= n %>, question <%= q.seq %>">
+                    <% } %>
+                  <% }); %>
+
+                <% } else { %>
+                  <%= bits.prompt %>
+                <% } %>
+              </p>
+
+              <% if (q.kind === "open") { %>
+                <%# A task with no single right answer.
+                 *
+                 * The student writes, then asks to see how the
+                 * teacher did it. Nothing is posted and nothing is
+                 * marked: this row is not in the score at all, which
+                 * is what lets it exist. Marking a written sentence
+                 * against one model answer fails somebody who wrote
+                 * different, correct German — and that is the whole
+                 * reason a third of the workbook was being left out.
+                 %>
+                <textarea class="hw-write" name="written" rows="2"
+                          placeholder="Schreib deine Antwort …"
+                          autocapitalize="sentences" spellcheck="false"
+                          aria-label="Deine Antwort, Aufgabe <%= q.seq %>"<%= shut ? " disabled" : "" %>></textarea>
+                <div class="hw-open">
+                  <button class="btn btn-sm btn-ghost" type="button" data-hw-show>
+                    So könnte es heißen
+                  </button>
+                  <%# Rendered, and hidden, rather than fetched: there
+                      is nothing to protect. No score moves, so the
+                      only thing seeing it early costs is the practice
+                      of trying first. %>
+                  <div class="hw-model" data-hw-model hidden>
+                    <p class="hw-model-head">Eine mögliche Lösung — andere Formulierungen können genauso richtig sein.</p>
+                    <ul>
+                      <% (q.shown || []).forEach(function (one) { %>
+                        <li><%= one %></li>
+                      <% }); %>
+                    </ul>
+                    <% if (q.explain) { %><p class="hw-model-why"><%= q.explain %></p><% } %>
+                  </div>
+                </div>
+              <% } %>
+
+              <% if (q.kind === "choice") { %>
+                <%# Whole tappable cards rather than radio dots: on a
+                    phone, the difference between choosing and aiming. %>
+                <div class="hw-opts">
+                  <% q.options.forEach(function (o, oi) { %>
+                    <label class="hw-opt">
+                      <input type="radio" name="given" value="<%= o %>"<%= shut ? " disabled" : "" %>>
+                      <span class="hw-opt-key"><%= String.fromCharCode(65 + oi) %></span>
+                      <span class="hw-opt-text"><%= o %></span>
+                    </label>
+                  <% }); %>
+                </div>
+              <% } %>
+
+              <%# Under the row, never over it: a panel that covers the
+                  question hides the thing the explanation is about. %>
+              <div class="hw-verdict" data-hw-verdict hidden aria-live="polite"></div>
+            </div>
+
+            <span class="hw-row-hint"><% if (bits.hint) { %>(<%= bits.hint %>)<% } %></span>
+            <span class="hw-row-mark" data-hw-mark aria-hidden="true"></span>
+
+            <%# The no-JavaScript path, hidden once the script runs —
+                by then a row checks itself. Not drawn at all on a
+                closed attempt: the server would refuse it, and a
+                button that does nothing is worse than no button. %>
+            <%# Not on an open task: there is nothing to check it
+                against, and the server refuses it. A button that does
+                nothing is worse than no button. %>
+            <% if (!shut && q.kind !== "open") { %>
+              <button class="btn btn-sm hw-row-go" type="submit">Prüfen</button>
+            <% } %>
+          </form>
+        </li>
+      <% }); %>
+    </ol>
+    </section>
+    <% }); %>
+
+    <%# Back and Next, hidden until the script takes over — with no
+        script every page is already on screen and there is nothing to
+        page through. aria-live so the page number is announced when
+        it changes, because the heading above it is the only other
+        thing that says where you are. %>
+    <% if (paged) { %>
+      <nav class="hw-pager" data-hw-pager hidden aria-label="Seiten">
+        <button class="btn btn-sm btn-ghost" type="button" data-hw-prev>← Zurück</button>
+        <%# data-hw-page-at, not data-hw-at: that one is the "N of M
+            answered" counter in the aside, and this element comes
+            first in the document, so sharing the name would have
+            handed the pager's box to the counter's querySelector. %>
+        <p class="hw-pager-at" data-hw-page-at aria-live="polite"></p>
+        <button class="btn btn-sm" type="button" data-hw-next>Weiter →</button>
+      </nav>
+    <% } %>
+
+    <% if (shut) { %>
+      <%#
+        The record, read back.
+
+        This is the thing that was missing and it is the whole of the
+        complaint: somebody did a chapter, went away, came back, and
+        the page said "0 of 6 answered" as though the evening had not
+        happened. The answers were in the database the entire time.
+
+        So a finished attempt now says what it was, in German, with
+        the one button that makes sense next to it.
+      %>
+      <section class="hw-again">
+        <p class="hw-again-head">
+          Schon gemacht — <strong><%= rightN %></strong> von <%= markedN %> richtig
+        </p>
+        <p class="hw-again-note">
+          Deine Antworten stehen oben. Üben kannst du so oft du willst — gezählt
+          wird dein bestes Ergebnis.
+        </p>
+        <div class="hw-do">
+          <% if (typeof next !== "undefined" && next) { %>
+            <a class="btn" href="/portal/homework/<%= next.id %><%= qs %>">Weiter: <%= next.title %></a>
+            <a class="btn btn-ghost" href="/portal/homework/<%= ex.id %><%= qsFresh %>">Noch einmal üben</a>
+          <% } else { %>
+            <a class="btn" href="/portal/homework/<%= ex.id %><%= qsFresh %>">Noch einmal üben</a>
+          <% } %>
+          <a class="btn btn-ghost" href="/portal/homework<%= qs %>">Zurück zu den Aufgaben</a>
+        </div>
+      </section>
+    <% } else { %>
+      <div class="hw-foot">
+        <p class="hw-foot-sum" data-hw-sum></p>
+        <div class="hw-do">
+          <button class="btn" type="button" data-hw-all hidden>Alles prüfen</button>
+          <% if (answeredN) { %>
+            <a class="btn btn-ghost hw-foot-again"
+               href="/portal/homework/<%= ex.id %><%= qsFresh %>">Noch einmal üben</a>
+          <% } %>
+        </div>
+      </div>
+
+      <%# Only on a live attempt. With this absent the script's tally()
+          has no box to open, which is also what stops it posting
+          /finish against an attempt that is already closed. %>
+      <section class="hw-done" data-hw-done hidden>
+        <div class="hw-done-mark" data-hw-emoji>🎉</div>
+        <h2 data-hw-headline>Fertig!</h2>
+        <p class="hw-score"><strong data-hw-score>0</strong><span class="muted"> / <%= markedN %></span></p>
+        <p class="hw-done-note" data-hw-note></p>
+        <div class="hw-do">
+          <%# Finishing carries on through the book: the POST closes
+              the attempt and the server sends them to the next
+              chapter. One button, because "Fertig" followed by
+              finding your place in a list of forty-one again is two
+              steps for one intention. %>
+          <form method="post" action="/portal/homework/<%= ex.id %>/finish">
+            <input type="hidden" name="attempt" value="<%= attemptId %>">
+            <button class="btn" type="submit"><% if (typeof next !== "undefined" && next) { %>Weiter<% } else { %>Fertig<% } %></button>
+          </form>
+          <a class="btn btn-ghost" href="/portal/homework/<%= ex.id %><%= qsFresh %>">Noch einmal üben</a>
+        </div>
+        <% if (typeof next !== "undefined" && next) { %>
+          <%# Named, and a link: Weiter posts first so the attempt is
+              closed properly, but the name is the thing somebody
+              actually wants to press and it should behave like one. %>
+          <p class="hw-next-name">
+            Als Nächstes:
+            <a href="/portal/homework/<%= next.id %><%= qs %>"><%= next.title %></a>
+          </p>
+        <% } %>
+      </section>
+    <% } %>
+  </main>
+
+  <%# ── Right: what is on this page ──────────────────────────────── %>
+  <nav class="hw-aside hw-onpage" aria-label="Questions on this page">
+    <p class="hw-aside-head">On this page</p>
+
+    <div class="hw-onpage-bar" role="progressbar" aria-valuemin="0"
+         aria-valuemax="<%= markedN %>" aria-valuenow="<%= answeredN %>"
+         aria-label="Answered" data-hw-bar>
+      <span data-hw-fill style="width:<%= markedN ? Math.round(answeredN / markedN * 100) : 0 %>%"></span>
+    </div>
+    <p class="hw-onpage-count">
+      <strong data-hw-at><%= answeredN %></strong> of <%= markedN %> answered
+    </p>
+
+    <%# On a chapter with pages, the Übungen. On one without, the
+        questions, which is what this has always been.
+
+        Twenty-three sentences down the side of a worksheet is the
+        worksheet again in smaller type — it was a contents list when
+        a chapter was six questions, and it stopped being one at
+        thirty-seven. Eight headings is a contents list. %>
+    <% if (paged) { %>
+      <ol class="hw-aside-list">
+        <% pages.forEach(function (pg, pgIx) { %>
+          <%
+            /* Done when every question on it that CAN be marked has
+               been. A reading page and a page of written tasks have
+               none, so they are never "done" and are not pretended
+               to be. */
+            const mine = ex.questions.filter((q) => (Number(q.page) || 1) === pg.no);
+            const markable = mine.filter((q) => q.kind !== "open");
+            const did = markable.filter((q) => answers[q.id] !== undefined);
+            const wrong = markable.some((q) => answers[q.id] === false);
+            const state = !markable.length ? ""
+              : did.length < markable.length ? ""
+              : wrong ? " is-wrong" : " is-right";
+          %>
+          <li>
+            <a class="hw-aside-one hw-jump<%= state %>" href="#seite-<%= pg.no %>"
+               data-hw-page-jump="<%= pg.no %>">
+              <span class="hw-jump-n"><%= pgIx + 1 %></span>
+              <span class="hw-jump-t"><%= pg.title || ("Seite " + (pgIx + 1)) %></span>
+              <%# How much of it is left, where there is anything to
+                  count. "4/6" is the useful number on a contents
+                  page; a page with nothing to mark says nothing. %>
+              <% if (markable.length) { %>
+                <span class="hw-jump-of"><%= did.length %>/<%= markable.length %></span>
+              <% } %>
+            </a>
+          </li>
+        <% }); %>
+      </ol>
+    <% } else { %>
+      <ol class="hw-aside-list">
+        <% ex.questions.forEach(function (q) { %>
+          <%
+            const was = answers[q.id];
+            const state = was === undefined ? "" : was ? " is-right" : " is-wrong";
+          %>
+          <li>
+            <a class="hw-aside-one hw-jump<%= state %>" href="#frage-<%= q.seq %>"
+               data-hw-jump="<%= q.seq %>">
+              <span class="hw-jump-n"><%= q.seq %></span>
+              <span class="hw-jump-t"><%= (splitHint(q.prompt).prompt || "").replace(/_{3,}/g, "___") %></span>
+            </a>
+          </li>
+        <% }); %>
+      </ol>
+    <% } %>
+  </nav>
+
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+<script src="/js/exercise.js?v=<%= site.assetVersion %>" defer></script>
+<% } %>
+<%- include("../../partials/dictionary-popover", {dictionaryModule:"homework"}) %>
+</body>
+</html>

@@ -1,0 +1,215 @@
+[
+ {
+  "id": "sachsen-anhalt-1",
+  "number": 438,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Welches Wappen gehört zum Bundesland Sachsen-Anhalt?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/sachsen-anhalt-1-1.webp",
+     "w": 233,
+     "h": 280
+    },
+    {
+     "src": "/img/einbuergerungstest/sachsen-anhalt-1-2.webp",
+     "w": 195,
+     "h": 270
+    },
+    {
+     "src": "/img/einbuergerungstest/sachsen-anhalt-1-3.webp",
+     "w": 220,
+     "h": 264
+    },
+    {
+     "src": "/img/einbuergerungstest/sachsen-anhalt-1-4.webp",
+     "w": 196,
+     "h": 260
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ },
+ {
+  "id": "sachsen-anhalt-2",
+  "number": 432,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Welches ist ein Landkreis in Sachsen-Anhalt?",
+  "answers": [
+   "Ammerland",
+   "Altötting",
+   "Uckermark",
+   "Börde"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ },
+ {
+  "id": "sachsen-anhalt-3",
+  "number": 433,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Für wie viele Jahre wird der Landtag in Sachsen-Anhalt gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ },
+ {
+  "id": "sachsen-anhalt-4",
+  "number": 434,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Ab welchem Alter darf man in Sachsen-Anhalt bei Kommunalwahlen wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ },
+ {
+  "id": "sachsen-anhalt-5",
+  "number": 435,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Welche Farben hat die Landesflagge von Sachsen-Anhalt?",
+  "answers": [
+   "blau-weiß-rot",
+   "gelb-schwarz",
+   "grün-weiß-rot",
+   "weiß-rot"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ },
+ {
+  "id": "sachsen-anhalt-6",
+  "number": 436,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Wo können Sie sich in Sachsen-Anhalt über politische Themen informieren?",
+  "answers": [
+   "bei den Kirchen",
+   "bei der Landeszentrale für politische Bildung",
+   "beim Ordnungsamt der Gemeinde",
+   "bei der Verbraucherzentrale"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ },
+ {
+  "id": "sachsen-anhalt-7",
+  "number": 437,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Die Landeshauptstadt von Sachsen-Anhalt heißt …",
+  "answers": [
+   "Halle.",
+   "Dessau.",
+   "Magdeburg.",
+   "Wittenberg."
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ },
+ {
+  "id": "sachsen-anhalt-8",
+  "number": 431,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Welches Bundesland ist Sachsen-Anhalt?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/sachsen-anhalt-8.webp",
+     "w": 722,
+     "h": 605
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ },
+ {
+  "id": "sachsen-anhalt-9",
+  "number": 439,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef in Sachsen-Anhalt?",
+  "answers": [
+   "Erste Ministerin/Erster Minister",
+   "Premierministerin/Premierminister",
+   "Bürgermeisterin/Bürgermeister",
+   "Ministerpräsidentin/Ministerpräsident"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ },
+ {
+  "id": "sachsen-anhalt-10",
+  "number": 440,
+  "type": "state",
+  "category": "Sachsen-Anhalt",
+  "question": "Welche Ministerin/welchen Minister hat Sachsen-Anhalt nicht?",
+  "answers": [
+   "Justizministerin/Justizminister",
+   "Außenministerin/Außenminister",
+   "Finanzministerin/Finanzminister",
+   "Innenministerin/Innenminister"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Sachsen-Anhalt"
+ }
+]

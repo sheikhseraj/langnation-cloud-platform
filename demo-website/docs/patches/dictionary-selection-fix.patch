@@ -1,0 +1,338 @@
+diff --git a/vocabulary-lookup.js b/vocabulary-lookup.js
+--- a/vocabulary-lookup.js
++++ b/vocabulary-lookup.js
+@@ -1,3 +1,4 @@
++const {normalize:normalizeLookup,rank:rankLookup}=require('./dictionary-ranking');
+ // ============================================================
+ //  vocabulary-lookup.js
+ //  Drop this file in your project root alongside server.js
+@@ -254,6 +255,7 @@
+   if (!pool) return null;
+ 
+   try {
++    word=normalizeLookup(word);
+     // Build search condition based on mode. We match article-insensitively so a
+     // search for "Haus" finds the stored "das Haus" (and vice-versa).
+     let whereClause;
+@@ -263,10 +265,13 @@
+     const dePlaceholders = deForms.map(() => '?').join(', ');
+     const enPlaceholders = enForms.map(() => '?').join(', ');
+     const deLike = sqlLikeForm(stripGermanArticle(word));
++    // SQL retrieves candidates; parsed whole forms decide rank before any limit.
++    // In particular a JSON substring like 'sehe entgegen' is not the form 'sehe'.
++    const morphologyColumns=['vf.praesens','vf.praeteritum','vf.perfekt','vf.konjunktiv2','vf.partizip2','nf.singular_forms','nf.plural_forms'];
+     const formDeClause = `
+       LOWER(vf.infinitive_de) IN (${dePlaceholders})
+-      OR LOWER(COALESCE(vf.praeteritum, '')) LIKE ? ESCAPE '\\\\'
+-      OR LOWER(COALESCE(vf.perfekt, '')) LIKE ? ESCAPE '\\\\'
++      OR ${morphologyColumns.map(c=>`LOWER(COALESCE(${c}, '')) LIKE ? ESCAPE '\\\\'`).join(' OR ')}
++      OR LOWER(v.word_de) LIKE ? ESCAPE '\\\\'
+       OR LOWER(nf.plural_de) IN (${dePlaceholders})
+       OR LOWER(af.positiv_de) IN (${dePlaceholders})
+       OR LOWER(af.komparativ_de) IN (${dePlaceholders})
+@@ -283,7 +288,7 @@
+       OR LOWER(af.comparative_en) IN (${enPlaceholders})
+       OR LOWER(af.superlative_en) IN (${enPlaceholders})
+     `;
+-    const deFormParams = [...deForms, deLike, deLike, ...deForms, ...deForms, ...deForms, ...deForms];
++    const deFormParams = [...deForms, ...morphologyColumns.map(()=>deLike), deLike, ...deForms, ...deForms, ...deForms, ...deForms];
+     const enFormParams = [...enForms, ...enForms, ...enForms, ...enForms, ...enForms, ...enForms, ...enForms, ...enForms, ...enForms];
+ 
+     if (mode === 'en-de') {
+@@ -321,13 +326,13 @@
+       LEFT JOIN adverb_forms adv ON adv.vocab_id = v.id
+       WHERE ${whereClause}
+       ORDER BY v.search_count DESC, FIELD(v.pos, 'noun', 'verb', 'adjective', 'adverb', 'phrase')
+-      LIMIT 12
+     `, params);
+ 
+     if (!rows || rows.length === 0) return null;
+ 
+-    let resultRows = rows;
+-    const familyIds = Array.from(new Set(rows.map(r => r.word_family_id).filter(Boolean)));
++    const rankedRows=mode==='en-de'?rows:rankLookup(rows,word,options.context||'');
++    let resultRows=rankedRows.slice(0,12);
++    const familyIds = Array.from(new Set(resultRows.map(r => r.word_family_id).filter(Boolean)));
+     if (familyIds.length) {
+       try {
+         const [familyRows] = await pool.query(`
+@@ -355,15 +360,17 @@
+           LIMIT 30
+         `, [familyIds]);
+         const seen = new Set();
+-        resultRows = [...rows, ...(familyRows || [])].filter(r => {
++        resultRows = [...resultRows, ...(familyRows || [])].filter(r => {
+           if (seen.has(r.id)) return false;
+           seen.add(r.id);
+           return true;
+         });
+       } catch (e) {
+-        resultRows = rows;
++        resultRows = rankedRows.slice(0,12);
+       }
+     }
++
++    if(mode!=='en-de')resultRows=rankLookup(resultRows,word,options.context||'').slice(0,40);
+ 
+     // Determine direction
+     const firstRow  = resultRows[0];
+@@ -406,7 +413,7 @@
+       }
+ 
+       // Add verb-specific data
+-      if (row.pos === 'verb' && row.praesens) {
++      if (row.pos === 'verb') {
+         entry.verb_forms = {
+           auxiliary:    row.auxiliary,
+           partizip2:    row.partizip2,
+diff --git a/dictionary-api.js b/dictionary-api.js
+--- a/dictionary-api.js
++++ b/dictionary-api.js
+@@ -1,13 +1,14 @@
+ "use strict";
+ const crypto=require('crypto');
++const {rank,normalize:matchKey}=require('./dictionary-ranking');
+ const {lookupInVocabulary}=require('./vocabulary-lookup');
+ function normalize(q){return q.normalize('NFC').trim().replace(/^[\p{P}\p{S}\s]+|[\p{P}\p{S}\s]+$/gu,'');}
+-function lookupKey(e){return 'lookup:'+crypto.createHash('sha256').update(JSON.stringify([String(e.source||'').normalize('NFC'),String(e.target||'').normalize('NFC'),e.pos||''])).digest('hex');}
++function lookupKey(e){return 'lookup:'+crypto.createHash('sha256').update(JSON.stringify([String(e.source||'').normalize('NFC'),String(e.target||'').normalize('NFC'),e.pos||''])).digest('hex');}
+ function entries(result){return (result?.entries||[]).filter(e=>typeof e.source==='string' && typeof e.target==='string').map(e=>({
+  id:e.vocab_id?'vocabulary:'+e.vocab_id:lookupKey(e),lookupKey:lookupKey(e),headword:e.source,displayHeadword:e.article&&!/^(der|die|das) /i.test(e.source)?e.article+' '+e.source:e.source,
+  partOfSpeech:e.pos,article:e.article,plural:e.plural,meanings:e.target?[{text:e.target,language:'en'}]:[],
+  synonyms:e.synonyms||[],examples:e.examples?.length?e.examples:e.example_source?[{source:e.example_source,translation:e.example_target}]:[],
+- wordFamilyId:e.word_family_id,verbForms:e.verb_forms,nounForms:e.noun_forms,adjectiveForms:e.adj_forms,audioUrl:null,
++ lemma:e.lemma_de,wordFamilyId:e.word_family_id,verbForms:e.verb_forms,nounForms:e.noun_forms,adjectiveForms:e.adj_forms,audioUrl:null,
+  fullDictionaryUrl:'https://langnation.de/?q='+encodeURIComponent(e.source)
+ }));}
+ function register(app,getPool,lookupHandler){
+@@ -15,18 +16,20 @@
+   const configured=process.env.DICTIONARY_SERVICE_KEY;
+   if(configured){const got=req.get('x-dictionary-key')||'';if(Buffer.byteLength(got)!==Buffer.byteLength(configured)||!crypto.timingSafeEqual(Buffer.from(got),Buffer.from(configured)))return res.status(403).json({error:'Unauthorized'});}
+   if(typeof req.query.q!=='string'||!req.query.q.trim()||[...req.query.q].length>250||req.query.target&&req.query.target!=='en')return res.status(400).json({error:'Invalid lookup'});
++  if(req.query.context!==undefined&&(typeof req.query.context!=='string'||req.query.context.length>1000))return res.status(400).json({error:'Invalid context'});
++  const context=req.query.context||'';
+   const q=normalize(req.query.q);if(!q)return res.status(400).json({error:'Empty lookup'});
+   const pool=getPool();if(!pool)return res.status(503).json({error:'Dictionary unavailable'});
+   try{
+-   let result;
+-   if(lookupHandler){
+-    const request=Object.create(req);request.body={q,mode:'de-en'};request.dictionaryBridge=true;
+-    let status=200;
+-    await lookupHandler(request,{status(code){status=code;return this;},json(value){result=value;}});
+-    if(status!==200)return res.status(status).json({error:'Dictionary unavailable'});
+-   }else result=await lookupInVocabulary(pool,q,'de-en',{readOnly:true,throwOnError:true});
+-   const key=value=>normalize(value||'').toLocaleLowerCase('de').replace(/^(der|die|das)\s+/,'');
+-   const results=entries(result).sort((a,b)=>Number(key(b.headword)===key(q))-Number(key(a.headword)===key(q)));let translation=/\s/u.test(q)?results[0]?.meanings?.[0]?.text||null:null;
++   let result;
++   if(lookupHandler){
++    const request=Object.create(req);request.body={q,mode:'de-en',context};request.dictionaryBridge=true;
++    let status=200;
++    await lookupHandler(request,{status(code){status=code;return this;},json(value){result=value;}});
++    if(status!==200)return res.status(status).json({error:'Dictionary unavailable'});
++   }else result=await lookupInVocabulary(pool,q,'de-en',{readOnly:true,throwOnError:true,context});
++   const key=value=>normalize(value||'').toLocaleLowerCase('de').replace(/^(der|die|das)\s+/,'');
++   const results=rank(entries(result),q,context);let translation=/\s/u.test(q)?results[0]?.meanings?.[0]?.text||null:null;
+    if(!results.length&&/\s/u.test(q)){
+     const [rows]=await pool.query("SELECT result_json FROM lookup_results WHERE query = ? AND mode IN ('de-en','auto') ORDER BY mode = 'de-en' DESC, updated_at DESC LIMIT 1",[q.toLowerCase()]);
+     if(rows.length){const saved=JSON.parse(rows[0].result_json);if(saved.from==='de'&&saved.to==='en')translation=(saved.entries||[]).map(e=>e.target).filter(v=>typeof v==='string').join('; ')||null;}
+@@ -34,5 +37,21 @@
+    return res.json({query:q,normalizedQuery:q,sourceLanguage:'de',targetLanguage:'en',matchType:results.length?(result?._source||'dictionary'):'none',results,translation,translationAvailable:!!translation||results.length>0});
+   }catch(error){console.error('Reading dictionary lookup failed:',error.message);return res.status(503).json({error:'Dictionary unavailable'});}
+  });
++ app.post('/api/v1/dictionary/translate',async(req,res)=>{
++  const configured=process.env.DICTIONARY_SERVICE_KEY;
++  if(configured){const got=req.get('x-dictionary-key')||'';if(Buffer.byteLength(got)!==Buffer.byteLength(configured)||!crypto.timingSafeEqual(Buffer.from(got),Buffer.from(configured)))return res.status(403).json({error:'Unauthorized'});}
++  const text=req.body?.text;
++  if(typeof text!=='string'||!text.trim()||[...text].length>2000||req.body.target&&req.body.target!=='en')return res.status(400).json({error:'Invalid translation'});
++  if(!getPool()||!lookupHandler)return res.status(503).json({error:'Translation unavailable'});
++  try{
++   const request=Object.create(req);request.body={q:text.normalize('NFC').trim(),mode:'de-en'};request.dictionaryBridge=true;request.dictionaryTranslation=true;
++   let status=200,result;await lookupHandler(request,{status(code){status=code;return this;},json(value){result=value;}});
++   // Never silently substitute a related word's gloss for the requested source.
++   const exact=result?.from==='de'&&result?.to==='en'&&(result.entries||[]).find(e=>matchKey(e.source)===matchKey(text)&&typeof e.target==='string'&&e.target.trim());
++   if(status!==200||!exact)return res.status(503).json({error:'Translation unavailable'});
++   return res.json({source:request.body.q,sourceLanguage:'de',targetLanguage:'en',translation:exact.target});
++  }catch(error){console.error('Reading translation failed:',error.message);return res.status(503).json({error:'Translation unavailable'});}
++ });
++
+ }
+ module.exports={register,normalize,entries};
+diff --git a/server.js b/server.js
+--- a/server.js
++++ b/server.js
+@@ -1042,7 +1042,7 @@
+ // whenever the admin verifies, edits, or deletes a vocabulary word.
+ function cacheClearLookups() {
+   for (const k of cache.keys()) {
+-    if (k.startsWith('lookup:')) cache.delete(k);
++    if (k.startsWith('lookup:')||k.startsWith('translation:')) cache.delete(k);
+   }
+ }
+ 
+@@ -1260,7 +1260,7 @@
+ 
+ // Run a dictionary lookup through Claude and return parsed JSON.
+ // Shared by /api/lookup and the admin vocabulary backfill.
+-async function runClaudeLookup(q, mode) {
++async function runClaudeLookup(q, mode, translationOnly=false) {
+   const dir =
+     mode === "en-de" ? "Translate strictly from English to German."
+     : mode === "de-en" ? "Translate strictly from German to English."
+@@ -1272,6 +1272,7 @@
+ {"from":"en","to":"de","entries":[{"source":"the headword in the source language","target":"the translation","pos":"noun|verb|adjective|adverb|phrase|preposition|etc","gender":"m|f|n|pl or null (only for German nouns)","article":"der|die|das or null (only for German singular nouns)","plural":"German plural form or null","praeteritum":"verbs only: er/sie/es Präteritum e.g. 'half', else null","perfekt":"verbs only: er/sie/es Perfekt with auxiliary e.g. 'hat geholfen', else null","synonyms":["up to 5 German synonyms of the German term, or [] if none"],"pronunciation":"simple IPA or learner-friendly pronunciation for the German term, or null","register":"short usage note like 'colloquial','formal','Austrian','figurative' or null","grammar_note":"one concise grammar or usage note helpful to learners, or null","example_source":"a short natural sentence in the source language using the term","example_target":"the translation of that sentence","examples":[{"source":"another short natural source-language sentence","target":"its translation"}]}]}
+ 
+ Rules:
++${translationOnly?'Translate the COMPLETE supplied sentence or phrase as a single entry. Keep source exactly equal to the supplied query, including punctuation. Do not return a lemma, related vocabulary, synonyms or family entries. These translation instructions override word-family rules below.':''}
+ - "from"/"to" are "en" or "de" reflecting the actual direction used.
+ - For German nouns, prefix the German term with its article (der/die/das), set gender, article, and ALWAYS set plural to the German plural with article, e.g. "die Leistungen". Do not leave plural null when a plural exists.
+ - For German verbs, ALWAYS set praeteritum and perfekt as 3rd person singular principal parts. The perfekt form MUST use the grammatically correct auxiliary for that specific verb: "hat" for most transitive/haben-verbs (e.g. "leistete" / "hat geleistet"), but "ist" for verbs of motion, change of state, or being (e.g. "blieb" / "ist geblieben", "ging" / "ist gegangen", "war" / "ist gewesen"). Never default to "hat" without checking whether the verb actually takes "sein". Include a concise grammar_note with auxiliary, separability, or common case/preposition if useful.
+@@ -1443,17 +1444,25 @@
+ 
+ app.post("/api/lookup", handleDictionaryLookup);
+ async function handleDictionaryLookup(req, res) {
+-  const q    = String(req.body.q || "").trim().slice(0, req.dictionaryBridge ? 250 : 120);
++  const q    = String(req.body.q || "").trim().slice(0, req.dictionaryTranslation ? 2000 : req.dictionaryBridge ? 250 : 120);
+   const mode = ["auto", "en-de", "de-en"].includes(req.body.mode) ? req.body.mode : "auto";
+   const regionalLang = req.body.regional_lang ? String(req.body.regional_lang).trim().toLowerCase() : null;
+   const visitorKey = normalizeVisitorKey(req.body.visitor_id);
+   if (!q) return res.status(400).json({ error: "Please enter a word." });
+ 
+-  const cacheKey = "lookup:v5:" + mode + ":" + q.toLowerCase() + (regionalLang ? ":" + regionalLang : "");
++  const context=typeof req.body.context==='string'?req.body.context.slice(0,1000):'';
++  const translationOnly=!!req.dictionaryTranslation;
++  const translationResult=result=>{
++    if(!translationOnly||!result)return result;
++    const {normalize}=require('./dictionary-ranking');
++    const entries=result.from==='de'&&result.to==='en'?(result.entries||[]).filter(e=>normalize(e.source)===normalize(q)):[];
++    return entries.length?{...result,entries}:null;
++  };
++  const cacheKey = (translationOnly?'translation:v1:':'lookup:v6:') + mode + ':' + JSON.stringify([q.toLowerCase(),context,regionalLang]);
+   const start    = Date.now();
+ 
+   // ── Layer 1: Memory cache ──────────────────────────────────
+-  const cached = cacheGet(cacheKey);
++  const cached = translationResult(cacheGet(cacheKey));
+   if (cached && (!req.dictionaryBridge || cached.entries?.length)) {
+     saveHistory(req, q, cached);
+     // Log analytics (non-blocking)
+@@ -1463,7 +1472,7 @@
+   }
+ 
+   // ── Layer 2: MySQL vocabulary table ───────────────────────
+-  const vocabResult = await lookupInVocabulary(pool, q, mode);
++  const vocabResult = translationResult(await lookupInVocabulary(pool, q, mode,{context}));
+   if (vocabResult) {
+     // Return database results immediately. AI word-family expansion runs in the
+     // background and saves for the next search, so DB lookups stay fast.
+@@ -1472,7 +1481,7 @@
+     const user = await getAuthUser(req);
+     setImmediate(async () => {
+       try {
+-        if (needsWordFamilyExpansion(vocabResult)) {
++        if (!translationOnly && needsWordFamilyExpansion(vocabResult)) {
+           const expanded = mergeWordFamilyEntries(vocabResult, await runClaudeLookup(q, mode));
+           if (expanded !== vocabResult) {
+             await saveLookupResult(pool, q, mode, expanded, "word-family");
+@@ -1491,7 +1500,7 @@
+   // Saved AI lookup results are useful for words that are not in vocabulary yet,
+   // but verified/admin-edited vocabulary must win. Otherwise a stale AI cache can
+   // override a corrected dictionary row and regenerate review items.
+-  const savedLookup = await getSavedLookupResult(pool, q, mode);
++  const savedLookup = translationResult(await getSavedLookupResult(pool, q, mode));
+   if (savedLookup && (!req.dictionaryBridge || savedLookup.entries?.length)) {
+     cacheSet(cacheKey, savedLookup);
+     saveHistory(req, q, savedLookup);
+@@ -1517,7 +1526,8 @@
+ 
+   // ── Layer 3: Claude AI ─────────────────────────────────────
+   try {
+-    const parsed = await runClaudeLookup(q, mode);
++    const parsed = translationResult(await runClaudeLookup(q, mode,translationOnly));
++    if(!parsed)throw Error('No complete translation returned');
+     if ((!parsed.entries || parsed.entries.length === 0) && suggestions.length) {
+       parsed.suggestions = suggestions;
+     }
+diff --git a/dictionary-ranking.js b/dictionary-ranking.js
+new file mode 100644
+--- /dev/null
++++ b/dictionary-ranking.js
+@@ -0,0 +1,39 @@
++"use strict";
++// Stored morphology is evidence; a shared stem or word-family membership is not.
++function normalize(value) { return String(value || '').normalize('NFC').trim().replace(/^[\p{P}\p{S}\s]+|[\p{P}\p{S}\s]+$/gu, '').toLocaleLowerCase('de').replace(/\s+/g, ' '); }
++function bare(value) { return normalize(value).replace(/^(der|die|das)\s+/, ''); }
++function values(value) {
++  if (!value) return [];
++  if (typeof value === 'string') { try { return values(JSON.parse(value)); } catch { return value.split(/\s*[;/|]\s*/).map(normalize); } }
++  if (Array.isArray(value)) return value.flatMap(values);
++  if (typeof value === 'object') return Object.values(value).flatMap(values);
++  return [];
++}
++function forms(entry) {
++  const verb=entry.verbForms || entry.verb_forms || entry, noun=entry.nounForms || entry.noun_forms || entry, adj=entry.adjectiveForms || entry.adj_forms || entry;
++  const withoutPronoun=v=>v.replace(/^(?:ich|du|er\/sie\/es|er|sie|es|wir|ihr|sie\/sie)\s+/i,'');
++  // Older records can store a perfect principal part without a partizip2 column.
++  const participles=values(verb.perfekt).map(withoutPronoun).map(v=>v.match(/^(?:habe|hast|hat|haben|habt|bin|bist|ist|sind|seid)\s+([\p{L}\p{M}-]+)$/u)?.[1]).filter(Boolean);
++  return [...['infinitive_de','partizip2','praesens','praeteritum','perfekt','konjunktiv2'].flatMap(k=>values(verb[k])),
++    ...participles,
++    ...['plural_de','singular_forms','plural_forms'].flatMap(k=>values(noun[k])),
++    ...['positiv_de','komparativ_de','superlativ_de'].flatMap(k=>values(adj[k]))]
++    .map(withoutPronoun);
++}
++function score(entry, query, context='') {
++  const head=entry.headword || entry.word_de || entry.source || '', q=normalize(query), h=normalize(head);
++  if (h===q) return 0;
++  if (bare(head)===bare(query)) return 1;
++  const stored=forms(entry);
++  if (stored.some(form=>bare(form)===bare(query))) return 2;
++  // A stored split form ("sehe an") must be supported by a sentence-final particle.
++  const sentence=normalize(context);
++  if (q && stored.some(form=>form.startsWith(q+' ') && !form.slice(q.length+1).includes(' ') &&
++    new RegExp('(?:^|[^\\p{L}\\p{M}])'+escape(q)+'(?:[^\\p{L}\\p{M}].*)?\\s'+escape(form.slice(q.length+1))+'$','u').test(sentence))) return 3;
++  if (h.startsWith(q)) return 4;
++  if (h.includes(q) || stored.some(form=>form.includes(q))) return 5;
++  return 6;
++}
++function escape(text) { return text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
++function rank(entries,query,context='') { return entries.map((entry,index)=>({entry,index,score:score(entry,query,context)})).sort((a,b)=>a.score-b.score || a.index-b.index).map(x=>x.entry); }
++module.exports={normalize,forms,score,rank};
+diff --git a/tests/dictionary-ranking.test.cjs b/tests/dictionary-ranking.test.cjs
+new file mode 100644
+--- /dev/null
++++ b/tests/dictionary-ranking.test.cjs
+@@ -0,0 +1,35 @@
++'use strict';
++const {test}=require('node:test'),assert=require('node:assert/strict');
++const {rank,normalize,score}=require('../dictionary-ranking');
++const verb=(headword,praesens,praeteritum,partizip2)=>({headword,verbForms:{praesens:JSON.stringify(praesens),praeteritum:JSON.stringify(praeteritum||[]),partizip2}});
++const entries=[verb('entgegensehen',['sehe entgegen','siehst entgegen','sieht entgegen']),verb('verschreiben',['verschreibe','verschreibst','verschreibt']),verb('beschreiben',['beschreibe']),verb('ansehen',['sehe an','siehst an','sieht an']),verb('übersehen',['übersehe']),verb('versehen',['versehe']),
++  verb('schreiben',['ich schreibe','du schreibst','er/sie/es schreibt']),verb('sehen',['sehe','siehst','sieht'],['sah'],'gesehen'),verb('gehen',['gehe','gehst','geht'],['ging'],'gegangen'),verb('arbeiten',['arbeite','arbeitest','arbeitet']),verb('lernen',['lerne','lernst','lernt']),verb('machen',['mache','machst','macht'])];
++for(const [query,expected] of Object.entries({schreibe:'schreiben',Schreibe:'schreiben','schreibe,':'schreiben',sehe:'sehen',siehst:'sehen',sieht:'sehen',gesehen:'sehen',gehe:'gehen',ging:'gehen',gegangen:'gehen',arbeite:'arbeiten',arbeitet:'arbeiten',lernst:'lernen',macht:'machen',verschreiben:'verschreiben',beschreiben:'beschreiben',ansehen:'ansehen',entgegensehen:'entgegensehen'}))test(query+' → '+expected,()=>assert.equal(rank(entries,query)[0].headword,expected));
++test('sentence-supported split forms remain secondary to the stored base form',()=>{
++  for(const [context,second] of [['Ich sehe den Film an.','ansehen'],['Ich sehe dem Ergebnis entgegen.','entgegensehen']]){const results=rank(entries,'sehe',context);assert.equal(results[0].headword,'sehen');assert.equal(results[1].headword,second);assert.equal(score(results[1],'sehe',context),3);}
++  assert.equal(score(entries[0],'sehe'),5);
++});
++test('German characters are preserved and noun forms/article normalization work',()=>{
++  assert.equal(normalize(' „Straße!“ '),'straße');assert.notEqual(normalize('schön'),normalize('schon'));
++  assert.equal(rank([{headword:'das Haus',nounForms:{plural_de:'Häuser'}},{headword:'Haustür'}],'Häuser')[0].headword,'das Haus');
++  assert.equal(score({headword:'der Regenbogen'},'Regenbogen'),1);
++});
++test('no ending stripping or family-only lemma promotion',()=>{
++  assert.equal(score({headword:'verschreiben',lemma:'schreiben'},'schreibe'),5);
++  assert.equal(score({headword:'sehen'},'siehst'),6);
++});
++
++
++test('candidate retrieval includes present/participle forms and ranks before limiting popular results',async()=>{
++ const {lookupInVocabulary}=require('../vocabulary-lookup');
++ const pool={query:async(sql,args)=>{assert(sql.includes('vf.praesens'));assert(sql.includes('vf.partizip2'));assert.equal((sql.match(/\?/g)||[]).length,args.length);assert(!/LIMIT 12/.test(sql));
++ return [[...Array.from({length:25},(_,i)=>({id:i+1,word_de:'versehen',word_en:'provide',pos:'verb',praesens:'["versehe"]',search_count:10000})),{id:99,word_de:'sehen',word_en:'see',pos:'verb',praesens:'["sehe","siehst","sieht"]',partizip2:'gesehen',search_count:0}]];}};
++ const result=await lookupInVocabulary(pool,'Sehe,','de-en',{readOnly:true,throwOnError:true});assert.equal(result.entries[0].source,'sehen');assert.equal(result.entries.length,12);
++});
++
++test('translation API calls the existing provider handler and refuses unrelated dictionary glosses',async()=>{
++ const express=require('express'),api=require('../dictionary-api');const app=express();app.use(express.json());let source='Der Regenbogen besteht aus vielen Farben.';
++ api.register(app,()=>({}),async(req,res)=>{assert(req.dictionaryTranslation);assert(req.dictionaryBridge);assert.equal(req.body.mode,'de-en');return res.json({from:'de',to:'en',entries:[{source,target:'The rainbow consists of many colors.'}]});});
++ const server=await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});const url='http://127.0.0.1:'+server.address().port+'/api/v1/dictionary/translate';
++ try{const send=text=>fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});let r=await send(source);assert.equal(r.status,200);assert.equal((await r.json()).translation,'The rainbow consists of many colors.');source='Regenbogen';assert.equal((await send('Der Regenbogen besteht aus vielen Farben.')).status,503);assert.equal((await send('a'.repeat(2001))).status,400);}finally{server.closeAllConnections();await new Promise(r=>server.close(r));}
++});

@@ -1,0 +1,129 @@
+<%
+  const v = (x) => (x === null || x === undefined ? "" : x);
+  // A DATE arrives as a Date object; <input type="date"> wants exactly
+  // YYYY-MM-DD and silently shows nothing for anything else.
+  const day = (x) => {
+    if (!x) return "";
+    if (x instanceof Date) return x.toISOString().slice(0, 10);
+    return String(x).slice(0, 10);
+  };
+  const joined = student.created_at
+    ? new Date(student.created_at).toLocaleDateString("en-GB", { month: "long", year: "numeric" })
+    : null;
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "My profile",
+  pageLead: "What the school has on record for you. Everything here is optional except keeping it true.",
+  nav: "profile", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue, notice: notice,
+}) %>
+
+<div class="sp-cols">
+  <section>
+    <form method="post" action="/portal/profile">
+      <div class="sp-card">
+        <h2>Contact</h2>
+
+        <div class="form-row">
+          <label class="field">
+            <span>Phone</span>
+            <input type="tel" name="phone" value="<%= v(student.phone) %>" maxlength="40"
+                   autocomplete="tel">
+          </label>
+          <label class="field">
+            <span>Date of birth</span>
+            <input type="date" name="date_of_birth" value="<%= day(student.date_of_birth) %>">
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label class="field">
+            <span>City</span>
+            <input type="text" name="city" value="<%= v(student.city) %>" maxlength="120"
+                   autocomplete="address-level2">
+          </label>
+          <label class="field">
+            <span>Country</span>
+            <%# data-alt carries the other language's name, so the
+                filter finds Deutschland when somebody types Germany. %>
+            <select name="country" data-enhance aria-label="Country">
+              <option value="">— not set —</option>
+              <% countries.forEach(function (c) { %>
+                <option value="<%= c.en %>" data-alt="<%= c.de %>" <%= student.country === c.en ? "selected" : "" %>><%= c.en %></option>
+              <% }); %>
+            </select>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Address — only needed if we post you something</span>
+          <input type="text" name="address" value="<%= v(student.address) %>" maxlength="400"
+                 autocomplete="street-address">
+        </label>
+      </div>
+
+      <div class="sp-card">
+        <h2>About you</h2>
+
+        <div class="form-row">
+          <label class="field">
+            <%# Classes run online across time zones. Knowing yours is
+                what stops a lesson time being written down wrong. %>
+            <span>Time zone</span>
+            <select name="timezone" data-enhance aria-label="Time zone">
+              <option value="">— not set —</option>
+              <% ["Europe/Berlin","Asia/Kolkata","Europe/London","America/New_York","Asia/Dubai","UTC"].forEach(function (tz) { %>
+                <option value="<%= tz %>" <%= student.timezone === tz ? "selected" : "" %>><%= tz %></option>
+              <% }); %>
+            </select>
+          </label>
+          <label class="field">
+            <span>Gender — optional</span>
+            <input type="text" name="gender" value="<%= v(student.gender) %>" maxlength="40"
+                   placeholder="However you would like it written">
+          </label>
+        </div>
+      </div>
+
+      <button class="btn" type="submit">Save my details</button>
+    </form>
+  </section>
+
+  <aside>
+    <div class="sp-card sp-idcard">
+      <%- include("../../partials/portal-avatar", {
+        avatarUrl: avatarUrl, initials: initials, hue: hue,
+        size: "lg", name: student.name,
+      }) %>
+      <h2><%= student.name %></h2>
+      <% if (student.student_ref) { %>
+        <p class="sp-me-ref"><%= student.student_ref %></p>
+      <% } %>
+      <p style="margin:.6rem 0 0"><a href="/portal/settings">Change photo</a></p>
+    </div>
+
+    <%# Name, email and reference are read-only here on purpose: they
+        are printed on certificates and invoices, so changing one is a
+        thing the office does with a record of it, not a thing a form
+        does at midnight. %>
+    <div class="sp-card">
+      <h2>Fixed details</h2>
+      <dl class="sp-facts">
+        <div><dt>Name</dt><dd><%= student.name %></dd></div>
+        <div><dt>Email</dt><dd><%= student.email %></dd></div>
+        <% if (student.student_ref) { %>
+          <div><dt>Reference</dt><dd><%= student.student_ref %></dd></div>
+        <% } %>
+        <% if (joined) { %>
+          <div><dt>Member since</dt><dd><%= joined %></dd></div>
+        <% } %>
+      </dl>
+      <p class="muted" style="font-size:.82rem;margin:.9rem 0 0">
+        These appear on your certificates and invoices, so they are changed by
+        the office rather than here. <a href="/contact">Ask us</a> if one is wrong.
+      </p>
+    </div>
+  </aside>
+</div>
+
+<%- include("../../partials/portal-shell-foot") %>

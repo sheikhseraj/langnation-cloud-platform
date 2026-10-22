@@ -1,0 +1,67 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.events") %></p>
+      <h1><%= t("events.title") %></h1>
+      <p class="lead"><%= t("events.lead") %></p>
+    </div>
+
+    <%# Upcoming first. When there are none, say so plainly and invite the
+        visitor to ask — better than a page that looks abandoned. %>
+    <h2 class="events-heading"><%= t("events.upcoming") %></h2>
+
+    <% if (!upcoming.length) { %>
+      <div class="notice" style="margin-bottom:3rem">
+        <div>
+          <%= t("events.none") %>
+          <a href="<%= lp('/contact') %>" style="color:var(--accent)"><%= t("cta.enquireShort") %> →</a>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="stack" style="margin-bottom:3.5rem">
+        <% upcoming.forEach(function (e) { %>
+          <article class="card event">
+            <div class="event-date">
+              <span class="event-day"><%= e.date ? e.date.slice(8, 10) : "–" %></span>
+              <span class="event-month"><%= e.monthLabel %></span>
+              <span class="event-year"><%= e.date ? e.date.slice(0, 4) : "" %></span>
+            </div>
+            <div class="event-body">
+              <h3><%= e.title %></h3>
+              <div class="card-meta">
+                <% if (e.time) { %><span class="pill"><%= e.time %></span><% } %>
+                <% if (e.duration) { %><span class="pill"><%= e.duration %></span><% } %>
+                <% if (e.location) { %><span class="pill"><%= e.location %></span><% } %>
+                <% if (e.speaker) { %><span class="pill"><%= t("events.host") %>: <%= e.speaker %></span><% } %>
+              </div>
+              <% if (e.body) { %><div class="prose event-text"><%- e.body %></div><% } %>
+              <p style="margin-top:1rem">
+                <a class="btn btn-sm" href="<%= lp('/contact?course=' + encodeURIComponent(e.title)) %>"><%= t("events.join") %></a>
+              </p>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <% if (past.length) { %>
+      <h2 class="events-heading"><%= t("events.past") %></h2>
+      <p class="muted" style="font-size:.9rem;margin-bottom:1.25rem"><%= t("events.pastNote") %></p>
+
+      <div class="grid">
+        <% past.forEach(function (e) { %>
+          <article class="card" style="padding:1.15rem 1.25rem 1.35rem;gap:.5rem">
+            <span class="muted" style="font-size:.8rem"><%= e.dateLabel %><% if (e.time) { %> · <%= e.time %><% } %></span>
+            <h3 style="font-size:1.05rem"><%= e.title %></h3>
+            <% if (e.location) { %><span class="pill" style="align-self:flex-start"><%= e.location %></span><% } %>
+          </article>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

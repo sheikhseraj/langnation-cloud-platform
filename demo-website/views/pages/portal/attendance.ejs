@@ -1,0 +1,159 @@
+<%
+  const day = (v, tz) => (v
+    ? new Date(v).toLocaleDateString("en-GB", {
+        weekday: "short", day: "numeric", month: "short", year: "numeric",
+        timeZone: tz || "Europe/Berlin",
+      })
+    : "—");
+
+  const TONE = { present: " pill-live", late: "", absent: " pill-bad", excused: "" };
+
+  // Counted across every batch, so the headline figure answers the
+  // question somebody opens this page with — "how am I doing" — rather
+  // than making them add three batches up themselves.
+  const all = batches.reduce((acc, b) => ({
+    present: acc.present + b.counts.present,
+    late: acc.late + b.counts.late,
+    absent: acc.absent + b.counts.absent,
+    excused: acc.excused + b.counts.excused,
+  }), { present: 0, late: 0, absent: 0, excused: 0 });
+  const attended = all.present + all.late;
+  const judged = attended + all.absent;
+  const overall = judged ? Math.round((attended / judged) * 100) : null;
+
+  // Green at 90 and up, amber from 60, red below it. The thresholds
+  // come from lib/attendance.js rather than from here, so a student and
+  // the office are never shown two different colours for one figure.
+  const overallBand = band(overall);
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "My attendance",
+  pageLead: overall === null
+    ? "Nothing recorded yet."
+    : overall + "% of the classes registered so far",
+  nav: "attendance", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue, notice: notice,
+}) %>
+
+<% if (!batches.length) { %>
+  <div class="sp-card">
+    <p class="sp-empty">
+      Nothing to show yet. Attendance appears here once your teacher starts
+      taking the register, and pressing <strong>Join the class</strong> on your
+      dashboard marks you as here automatically.
+    </p>
+  </div>
+<% } else { %>
+  <div class="sp-tiles">
+    <div class="sp-tile<%= overallBand ? " sp-tile-" + overallBand : "" %>">
+      <span class="sp-tile-n"><%= overall === null ? "—" : overall + "%" %></span>
+      <span class="sp-tile-l">attendance</span>
+    </div>
+    <div class="sp-tile is-live">
+      <span class="sp-tile-n"><%= all.present %></span>
+      <span class="sp-tile-l">here</span>
+    </div>
+    <div class="sp-tile">
+      <span class="sp-tile-n"><%= all.late %></span>
+      <span class="sp-tile-l"><%= all.late === 1 ? "time late" : "times late" %></span>
+    </div>
+    <div class="sp-tile<%= all.absent ? " is-due" : "" %>">
+      <span class="sp-tile-n"><%= all.absent %></span>
+      <span class="sp-tile-l">missed</span>
+    </div>
+  </div>
+
+  <%#
+    What the colours mean, and how the percentage is worked out. Said
+    in words as well as in colour, because roughly one man in twelve
+    cannot tell the amber from the red — and said at all because a
+    figure somebody might be judged on should not be one they have to
+    reverse-engineer. "Why is my 8 out of 10 showing as 89%" is
+    otherwise an email to the office.
+  %>
+  <p class="muted" style="font-size:.85rem;margin:0 0 1.1rem;line-height:1.6">
+    <strong class="sp-rate-good"><%= good %>% and above</strong> is where we
+    would like you to be;
+    <strong class="sp-rate-watch">between <%= poor %>% and <%= good %>%</strong>
+    is worth keeping an eye on;
+    <strong class="sp-rate-poor">below <%= poor %>%</strong> and your teacher
+    will get in touch to ask how you are getting on.
+    <br>
+    Arriving late still counts as attending. An absence your school has
+    excused is left out of the sum altogether, so it neither helps nor hurts
+    your percentage.
+  </p>
+
+  <% batches.forEach(function (b) { %>
+    <div class="sp-card sp-wide">
+      <div class="sp-card-head">
+        <h2><%= b.title || b.code %></h2>
+        <% if (b.rate !== null) { %>
+          <span class="sp-rate sp-rate-<%= band(b.rate) %>"><%= b.rate %>%</span>
+        <% } %>
+      </div>
+      <p class="sp-now-meta">
+        <%= b.code %><% if (b.level) { %> · <%= b.level %><% } %>
+        · <%= b.counts.present + b.counts.late %> of <%= b.marked - b.counts.excused %> attended
+        <% if (b.counts.excused) { %> · <%= b.counts.excused %> excused<% } %>
+      </p>
+
+      <% if (!b.marked && b.unmarked) { %>
+        <p class="sp-empty">
+          <%= b.unmarked %> <%= b.unmarked === 1 ? "class has" : "classes have" %> been held
+          but no register has been taken yet.
+        </p>
+      <% } %>
+
+      <div style="overflow-x:auto">
+        <table class="sp-table">
+          <thead>
+            <tr>
+              <th scope="col">Class</th>
+              <th scope="col">You were</th>
+              <th scope="col">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% b.lessons.forEach(function (l) { %>
+              <tr>
+                <td><%= day(l.starts_at, b.timezone) %></td>
+                <td>
+                  <% if (l.status) { %>
+                    <span class="pill<%= TONE[l.status] || "" %>"><%= statusLabel[l.status] || l.status %></span>
+                    <% if (l.status === "late" && l.minutes_late) { %>
+                      <div class="muted" style="font-size:.78rem"><%= l.minutes_late %> min</div>
+                    <% } %>
+                    <%# Where the mark came from. A student who sees
+                        "marked when you joined" knows their teacher has
+                        not corrected it yet, and that it can be. %>
+                    <% if (l.source === "self") { %>
+                      <div class="muted" style="font-size:.75rem">marked when you joined</div>
+                    <% } %>
+                  <% } else { %>
+                    <span class="muted">not registered</span>
+                  <% } %>
+                </td>
+                <td class="muted" style="font-size:.85rem"><%= l.note || "" %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% }); %>
+
+  <%#
+    The appeal route. Attendance records get used for visa paperwork
+    and course certificates, so "this is wrong" needs somewhere to go
+    that is not a shrug.
+  %>
+  <p class="muted" style="font-size:.86rem;line-height:1.6">
+    Joining the class marks you as here, or as late if you arrive more than
+    <%= graceMinutes %> minutes after your teacher opens the room. Your
+    teacher's register is the record and overrides it — so if something here
+    looks wrong, tell your teacher, or <a href="/contact">ask the office</a>.
+  </p>
+<% } %>
+
+<%- include("../../partials/portal-shell-foot") %>

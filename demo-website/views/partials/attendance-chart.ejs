@@ -1,0 +1,97 @@
+<%#
+  Attendance per class, as a line chart.
+
+  Shared between the office's attendance page and the teacher's
+  dashboard, which ask the same question of different rows: the office
+  about batches it picked, a teacher about their own. One chart rather
+  than two, because two would drift and the second would be the one
+  nobody noticed had stopped matching lib/attendance.js.
+
+  Drawn as SVG rather than with a charting library: there is no build
+  step here, the stylesheet is the only CSS these pages load, and a line
+  chart of a dozen points is about forty lines of markup. All of the
+  maths is in lib/attendance.js where it is unit-tested — a template is
+  not a place anybody can assert about a scale.
+
+  Expects: chart. Optionally chartTitle and chartLead.
+%>
+<%
+  // The palette comes from lib/attendance.js, beside the maths, handed
+  // in by the route: EJS compiles to a function whose only scope is its
+  // locals, so a template cannot require anything.
+  //
+  // It lives there rather than here because the table on the office
+  // page draws a dot per row in the same colours, and a legend that
+  // disagrees with the table beside it is worse than no legend.
+  const chartColour = lineColour;
+
+  // Only label as many dates as will fit without overlapping. Eight
+  // across is the point where they start colliding at this width.
+  const every = Math.max(1, Math.ceil(chart.days.length / 8));
+
+  const chartDay = (v) => new Date(v + "T12:00:00Z")
+    .toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+  const heading = typeof chartTitle === "undefined" ? "Attendance per class" : chartTitle;
+  const lead = typeof chartLead === "undefined"
+    ? "The percentage who were here or late, lesson by lesson. A break in a line is a day that batch did not meet, not a class nobody attended."
+    : chartLead;
+%>
+
+<h2 style="margin-top:0;font-size:1.05rem"><%= heading %></h2>
+<% if (lead) { %>
+  <p class="muted" style="font-size:.88rem;margin-top:-.2rem"><%= lead %></p>
+<% } %>
+
+<div style="overflow-x:auto">
+  <svg viewBox="0 0 <%= chart.width %> <%= chart.height %>"
+       style="width:100%;min-width:34rem;height:auto"
+       role="img"
+       aria-label="Attendance per class for <%= chart.lines.map((l) => l.label).join(", ") %>">
+
+    <%# Gridlines at the quarters, with the two-thirds mark picked out
+        because that is where a batch stops being healthy. %>
+    <% [0, 25, 50, 75, 100].forEach(function (pct) { %>
+      <% const y = chart.height - chart.pad - (pct / 100) * (chart.height - chart.pad * 2); %>
+      <line x1="<%= chart.pad %>" x2="<%= chart.width - chart.pad %>"
+            y1="<%= y %>" y2="<%= y %>"
+            stroke="var(--line)" stroke-width="1"/>
+      <text x="<%= chart.pad - 6 %>" y="<%= y + 3 %>" text-anchor="end"
+            font-size="10" fill="var(--muted)"><%= pct %>%</text>
+    <% }); %>
+    <% const warn = chart.height - chart.pad - 0.67 * (chart.height - chart.pad * 2); %>
+    <line x1="<%= chart.pad %>" x2="<%= chart.width - chart.pad %>"
+          y1="<%= warn.toFixed(1) %>" y2="<%= warn.toFixed(1) %>"
+          stroke="var(--danger)" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+
+    <%# One line per batch, then a dot per lesson — so a batch with a
+        single register is still visible, which a path alone would not
+        be. %>
+    <% chart.lines.forEach(function (l, i) { %>
+      <path d="<%= l.path %>" fill="none" stroke="<%= chartColour(i) %>"
+            stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <% l.points.forEach(function (p) { %>
+        <circle cx="<%= p.x %>" cy="<%= p.y %>" r="3.5" fill="<%= chartColour(i) %>">
+          <title><%= l.label %> · <%= chartDay(p.day) %> · <%= p.rate %>% (<%= p.present + p.late %> of <%= p.present + p.late + p.absent %>)</title>
+        </circle>
+      <% }); %>
+    <% }); %>
+
+    <% chart.days.forEach(function (d, i) { %>
+      <% if (i % every === 0 || i === chart.days.length - 1) { %>
+        <text x="<%= chart.x[i] %>" y="<%= chart.height - chart.pad + 14 %>"
+              text-anchor="middle" font-size="10" fill="var(--muted)"><%= chartDay(d) %></text>
+      <% } %>
+    <% }); %>
+  </svg>
+</div>
+
+<div class="row" style="gap:1rem;flex-wrap:wrap;margin-top:.6rem">
+  <% chart.lines.forEach(function (l, i) { %>
+    <span class="row" style="gap:.4rem;align-items:center;font-size:.85rem">
+      <span style="width:12px;height:3px;border-radius:2px;background:<%= chartColour(i) %>"></span>
+      <strong><%= l.label %></strong>
+      <span class="muted"><%= l.title || "" %></span>
+    </span>
+  <% }); %>
+</div>

@@ -1,0 +1,75 @@
+<%#
+  One card for one kind of course.
+
+  The home page used to show six Regular courses — the same course at
+  six levels — and no sign that One-to-one or Intensive existed. This
+  shows the three TYPES instead, one card each, and the levels live
+  behind the link where somebody who has chosen a type can compare
+  them.
+
+  Deliberately no price. One-to-one is charged by the hour (€12) and
+  Regular by the course (€200); "from €12" beside "from €200" reads as
+  the cheaper option, which is the opposite of true. The course cards
+  behind the link carry the price with its unit attached.
+
+  Expects: group — { track, items } from content.coursesByTrack().
+%>
+<%
+  const items = group.items || [];
+  // Chosen in the route, which knows the rule: never a photo with a
+  // level painted into it on a card that covers six levels.
+  const cover = group.image;
+  const levels = items.map((c) => c.level).filter(Boolean);
+  const label = t("courses.track." + group.track);
+%>
+<a class="card track-card" href="<%= lp('/courses') %>?track=<%= encodeURIComponent(group.track) %>">
+  <div class="card-media">
+    <% if (cover) { %>
+      <img src="<%= cover.src %>"
+           <% if (cover.srcset) { %>srcset="<%= cover.srcset %>"
+           sizes="(min-width: 1120px) 340px, (min-width: 700px) 45vw, 92vw"<% } %>
+           width="640" height="400" loading="lazy" decoding="async" alt="">
+    <% } else { %>
+      <%# No picture for this track yet. A tinted panel carrying the
+          name reads as a deliberate cover; an empty grey box reads as
+          a broken image. %>
+      <span class="track-card-cover" aria-hidden="true"><%= label %></span>
+    <% } %>
+  </div>
+
+  <div class="card-body">
+    <h3><%= label %></h3>
+    <p><%= t("courses.trackLead." + group.track) %></p>
+
+    <%#
+      The level range sits with the other facts rather than on top of the
+      picture.
+
+      It used to be pinned to the media's top-left corner, which is
+      exactly where each cover has its own title painted — "A1 – C2"
+      landed across the word "Regular". Moving it to another corner was
+      not an answer: the covers have book spines bottom-left and a laptop
+      bottom-right, so there is no corner that is reliably empty, and a
+      new photograph would put the problem back wherever it was moved to.
+
+      Here it cannot collide with anything, it reads as what it is — a
+      fact about the track, beside the number of courses — and any future
+      cover is safe by construction.
+    %>
+    <div class="card-meta">
+      <% if (levels.length) { %>
+        <span class="pill pill-level"><%= levels[0] %> – <%= levels[levels.length - 1] %></span>
+      <% } %>
+      <span class="pill">
+        <%= items.length === 1 ? t("courses.trackCountOne") : t("courses.trackCount", { n: items.length }) %>
+      </span>
+      <% if (items.some((c) => c.upcoming)) { %>
+        <span class="pill pill-live"><%= t("courses.upcoming") %></span>
+      <% } %>
+    </div>
+
+    <div class="card-foot">
+      <span class="go"><%= t("cta.viewTrack") %> →</span>
+    </div>
+  </div>
+</a>

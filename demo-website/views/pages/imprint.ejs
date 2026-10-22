@@ -1,0 +1,85 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<article class="section-tight">
+  <div class="wrap wrap-narrow">
+    <h1><%= lang === "de" ? "Impressum" : "Imprint" %></h1>
+    <p class="lead" style="margin-top:1rem">
+      <%= lang === "de"
+        ? "Angaben gemäß § 5 DDG (Digitale-Dienste-Gesetz)."
+        : "Legally required provider identification under German law (§ 5 DDG)." %>
+    </p>
+
+    <% if (site.imprint.incomplete) { %>
+      <%# A visitor sees a page that is plainly unfinished, which is
+          still better than a confident-looking Impressum built from
+          invented details. %>
+      <p class="notice notice-bad" style="margin-top:2rem">
+        <strong>Incomplete.</strong>&nbsp;
+        Set <code>IMPRINT_REPRESENTATIVE</code> and <code>IMPRINT_ADDRESS</code> in the
+        hosting environment. § 5 DDG requires a name and a postal address that reaches a
+        real person — including while a company is still being registered — and an
+        incomplete Impressum is an <em>Abmahnung</em> risk.
+      </p>
+    <% } %>
+
+    <% if (site.imprint.registrationPending) { %>
+      <p class="notice" style="margin-top:2rem">
+        <%= lang === "de"
+          ? "Die Gesellschaft befindet sich derzeit in Gründung. Bis zur Eintragung wird der Dienst von der unten genannten natürlichen Person betrieben; die Registerangaben werden nach der Eintragung ergänzt."
+          : "The company is currently being formed. Until registration completes, this service is operated by the person named below; the register details will be added once it does." %>
+      </p>
+    <% } %>
+
+    <div class="prose" style="margin-top:2rem">
+      <h2><%= lang === "de" ? "Diensteanbieter" : "Service provider" %></h2>
+      <p>
+        <%# With registration pending and no company name set, the
+            provider is the natural person operating the service.
+            Printing a company that is not yet registered would put a
+            false statement in the one place that has to be true. %>
+        <% if (site.imprint.company) { %>
+          <strong><%= site.imprint.company %></strong><br>
+        <% } else { %>
+          <strong><%= site.imprint.representative %></strong><br>
+        <% } %>
+        <%- site.imprint.address.split("\n").join("<br>") %>
+      </p>
+
+      <h2><%= lang === "de" ? "Kontakt" : "Contact" %></h2>
+      <p>
+        <%= lang === "de" ? "Telefon" : "Phone" %>: <a href="tel:<%= site.contact.phoneDe.replace(/[^0-9+]/g, '') %>"><%= site.contact.phoneDe %></a><br>
+        <%= lang === "de" ? "E-Mail" : "Email" %>: <a href="mailto:<%= site.contact.email %>"><%= site.contact.email %></a>
+      </p>
+
+      <h2><%= lang === "de" ? "Vertretungsberechtigt" : "Authorised representative" %></h2>
+      <p><%= site.imprint.representative %></p>
+
+      <% if (site.imprint.register) { %>
+        <h2><%= lang === "de" ? "Registereintrag" : "Register entry" %></h2>
+        <p><%= site.imprint.register %></p>
+      <% } %>
+
+      <% if (site.imprint.vatId) { %>
+        <h2><%= lang === "de" ? "Umsatzsteuer-Identifikationsnummer" : "VAT identification number" %></h2>
+        <p><%= site.imprint.vatId %></p>
+      <% } %>
+
+      <h2><%= lang === "de" ? "Redaktionell verantwortlich" : "Responsible for content" %></h2>
+      <p><%= site.imprint.responsible %></p>
+
+      <h2><%= lang === "de" ? "EU-Streitschlichtung" : "EU dispute resolution" %></h2>
+      <p>
+        <%= lang === "de"
+          ? "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit:"
+          : "The European Commission provides a platform for online dispute resolution:" %>
+        <a href="https://ec.europa.eu/consumers/odr/" rel="noopener nofollow" target="_blank">ec.europa.eu/consumers/odr</a>.
+        <%= lang === "de"
+          ? "Wir sind nicht verpflichtet und nicht bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+          : "We are neither obliged nor willing to participate in dispute resolution proceedings before a consumer arbitration board." %>
+      </p>
+    </div>
+  </div>
+</article>
+
+<%- include("../partials/footer") %>

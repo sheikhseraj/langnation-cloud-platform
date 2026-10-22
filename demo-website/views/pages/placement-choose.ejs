@@ -1,0 +1,37 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.placement") %></p>
+      <h1><%= t("placement.title") %></h1>
+      <p class="lead"><%= t("placement.lead") %></p>
+    </div>
+
+    <h2 style="font-size:clamp(1.2rem,2.6vw,1.5rem);margin-bottom:.6rem"><%= t("placement.chooseTitle") %></h2>
+    <p class="muted" style="font-size:.94rem;margin-bottom:1.75rem"><%= t("placement.chooseLead") %></p>
+
+    <div class="grid grid-2">
+      <% tracks.forEach(function (tr) { %>
+        <a class="card track-card" href="<%= lp('/placement-test/' + tr.id) %>">
+          <div class="card-body">
+            <span class="track-range"><%= t(tr.id === "a1-b1" ? "placement.trackA1B1" : "placement.trackB2C2") %></span>
+            <p><%= t(tr.id === "a1-b1" ? "placement.trackA1B1Lead" : "placement.trackB2C2Lead") %></p>
+            <div class="card-meta">
+              <span class="pill"><%= t("placement.questionCount", { n: tr.count }) %></span>
+              <span class="pill"><%= t("placement.minutes", { n: tr.minutes }) %></span>
+            </div>
+            <div class="card-foot">
+              <span class="go"><%= t("placement.start") %> →</span>
+            </div>
+          </div>
+        </a>
+      <% }); %>
+    </div>
+
+    <p class="notice" style="margin-top:2rem"><%= t("placement.howAuto") %></p>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

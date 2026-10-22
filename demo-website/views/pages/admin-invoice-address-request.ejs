@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>"><head><%- include('../partials/admin-head',{adTitle:'Review invoice address',site}) %></head><body>
+<div class="ad-shell"><%- include('../partials/admin-side',{adCurrent:'payments'}) %><div class="ad-body">
+<%- include('../partials/admin-top',{adTitle:'Review invoice address',adCrumbs:[{label:'Payments',href:'/admin/payments'},{label:'Address requests',href:'/admin/payments/address-requests'},{label:'Request #'+request.id}],adLogout:'/admin/logout'}) %>
+<main class="ad-main">
+<% if(problem){ %><p class="notice notice-bad" role="alert"><%= problem %></p><% } %><% if(done){ %><p class="notice notice-ok" role="status"><%= done %></p><% } %>
+<section class="ad-card"><h2><%= request.number %> · <%= request.student_name %></h2><p class="muted"><%= request.student_ref %> · <%= request.student_email %> · <%= request.status %></p>
+<div class="invoice-address-comparison">
+ <div class="invoice-address-box"><h3>Current address at request</h3><span class="pill"><%= request.current_recipient==='company'?'Company address':'Personal address' %></span><p><strong><%= request.current_name %></strong></p><p class="invoice-address-lines"><%= request.current_address||'Address not recorded' %></p><p class="muted">Version <%= request.base_revision||1 %></p></div>
+ <div class="invoice-address-box"><h3>Student wants</h3><span class="pill"><%= request.wanted_recipient==='company'?'Company address':'Personal address' %></span><p><strong><%= request.wanted_name %></strong></p><p class="invoice-address-lines"><%= request.wanted_address %></p></div>
+</div>
+<% if(request.status==='pending'){ %>
+<form method="post" action="/admin/payments/address-requests/<%= request.id %>">
+ <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+ <h3>Approve or correct the requested address</h3>
+ <%- include('../partials/invoice-address-picker',{addressDetails,officeRequest:request,requestValues:locals.requestValues}) %>
+ <label class="field">Office note (optional)<textarea name="note" maxlength="500" rows="2"><%= locals.requestValues?.note||'' %></textarea></label>
+ <p class="notice notice-bad">Approval creates a replacement invoice version and supersedes all previous copies. Confirm that the named recipient is appropriate before approving. The student will receive the approved address by email.</p>
+ <label class="invoice-address-ack"><input type="checkbox" name="acknowledge" value="yes" required> Replace the previous invoice copy with this corrected version.</label>
+ <button class="btn btn-sm" name="decision" value="approve" type="submit">Approve and issue replacement</button>
+</form>
+<details class="invoice-request-history"><summary>Decline this request</summary><form method="post" action="/admin/payments/address-requests/<%= request.id %>"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><label class="field">Reason for student<textarea name="note" maxlength="500" minlength="3" required rows="2"></textarea></label><button class="btn btn-sm btn-ghost" name="decision" value="reject">Decline and notify student</button></form></details>
+<% }else{ %><% if(request.approved_address){ %><div class="invoice-address-box"><h3>Approved replacement · version <%= request.approved_revision %></h3><strong><%= request.approved_name %></strong><p class="invoice-address-lines"><%= request.approved_address %></p></div><% } %><p class="notice notice-ok">This request has been reviewed. No further address edits are allowed through it.</p><% if(request.review_note){ %><p>Office note: <%= request.review_note %></p><% } %><% } %>
+<p class="row" style="flex-wrap:wrap;gap:.6rem;margin-top:1rem"><a class="btn btn-sm btn-ghost" href="/admin/payments/invoice/<%= request.invoice_id %>">Open current invoice</a><a class="btn btn-sm btn-ghost" href="/admin/payments/address-requests">Back to requests</a></p>
+</section>
+<section class="ad-card"><h2>Student emails</h2><% notifications.forEach(n=>{ %><p><strong><%= n.event==='requested'?'Request confirmation':n.event==='approved'?'Replacement invoice notification':'Decision notification' %></strong> · <%= n.sent_at?'Sent':'Queued — retries automatically' %><% if(!n.sent_at&&n.last_error){ %><br><span class="muted">Last delivery attempt failed. Check SMTP configuration if this continues.</span><% } %></p><% }); %></section>
+</main></div></div><script src="/js/app.js?v=<%= site.assetVersion %>" defer></script><script src="/js/invoice-address-request.js?v=<%= site.assetVersion %>" defer></script></body></html>

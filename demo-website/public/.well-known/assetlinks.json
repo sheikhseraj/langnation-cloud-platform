@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.langnation.school",
+        "sha256_cert_fingerprints": ["D2:2B:3B:2B:BD:D8:16:11:D9:9E:AA:3E:41:E3:CC:8F:E9:7A:5C:0B:FC:1F:39:0C:E0:66:F7:A7:48:1F:D6:23"]
+      }
+    }]

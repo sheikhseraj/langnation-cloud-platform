@@ -1,0 +1,1172 @@
+# Kapitel 09 — Negation
+@learning
+{
+  "version": 1,
+  "key": "kapitel-09-negation",
+  "title": "Kapitel 09 — Negation",
+  "label": "Kapitel 09",
+  "sections": [
+    {
+      "id": "exercise-1",
+      "label": "Übung 1",
+      "title": "Übung 1 – nicht oder kein?",
+      "instruction": "Ergänze die richtige Negation in passender Form.",
+      "examples": [
+        {
+          "prompt": "Ich habe ___ Fahrrad.",
+          "answer": "Ich habe kein Fahrrad.",
+          "explanation": "Nomen: Fahrrad → kein."
+        },
+        {
+          "prompt": "Das Fahrrad ist ___ teuer.",
+          "answer": "Das Fahrrad ist nicht teuer.",
+          "explanation": "Adjektiv: teuer → nicht."
+        }
+      ],
+      "questions": [
+        {
+          "id": "1",
+          "type": "fill_blank",
+          "prompt": "Ich habe ___ Auto.",
+          "accepted": [
+            "kein"
+          ],
+          "hints": [
+            "Schau auf das Wort nach der Lücke: Ist es ein Nomen?",
+            "Auto ist Neutrum und steht hier im Akkusativ."
+          ],
+          "feedback": "Richtig: kein Auto."
+        },
+        {
+          "id": "2",
+          "type": "fill_blank",
+          "prompt": "Das Auto ist ___ neu.",
+          "accepted": [
+            "nicht"
+          ],
+          "hints": [
+            "Was wird verneint: ein Nomen oder die Eigenschaft „neu“?",
+            "Adjektive werden normalerweise mit nicht verneint."
+          ],
+          "feedback": "Richtig: nicht neu."
+        },
+        {
+          "id": "3",
+          "type": "fill_blank",
+          "prompt": "Wir trinken ___ Kaffee.",
+          "accepted": [
+            "keinen"
+          ],
+          "hints": [
+            "Kaffee ist ein Nomen.",
+            "Kaffee ist maskulin und steht im Akkusativ."
+          ],
+          "feedback": "Richtig: keinen Kaffee."
+        },
+        {
+          "id": "4",
+          "type": "fill_blank",
+          "prompt": "Sie kommt heute ___.",
+          "accepted": [
+            "nicht"
+          ],
+          "hints": [
+            "Hier wird die Handlung „kommen“ verneint.",
+            "Für die Verneinung der Handlung verwendest du nicht."
+          ],
+          "feedback": "Richtig: Sie kommt heute nicht."
+        },
+        {
+          "id": "5",
+          "type": "fill_blank",
+          "prompt": "Das ist ___ mein Buch.",
+          "accepted": [
+            "nicht"
+          ],
+          "hints": [
+            "Vor „mein Buch“ steht schon ein Possessivartikel.",
+            "Mit Possessivartikeln verwendest du hier nicht."
+          ],
+          "feedback": "Richtig: Das ist nicht mein Buch."
+        },
+        {
+          "id": "6",
+          "type": "fill_blank",
+          "prompt": "Er hat ___ Zeit.",
+          "accepted": [
+            "keine"
+          ],
+          "hints": [
+            "Zeit ist ein Nomen.",
+            "Zeit ist feminin."
+          ],
+          "feedback": "Richtig: keine Zeit."
+        },
+        {
+          "id": "7",
+          "type": "fill_blank",
+          "prompt": "Ich kenne dort ___ Mann.",
+          "accepted": [
+            "keinen"
+          ],
+          "hints": [
+            "Mann ist ein Nomen.",
+            "Mann ist maskulin und steht im Akkusativ."
+          ],
+          "feedback": "Richtig: keinen Mann. Diese Formulierung wurde gegenüber der Vorlage bewusst eindeutig gemacht."
+        },
+        {
+          "id": "8",
+          "type": "fill_blank",
+          "prompt": "Wir fahren ___ mit dem Auto.",
+          "accepted": [
+            "nicht"
+          ],
+          "hints": [
+            "Hier wird die Handlung bzw. Art des Fahrens verneint.",
+            "Setze nicht vor die Präpositionalgruppe."
+          ],
+          "feedback": "Richtig: Wir fahren nicht mit dem Auto."
+        }
+      ],
+      "objective": "nicht vs. kein/keine/keinen erkennen und die passende Form einsetzen."
+    },
+    {
+      "id": "exercise-2",
+      "label": "Übung 2",
+      "title": "Übung 2 – kein deklinieren",
+      "instruction": "Setze die richtige Form von kein ein.",
+      "examples": [
+        {
+          "prompt": "Ich sehe ___ Hund. (Akk., m.)",
+          "answer": "Ich sehe keinen Hund.",
+          "explanation": "Akkusativ + maskulin → keinen."
+        },
+        {
+          "prompt": "Sie spricht mit ___ Freundin. (Dat., f.)",
+          "answer": "Sie spricht mit keiner Freundin.",
+          "explanation": "Dativ + feminin → keiner."
+        }
+      ],
+      "questions": [
+        {
+          "id": "9",
+          "type": "fill_blank",
+          "prompt": "Ich habe ___ Termin. (Akk., m.)",
+          "accepted": [
+            "keinen"
+          ],
+          "hints": [
+            "Bestimme zuerst Kasus und Genus.",
+            "Akkusativ + maskulin hat die Endung -en."
+          ],
+          "feedback": "Richtig: keinen Termin."
+        },
+        {
+          "id": "10",
+          "type": "fill_blank",
+          "prompt": "Sie hat ___ Tasche. (Akk., f.)",
+          "accepted": [
+            "keine"
+          ],
+          "hints": [
+            "Tasche ist feminin.",
+            "Akkusativ feminin → keine."
+          ],
+          "feedback": "Richtig: keine Tasche."
+        },
+        {
+          "id": "11",
+          "type": "fill_blank",
+          "prompt": "Wir helfen ___ Kunden. (Dat., m.)",
+          "accepted": [
+            "keinem"
+          ],
+          "hints": [
+            "Das Verb helfen verlangt Dativ.",
+            "Dativ maskulin → keinem."
+          ],
+          "feedback": "Richtig: keinem Kunden."
+        },
+        {
+          "id": "12",
+          "type": "fill_blank",
+          "prompt": "Er spricht mit ___ Kolleginnen. (Dat., Pl.)",
+          "accepted": [
+            "keinen"
+          ],
+          "hints": [
+            "Die Präposition mit verlangt Dativ.",
+            "Dativ Plural → keinen; das Nomen trägt hier bereits die Pluralform."
+          ],
+          "feedback": "Richtig: mit keinen Kolleginnen."
+        },
+        {
+          "id": "13",
+          "type": "fill_blank",
+          "prompt": "Das ist ___ Problem. (Nom., n.)",
+          "accepted": [
+            "kein"
+          ],
+          "hints": [
+            "Problem ist Neutrum.",
+            "Nominativ Neutrum → kein."
+          ],
+          "feedback": "Richtig: kein Problem."
+        },
+        {
+          "id": "14",
+          "type": "fill_blank",
+          "prompt": "Wegen ___ Fehlers wurde der Termin verschoben. (Gen., m.; formell)",
+          "accepted": [
+            "keines"
+          ],
+          "hints": [
+            "Wegen kann formell mit Genitiv stehen.",
+            "Genitiv maskulin → keines."
+          ],
+          "feedback": "Richtig: wegen keines Fehlers."
+        }
+      ],
+      "objective": "kein nach Kasus, Genus und Numerus korrekt deklinieren."
+    },
+    {
+      "id": "exercise-3",
+      "label": "Übung 3",
+      "title": "Übung 3 – Stellung von nicht",
+      "instruction": "Setze „nicht“ an die passende Stelle. Die Information in Klammern soll verneint werden.",
+      "examples": [
+        {
+          "prompt": "Ich fahre heute mit dem Bus. (mit dem Bus)",
+          "answer": "Ich fahre heute nicht mit dem Bus.",
+          "explanation": "nicht steht direkt vor dem verneinten Satzteil."
+        },
+        {
+          "prompt": "Das Zimmer ist sehr groß. (groß)",
+          "answer": "Das Zimmer ist nicht sehr groß.",
+          "explanation": "Bei Adjektiven steht nicht vor der Adjektivgruppe."
+        }
+      ],
+      "questions": [
+        {
+          "id": "15",
+          "type": "insert_word",
+          "prompt": "Ich fahre morgen mit dem Auto. (mit dem Auto)",
+          "accepted": [
+            "Ich fahre morgen nicht mit dem Auto."
+          ],
+          "hints": [
+            "Welcher Satzteil soll verneint werden?",
+            "Setze nicht direkt vor „mit dem Auto“."
+          ],
+          "feedback": "Richtig: Ich fahre morgen nicht mit dem Auto.",
+          "tokens": [
+            "Ich",
+            "fahre",
+            "morgen",
+            "mit",
+            "dem",
+            "Auto."
+          ],
+          "word": "nicht",
+          "positions": [
+            3
+          ]
+        },
+        {
+          "id": "16",
+          "type": "insert_word",
+          "prompt": "Wir treffen uns am Montag. (am Montag)",
+          "accepted": [
+            "Wir treffen uns nicht am Montag."
+          ],
+          "hints": [
+            "Der Zeitpunkt soll verneint werden.",
+            "Setze nicht direkt vor „am Montag“."
+          ],
+          "feedback": "Richtig: Wir treffen uns nicht am Montag.",
+          "tokens": [
+            "Wir",
+            "treffen",
+            "uns",
+            "am",
+            "Montag."
+          ],
+          "word": "nicht",
+          "positions": [
+            3
+          ]
+        },
+        {
+          "id": "17",
+          "type": "insert_word",
+          "prompt": "Anna kommt heute. (Anna – Kontrast: nicht Anna, sondern jemand anderes)",
+          "accepted": [
+            "Nicht Anna kommt heute."
+          ],
+          "hints": [
+            "Hier wird ausdrücklich die Person kontrastiert.",
+            "Bei Fokusnegation kann nicht direkt vor dem Namen stehen."
+          ],
+          "feedback": "Richtig als Kontrastfokus: Nicht Anna kommt heute. Die UI soll den Zusatz „sondern jemand anderes“ als Erklärung anzeigen.",
+          "tokens": [
+            "Anna",
+            "kommt",
+            "heute."
+          ],
+          "word": "nicht",
+          "positions": [
+            0
+          ]
+        },
+        {
+          "id": "18",
+          "type": "insert_word",
+          "prompt": "Das Essen ist sehr teuer. (teuer)",
+          "accepted": [
+            "Das Essen ist nicht sehr teuer."
+          ],
+          "hints": [
+            "Die Eigenschaft wird verneint.",
+            "Setze nicht vor die Adjektivgruppe „sehr teuer“."
+          ],
+          "feedback": "Richtig: Das Essen ist nicht sehr teuer.",
+          "tokens": [
+            "Das",
+            "Essen",
+            "ist",
+            "sehr",
+            "teuer."
+          ],
+          "word": "nicht",
+          "positions": [
+            3
+          ]
+        },
+        {
+          "id": "19",
+          "type": "insert_word",
+          "prompt": "Er kann morgen kommen. (kommen / ganze Handlung)",
+          "accepted": [
+            "Er kann morgen nicht kommen."
+          ],
+          "hints": [
+            "Bei Modalverb + Infinitiv steht nicht oft vor dem Infinitiv.",
+            "Setze nicht vor „kommen“."
+          ],
+          "feedback": "Richtig: Er kann morgen nicht kommen.",
+          "tokens": [
+            "Er",
+            "kann",
+            "morgen",
+            "kommen."
+          ],
+          "word": "nicht",
+          "positions": [
+            3
+          ]
+        }
+      ],
+      "objective": "nicht abhängig vom verneinten Satzteil an die natürliche Position setzen."
+    },
+    {
+      "id": "exercise-4",
+      "label": "Übung 4",
+      "title": "Übung 4 – nichts, niemand, nie oder nirgendwo",
+      "instruction": "Ergänze das passende Wort.",
+      "examples": [
+        {
+          "prompt": "Ich esse ___.",
+          "answer": "Ich esse nichts.",
+          "explanation": "Sache/Objekt → nichts."
+        },
+        {
+          "prompt": "___ wartet vor der Tür.",
+          "answer": "Niemand wartet vor der Tür.",
+          "explanation": "Person → niemand."
+        }
+      ],
+      "questions": [
+        {
+          "id": "20",
+          "type": "fill_blank_adaptive",
+          "prompt": "Ich sehe ___.",
+          "accepted": [
+            "nichts"
+          ],
+          "hints": [
+            "Geht es um eine Person, Sache, Zeit oder einen Ort?",
+            "Hier geht es um eine Sache/etwas."
+          ],
+          "feedback": "Richtig: nichts.",
+          "wordBank": [
+            "nichts",
+            "niemand",
+            "nie",
+            "nirgendwo"
+          ]
+        },
+        {
+          "id": "21",
+          "type": "fill_blank_adaptive",
+          "prompt": "___ ist im Büro.",
+          "accepted": [
+            "niemand"
+          ],
+          "hints": [
+            "Gesucht ist eine Person.",
+            "Am Satzanfang wird das Wort großgeschrieben."
+          ],
+          "feedback": "Richtig: Niemand.",
+          "wordBank": [
+            "nichts",
+            "niemand",
+            "nie",
+            "nirgendwo"
+          ]
+        },
+        {
+          "id": "22",
+          "type": "fill_blank_adaptive",
+          "prompt": "Ich rauche ___.",
+          "accepted": [
+            "nie"
+          ],
+          "hints": [
+            "Gesucht ist ein Ausdruck für „zu keiner Zeit“.",
+            "Zeit/Häufigkeit → nie."
+          ],
+          "feedback": "Richtig: nie.",
+          "wordBank": [
+            "nichts",
+            "niemand",
+            "nie",
+            "nirgendwo"
+          ]
+        },
+        {
+          "id": "23",
+          "type": "fill_blank_adaptive",
+          "prompt": "Ich finde meinen Schlüssel ___.",
+          "accepted": [
+            "nirgendwo"
+          ],
+          "hints": [
+            "Gesucht ist ein Ort.",
+            "Ort → nirgendwo."
+          ],
+          "feedback": "Richtig: nirgendwo.",
+          "wordBank": [
+            "nichts",
+            "niemand",
+            "nie",
+            "nirgendwo"
+          ]
+        },
+        {
+          "id": "24",
+          "type": "fill_blank_adaptive",
+          "prompt": "Ich kenne hier ___.",
+          "accepted": [
+            "niemanden"
+          ],
+          "hints": [
+            "Gesucht ist eine Person im Akkusativ.",
+            "niemand bekommt hier die Akkusativendung -en."
+          ],
+          "feedback": "Richtig: niemanden.",
+          "wordBank": [
+            "nichts",
+            "niemand",
+            "nie",
+            "nirgendwo"
+          ]
+        },
+        {
+          "id": "25",
+          "type": "fill_blank_adaptive",
+          "prompt": "Es gibt ___ Neues.",
+          "accepted": [
+            "nichts"
+          ],
+          "hints": [
+            "Gesucht ist „keine Sache / nichts“.",
+            "Nach nichts kann ein substantiviertes Adjektiv stehen: nichts Neues."
+          ],
+          "feedback": "Richtig: nichts Neues.",
+          "wordBank": [
+            "nichts",
+            "niemand",
+            "nie",
+            "nirgendwo"
+          ]
+        }
+      ],
+      "objective": "Negativpronomen und Adverbien nach Bedeutung unterscheiden."
+    },
+    {
+      "id": "exercise-5",
+      "label": "Übung 5",
+      "title": "Übung 5 – noch nicht / nicht mehr / noch nie",
+      "instruction": "Ergänze den passenden Ausdruck.",
+      "examples": [
+        {
+          "prompt": "Ich habe die Hausaufgaben ___ gemacht; ich mache sie später.",
+          "answer": "noch nicht",
+          "explanation": "Bis jetzt nicht, aber später wahrscheinlich → noch nicht."
+        },
+        {
+          "prompt": "Früher spielte er Fußball; heute spielt er ___.",
+          "answer": "nicht mehr",
+          "explanation": "Früher ja, jetzt nein → nicht mehr."
+        }
+      ],
+      "questions": [
+        {
+          "id": "26",
+          "type": "phrase_fill",
+          "prompt": "Ich habe ___ gegessen; ich esse später.",
+          "accepted": [
+            "noch nicht"
+          ],
+          "hints": [
+            "Ist die Handlung bis jetzt nicht passiert, kann aber später passieren?",
+            "Dann verwendest du noch nicht."
+          ],
+          "feedback": "Richtig: noch nicht."
+        },
+        {
+          "id": "27",
+          "type": "phrase_fill",
+          "prompt": "Früher wohnte ich hier, aber jetzt wohne ich hier ___.",
+          "accepted": [
+            "nicht mehr"
+          ],
+          "hints": [
+            "Früher ja, jetzt nein.",
+            "Dieser Wechsel wird mit nicht mehr ausgedrückt."
+          ],
+          "feedback": "Richtig: nicht mehr."
+        },
+        {
+          "id": "28",
+          "type": "phrase_fill",
+          "prompt": "Ich war ___ in Österreich.",
+          "accepted": [
+            "noch nie",
+            "nie"
+          ],
+          "hints": [
+            "Geht es um eine Erfahrung bis zum heutigen Zeitpunkt?",
+            "noch nie betont „bis jetzt“. Auch nie ist grammatisch korrekt."
+          ],
+          "feedback": "Bevorzugt: noch nie. Akzeptiert wird auch: nie."
+        },
+        {
+          "id": "29",
+          "type": "phrase_fill",
+          "prompt": "Der Kurs ist ___ zu Ende.",
+          "accepted": [
+            "noch nicht"
+          ],
+          "hints": [
+            "Der Kurs läuft im Moment weiter.",
+            "Bis jetzt nicht beendet → noch nicht."
+          ],
+          "feedback": "Richtig: noch nicht."
+        },
+        {
+          "id": "30",
+          "type": "phrase_fill",
+          "prompt": "Wir haben ___ Kaffee ___; alles ist aufgebraucht.",
+          "accepted": [
+            [
+              "keinen",
+              "mehr"
+            ]
+          ],
+          "hints": [
+            "Hier brauchst du zwei Teile.",
+            "Vor Kaffee steht die Form von kein; nach Kaffee steht mehr."
+          ],
+          "feedback": "Richtig: keinen Kaffee mehr."
+        }
+      ],
+      "objective": "zeitliche Negationsausdrücke nach Bedeutung unterscheiden."
+    },
+    {
+      "id": "exercise-6",
+      "label": "Übung 6",
+      "title": "Übung 6 – weder … noch / sondern",
+      "instruction": "Verbinde die Aussagen. Schreibe zuerst selbst; bei Schwierigkeiten erhältst du schrittweise Hilfe.",
+      "examples": [
+        {
+          "prompt": "Ich esse kein Fleisch. Ich esse keinen Fisch.",
+          "answer": "Ich esse weder Fleisch noch Fisch.",
+          "explanation": "Zwei negative Alternativen → weder … noch."
+        },
+        {
+          "prompt": "Sie fährt nicht heute. Sie fährt morgen.",
+          "answer": "Sie fährt nicht heute, sondern morgen.",
+          "explanation": "Korrektur/Kontrast → sondern."
+        }
+      ],
+      "questions": [
+        {
+          "id": "31",
+          "type": "sentence_transform_adaptive",
+          "prompt": "Ich trinke keinen Kaffee. Ich trinke keinen Tee.",
+          "accepted": [
+            "Ich trinke weder Kaffee noch Tee.",
+            "Weder Kaffee noch Tee trinke ich."
+          ],
+          "hints": [
+            "Sind beide Möglichkeiten negativ?",
+            "Verwende weder vor Kaffee und noch vor Tee."
+          ],
+          "feedback": "Richtig: Ich trinke weder Kaffee noch Tee.",
+          "skeleton": "Ich trinke ___ Kaffee ___ Tee.",
+          "builderWords": [
+            "weder",
+            "noch",
+            "sondern"
+          ]
+        },
+        {
+          "id": "32",
+          "type": "sentence_transform_adaptive",
+          "prompt": "Er kommt nicht heute. Er kommt morgen.",
+          "accepted": [
+            "Er kommt nicht heute, sondern morgen.",
+            "Er kommt heute nicht, sondern morgen."
+          ],
+          "hints": [
+            "Die zweite Aussage korrigiert die erste.",
+            "Verbinde mit sondern."
+          ],
+          "feedback": "Richtig: Er kommt heute nicht, sondern morgen.",
+          "skeleton": "Er kommt nicht heute, ___ morgen.",
+          "builderWords": [
+            "weder",
+            "noch",
+            "sondern"
+          ]
+        },
+        {
+          "id": "33",
+          "type": "sentence_transform_adaptive",
+          "prompt": "Das ist kein Hotel. Das ist ein Büro.",
+          "accepted": [
+            "Das ist kein Hotel, sondern ein Büro."
+          ],
+          "hints": [
+            "Die zweite Aussage stellt richtig, was es ist.",
+            "Nach der negativen Aussage passt sondern."
+          ],
+          "feedback": "Richtig: Das ist kein Hotel, sondern ein Büro.",
+          "skeleton": "Das ist kein Hotel, ___ ein Büro.",
+          "builderWords": [
+            "weder",
+            "noch",
+            "sondern"
+          ]
+        },
+        {
+          "id": "34",
+          "type": "sentence_transform_adaptive",
+          "prompt": "Sie spricht nicht Französisch. Sie spricht nicht Spanisch.",
+          "accepted": [
+            "Sie spricht weder Französisch noch Spanisch.",
+            "Weder Französisch noch Spanisch spricht sie."
+          ],
+          "hints": [
+            "Beide Sprachen werden ausgeschlossen.",
+            "Verwende weder … noch."
+          ],
+          "feedback": "Richtig: Sie spricht weder Französisch noch Spanisch.",
+          "skeleton": "Sie spricht ___ Französisch ___ Spanisch.",
+          "builderWords": [
+            "weder",
+            "noch",
+            "sondern"
+          ]
+        }
+      ],
+      "objective": "zwei Aussagen mit weder … noch oder sondern korrekt verbinden."
+    },
+    {
+      "id": "exercise-7",
+      "label": "Übung 7",
+      "title": "Übung 7 – Fehler korrigieren",
+      "instruction": "Korrigiere den Satz. Bearbeite möglichst nur die Stelle, die falsch ist.",
+      "examples": [
+        {
+          "prompt": "Ich habe nicht Auto.",
+          "answer": "Ich habe kein Auto.",
+          "explanation": "Nomen ohne bestimmten Artikel → kein."
+        },
+        {
+          "prompt": "Das Wetter ist kein schön.",
+          "answer": "Das Wetter ist nicht schön.",
+          "explanation": "Adjektiv → nicht."
+        }
+      ],
+      "questions": [
+        {
+          "id": "35",
+          "type": "sentence_correction",
+          "prompt": "Ich habe nicht Geld.",
+          "accepted": [
+            "Ich habe kein Geld."
+          ],
+          "hints": [
+            "Was wird verneint: ein Nomen oder eine Eigenschaft?",
+            "Geld ist ein Nomen."
+          ],
+          "feedback": "Richtig: Ich habe kein Geld."
+        },
+        {
+          "id": "36",
+          "type": "sentence_correction",
+          "prompt": "Niemand kommt nicht.",
+          "accepted": [
+            "Niemand kommt."
+          ],
+          "hints": [
+            "Achte auf doppelte Negation.",
+            "Niemand enthält die Negation schon."
+          ],
+          "feedback": "Richtig: Niemand kommt."
+        },
+        {
+          "id": "37",
+          "type": "sentence_correction",
+          "prompt": "Das ist kein interessant.",
+          "accepted": [
+            "Das ist nicht interessant."
+          ],
+          "hints": [
+            "interessant ist ein Adjektiv.",
+            "Adjektiv → nicht."
+          ],
+          "feedback": "Richtig: Das ist nicht interessant."
+        },
+        {
+          "id": "38",
+          "type": "sentence_correction",
+          "prompt": "Ich war nicht nie in Berlin.",
+          "accepted": [
+            "Ich war noch nie in Berlin.",
+            "Ich war nie in Berlin."
+          ],
+          "hints": [
+            "Hier stehen zwei Negationen unnötig zusammen.",
+            "Verwende nie oder – für „bis jetzt“ – noch nie."
+          ],
+          "feedback": "Bevorzugt: Ich war noch nie in Berlin. Akzeptiert: Ich war nie in Berlin."
+        },
+        {
+          "id": "39",
+          "type": "sentence_correction",
+          "prompt": "Wir haben nicht Milch mehr.",
+          "accepted": [
+            "Wir haben keine Milch mehr."
+          ],
+          "hints": [
+            "Milch ist ein Nomen.",
+            "Feminin: keine; mehr steht nach dem Nomen."
+          ],
+          "feedback": "Richtig: Wir haben keine Milch mehr."
+        }
+      ],
+      "objective": "typische Fehler bei der Negation erkennen und selbst korrigieren."
+    },
+    {
+      "id": "reading",
+      "label": "Lesetext",
+      "title": "Lesetext — Kein perfekter Montag",
+      "instruction": "Lies den Text und bearbeite die Aufgaben.",
+      "questions": [
+        {
+          "id": "reading-1",
+          "title": "Aufgabe 1 – Markieren",
+          "type": "text_highlight",
+          "prompt": "Markiere alle Negations- und Kontrastausdrücke im Text.",
+          "hints": [
+            "Suche nach nicht, Formen von kein, Negativpronomen und Konnektoren.",
+            "Es gibt 11 zu markierende Ausdrücke, wenn mehrteilige Ausdrücke als Einheit gezählt werden."
+          ],
+          "feedback": "Die Markierungen werden direkt im Text geprüft; mehrteilige Ausdrücke werden als zusammengehörige Gruppe gespeichert.",
+          "examples": [
+            {
+              "prompt": "„Der Bus ist nicht pünktlich.“ → Markiere „nicht“."
+            }
+          ],
+          "tokens": [
+            "Heute",
+            "läuft",
+            "bei",
+            "Leon",
+            "nicht",
+            "alles",
+            "gut.",
+            "Am",
+            "Morgen",
+            "hat",
+            "er",
+            "keine",
+            "Zeit",
+            "für",
+            "Frühstück.",
+            "Der",
+            "Bus",
+            "kommt",
+            "nicht",
+            "pünktlich,",
+            "deshalb",
+            "erreicht",
+            "er",
+            "die",
+            "Arbeit",
+            "zu",
+            "spät.",
+            "Im",
+            "Büro",
+            "findet",
+            "er",
+            "niemanden",
+            "an",
+            "seinem",
+            "Platz,",
+            "denn",
+            "alle",
+            "sind",
+            "in",
+            "einer",
+            "Besprechung.",
+            "Leon",
+            "hat",
+            "noch",
+            "nicht",
+            "auf",
+            "seine",
+            "E-Mails",
+            "geantwortet",
+            "und",
+            "es",
+            "gibt",
+            "keinen",
+            "Kaffee",
+            "mehr.",
+            "Mittags",
+            "möchte",
+            "er",
+            "weder",
+            "Pizza",
+            "noch",
+            "Pasta",
+            "essen.",
+            "Am",
+            "Abend",
+            "ist",
+            "er",
+            "aber",
+            "nicht",
+            "mehr",
+            "gestresst:",
+            "Er",
+            "geht",
+            "nicht",
+            "ins",
+            "Fitnessstudio,",
+            "sondern",
+            "direkt",
+            "nach",
+            "Hause",
+            "und",
+            "macht",
+            "einfach",
+            "nichts."
+          ],
+          "groups": [
+            {
+              "id": "expression-1",
+              "label": "nicht (nicht alles)",
+              "category": "nicht",
+              "tokens": [
+                4
+              ]
+            },
+            {
+              "id": "expression-2",
+              "label": "keine",
+              "category": "kein",
+              "tokens": [
+                11
+              ]
+            },
+            {
+              "id": "expression-3",
+              "label": "nicht (nicht pünktlich)",
+              "category": "nicht",
+              "tokens": [
+                18
+              ]
+            },
+            {
+              "id": "expression-4",
+              "label": "niemanden",
+              "category": "Negativpronomen",
+              "tokens": [
+                31
+              ]
+            },
+            {
+              "id": "expression-5",
+              "label": "noch nicht",
+              "category": "Zeit-/Verlaufs-Ausdruck",
+              "tokens": [
+                43,
+                44
+              ]
+            },
+            {
+              "id": "expression-6",
+              "label": "keinen … mehr",
+              "category": "kein",
+              "tokens": [
+                52,
+                54
+              ]
+            },
+            {
+              "id": "expression-7",
+              "label": "weder … noch",
+              "category": "Konnektor",
+              "tokens": [
+                58,
+                60
+              ]
+            },
+            {
+              "id": "expression-8",
+              "label": "nicht mehr",
+              "category": "Zeit-/Verlaufs-Ausdruck",
+              "tokens": [
+                68,
+                69
+              ]
+            },
+            {
+              "id": "expression-9",
+              "label": "nicht (nicht ins Fitnessstudio)",
+              "category": "nicht",
+              "tokens": [
+                73
+              ]
+            },
+            {
+              "id": "expression-10",
+              "label": "sondern",
+              "category": "Konnektor",
+              "tokens": [
+                76
+              ]
+            },
+            {
+              "id": "expression-11",
+              "label": "nichts",
+              "category": "Negativpronomen",
+              "tokens": [
+                83
+              ]
+            }
+          ]
+        },
+        {
+          "id": "reading-2",
+          "title": "Aufgabe 2 – Sortieren",
+          "type": "categorize",
+          "prompt": "Ordne die markierten Ausdrücke der passenden Kategorie zu.",
+          "hints": [
+            "Frage dich: Nomen-Verneinung, Person/Sache, Zeitverlauf oder Verbindung/Kontrast?",
+            "weder … noch und sondern gehören zu den Konnektoren."
+          ],
+          "feedback": "Nach dem Sortieren zeigt die UI pro Kategorie eine kurze Regel.",
+          "examples": [
+            {
+              "prompt": "„niemanden“ → Negativpronomen."
+            }
+          ],
+          "items": [
+            {
+              "id": "expression-1",
+              "label": "nicht (nicht alles)",
+              "category": "nicht"
+            },
+            {
+              "id": "expression-2",
+              "label": "keine",
+              "category": "kein"
+            },
+            {
+              "id": "expression-3",
+              "label": "nicht (nicht pünktlich)",
+              "category": "nicht"
+            },
+            {
+              "id": "expression-4",
+              "label": "niemanden",
+              "category": "Negativpronomen"
+            },
+            {
+              "id": "expression-5",
+              "label": "noch nicht",
+              "category": "Zeit-/Verlaufs-Ausdruck"
+            },
+            {
+              "id": "expression-6",
+              "label": "keinen … mehr",
+              "category": "kein"
+            },
+            {
+              "id": "expression-7",
+              "label": "weder … noch",
+              "category": "Konnektor"
+            },
+            {
+              "id": "expression-8",
+              "label": "nicht mehr",
+              "category": "Zeit-/Verlaufs-Ausdruck"
+            },
+            {
+              "id": "expression-9",
+              "label": "nicht (nicht ins Fitnessstudio)",
+              "category": "nicht"
+            },
+            {
+              "id": "expression-10",
+              "label": "sondern",
+              "category": "Konnektor"
+            },
+            {
+              "id": "expression-11",
+              "label": "nichts",
+              "category": "Negativpronomen"
+            }
+          ],
+          "categories": [
+            "nicht",
+            "kein",
+            "Negativpronomen",
+            "Zeit-/Verlaufs-Ausdruck",
+            "Konnektor"
+          ],
+          "rules": {
+            "nicht": "nicht verneint hier Satzteile oder Handlungen.",
+            "kein": "kein verneint Nomen mit unbestimmtem oder ohne Artikel.",
+            "Negativpronomen": "niemanden bezeichnet Personen, nichts bezeichnet Sachen.",
+            "Zeit-/Verlaufs-Ausdruck": "noch nicht und nicht mehr beschreiben einen zeitlichen Verlauf.",
+            "Konnektor": "weder … noch schließt beide Alternativen aus; sondern korrigiert eine negative Aussage."
+          }
+        },
+        {
+          "id": "reading-3",
+          "title": "Aufgabe 3 – Textverständnis",
+          "type": "short_answer",
+          "prompt": "Was hat Leon noch nicht gemacht? Antworte in einem ganzen Satz.",
+          "hints": [
+            "Suche im Text nach „noch nicht“.",
+            "Die Stelle steht im Satz mit den E-Mails."
+          ],
+          "feedback": "Richtig verstanden und in einem ganzen Satz geantwortet.",
+          "examples": [
+            {
+              "prompt": "„Er hat noch nicht gefrühstückt.“"
+            }
+          ],
+          "accepted": [
+            "Leon hat noch nicht auf seine E-Mails geantwortet.",
+            "Er hat noch nicht auf seine E-Mails geantwortet.",
+            "Leon hat noch nicht auf die E-Mails geantwortet.",
+            "Er hat noch nicht auf die E-Mails geantwortet."
+          ],
+          "fragments": [
+            "auf seine E-Mails geantwortet",
+            "auf die E-Mails geantwortet",
+            "E-Mails",
+            "noch nicht auf seine E-Mails geantwortet"
+          ]
+        },
+        {
+          "id": "reading-4",
+          "title": "Aufgabe 4 – Textverständnis",
+          "type": "short_answer",
+          "prompt": "Was gibt es nicht mehr? Antworte in einem ganzen Satz.",
+          "hints": [
+            "Suche nach der Struktur „kein … mehr“.",
+            "Es geht um ein Getränk."
+          ],
+          "feedback": "Richtig verstanden und in einem ganzen Satz geantwortet.",
+          "examples": [
+            {
+              "prompt": "„Es gibt kein Wasser mehr.“"
+            }
+          ],
+          "accepted": [
+            "Es gibt keinen Kaffee mehr.",
+            "Im Büro gibt es keinen Kaffee mehr."
+          ],
+          "fragments": [
+            "Kaffee",
+            "keinen Kaffee",
+            "keinen Kaffee mehr"
+          ]
+        },
+        {
+          "id": "40",
+          "title": "Aufgabe 5 – Sätze umformen",
+          "type": "sentence_transform",
+          "prompt": "Leon ist am Abend gestresst. Verwende: nicht mehr",
+          "hints": [
+            "Setze den vorgegebenen Negationsausdruck direkt vor den Teil, den du verneinen möchtest.",
+            "Achte besonders auf die Stellung von nicht bzw. nicht mehr."
+          ],
+          "feedback": "Diese geführte Version ersetzt die sehr offene Originalaufgabe und kann vollständig automatisch geprüft werden.",
+          "examples": [
+            {
+              "prompt": "„Der Bus ist pünktlich.“ + nicht → „Der Bus ist nicht pünktlich.“"
+            }
+          ],
+          "accepted": [
+            "Leon ist am Abend nicht mehr gestresst."
+          ],
+          "group": "reading-transform"
+        },
+        {
+          "id": "41",
+          "title": "Aufgabe 5 – Sätze umformen",
+          "type": "sentence_transform",
+          "prompt": "Leon geht am Abend ins Fitnessstudio. Verwende: nicht",
+          "hints": [
+            "Setze den vorgegebenen Negationsausdruck direkt vor den Teil, den du verneinen möchtest.",
+            "Achte besonders auf die Stellung von nicht bzw. nicht mehr."
+          ],
+          "feedback": "Diese geführte Version ersetzt die sehr offene Originalaufgabe und kann vollständig automatisch geprüft werden.",
+          "examples": [
+            {
+              "prompt": "„Der Bus ist pünktlich.“ + nicht → „Der Bus ist nicht pünktlich.“"
+            }
+          ],
+          "accepted": [
+            "Leon geht am Abend nicht ins Fitnessstudio."
+          ],
+          "group": "reading-transform"
+        }
+      ],
+      "examples": []
+    }
+  ],
+  "passage": "Heute läuft bei Leon nicht alles gut. Am Morgen hat er keine Zeit für Frühstück. Der Bus kommt nicht pünktlich, deshalb erreicht er die Arbeit zu spät. Im Büro findet er niemanden an seinem Platz, denn alle sind in einer Besprechung. Leon hat noch nicht auf seine E-Mails geantwortet und es gibt keinen Kaffee mehr. Mittags möchte er weder Pizza noch Pasta essen. Am Abend ist er aber nicht mehr gestresst: Er geht nicht ins Fitnessstudio, sondern direkt nach Hause und macht einfach nichts.",
+  "passageImage": "/img/homework/kein-perfekter-montag.webp"
+}

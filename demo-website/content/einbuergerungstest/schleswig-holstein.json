@@ -1,0 +1,215 @@
+[
+ {
+  "id": "schleswig-holstein-1",
+  "number": 441,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Welches Wappen gehört zum Bundesland Schleswig-Holstein?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 3,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/schleswig-holstein-1-1.webp",
+     "w": 220,
+     "h": 255
+    },
+    {
+     "src": "/img/einbuergerungstest/schleswig-holstein-1-2.webp",
+     "w": 208,
+     "h": 254
+    },
+    {
+     "src": "/img/einbuergerungstest/schleswig-holstein-1-3.webp",
+     "w": 195,
+     "h": 316
+    },
+    {
+     "src": "/img/einbuergerungstest/schleswig-holstein-1-4.webp",
+     "w": 220,
+     "h": 252
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ },
+ {
+  "id": "schleswig-holstein-2",
+  "number": 442,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Welches ist ein Landkreis in Schleswig-Holstein?",
+  "answers": [
+   "Ammerland",
+   "Mecklenburgische Seenplatte",
+   "Nordfriesland",
+   "Rhein-Sieg-Kreis"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ },
+ {
+  "id": "schleswig-holstein-3",
+  "number": 443,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Für wie viele Jahre wird der Landtag in Schleswig-Holstein gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ },
+ {
+  "id": "schleswig-holstein-4",
+  "number": 444,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Ab welchem Alter darf man in Schleswig-Holstein bei Kommunalwahlen wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ },
+ {
+  "id": "schleswig-holstein-5",
+  "number": 445,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Welche Farben hat die Landesflagge von Schleswig-Holstein?",
+  "answers": [
+   "weiß-blau",
+   "blau-weiß-rot",
+   "weiß-rot",
+   "grün-weiß-rot"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ },
+ {
+  "id": "schleswig-holstein-6",
+  "number": 446,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Wo können Sie sich in Schleswig-Holstein über politische Themen informieren?",
+  "answers": [
+   "bei der Verbraucherzentrale",
+   "beim Ordnungsamt der Gemeinde",
+   "beim / bei der Landesbeauftragten für politische Bildung",
+   "bei den Kirchen"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ },
+ {
+  "id": "schleswig-holstein-7",
+  "number": 447,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Die Landeshauptstadt von Schleswig-Holstein heißt …",
+  "answers": [
+   "Husum.",
+   "Flensburg.",
+   "Lübeck.",
+   "Kiel."
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ },
+ {
+  "id": "schleswig-holstein-8",
+  "number": 448,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Welches Bundesland ist Schleswig-Holstein?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 0,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/schleswig-holstein-8.webp",
+     "w": 722,
+     "h": 604
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ },
+ {
+  "id": "schleswig-holstein-9",
+  "number": 449,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef in Schleswig-Holstein?",
+  "answers": [
+   "Erste Ministerin/Erster Minister",
+   "Premierministerin/Premierminister",
+   "Bürgermeisterin/Bürgermeister",
+   "Ministerpräsidentin/Ministerpräsident"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ },
+ {
+  "id": "schleswig-holstein-10",
+  "number": 450,
+  "type": "state",
+  "category": "Schleswig-Holstein",
+  "question": "Welche Ministerin/welchen Minister hat Schleswig-Holstein nicht?",
+  "answers": [
+   "Justizministerin/Justizminister",
+   "Außenministerin/Außenminister",
+   "Finanzministerin/Finanzminister",
+   "Innenministerin/Innenminister"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Schleswig-Holstein"
+ }
+]

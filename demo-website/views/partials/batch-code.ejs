@@ -1,0 +1,31 @@
+<%#
+  A batch code, as the identifier it is.
+
+  LNIKB02 is unique, it is what appears on an invoice and a
+  certificate, and it is what somebody says out loud when they mean one
+  particular run of a course. Printed as plain grey text among the dates
+  it was the least noticeable thing in the line, and the hardest to
+  pick out when three batches are listed together.
+
+  So it is a pill, in a tabular face, and — wherever a batch id is
+  known — a link that filters the schedule to it. The same code in the
+  same shape on every page a teacher uses, which is what makes it
+  recognisable at a glance rather than something to read.
+
+  Expects: code. Optionally id (makes it a filter link) and href (to
+  override where it goes).
+%>
+<% if (typeof code !== "undefined" && code) { %>
+  <%
+    const to = typeof href !== "undefined" && href
+      ? href
+      : (typeof id !== "undefined" && id ? "/teach/schedule?batch=" + id : null);
+  %>
+  <% if (to) { %>
+    <a class="pill pill-code" href="<%= to %>" title="Show only this batch"><%= code %></a>
+  <% } else { %>
+    <%# No id, so nothing to filter to. Still a pill, because the point
+        is that the code looks the same everywhere. %>
+    <span class="pill pill-code"><%= code %></span>
+  <% } %>
+<% } %>

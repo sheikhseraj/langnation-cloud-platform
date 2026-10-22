@@ -1,0 +1,35 @@
+<%
+ const requests=locals.addressRequests||[],pending=requests.find(r=>r.status==='pending');
+ const changeable=locals.requestReady&&bill.status!=='void'&&bill.status!=='draft'&&bill.kind!=='storno';
+%>
+<section class="sp-card invoice-screen-only invoice-address-request" id="invoice-address-request" aria-labelledby="invoice-change-title">
+ <h2 id="invoice-change-title">Change address on invoice</h2>
+ <p class="muted">You cannot change an issued invoice by editing your account or downloading it again. Please submit a request to the office.</p>
+ <% if(locals.requestNotice){ %><p class="notice notice-ok" role="status"><%= requestNotice %></p><% } %>
+ <% if(locals.requestError){ %><p class="notice notice-bad" role="alert"><%= requestError %></p><% } %>
+ <% if(pending){ %>
+  <p class="notice notice-ok" role="status">Request #<%= pending.id %> is awaiting office review. Your current invoice remains unchanged.</p>
+  <div class="invoice-address-comparison">
+   <div class="invoice-address-box"><h3>Current address on invoice</h3><strong><%= pending.current_name %></strong><p class="invoice-address-lines"><%= pending.current_address||'Address not recorded' %></p></div>
+   <div class="invoice-address-box"><h3>Wanted address on invoice</h3><strong><%= pending.wanted_name %></strong><p class="invoice-address-lines"><%= pending.wanted_address %></p></div>
+  </div>
+ <% }else if(changeable){ %>
+ <details class="invoice-change-details"<%- locals.requestError?' open':'' %>>
+  <summary class="btn btn-sm btn-ghost">Submit an address change request</summary>
+  <form method="post" action="/portal/payments/invoice/<%= bill.id %>/address-request">
+   <input type="hidden" name="_csrf" value="<%= locals.requestCsrf||'' %>">
+   <div class="invoice-address-comparison">
+    <div class="invoice-address-box"><h3>Current address on invoice</h3><span class="pill"><%= bill.billing_recipient==='company'?'Company address':'Personal address' %></span><p><strong><%= bill.billing_name||student.name %></strong></p><p class="invoice-address-lines"><%= bill.billing_address||'Address not recorded' %></p></div>
+    <div class="invoice-address-box"><%- include('invoice-address-picker',{addressDetails:locals.addressDetails||{},requestValues:locals.requestValues}) %></div>
+   </div>
+   <p class="notice notice-bad">If the office approves this change, the replacement version supersedes your old invoice copy. The old copy must no longer be used. You will receive an email when your request is submitted and again when it is reviewed.</p>
+   <label class="invoice-address-ack"><input type="checkbox" name="acknowledge" value="yes" required> I understand that the replacement will supersede my previous invoice copy.</label>
+   <button class="btn btn-sm" type="submit">Submit request — change address on invoice</button>
+  </form>
+ </details>
+ <% }else{ %><p class="muted">Address change requests are unavailable for this invoice. <a href="/contact">Contact the office</a>.</p><% } %>
+ <% if(requests.some(r=>r.status!=='pending')){ %><details class="invoice-request-history"><summary>Previous address requests</summary>
+  <% requests.filter(r=>r.status!=='pending').forEach(r=>{ %><p><strong>Request #<%= r.id %> · <%= r.status==='approved'?'Approved':'Declined' %></strong><br><%= r.wanted_name %><% if(r.review_note){ %><br>Office note: <%= r.review_note %><% } %></p><% }); %>
+ </details><% } %>
+</section>
+<script src="/js/invoice-address-request.js?v=<%= site.assetVersion %>" defer></script>

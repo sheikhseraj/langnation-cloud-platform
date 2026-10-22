@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Courses", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "content", adArea: "content" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Courses",
+      adCrumbs: [{ label: "Root admin", href: "/rootadmin" }, { label: "Courses" }],
+      adLogout: "/rootadmin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (!ready) { %>
+        <p class="notice">
+          The public site is serving the shipped JSON rather than the database.
+          That happens when the courses table is empty — run
+          <code>npm run migrate:courses</code> to load it. Edits made here
+          will not reach the site until it holds at least one English course.
+        </p>
+      <% } else if (degraded) { %>
+        <p class="notice">
+          The last read from the database failed, so the public site is showing
+          the shipped JSON. Your edits are saved, but check the server log.
+        </p>
+      <% } %>
+
+      <% if (!courses.length) { %>
+        <div class="ad-card">
+          <p class="muted" style="margin:0">
+            Nothing here yet. Run <code>npm run migrate:courses</code> to load
+            the courses from <code>content/courses.json</code> into the database.
+          </p>
+        </div>
+      <% } %>
+
+      <%#
+        One card per track rather than one table of everything. Fourteen
+        rows is short enough to read either way, but flat it hid the only
+        structure that matters: six of them are the same course at six
+        levels, and the rest are different offerings entirely.
+
+        A course with no track lands in "Not yet grouped", which is meant
+        to be noticed — the alternative is silently filing it under
+        Regular, where nobody would ever question it.
+      %>
+      <% groups.forEach(function (g) { %>
+        <div class="ad-card">
+          <div class="row" style="justify-content:space-between;align-items:baseline">
+            <h2 style="margin:0"><%= g.label %></h2>
+            <span class="muted" style="font-size:.82rem">
+              <%= g.courses.length %> <%= g.courses.length === 1 ? "course" : "courses" %>
+            </span>
+          </div>
+
+          <div class="table-scroll" style="margin-top:.9rem">
+            <table>
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Level</th>
+                  <th style="text-align:right">Price</th>
+                  <th>English</th>
+                  <th>German</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% g.courses.forEach(function (c) {
+                     const de = deBySlug.get(c.slug); %>
+                  <tr>
+                    <td>
+                      <a href="/rootadmin/course/<%= encodeURIComponent(c.slug) %>"><strong><%= c.title %></strong></a>
+                      <div class="muted" style="font-size:.78rem"><%= c.slug %></div>
+                    </td>
+                    <td><%= c.level || "—" %></td>
+                    <%# What a visitor is charged, which is the discount
+                        when there is a usable one. Printing price_eur
+                        here meant this page and the course page could
+                        disagree about what a course costs. %>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">
+                      <% if (c.priceNow == null) { %>—<% } else { %>
+                        <% if (c.priceWas) { %><s class="was">€<%= c.priceWas %></s> <% } %>€<%= c.priceNow %>
+                      <% } %>
+                    </td>
+                    <td><span class="pill<%= c.status === "published" ? " pill-live" : "" %>"><%= c.status %></span></td>
+                    <td>
+                      <% if (!de) { %>
+                        <%# No German row at all. Saving the German tab creates one. %>
+                        <span class="pill" style="color:var(--danger)">no row</span>
+                      <% } else if (!de.translated) { %>
+                        <span class="pill">English text</span>
+                      <% } else { %>
+                        <span class="pill pill-live"><%= de.status %></span>
+                      <% } %>
+                    </td>
+                    <%# The page a visitor sees, in a new tab, so checking
+                        an edit does not mean leaving this list. Only when
+                        it is published: a link to an unpublished course is
+                        a 404, which reads as the site being broken rather
+                        than as the course not being out yet. %>
+                    <td style="text-align:right">
+                      <% if (c.status === "published") { %>
+                        <a class="btn btn-sm btn-ghost" target="_blank" rel="noopener"
+                           href="/courses/<%= encodeURIComponent(c.slug) %>"
+                           title="Open the page a visitor sees">View live</a>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% }); %>
+
+      <p class="muted" style="font-size:.85rem">
+        Saving a course updates the live site straight away — there is no
+        publish step and no redeploy. Set a course to <strong>draft</strong>
+        to take it off the site without deleting it.
+      </p>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

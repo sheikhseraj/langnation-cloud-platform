@@ -1,0 +1,186 @@
+<header class="site-header">
+  <div class="wrap header-inner">
+
+    <%# The logo already contains the wordmark, so there is no separate text.
+        Both versions ship and CSS shows the one that suits the theme —
+        swapping the src in JavaScript would flash the wrong one first.
+
+        The 48px file is deliberately not offered as 1x: the logo displays
+        54px tall, so a browser at DPR 1 would pick it and upscale, which
+        showed as a visibly soft mark. 96 is the smallest file that is never
+        stretched. %>
+    <%- include("brand", { href: lp("/"), label: "LangNation — " + t("nav.home") }) %>
+
+    <nav class="nav" aria-label="<%= t('nav.menu') %>">
+      <ul>
+        <% nav.forEach(function (item, i) { %>
+          <% if (item.external) { %>
+            <%# Another site of ours, so it says so: gold, and with the
+                arrow every link that leaves a site carries. Sitting in
+                the row rather than inside a submenu because the point
+                is that people find out it exists. %>
+            <li>
+              <%# Gold, and no arrow. The arrow was the usual cue for a
+                  link that leaves the site, but it landed on a second
+                  line and pushed the whole row out of alignment. The
+                  words that replaced it are for screen readers, which
+                  otherwise get no warning at all that this opens a new
+                  tab — the arrow was carrying that too. %>
+              <a class="nav-out" href="<%= item.href %>" target="_blank" rel="noopener noreferrer">
+                <%= item.label %><span class="sr-only"> (<%= t("nav.newTab") %>)</span>
+              </a>
+            </li>
+          <% } else if (!item.children.length) { %>
+            <li>
+              <a href="<%= item.href %>"<%- item.current ? ' aria-current="page"' : '' %>><%= item.label %></a>
+            </li>
+          <% } else { %>
+            <%# The group label is a button, not a link: it opens a menu.
+                On the old site these were dead "#" links that went nowhere. %>
+            <li class="has-menu" data-menu>
+              <button type="button" class="menu-trigger" aria-expanded="false"
+                      aria-controls="menu-<%= i %>"<%- item.current ? ' data-current' : '' %>>
+                <%= item.label %>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                     stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <ul class="submenu" id="menu-<%= i %>">
+                <% item.children.forEach(function (c) { %>
+                  <li<%- c.divider ? ' class="submenu-divider"' : '' %>>
+                    <a href="<%= c.href %>"<%- c.current ? ' aria-current="page"' : '' %>><%= c.label %></a>
+                  </li>
+                <% }); %>
+              </ul>
+            </li>
+          <% } %>
+        <% }); %>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <a class="icon-btn header-home" href="<%= lp('/') %>"
+         aria-label="<%= t('nav.home') %>" title="<%= t('nav.home') %>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z"/>
+        </svg>
+      </a>
+
+      <%# Two letters and nothing else. It carried a globe as well, on the
+          argument that "DE" alone could be read as "this page is German"
+          rather than "go to German" — but a globe beside two letters that
+          are already a language is saying the same thing twice, and it
+          cost most of the width in a row that has a sixth menu to fit.
+          The full sentence is still in aria-label and title, so a screen
+          reader and a hover both get "Auf Deutsch lesen" in full. %>
+      <a class="lang-btn" href="<%= altLangPath %>" hreflang="<%= altLang %>"
+         aria-label="<%= t('lang.switchLabel') %>" title="<%= t('lang.switchLabel') %>">
+        <%= t("lang.code") %>
+      </a>
+
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="<%= t('theme.toggle') %>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" aria-hidden="true" data-icon-sun>
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon-moon hidden>
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+        </svg>
+      </button>
+
+      <%# Students who already study here. An icon beside the theme toggle
+          rather than a word: enrolled students are a small share of
+          visitors, the loud action on every page should stay "get in
+          touch", and a fourth text control would crowd the header on a
+          phone. The name is carried by aria-label and title so it is
+          still announced and still explains itself on hover. %>
+      <%# Carries where you are, so signing in brings you back here
+          rather than dumping you on the dashboard. canonicalPath is
+          the path without the query, which is what should survive. %>
+      <%#
+        Signed out this is exactly what it was: a link to the sign-in
+        page, carrying where you are so you come back here afterwards.
+
+        Signed in, the script swaps the silhouette for the student's
+        own photo and turns the link into a menu. That happens in the
+        browser rather than here because this header is on every public
+        page and public pages are cached — rendering a name into one
+        would hand it to whoever loads the page next. The markup below
+        is what a visitor gets with no JavaScript at all, and it works.
+
+        data-account-strings carries the menu's words in the page's own
+        language, so the menu does not have to fetch them.
+      %>
+      <div class="acct" data-account
+           data-account-strings='<%= JSON.stringify({
+             menu: t("nav.acct.menu"),
+             signedIn: t("nav.acct.signedIn"),
+             dashboard: t("nav.acct.dashboard"),
+             profile: t("nav.acct.profile"),
+             courses: t("nav.acct.courses"),
+             et: t("nav.acct.et"),
+             settings: t("nav.acct.settings"),
+             logout: t("nav.acct.logout"),
+           }) %>'>
+        <a class="icon-btn" data-account-btn
+           href="/portal?next=<%= encodeURIComponent(typeof canonicalPath !== "undefined" && canonicalPath ? canonicalPath : "/") %>"
+           aria-label="<%= t('nav.portal') %>" title="<%= t('nav.portal') %>">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </a>
+      </div>
+
+      <a class="btn btn-sm" href="<%= lp('/contact') %>"><%= t("cta.enquireShort") %></a>
+
+      <button class="icon-btn nav-toggle" type="button" data-drawer-open
+              aria-label="<%= t('nav.menu') %>" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+             stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<dialog class="drawer" data-drawer aria-label="<%= t('nav.menu') %>">
+  <div class="drawer-panel">
+    <div class="drawer-head">
+      <%- include("brand", { href: lp("/"), label: "LangNation" }) %>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="<%= t('nav.close') %>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+             stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+    </div>
+
+    <% nav.forEach(function (item) { %>
+      <% if (item.external) { %>
+        <a class="drawer-link drawer-out" href="<%= item.href %>" target="_blank" rel="noopener noreferrer">
+          <%= item.label %><span class="sr-only"> (<%= t("nav.newTab") %>)</span>
+        </a>
+      <% } else if (!item.children.length) { %>
+        <a class="drawer-link" href="<%= item.href %>"<%- item.current ? ' aria-current="page"' : '' %>><%= item.label %></a>
+      <% } else { %>
+        <details class="drawer-group"<%= item.current ? ' open' : '' %>>
+          <summary><%= item.label %></summary>
+          <% item.children.forEach(function (c) { %>
+            <a class="drawer-sublink" href="<%= c.href %>"<%- c.current ? ' aria-current="page"' : '' %>><%= c.label %></a>
+          <% }); %>
+        </details>
+      <% } %>
+    <% }); %>
+
+    <a class="btn btn-block" href="<%= lp('/contact') %>"><%= t("cta.enquire") %></a>
+    <a class="btn btn-ghost btn-block" href="<%= altLangPath %>" style="margin-top:.6rem"><%= t("lang.switch") %></a>
+  </div>
+</dialog>
+
+<main id="main">

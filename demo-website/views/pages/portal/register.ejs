@@ -1,0 +1,90 @@
+<%- include("../../partials/portal-head", { title: "Create an account" }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <p class="eyebrow">Student portal</p>
+    <h1>Create an account</h1>
+    <p class="lead">
+      An account lets you register for events, see your placement result and,
+      once you are enrolled, reach your timetable and course materials.
+    </p>
+
+    <% if (error) { %>
+      <div class="notice notice-bad" style="margin-top:1.25rem"><%= error %></div>
+    <% } %>
+
+    <form class="form" method="post" action="/portal/register" style="margin-top:1.5rem">
+      <%# Same honeypot as the enquiry form: hidden from people, filled in
+          by bots. A caught submission is answered with the ordinary
+          success page so the bot cannot learn it was caught. %>
+      <div class="hp" aria-hidden="true">
+        <label for="website">Leave this empty</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label for="name">Your name <span aria-hidden="true">*</span></label>
+        <input type="text" id="name" name="name" required autocomplete="name"
+               maxlength="120" value="<%= values.name || '' %>"
+               <% if (errors.name) { %>aria-invalid="true" aria-describedby="err-name"<% } %>>
+        <% if (errors.name) { %><p class="field-error" id="err-name"><%= errors.name %></p><% } %>
+      </div>
+
+      <div class="field">
+        <label for="email">Email address <span aria-hidden="true">*</span></label>
+        <input type="email" id="email" name="email" required autocomplete="email"
+               maxlength="180" value="<%= values.email || '' %>"
+               <% if (errors.email) { %>aria-invalid="true" aria-describedby="err-email"<% } %>>
+        <% if (errors.email) { %><p class="field-error" id="err-email"><%= errors.email %></p><% } %>
+      </div>
+
+      <div class="field">
+        <label for="password">Choose a password <span aria-hidden="true">*</span></label>
+        <input type="password" id="password" name="password" required
+               autocomplete="new-password" minlength="10" maxlength="200"
+               aria-describedby="<%= errors.password ? 'err-password' : 'hint-password' %>">
+        <% if (errors.password) { %>
+          <p class="field-error" id="err-password"><%= errors.password %></p>
+        <% } else { %>
+          <p class="field-hint" id="hint-password">
+            At least 10 characters. Three or four unrelated words make a strong
+            password that is easy to remember.
+          </p>
+        <% } %>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="phone">Phone or WhatsApp</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel"
+                 maxlength="40" value="<%= values.phone || '' %>">
+        </div>
+        <div class="field">
+          <label for="country">Country</label>
+          <input type="text" id="country" name="country" autocomplete="country-name"
+                 maxlength="80" value="<%= values.country || '' %>">
+        </div>
+      </div>
+
+      <div class="field field-check">
+        <label for="accept">
+          <input type="checkbox" id="accept" name="accept" value="on" required
+                 <% if (errors.accept) { %>aria-invalid="true" aria-describedby="err-accept"<% } %>>
+          <span>
+            I agree to the <a href="/terms">terms</a> and have read the
+            <a href="/privacy">privacy notice</a>.
+          </span>
+        </label>
+        <% if (errors.accept) { %><p class="field-error" id="err-accept"><%= errors.accept %></p><% } %>
+      </div>
+
+      <button class="btn" type="submit">Create account</button>
+    </form>
+
+    <p class="muted" style="margin-top:1.5rem;font-size:.9rem">
+      Already have an account? <a href="/portal/login">Sign in</a>.
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

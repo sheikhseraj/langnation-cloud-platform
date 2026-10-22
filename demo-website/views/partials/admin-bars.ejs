@@ -1,0 +1,74 @@
+<%#
+  One measure, month by month.
+
+  Deliberately one series and one axis. Enrolments are a count and fees
+  are euros, and putting both on one chart means two y-scales — which
+  makes every crossing point look like a fact and none of them is one.
+  Two charts, one measure each, is the whole of the fix.
+
+  The geometry comes from lib/insight.toBars(); this places it and works
+  nothing out. Arithmetic in a template is arithmetic nothing can test.
+
+  Expects: chart (from toBars), ink (a CSS colour), fmt (a function),
+  caption. Optionally note.
+%>
+<% if (!chart.any) { %>
+  <p class="sp-empty"><%= caption %> — nothing yet.</p>
+<% } else { %>
+  <figure class="ad-chart">
+    <figcaption>
+      <%= caption %>
+      <% if (typeof note !== "undefined" && note) { %>
+        <span class="muted"><%= note %></span>
+      <% } %>
+    </figcaption>
+
+    <%# No preserveAspectRatio="none". It stretches the viewBox to the
+        box, which squashes the rounded data-ends into ellipses and
+        makes the axis labels lean. The default keeps the drawing square
+        and lets the card decide how big it is. %>
+    <svg viewBox="0 0 <%= chart.width %> <%= chart.height %>" role="img"
+         aria-label="<%= caption %>, <%= chart.bars.length %> months, highest <%= fmt(chart.peak) %>">
+
+      <%# One hairline at the baseline. Gridlines behind bars this short
+          are ink that is not data; the peak is labelled instead, which
+          is the number anybody reads a bar chart for. %>
+      <line x1="0" y1="<%= chart.baseline %>" x2="<%= chart.width %>" y2="<%= chart.baseline %>"
+            stroke="var(--line)" stroke-width="1"/>
+
+      <% chart.bars.forEach(function (b) { %>
+        <g>
+          <%# The tooltip, and the reason the hit area is the whole slot
+              rather than the bar: a month with one enrolment is a 2px
+              target nobody can hover, and a month with none is not a
+              target at all. %>
+          <title><%= b.label %> <%= b.year %> — <%= fmt(b.value) %></title>
+          <rect x="<%= b.hitX %>" y="0" width="<%= b.hitW %>" height="<%= chart.height %>"
+                fill="transparent"/>
+          <% if (b.h > 0) { %>
+            <%# Rounded at the data end, square at the baseline: the
+                radius says "this is where the value stops", and a bar
+                rounded at the bottom too would lift off its own axis.
+                Drawn as a path because rx on a rect rounds all four. %>
+            <path d="M<%= b.x %> <%= chart.baseline %>
+                     V<%= b.y + Math.min(4, b.h) %>
+                     a4 4 0 0 1 4 -4
+                     H<%= b.x + b.w - 4 %>
+                     a4 4 0 0 1 4 4
+                     V<%= chart.baseline %> Z"
+                  fill="<%= ink %>"/>
+          <% } %>
+          <%# Labelled selectively — the tallest month only. A number on
+              every bar is chaos and goes unread, and the rest are in
+              the table below. %>
+          <% if (b.peak) { %>
+            <text x="<%= b.x + b.w / 2 %>" y="<%= b.y - 6 %>"
+                  text-anchor="middle" class="ad-chart-peak"><%= fmt(b.value) %></text>
+          <% } %>
+          <text x="<%= b.hitX + b.hitW / 2 %>" y="<%= chart.height - 6 %>"
+                text-anchor="middle" class="ad-chart-tick"><%= b.label %></text>
+        </g>
+      <% }); %>
+    </svg>
+  </figure>
+<% } %>

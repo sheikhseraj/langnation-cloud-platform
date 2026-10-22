@@ -1,0 +1,116 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<%
+  // The panel appears only for a page that belongs to a guide group of
+  // more than one. A contents list with a single entry is a heading
+  // pretending to be navigation.
+  const hasNav = siblings && siblings.length > 1;
+  const hasToc = toc && toc.length >= 3;
+%>
+<article class="section-tight">
+  <div class="wrap<%= hasNav || hasToc ? " page-with-nav" : " wrap-narrow" %><%= hasNav && hasToc ? " page-with-both" : "" %><%= !hasNav && hasToc ? " page-toc-only" : "" %>">
+
+    <%#
+      Where this page sits in its guide, beside the text rather than
+      under it.
+
+      These pages were already computing their siblings and showing them
+      as cards at the very bottom — which is the one place a reader has
+      to finish the page to find. As a panel it is visible from the
+      first line, it says which of the five you are on, and moving
+      between them is one click instead of a scroll to the end.
+
+      Only for the Germany guide. Its groups are real sets — Bachelor,
+      Master, PhD; Grundschule, Realschule, Gymnasium — where the next
+      page is genuinely the next thing to read. The other seventeen CMS
+      pages share a group called "Cms" that holds About, Privacy Policy
+      and Career together, and a panel offering those as a sequence
+      would be inventing a relationship that is not there.
+
+      Before the article in the markup, so a screen reader and a phone
+      meet it in the order it is written; CSS puts it to the side on a
+      wide screen.
+    %>
+    <% if (hasNav) { %>
+      <nav class="page-nav-wrap" aria-label="<%= groupLabel || t("nav.germany") %>">
+        <%# A <details> so a phone gets a closed, one-line contents list
+            instead of five links between the reader and the title. CSS
+            drops the summary and forces the list open from 900px, where
+            there is room for it beside the text and nothing to save. %>
+        <details class="page-nav" open data-label="<%= groupLabel || t("nav.germany") %>">
+          <summary class="page-nav-head"><%= groupLabel || t("nav.germany") %></summary>
+          <ul>
+          <% siblings.forEach(function (s) { %>
+            <% const here = s.slug === page.slug; %>
+            <li>
+              <a href="<%= lp('/' + s.slug) %>"
+                 class="<%= here ? "is-here" : "" %>"
+                 <%- here ? 'aria-current="page"' : "" %>><%= s.title %></a>
+            </li>
+            <% }); %>
+          </ul>
+        </details>
+      </nav>
+    <% } %>
+
+    <div class="page-main">
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <span><a href="<%= lp('/') %>"><%= t("nav.home") %></a></span>
+      <% if (parent) { %><span><a href="<%= parent.href %>"><%= parent.label %></a></span><% } %>
+    </nav>
+
+    <h1><%= page.title %></h1>
+
+    <%# A diagram is not a photograph. A photograph is glanced at and a
+        720px column is plenty; a diagram is READ, and this one carries
+        four levels of school, thirteen year groups and the routes
+        between them in type that does not survive being shrunk to fit.
+        So it links to its own largest version, which is the only way a
+        reader on a phone gets at it at all. %>
+    <% if (page.image && page.diagram) { %>
+      <figure class="page-diagram">
+        <a href="<%= page.image.src %>" target="_blank" rel="noopener">
+          <img src="<%= page.image.src %>"
+               <% if (page.image.srcset) { %>srcset="<%= page.image.srcset %>" sizes="(min-width:760px) 720px, 92vw"<% } %>
+               width="1280" height="720" fetchpriority="high" decoding="async"
+               alt="<%= page.title %>">
+        </a>
+        <figcaption><%= t("page.diagramOpen") %></figcaption>
+      </figure>
+    <% } else if (page.image) { %>
+      <div class="hero-art" style="margin:2rem 0;aspect-ratio:16/9">
+        <img src="<%= page.image.src %>"
+             <% if (page.image.srcset) { %>srcset="<%= page.image.srcset %>" sizes="(min-width:760px) 720px, 92vw"<% } %>
+             width="1280" height="720" fetchpriority="high" decoding="async" alt="">
+      </div>
+    <% } else { %>
+      <div style="height:1.5rem"></div>
+    <% } %>
+
+    <% if (!page.translated) { %>
+      <p class="notice"><%= t("translated.notice") %></p>
+    <% } %>
+
+    <div class="prose">
+      <%- page.body %>
+      <% if (page.body2) { %><%- page.body2 %><% } %>
+    </div>
+
+      <%# The cards that used to be here said the same thing as the panel
+          beside them. One list of siblings per page. %>
+
+      <div class="band" style="margin-top:3rem">
+        <h2 style="font-size:clamp(1.4rem,3vw,1.9rem)"><%= t("home.ctaTitle") %></h2>
+        <p><%= t("home.ctaLead") %></p>
+        <a class="btn" href="<%= lp('/contact') %>"><%= t("cta.enquire") %></a>
+      </div>
+    </div>
+
+    <%- include("../partials/page-toc", { toc: toc }) %>
+
+  </div>
+</article>
+
+<%- include("../partials/footer") %>

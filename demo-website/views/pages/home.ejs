@@ -1,0 +1,425 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow"><%= t("site.motto") %></p>
+        <h1><%= t("home.heroTitle") %> <span><%= t("home.heroTitleAccent") %></span></h1>
+        <p class="lead"><%= t("home.heroLead") %></p>
+        <div class="hero-actions">
+          <a class="btn" href="<%= lp('/courses') %>"><%= t("cta.viewCourses") %></a>
+          <a class="btn btn-ghost" href="<%= lp('/contact') %>"><%= t("cta.enquire") %></a>
+        </div>
+
+        <%# A line, not a third button. Two calls to action are a
+            choice; three are a menu, and the third one always takes
+            its weight from the first two. %>
+        <p class="hero-aside">
+          <a href="<%= site.dictionaryUrl %>" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/>
+              <path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H19v3H6.5A2.5 2.5 0 0 1 4 20.5z"/>
+            </svg>
+            <%= t("dict.heroLink") %> →
+          </a>
+        </p>
+      </div>
+
+      <div class="hero-art">
+        <% if (heroImage) { %>
+          <img src="<%= heroImage.src %>"
+               <% if (heroImage.srcset) { %>srcset="<%= heroImage.srcset %>" sizes="(min-width: 940px) 50vw, 92vw"<% } %>
+               width="1280" height="960" fetchpriority="high" decoding="async"
+               alt="<%= t('site.name') %>">
+        <% } %>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><b><%= stats.courses %></b><span><%= t("home.statCourses") %></span></div>
+      <div class="stat"><b>6</b><span><%= t("home.statLevels") %></span></div>
+      <div class="stat"><b>10+</b><span><%= t("home.statYears") %></span></div>
+      <div class="stat"><b>5000+</b><span><%= t("home.statStudents") %></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow"><%= t("nav.courses") %></p>
+      <h2><%= t("home.coursesTitle") %></h2>
+      <p class="lead"><%= t("home.coursesLead") %></p>
+    </div>
+
+    <%#
+      One card per kind of course, not per level.
+
+      It used to be six Regular courses — the same course at A1 through
+      C2 — which filled the section and left no sign that One-to-one or
+      Intensive existed at all. The levels belong one click in, where
+      somebody who has picked a type can compare them.
+
+      Generated from the catalogue, so adding a Weekend track in the
+      editor puts a fourth card here and nothing needs editing.
+    %>
+    <%# On a rail, so a fourth type slides rather than dropping onto a
+        second row. Three fit any screen today and the arrows stay
+        hidden; add Weekend and exam preparation and the row starts
+        scrolling instead of breaking into 3 + 2, which reads as two
+        unrelated groups. The scrolling is the browser's own, so a
+        swipe works and so does no JavaScript at all. %>
+    <div class="rail-wrap" data-rail
+         data-rail-prev="<%= t('rail.prev') %>"
+         data-rail-next="<%= t('rail.next') %>">
+      <div class="rail rail-tracks" tabindex="0" role="group"
+           aria-label="<%= t('home.coursesTitle') %>">
+        <% featured.forEach(function (group) { %>
+          <%- include("../partials/track-card", { group: group }) %>
+        <% }); %>
+      </div>
+    </div>
+
+    <p class="center mt-2">
+      <a class="btn btn-ghost" href="<%= lp('/courses') %>"><%= t("cta.viewCourses") %> →</a>
+    </p>
+  </div>
+</section>
+
+<%#
+  The Einbürgerungstest, given its own band rather than a card in a
+  grid. It is the thing people are searching for right now, and a
+  fourth tile among the course cards would read as a footnote.
+
+  Placed after the courses and before "why us": high enough to be
+  seen, not so high that it displaces what the school actually sells.
+%>
+<section class="section et-spotlight-band">
+  <div class="wrap">
+    <div class="et-spotlight">
+      <div class="et-spotlight-body">
+        <p class="eyebrow"><%= t("et.eyebrow") %></p>
+        <h2><%= t("et.title") %></h2>
+        <p class="lead"><%= t("et.lead") %></p>
+
+        <ul class="et-spotlight-facts">
+          <li><strong>460</strong> <span><%= t("et.factQuestions") %></span></li>
+          <li><strong>16</strong> <span><%= t("et.factStates") %></span></li>
+          <li><strong>0 €</strong> <span><%= t("et.factPrice") %></span></li>
+        </ul>
+
+        <p class="et-spotlight-cta">
+          <a class="btn" href="<%= lp('/einbuergerungstest') %>"><%= t("et.cta") %> →</a>
+          <a class="btn btn-ghost" href="<%= lp('/einbuergerungstest') %>#bundesland"><%= t("et.ctaSecondary") %></a>
+        </p>
+      </div>
+
+      <%#
+        The picture when there is one, the drawn grid when there is not.
+
+        The grid is 33 squares with 17 filled — the pass mark, drawn
+        rather than stated — and it is a genuinely good piece of
+        information, so the photograph does not simply replace it. The
+        17/33 rides on the picture as a badge instead, which keeps the
+        fact and gains the photograph.
+
+        Decorative either way: everything both of them say is already in
+        the facts list above, in words, and a screen reader reading the
+        same three numbers twice is worse than silence.
+      %>
+      <div class="et-spotlight-art" aria-hidden="true">
+        <% if (etImage) { %>
+          <img class="et-spotlight-pic" src="<%= etImage.src %>"
+               <% if (etImage.srcset) { %>srcset="<%= etImage.srcset %>"
+               sizes="(min-width: 900px) 40vw, 92vw"<% } %>
+               alt="" width="1400" height="1050" loading="lazy" decoding="async">
+          <span class="et-spotlight-badge">17 / 33</span>
+        <% } else { %>
+          <span class="et-spotlight-grid">
+            <%# Emitted raw. The escaping output tag turns the quotes
+                into entities, so the class never lands and all 33
+                squares come out the same colour. %>
+            <% for (let i = 0; i < 33; i++) { %><i<%- i < 17 ? ' class="is-on"' : "" %>></i><% } %>
+          </span>
+          <span class="et-spotlight-caption">17 / 33</span>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%#
+  The dictionary, given a band of its own, directly after the
+  Einbürgerungstest.
+
+  Same construction as the band above it, because it is the same kind
+  of thing: a free tool of ours that makes the case for the school
+  without asking the reader for anything. A gold stripe rather than the
+  flag, so the two read as a pair rather than as the same picture
+  twice.
+
+  Everything claimed here was checked against langnation.de on
+  12 September 2026 rather than taken from a description of it. Two
+  things are deliberately NOT claimed: there is no AI visible anywhere
+  in the product, and the Amtsdeutsch decoder is premium — a band
+  headed "free to use" that advertises a paid feature is how a free
+  offer stops being believed.
+%>
+<section class="section dict-band">
+  <div class="wrap">
+    <div class="dict-spotlight">
+      <div class="dict-body">
+        <p class="eyebrow"><%= t("dict.eyebrow") %></p>
+        <h2><%= t("dict.title") %></h2>
+        <p class="dict-sub"><%= t("dict.sub") %></p>
+        <p class="dict-blurb"><%= t("dict.blurb") %></p>
+
+        <%#
+          Five things it does, each with a line saying what that means.
+          Drawn here rather than pulled from a library: the site has no
+          icon package, and adding one for five glyphs would be a
+          dependency bought for a decoration.
+        %>
+        <ul class="dict-icons">
+          <% [
+            ["iAi", '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'],
+            ["iPron", '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>'],
+            ["iExamples", '<path d="M4 5h16v12H8l-4 3z"/><path d="M8 9h8M8 13h5"/>'],
+            ["iCards", '<path d="m12 3 9 4.5-9 4.5-9-4.5z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/>'],
+            ["iLangs", '<circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/>'],
+          ].forEach(function (item) { %>
+            <li>
+              <span class="dict-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round"><%- item[1] %></svg>
+              </span>
+              <b><%= t("dict." + item[0]) %></b>
+              <span><%= t("dict." + item[0] + "Sub") %></span>
+            </li>
+          <% }); %>
+        </ul>
+
+        <%# One button. The dictionary is a single page, so a second
+            one would have pointed at the same URL — two ways to do the
+            same thing, which makes both of them look less certain. %>
+        <p class="dict-cta">
+          <a class="btn" href="<%= site.dictionaryUrl %>" target="_blank" rel="noopener noreferrer">
+            <%= t("dict.cta") %> →
+          </a>
+        </p>
+
+        <%# The line that makes this a section about the school rather
+            than an advertisement for something else. Without it the
+            band says "we also built a dictionary"; with it, it says
+            what the dictionary is FOR. %>
+        <p class="dict-companion">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m12 4 10 5-10 5-10-5z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/>
+          </svg>
+          <%= t("dict.companion") %>
+        </p>
+      </div>
+
+      <%#
+        The product, drawn rather than photographed.
+
+        A generated picture of a laptop would be a 2MB image of text
+        that goes soft the moment it is scaled, says the same thing in
+        every language, and is invisible to a screen reader. This is
+        real markup: it stays crisp at any size, the German in it is
+        the German the dictionary actually returns for these two
+        words, and it costs nothing to load.
+
+        Hidden from assistive technology all the same — it is a
+        picture of an interface, and the list of features beside it
+        already says what the interface does.
+
+        A real screenshot takes its place the moment there is one:
+        drop a picture named "Dictionary" into the image folder and
+        run tools/import-images.js.
+      %>
+      <div class="dict-art">
+        <% if (dictionaryImage) { %>
+          <img src="<%= dictionaryImage.src %>"
+               <% if (dictionaryImage.srcset) { %>srcset="<%= dictionaryImage.srcset %>"
+               sizes="(min-width: 940px) 46vw, 92vw"<% } %>
+               width="640" height="480" loading="lazy" decoding="async" alt="">
+        <% } else { %>
+          <div class="dict-mock" aria-hidden="true">
+            <div class="dict-screen">
+              <div class="dict-screen-bar">
+                <span class="dict-screen-dot"></span>
+                <span class="dict-screen-name">LangNation Dictionary</span>
+              </div>
+              <div class="dict-search">
+                <span>Chance</span>
+                <em>DE&nbsp;⇄&nbsp;EN</em>
+              </div>
+              <div class="dict-entry">
+                <p class="dict-word">die Chance <i>🔊</i></p>
+                <p class="dict-pos">Nomen, feminin</p>
+                <p class="dict-mean">opportunity, chance</p>
+                <p class="dict-ex"><b>Das ist eine große Chance für dich.</b><span>This is a great opportunity for you.</span></p>
+                <p class="dict-tags"><span>Beispiele</span><span>Wortformen</span><span>Synonyme</span></p>
+              </div>
+            </div>
+
+            <div class="dict-phone">
+              <div class="dict-search">
+                <span>lernen</span>
+                <em>⇄</em>
+              </div>
+              <p class="dict-word">lernen <i>🔊</i></p>
+              <p class="dict-pos">starkes Verb</p>
+              <p class="dict-mean">to learn</p>
+              <p class="dict-ex"><b>Man lernt nie aus.</b><span>You never stop learning.</span></p>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-head center">
+      <h2><%= t("home.whyTitle") %></h2>
+    </div>
+
+    <div class="grid grid-4">
+      <% [
+        ["certified", '<path d="M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path d="M8.2 13.6 7 22l5-2.5L17 22l-1.2-8.4"/>'],
+        ["exam",      '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v6h6"/><path d="m8.5 15 2 2 4-4"/>'],
+        ["small",     '<circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.4"/><path d="M16 15.4a5.4 5.4 0 0 1 5.5 4.6"/>'],
+        ["support",   '<path d="M12 21s-7-4.5-7-10a4.2 4.2 0 0 1 7-3.1A4.2 4.2 0 0 1 19 11c0 5.5-7 10-7 10z"/>']
+      ].forEach(function (f) { %>
+        <div class="feature reveal">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><%- f[1] %></svg>
+          </span>
+          <div>
+            <h3><%= t("why." + f[0] + ".title") %></h3>
+            <p><%= t("why." + f[0] + ".body") %></p>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<% if (testimonials.length) { %>
+<section class="section">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="eyebrow"><%= t("home.testimonialsLead") %></p>
+      <h2><%= t("home.testimonialsTitle") %></h2>
+    </div>
+
+    <%#
+      One row rather than a masonry of two. The quotes are different
+      lengths, so each card is clamped to the same few lines and the
+      ones that were cut get a way to read the rest — measured in the
+      browser, because whether the clamp bit depends on the font and
+      the width, not on the character count.
+    %>
+    <div class="rail-wrap" data-rail
+         data-rail-prev="<%= t('rail.prev') %>"
+         data-rail-next="<%= t('rail.next') %>">
+      <div class="rail quotes" tabindex="0" role="group"
+           aria-label="<%= t('home.testimonialsTitle') %>">
+        <% testimonials.forEach(function (p) { %>
+          <figure class="quote" data-quote
+                  data-quote-full="<%= p.quote %>"
+                  data-quote-more="<%= t('quote.more') %>"
+                  data-quote-close="<%= t('quote.close') %>">
+            <blockquote><%= p.quote %></blockquote>
+            <figcaption>
+              <% if (p.image) { %>
+                <img src="<%= p.image.src %>" width="44" height="44" loading="lazy" decoding="async" alt="">
+              <% } %>
+              <span class="who"><b><%= p.name %></b><span><%= p.role %></span></span>
+            </figcaption>
+          </figure>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (posts.length) { %>
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <h2><%= t("home.blogTitle") %></h2>
+    </div>
+
+    <%#
+      A rail, like the courses above it and the testimonials below.
+
+      It was a grid, which on a phone becomes one tall column: three
+      posts stacked, each with a photograph, pushing everything after
+      them a screen and a half down the page. The rail puts them side by
+      side and lets the reader move along, so the section costs one card
+      of height whatever the number of posts.
+
+      Same markup as the other two on purpose. It is the same component
+      and it should behave the same way — the arrows, the keyboard, the
+      snap points and the scrollbar all come from .rail.
+    %>
+    <div class="rail-wrap" data-rail
+         data-rail-prev="<%= t('rail.prev') %>"
+         data-rail-next="<%= t('rail.next') %>">
+      <div class="rail" tabindex="0" role="group"
+           aria-label="<%= t('home.blogTitle') %>">
+        <% posts.forEach(function (p) { %>
+          <a class="card" href="<%= lp('/blog/' + p.slug) %>">
+            <div class="card-media">
+              <% if (p.image) { %>
+                <%# The rail's cards are ~290px wide, not a third of the
+                    page, so the old "340px at 1120" was asking for a
+                    file wider than the slot it lands in. %>
+                <img src="<%= p.image.src %>"
+                     <% if (p.image.srcset) { %>srcset="<%= p.image.srcset %>" sizes="(min-width: 700px) 290px, 80vw"<% } %>
+                     width="640" height="400" loading="lazy" decoding="async" alt="">
+              <% } %>
+            </div>
+            <div class="card-body">
+              <h3><%= p.title %></h3>
+              <p><%= p.excerpt %></p>
+              <div class="card-foot">
+                <span class="muted" style="font-size:.82rem"><%= p.dateLabel %></span>
+                <span class="go"><%= t("cta.readMore") %> →</span>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    </div>
+
+    <%# The same pairing the courses section uses two sections up: a rail
+        of the recent ones, and a way to the rest underneath. %>
+    <p class="center mt-2">
+      <a class="btn btn-ghost" href="<%= lp('/blog') %>"><%= t("cta.viewBlog") %> →</a>
+    </p>
+  </div>
+</section>
+<% } %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="band">
+      <h2><%= t("home.ctaTitle") %></h2>
+      <p><%= t("home.ctaLead") %></p>
+      <a class="btn" href="<%= lp('/contact') %>"><%= t("cta.enquire") %></a>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

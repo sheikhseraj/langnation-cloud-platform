@@ -1,0 +1,66 @@
+[
+  {
+    "caption": "Nürnberg",
+    "description": "",
+    "image": {
+      "src": "/img/gallery/nuernberg-1-1400.webp",
+      "srcset": "/img/gallery/nuernberg-1-400.webp 400w, /img/gallery/nuernberg-1-900.webp 900w, /img/gallery/nuernberg-1-1400.webp 1400w"
+    }
+  },
+  {
+    "caption": "Nürnberg",
+    "description": "",
+    "image": {
+      "src": "/img/gallery/nuernberg-2-1400.webp",
+      "srcset": "/img/gallery/nuernberg-2-400.webp 400w, /img/gallery/nuernberg-2-900.webp 900w, /img/gallery/nuernberg-2-1400.webp 1400w"
+    }
+  },
+  {
+    "caption": "Fürth",
+    "description": "",
+    "image": {
+      "src": "/img/gallery/fuerth-3-1400.webp",
+      "srcset": "/img/gallery/fuerth-3-400.webp 400w, /img/gallery/fuerth-3-900.webp 900w, /img/gallery/fuerth-3-1400.webp 1400w"
+    }
+  },
+  {
+    "caption": "Hamburg",
+    "description": "",
+    "image": {
+      "src": "/img/gallery/hamburg-4-1400.webp",
+      "srcset": "/img/gallery/hamburg-4-400.webp 400w, /img/gallery/hamburg-4-900.webp 900w, /img/gallery/hamburg-4-1400.webp 1400w"
+    }
+  },
+  {
+    "caption": "Bayruth",
+    "description": "",
+    "image": {
+      "src": "/img/gallery/bayruth-5-1400.webp",
+      "srcset": "/img/gallery/bayruth-5-400.webp 400w, /img/gallery/bayruth-5-900.webp 900w, /img/gallery/bayruth-5-1400.webp 1400w"
+    }
+  },
+  {
+    "caption": "Rostock",
+    "description": "",
+    "image": {
+      "src": "/img/gallery/rostock-6-1400.webp",
+      "srcset": "/img/gallery/rostock-6-400.webp 400w, /img/gallery/rostock-6-900.webp 900w, /img/gallery/rostock-6-1400.webp 1400w"
+    }
+  },
+  {
+    "caption": "Rostock",
+    "description": "",
+    "image": {
+      "src": "/img/gallery/rostock-7-1400.webp",
+      "srcset": "/img/gallery/rostock-7-400.webp 400w, /img/gallery/rostock-7-900.webp 900w, /img/gallery/rostock-7-1400.webp 1400w"
+    }
+  },
+  {
+    "caption": "LangNation",
+    "description": "",
+    "image": {
+      "src": "/img/gallery/langnation-8-1400.webp",
+      "srcset": "/img/gallery/langnation-8-400.webp 400w, /img/gallery/langnation-8-900.webp 900w, /img/gallery/langnation-8-1400.webp 1400w"
+    }
+  }
+]

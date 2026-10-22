@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Offline · LangNation</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem("ln-theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+  } catch (e) {}
+})();
+</script>
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+<main class="section">
+  <div class="wrap wrap-narrow center">
+    <img src="/icons/logo-144.webp" width="180" height="71" alt="LangNation" style="margin:0 auto 1.5rem;height:64px;width:auto">
+    <p class="eyebrow">No connection</p>
+    <h1>You are offline</h1>
+    <p class="lead" style="margin-top:1rem">
+      LangNation needs a connection to load this page. Pages you have already
+      visited will still open — try again once you are back online.
+    </p>
+    <div class="hero-actions" style="justify-content:center">
+      <button class="btn" type="button" onclick="location.reload()">Try again</button>
+      <a class="btn btn-ghost" href="/">Home</a>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

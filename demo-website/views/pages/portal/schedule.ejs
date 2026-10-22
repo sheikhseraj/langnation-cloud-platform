@@ -1,0 +1,191 @@
+<%
+  // starts_at is UTC in the column — the pool runs with timezone "Z" —
+  // and the batch's own zone is what it is printed in. Formatting in
+  // the server's zone would tell a student in Bengaluru when the class
+  // starts in Frankfurt, which is the exact mistake the column was made
+  // UTC to avoid.
+  const zone = (tz) => tz || "Europe/Berlin";
+
+  const clock = (v, tz) => new Date(v).toLocaleTimeString("en-GB", {
+    hour: "2-digit", minute: "2-digit", timeZone: zone(tz),
+  });
+
+  const heading = (iso, tz) => {
+    // The key is already the calendar day in the batch's zone, so it is
+    // read back as a plain date rather than an instant.
+    const [y, m, d] = iso.split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-GB", {
+      weekday: "long", day: "numeric", month: "long", timeZone: "UTC",
+    });
+  };
+
+  const ends = (v, minutes, tz) =>
+    clock(new Date(new Date(v).getTime() + (Number(minutes) || 0) * 60000), tz);
+
+  const todayIn = (tz) => new Intl.DateTimeFormat("en-CA", {
+    timeZone: zone(tz), year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "My schedule",
+  pageLead: lessonCount
+    ? lessonCount + (lessonCount === 1 ? " class" : " classes") + " in the next " + weeks + " weeks"
+    : null,
+  nav: "schedule", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue, notice: notice,
+}) %>
+
+<% if (days.length) { %>
+  <% days.forEach(function (d) { %>
+    <%
+      const tz = d.lessons[0].timezone;
+      const isToday = d.date === todayIn(tz);
+    %>
+    <div class="sp-card sp-wide">
+      <div class="sp-card-head">
+        <h2>
+          <%= heading(d.date) %><% if (isToday) { %> <span class="pill pill-live">today</span><% } %>
+        </h2>
+      </div>
+      <ul class="sp-list">
+        <% d.lessons.forEach(function (l) { %>
+          <li class="<%= l.status === "cancelled" ? "sp-lesson-off" : "" %>">
+            <div>
+              <strong>
+                <%= l.course_title || l.batch_code %>
+                <%- include("../../partials/batch-code", { code: l.batch_code }) %>
+                <% if (l.status === "cancelled") { %>
+                  <span class="pill pill-off">cancelled</span>
+                <% } %>
+              </strong>
+              <div class="muted" style="font-size:.82rem">
+                <%= clock(l.starts_at, l.timezone) %>–<%= ends(l.starts_at, l.minutes, l.timezone) %>
+                <% if (l.level) { %> · <%= l.level %><% } %>
+                · <%= zone(l.timezone) %>
+              </div>
+
+              <%#
+                Why it is not where it was.
+
+                "Thursday's class is now Friday" is a different message
+                from "there is a class on Friday", and a student who
+                wrote the old time down needs the first one. A
+                cancellation with no reason reads as a mistake, so the
+                note is shown wherever there is one.
+              %>
+              <% if (l.moved_from) { %>
+                <div class="sp-lesson-note">
+                  Moved from
+                  <%= new Date(l.moved_from).toLocaleString("en-GB", {
+                        weekday: "short", day: "numeric", month: "short",
+                        hour: "2-digit", minute: "2-digit", timeZone: zone(l.timezone),
+                      }) %>
+                </div>
+              <% } %>
+              <% if (l.change_note) { %>
+                <div class="sp-lesson-note"><%= l.change_note %></div>
+              <% } %>
+              <%# A different teacher for this one class. Said here
+                  rather than left to the email, because somebody who
+                  missed the email still opens this page. %>
+              <% if (l.stand_in_name) { %>
+                <div class="sp-lesson-note">
+                  With <strong><%= l.stand_in_name %></strong> this time<%
+                    if (l.handover_note) { %> — <%= l.handover_note %><% } %>
+                </div>
+              <% } %>
+            </div>
+
+            <div class="sp-list-end">
+              <%#
+                The link only while there is a class to join. A live
+                room link on a cancelled lesson is a link to an empty
+                room, and people do click it.
+              %>
+              <% if (l.status !== "cancelled" && classLinks.room(l)) { %>
+                <a class="btn btn-sm" href="<%= classLinks.room(l) %>" target="_blank" rel="noopener noreferrer">Join</a>
+              <% } %>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    </div>
+  <% }); %>
+<% } else { %>
+  <%#
+    An empty timetable has three different causes and they want three
+    different sentences. Saying "no classes" when the real answer is
+    "nobody has set the timetable yet" would have a student trust an
+    empty calendar — which is the failure this whole page exists to fix.
+  %>
+  <div class="sp-card sp-wide">
+    <div class="sp-card-head">
+      <h2>Nothing scheduled</h2>
+    </div>
+    <% if (!active.length) { %>
+      <p class="sp-empty">
+        You are not on a running course at the moment. Your classes will
+        appear here as soon as you are enrolled on one.
+      </p>
+    <% } else if (withoutPattern.length) { %>
+      <p class="sp-empty">
+        <% if (withoutPattern.length === 1) { %>
+          <%= withoutPattern[0].course_title || withoutPattern[0].code %>
+          has no weekly timetable set yet, so there is nothing to show here.
+        <% } else { %>
+          <%= withoutPattern.length %> of your courses
+          have no weekly timetable set yet, so there is nothing to show here.
+        <% } %>
+        The office sets it, and your classes will appear as soon as they do.
+        In the meantime the term dates and the class link are on
+        <a href="/portal/courses">My courses</a>.
+      </p>
+    <% } else { %>
+      <p class="sp-empty">
+        No classes in the next <%= weeks %> weeks. Your term dates are on
+        <a href="/portal/courses">My courses</a>.
+      </p>
+    <% } %>
+  </div>
+<% } %>
+
+<%#
+  The shape of the week, beside the lessons themselves.
+
+  The list above is the truth — those are real dates, and any of them
+  can move. This says what the batch normally does, which is the thing
+  somebody arranging childcare or a shift actually needs to know.
+%>
+<% if (active.length) { %>
+  <div class="sp-card sp-wide">
+    <div class="sp-card-head">
+      <h2>When your courses meet</h2>
+    </div>
+    <ul class="sp-list">
+      <% active.forEach(function (e) { %>
+        <li>
+          <div>
+            <strong>
+              <%= e.course_title || e.code %>
+              <%- include("../../partials/batch-code", { code: e.code }) %>
+            </strong>
+            <div class="muted" style="font-size:.82rem">
+              <% if (e.meets_days && e.meets_from) { %>
+                · <%= sched.describeDays(e.meets_days) %>,
+                <%= sched.parseTime(e.meets_from) %>–<%= sched.endTime(e.meets_from, e.meets_minutes || 120) %>
+              <% } else { %>
+                · no weekly timetable set
+              <% } %>
+              · <%= zone(e.timezone) %>
+            </div>
+          </div>
+          <div class="sp-list-end">
+            <% if (e.level) { %><span class="pill pill-level"><%= e.level %></span><% } %>
+          </div>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+<% } %>
+
+<%- include("../../partials/portal-shell-foot") %>

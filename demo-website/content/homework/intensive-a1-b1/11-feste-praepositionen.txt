@@ -1,0 +1,1139 @@
+# Kapitel 11 — Feste Präpositionen
+@learning
+{
+  "version": 1,
+  "key": "kapitel-11-feste-praepositionen",
+  "title": "Kapitel 11 — Feste Präpositionen",
+  "label": "Kapitel 11",
+  "sections": [
+    {
+      "id": "exercise-1",
+      "label": "Übung 1",
+      "title": "Übung 1 – Ergänze die Präposition",
+      "instruction": "Setze die passende Präposition ein.",
+      "objective": "Feste Verb-Präposition-Verbindungen sicher verwenden.",
+      "examples": [
+        {
+          "prompt": "Ich freue mich ___ das Wochenende.",
+          "answer": "auf",
+          "explanation": "sich freuen auf."
+        },
+        {
+          "prompt": "Wir sprechen ___ das Projekt.",
+          "answer": "über",
+          "explanation": "sprechen über eine Sache."
+        }
+      ],
+      "questions": [
+        {
+          "id": "1",
+          "title": "Aufgabe 1",
+          "type": "fill_blank",
+          "prompt": "Ich warte ___ den Bus.",
+          "accepted": [
+            "auf"
+          ],
+          "hints": [
+            "Welche Präposition gehört fest zu „warten“?",
+            "warten auf + Akkusativ."
+          ],
+          "feedback": "Richtig: auf."
+        },
+        {
+          "id": "2",
+          "title": "Aufgabe 2",
+          "type": "fill_blank",
+          "prompt": "Sie interessiert sich ___ Sprachen.",
+          "accepted": [
+            "für"
+          ],
+          "hints": [
+            "Feste Verbindung: sich interessieren ...",
+            "sich interessieren für."
+          ],
+          "feedback": "Richtig: für."
+        },
+        {
+          "id": "3",
+          "title": "Aufgabe 3",
+          "type": "fill_blank",
+          "prompt": "Wir nehmen ___ einem Seminar teil.",
+          "accepted": [
+            "an"
+          ],
+          "hints": [
+            "teilnehmen ...",
+            "teilnehmen an + Dativ."
+          ],
+          "feedback": "Richtig: an."
+        },
+        {
+          "id": "4",
+          "title": "Aufgabe 4",
+          "type": "fill_blank",
+          "prompt": "Er träumt ___ einem Haus am Meer.",
+          "accepted": [
+            "von"
+          ],
+          "hints": [
+            "träumen ...",
+            "träumen von + Dativ."
+          ],
+          "feedback": "Richtig: von."
+        },
+        {
+          "id": "5",
+          "title": "Aufgabe 5",
+          "type": "fill_blank",
+          "prompt": "Ich spreche ___ meiner Kollegin.",
+          "accepted": [
+            "mit"
+          ],
+          "hints": [
+            "Person als Gesprächspartner.",
+            "sprechen mit + Dativ."
+          ],
+          "feedback": "Richtig: mit."
+        },
+        {
+          "id": "6",
+          "title": "Aufgabe 6",
+          "type": "fill_blank",
+          "prompt": "Wir sprechen ___ das neue Projekt.",
+          "accepted": [
+            "über"
+          ],
+          "hints": [
+            "Thema/Sache.",
+            "sprechen über + Akkusativ."
+          ],
+          "feedback": "Richtig: über."
+        },
+        {
+          "id": "7",
+          "title": "Aufgabe 7",
+          "type": "fill_blank",
+          "prompt": "Sie bittet ___ Hilfe.",
+          "accepted": [
+            "um"
+          ],
+          "hints": [
+            "bitten ...",
+            "bitten um + Akkusativ."
+          ],
+          "feedback": "Richtig: um."
+        },
+        {
+          "id": "8",
+          "title": "Aufgabe 8",
+          "type": "fill_blank",
+          "prompt": "Das hängt ___ der Situation ab.",
+          "accepted": [
+            "von"
+          ],
+          "hints": [
+            "abhängen ...",
+            "abhängen von + Dativ."
+          ],
+          "feedback": "Richtig: von."
+        }
+      ]
+    },
+    {
+      "id": "exercise-2",
+      "label": "Übung 2",
+      "title": "Übung 2 – Akkusativ oder Dativ?",
+      "instruction": "Ergänze den richtigen Artikel.",
+      "objective": "Den Kasus nach fester Präposition korrekt bilden.",
+      "examples": [
+        {
+          "prompt": "Ich warte auf ___ Bus. (der)",
+          "answer": "den",
+          "explanation": "auf bei warten → Akkusativ."
+        },
+        {
+          "prompt": "Ich spreche mit ___ Chef. (der)",
+          "answer": "dem",
+          "explanation": "mit → Dativ."
+        }
+      ],
+      "questions": [
+        {
+          "id": "9",
+          "title": "Aufgabe 9",
+          "type": "fill_blank",
+          "prompt": "Ich warte auf ___ Zug. (der)",
+          "accepted": [
+            "den"
+          ],
+          "hints": [
+            "warten auf + Akkusativ.",
+            "der Zug → den Zug."
+          ],
+          "feedback": "Richtig: den."
+        },
+        {
+          "id": "10",
+          "title": "Aufgabe 10",
+          "type": "fill_blank",
+          "prompt": "Sie nimmt an ___ Besprechung teil. (die)",
+          "accepted": [
+            "der"
+          ],
+          "hints": [
+            "teilnehmen an + Dativ.",
+            "die Besprechung → der."
+          ],
+          "feedback": "Richtig: der."
+        },
+        {
+          "id": "11",
+          "title": "Aufgabe 11",
+          "type": "fill_blank",
+          "prompt": "Er interessiert sich für ___ Kurs. (der)",
+          "accepted": [
+            "den"
+          ],
+          "hints": [
+            "für + Akkusativ.",
+            "der Kurs → den."
+          ],
+          "feedback": "Richtig: den."
+        },
+        {
+          "id": "12",
+          "title": "Aufgabe 12",
+          "type": "fill_blank",
+          "prompt": "Wir sprechen mit ___ Lehrer. (der)",
+          "accepted": [
+            "dem"
+          ],
+          "hints": [
+            "mit + Dativ.",
+            "der Lehrer → dem."
+          ],
+          "feedback": "Richtig: dem."
+        },
+        {
+          "id": "13",
+          "title": "Aufgabe 13",
+          "type": "fill_blank",
+          "prompt": "Sie träumt von ___ Reise. (die)",
+          "accepted": [
+            "einer",
+            "der"
+          ],
+          "hints": [
+            "von + Dativ.",
+            "Je nach Bestimmtheit: einer/der Reise."
+          ],
+          "feedback": "Akzeptiert: einer / der."
+        },
+        {
+          "id": "14",
+          "title": "Aufgabe 14",
+          "type": "fill_blank",
+          "prompt": "Ich bin mit ___ Ergebnis zufrieden. (das)",
+          "accepted": [
+            "dem"
+          ],
+          "hints": [
+            "mit + Dativ.",
+            "das Ergebnis → dem."
+          ],
+          "feedback": "Richtig: dem."
+        }
+      ]
+    },
+    {
+      "id": "exercise-3",
+      "label": "Übung 3",
+      "title": "Übung 3 – da(r)-Komposita",
+      "instruction": "Ersetze die markierte Sache durch ein da(r)-Kompositum.",
+      "objective": "Bei Sachen feste Präpositionen durch da(r)-Komposita ersetzen.",
+      "examples": [
+        {
+          "prompt": "Ich denke an die Prüfung. → Ich denke ___.",
+          "answer": "daran",
+          "explanation": "da + r + an = daran."
+        },
+        {
+          "prompt": "Wir sprechen über das Thema. → Wir sprechen ___.",
+          "answer": "darüber",
+          "explanation": "da + r + über = darüber."
+        }
+      ],
+      "questions": [
+        {
+          "id": "15",
+          "title": "Aufgabe 15",
+          "type": "fill_blank",
+          "prompt": "Ich warte auf den Termin. → Ich warte ___.",
+          "accepted": [
+            "darauf"
+          ],
+          "hints": [
+            "auf beginnt mit Vokal.",
+            "da + r + auf = darauf."
+          ],
+          "feedback": "Richtig: darauf."
+        },
+        {
+          "id": "16",
+          "title": "Aufgabe 16",
+          "type": "fill_blank",
+          "prompt": "Wir sprechen über das Problem. → Wir sprechen ___.",
+          "accepted": [
+            "darüber"
+          ],
+          "hints": [
+            "über beginnt mit Vokal.",
+            "da + r + über = darüber."
+          ],
+          "feedback": "Richtig: darüber."
+        },
+        {
+          "id": "17",
+          "title": "Aufgabe 17",
+          "type": "fill_blank",
+          "prompt": "Sie denkt an die Prüfung. → Sie denkt ___.",
+          "accepted": [
+            "daran"
+          ],
+          "hints": [
+            "an beginnt mit Vokal.",
+            "da + r + an = daran."
+          ],
+          "feedback": "Richtig: daran."
+        },
+        {
+          "id": "18",
+          "title": "Aufgabe 18",
+          "type": "fill_blank",
+          "prompt": "Er träumt von einem neuen Auto. → Er träumt ___.",
+          "accepted": [
+            "davon"
+          ],
+          "hints": [
+            "von beginnt mit Konsonant.",
+            "da + von = davon."
+          ],
+          "feedback": "Richtig: davon."
+        },
+        {
+          "id": "19",
+          "title": "Aufgabe 19",
+          "type": "fill_blank",
+          "prompt": "Ich interessiere mich für den Kurs. → Ich interessiere mich ___.",
+          "accepted": [
+            "dafür"
+          ],
+          "hints": [
+            "für beginnt mit Konsonant.",
+            "da + für = dafür."
+          ],
+          "feedback": "Richtig: dafür."
+        }
+      ]
+    },
+    {
+      "id": "exercise-4",
+      "label": "Übung 4",
+      "title": "Übung 4 – wo(r)-Fragen",
+      "instruction": "Bilde eine Frage nach der Sache.",
+      "objective": "Bei Sachen Fragen mit wo(r)- + Präposition bilden.",
+      "examples": [
+        {
+          "prompt": "Ich denke an das Problem.",
+          "answer": "Woran denkst du?",
+          "explanation": "wo + r + an."
+        },
+        {
+          "prompt": "Wir sprechen über die Prüfung.",
+          "answer": "Worüber sprecht ihr?",
+          "explanation": "wo + r + über."
+        }
+      ],
+      "questions": [
+        {
+          "id": "20",
+          "title": "Aufgabe 20",
+          "type": "sentence_builder",
+          "prompt": "Ich warte auf den Zug.",
+          "accepted": [
+            "Worauf wartest du?"
+          ],
+          "hints": [
+            "Es geht um eine Sache.",
+            "wo + r + auf = worauf."
+          ],
+          "feedback": "Richtig: Worauf wartest du?",
+          "tiles": [
+            "?",
+            "du",
+            "wartest",
+            "Worauf"
+          ]
+        },
+        {
+          "id": "21",
+          "title": "Aufgabe 21",
+          "type": "sentence_builder",
+          "prompt": "Sie interessiert sich für Kunst.",
+          "accepted": [
+            "Wofür interessiert sie sich?"
+          ],
+          "hints": [
+            "Präposition = für.",
+            "wo + für = wofür."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "interessiert",
+            "sich",
+            "sie",
+            "Wofür"
+          ]
+        },
+        {
+          "id": "22",
+          "title": "Aufgabe 22",
+          "type": "sentence_builder",
+          "prompt": "Er denkt an die Reise.",
+          "accepted": [
+            "Woran denkt er?"
+          ],
+          "hints": [
+            "Präposition = an.",
+            "wo + r + an = woran."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "denkt",
+            "er",
+            "Woran"
+          ]
+        },
+        {
+          "id": "23",
+          "title": "Aufgabe 23",
+          "type": "sentence_builder",
+          "prompt": "Wir sprechen über die Prüfung.",
+          "accepted": [
+            "Worüber sprecht ihr?"
+          ],
+          "hints": [
+            "Präposition = über.",
+            "wo + r + über = worüber."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "ihr",
+            "sprecht",
+            "Worüber"
+          ]
+        },
+        {
+          "id": "24",
+          "title": "Aufgabe 24",
+          "type": "sentence_builder",
+          "prompt": "Sie ist mit dem Ergebnis zufrieden.",
+          "accepted": [
+            "Womit ist sie zufrieden?"
+          ],
+          "hints": [
+            "Präposition = mit.",
+            "wo + mit = womit."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "ist",
+            "sie",
+            "Womit",
+            "zufrieden"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exercise-5",
+      "label": "Übung 5",
+      "title": "Übung 5 – Person oder Sache?",
+      "instruction": "Bilde die passende Frage.",
+      "objective": "Zwischen Präposition + wen/wem (Person) und wo(r)-Kompositum (Sache) unterscheiden.",
+      "examples": [
+        {
+          "prompt": "Ich spreche mit Lena.",
+          "answer": "Mit wem sprichst du?",
+          "explanation": "Person → mit wem."
+        },
+        {
+          "prompt": "Ich arbeite mit dem Programm.",
+          "answer": "Womit arbeitest du?",
+          "explanation": "Sache → womit."
+        }
+      ],
+      "questions": [
+        {
+          "id": "25",
+          "title": "Aufgabe 25",
+          "type": "sentence_builder",
+          "prompt": "Ich spreche mit Anna.",
+          "accepted": [
+            "Mit wem sprichst du?"
+          ],
+          "hints": [
+            "Anna ist eine Person.",
+            "Person + mit → mit wem."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "du",
+            "Mit",
+            "sprichst",
+            "wem"
+          ]
+        },
+        {
+          "id": "26",
+          "title": "Aufgabe 26",
+          "type": "sentence_builder",
+          "prompt": "Ich arbeite mit einem neuen Programm.",
+          "accepted": [
+            "Womit arbeitest du?"
+          ],
+          "hints": [
+            "Programm ist eine Sache.",
+            "Sache + mit → womit."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "arbeitest",
+            "du",
+            "Womit"
+          ]
+        },
+        {
+          "id": "27",
+          "title": "Aufgabe 27",
+          "type": "sentence_builder",
+          "prompt": "Er wartet auf seinen Bruder.",
+          "accepted": [
+            "Auf wen wartet er?"
+          ],
+          "hints": [
+            "Bruder = Person.",
+            "Person + auf → auf wen."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "Auf",
+            "er",
+            "wartet",
+            "wen"
+          ]
+        },
+        {
+          "id": "28",
+          "title": "Aufgabe 28",
+          "type": "sentence_builder",
+          "prompt": "Er wartet auf den Termin.",
+          "accepted": [
+            "Worauf wartet er?"
+          ],
+          "hints": [
+            "Termin = Sache/Ereignis.",
+            "Sache + auf → worauf."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "er",
+            "wartet",
+            "Worauf"
+          ]
+        },
+        {
+          "id": "29",
+          "title": "Aufgabe 29",
+          "type": "sentence_builder",
+          "prompt": "Sie denkt an ihre Mutter.",
+          "accepted": [
+            "An wen denkt sie?"
+          ],
+          "hints": [
+            "Mutter = Person.",
+            "Person + an → an wen."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "An",
+            "denkt",
+            "sie",
+            "wen"
+          ]
+        },
+        {
+          "id": "30",
+          "title": "Aufgabe 30",
+          "type": "sentence_builder",
+          "prompt": "Sie denkt an die Prüfung.",
+          "accepted": [
+            "Woran denkt sie?"
+          ],
+          "hints": [
+            "Prüfung = Sache/Ereignis.",
+            "Sache + an → woran."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "?",
+            "denkt",
+            "sie",
+            "Woran"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exercise-6",
+      "label": "Übung 6",
+      "title": "Übung 6 – Verb, Nomen oder Adjektiv?",
+      "instruction": "Vervollständige die feste Verbindung.",
+      "objective": "Feste Präpositionen in Verb-, Nomen- und Adjektivverbindungen erkennen.",
+      "examples": [
+        {
+          "prompt": "Angst ___ etwas haben",
+          "answer": "vor",
+          "explanation": "Angst vor."
+        },
+        {
+          "prompt": "zufrieden ___ etwas sein",
+          "answer": "mit",
+          "explanation": "zufrieden mit."
+        }
+      ],
+      "questions": [
+        {
+          "id": "31",
+          "title": "Aufgabe 31",
+          "type": "fill_blank",
+          "prompt": "Interesse ___ etwas haben",
+          "accepted": [
+            "an"
+          ],
+          "hints": [
+            "Nomenverbindung.",
+            "Interesse an."
+          ],
+          "feedback": "Richtig: an."
+        },
+        {
+          "id": "32",
+          "title": "Aufgabe 32",
+          "type": "fill_blank",
+          "prompt": "___ etwas/jemanden stolz sein",
+          "accepted": [
+            "auf"
+          ],
+          "hints": [
+            "Adjektivverbindung.",
+            "stolz auf."
+          ],
+          "feedback": "Richtig: auf."
+        },
+        {
+          "id": "33",
+          "title": "Aufgabe 33",
+          "type": "fill_blank",
+          "prompt": "___ einer Aktivität teilnehmen",
+          "accepted": [
+            "an"
+          ],
+          "hints": [
+            "Verbverbindung.",
+            "teilnehmen an."
+          ],
+          "feedback": "Richtig: an."
+        },
+        {
+          "id": "34",
+          "title": "Aufgabe 34",
+          "type": "fill_blank",
+          "prompt": "zufrieden ___ etwas sein",
+          "accepted": [
+            "mit"
+          ],
+          "hints": [
+            "Adjektivverbindung.",
+            "zufrieden mit."
+          ],
+          "feedback": "Richtig: mit."
+        },
+        {
+          "id": "35",
+          "title": "Aufgabe 35",
+          "type": "fill_blank",
+          "prompt": "___ etwas/jemanden warten",
+          "accepted": [
+            "auf"
+          ],
+          "hints": [
+            "Verbverbindung.",
+            "warten auf."
+          ],
+          "feedback": "Richtig: auf."
+        },
+        {
+          "id": "36",
+          "title": "Aufgabe 36",
+          "type": "fill_blank",
+          "prompt": "Erfahrung ___ etwas haben",
+          "accepted": [
+            "mit"
+          ],
+          "hints": [
+            "Nomenverbindung.",
+            "Erfahrung mit."
+          ],
+          "feedback": "Richtig: mit."
+        }
+      ]
+    },
+    {
+      "id": "reading",
+      "label": "Lesetext",
+      "title": "Lesetext – Ein neuer Job",
+      "instruction": "Lies den Text und bearbeite die Aufgaben.",
+      "examples": [
+        {
+          "prompt": "Ich freue mich ___ das Wochenende.",
+          "answer": "auf",
+          "explanation": "sich freuen auf."
+        }
+      ],
+      "questions": [
+        {
+          "id": "r1",
+          "title": "Aufgabe R1",
+          "type": "text_highlight",
+          "prompt": "Markiere alle festen Präpositionsverbindungen im Text.",
+          "hints": [
+            "Suche Verb/Nomen/Adjektiv + feste Präposition.",
+            "Achte auch auf das da(r)-Kompositum „daran“."
+          ],
+          "feedback": "Positionsbasierte Markierung; 11 Zielverbindungen.",
+          "tokens": [
+            "Mina",
+            "interessiert",
+            "sich",
+            "seit",
+            "Langem",
+            "für",
+            "digitale",
+            "Berufe.",
+            "Deshalb",
+            "hat",
+            "sie",
+            "sich",
+            "um",
+            "eine",
+            "Stelle",
+            "bei",
+            "einem",
+            "IT-Unternehmen",
+            "beworben.",
+            "Jetzt",
+            "wartet",
+            "sie",
+            "auf",
+            "eine",
+            "Antwort.",
+            "Sie",
+            "spricht",
+            "oft",
+            "mit",
+            "einer",
+            "Freundin",
+            "über",
+            "die",
+            "Bewerbung",
+            "und",
+            "denkt",
+            "jeden",
+            "Tag",
+            "daran.",
+            "Mina",
+            "hat",
+            "bereits",
+            "Erfahrung",
+            "mit",
+            "verschiedenen",
+            "Programmen",
+            "und",
+            "ist",
+            "besonders",
+            "an",
+            "Cloud-Technologien",
+            "interessiert.",
+            "Sie",
+            "freut",
+            "sich",
+            "auf",
+            "neue",
+            "Aufgaben,",
+            "hat",
+            "aber",
+            "auch",
+            "ein",
+            "bisschen",
+            "Angst",
+            "vor",
+            "dem",
+            "Vorstellungsgespräch.",
+            "Trotzdem",
+            "ist",
+            "sie",
+            "stolz",
+            "auf",
+            "ihre",
+            "bisherigen",
+            "Erfolge."
+          ],
+          "groups": [
+            {
+              "id": "group-1",
+              "label": "interessiert sich ... für",
+              "tokens": [
+                1,
+                2,
+                5
+              ]
+            },
+            {
+              "id": "group-2",
+              "label": "sich um ... beworben",
+              "tokens": [
+                11,
+                12,
+                18
+              ]
+            },
+            {
+              "id": "group-3",
+              "label": "wartet ... auf",
+              "tokens": [
+                20,
+                22
+              ]
+            },
+            {
+              "id": "group-4",
+              "label": "spricht ... mit",
+              "tokens": [
+                26,
+                28
+              ]
+            },
+            {
+              "id": "group-speaks-over",
+              "label": "spricht ... über",
+              "tokens": [
+                26,
+                31
+              ]
+            },
+            {
+              "id": "group-5",
+              "label": "denkt ... daran",
+              "tokens": [
+                35,
+                38
+              ]
+            },
+            {
+              "id": "group-6",
+              "label": "Erfahrung mit",
+              "tokens": [
+                42,
+                43
+              ]
+            },
+            {
+              "id": "group-7",
+              "label": "an ... interessiert",
+              "tokens": [
+                49,
+                51
+              ]
+            },
+            {
+              "id": "group-8",
+              "label": "freut sich auf",
+              "tokens": [
+                53,
+                54,
+                55
+              ]
+            },
+            {
+              "id": "group-9",
+              "label": "Angst vor",
+              "tokens": [
+                63,
+                64
+              ]
+            },
+            {
+              "id": "group-10",
+              "label": "stolz auf",
+              "tokens": [
+                70,
+                71
+              ]
+            }
+          ],
+          "examples": [
+            {
+              "prompt": "Paul wartet heute auf den Zug.",
+              "answer": "wartet … auf",
+              "explanation": "Klicke jedes gesuchte Wort an. Bei getrennten Teilen bleiben die Wörter dazwischen frei."
+            }
+          ]
+        },
+        {
+          "id": "r2",
+          "title": "Aufgabe R2",
+          "type": "short_answer",
+          "prompt": "Welche Präposition steht nach „sich interessieren“?",
+          "accepted": [
+            "für"
+          ],
+          "hints": [
+            "Feste Verbindung.",
+            "sich interessieren für."
+          ],
+          "feedback": "Richtig: für."
+        },
+        {
+          "id": "r3",
+          "title": "Aufgabe R3",
+          "type": "short_answer",
+          "prompt": "Worauf wartet Mina?",
+          "accepted": [
+            "Sie wartet auf eine Antwort.",
+            "Auf eine Antwort."
+          ],
+          "hints": [
+            "Suche den Satz mit „wartet“.",
+            "warten auf ..."
+          ],
+          "feedback": "Inhalt: auf eine Antwort."
+        },
+        {
+          "id": "r4",
+          "title": "Aufgabe R4",
+          "type": "short_answer",
+          "prompt": "Worüber spricht sie mit ihrer Freundin?",
+          "accepted": [
+            "Sie spricht über die Bewerbung.",
+            "Über die Bewerbung."
+          ],
+          "hints": [
+            "Suche nach „spricht ... über“.",
+            "Das Thema ist die Bewerbung."
+          ],
+          "feedback": "Richtig: über die Bewerbung."
+        },
+        {
+          "id": "r5",
+          "title": "Aufgabe R5",
+          "type": "short_answer",
+          "prompt": "Wovor hat sie ein bisschen Angst?",
+          "accepted": [
+            "Sie hat Angst vor dem Vorstellungsgespräch.",
+            "Vor dem Vorstellungsgespräch."
+          ],
+          "hints": [
+            "Suche „Angst vor“.",
+            "Das Objekt folgt direkt danach."
+          ],
+          "feedback": "Richtig: vor dem Vorstellungsgespräch."
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "label": "Test",
+      "title": "Test Kapitel 11",
+      "instruction": "Bearbeite die Aufgaben. Bei Bedarf stehen dir zwei Hinweise zur Verfügung.",
+      "examples": [
+        {
+          "prompt": "Ich freue mich ___ das Wochenende.",
+          "answer": "auf",
+          "explanation": "sich freuen auf."
+        }
+      ],
+      "questions": [
+        {
+          "id": "t1",
+          "title": "Aufgabe T1",
+          "type": "fill_blank",
+          "prompt": "Ich warte ___ den Termin.",
+          "accepted": [
+            "auf"
+          ],
+          "hints": [
+            "warten ...",
+            "warten auf."
+          ],
+          "feedback": "Richtig: auf."
+        },
+        {
+          "id": "t2",
+          "title": "Aufgabe T2",
+          "type": "fill_blank",
+          "prompt": "Wir nehmen ___ einem Kurs teil.",
+          "accepted": [
+            "an"
+          ],
+          "hints": [
+            "teilnehmen ...",
+            "teilnehmen an."
+          ],
+          "feedback": "Richtig: an."
+        },
+        {
+          "id": "t3",
+          "title": "Aufgabe T3",
+          "type": "fill_blank",
+          "prompt": "Sie ist ___ ihrem Ergebnis zufrieden.",
+          "accepted": [
+            "mit"
+          ],
+          "hints": [
+            "zufrieden ...",
+            "zufrieden mit."
+          ],
+          "feedback": "Richtig: mit."
+        },
+        {
+          "id": "t4",
+          "title": "Aufgabe T4",
+          "type": "fill_blank",
+          "prompt": "Er interessiert sich ___ Technik.",
+          "accepted": [
+            "für"
+          ],
+          "hints": [
+            "sich interessieren ...",
+            "sich interessieren für."
+          ],
+          "feedback": "Richtig: für."
+        },
+        {
+          "id": "t5",
+          "title": "Aufgabe T5",
+          "type": "fill_blank",
+          "prompt": "Ich denke an das Problem. → Ich denke ___.",
+          "accepted": [
+            "daran"
+          ],
+          "hints": [
+            "Sache + an.",
+            "da + r + an."
+          ],
+          "feedback": "Richtig: daran."
+        },
+        {
+          "id": "t6",
+          "title": "Aufgabe T6",
+          "type": "fill_blank",
+          "prompt": "Wir sprechen über die Reise. → ___ sprecht ihr?",
+          "accepted": [
+            "Worüber"
+          ],
+          "hints": [
+            "Sache + über.",
+            "wo + r + über."
+          ],
+          "feedback": "Richtig: Worüber."
+        },
+        {
+          "id": "t7",
+          "title": "Aufgabe T7",
+          "type": "fill_blank",
+          "prompt": "___ wen wartest du? – Auf meinen Bruder.",
+          "accepted": [
+            "Auf"
+          ],
+          "hints": [
+            "Person + warten auf.",
+            "Frage: Auf wen ...?"
+          ],
+          "feedback": "Richtig: Auf."
+        },
+        {
+          "id": "t8",
+          "title": "Aufgabe T8",
+          "type": "fill_blank",
+          "prompt": "Sie träumt ___ einer Weltreise.",
+          "accepted": [
+            "von"
+          ],
+          "hints": [
+            "träumen ...",
+            "träumen von."
+          ],
+          "feedback": "Richtig: von."
+        },
+        {
+          "id": "t9",
+          "title": "Aufgabe T9",
+          "type": "fill_blank",
+          "prompt": "Was ist der Grund ___ die Änderung?",
+          "accepted": [
+            "für"
+          ],
+          "hints": [
+            "Nomenverbindung.",
+            "Grund für."
+          ],
+          "feedback": "Richtig: für."
+        },
+        {
+          "id": "t10",
+          "title": "Aufgabe T10",
+          "type": "sentence_builder",
+          "prompt": "Bilde aus den Bausteinen: ich / sich freuen / das Wochenende.",
+          "accepted": [
+            "Ich freue mich auf das Wochenende."
+          ],
+          "hints": [
+            "Welche Präposition gehört zu „sich freuen“?",
+            "sich freuen auf + Akkusativ."
+          ],
+          "feedback": "Richtig: Ich freue mich auf das Wochenende.",
+          "tiles": [
+            ".",
+            "auf",
+            "das",
+            "freue",
+            "Ich",
+            "mich",
+            "Wochenende"
+          ]
+        }
+      ]
+    }
+  ],
+  "passage": "Mina interessiert sich seit Langem für digitale Berufe. Deshalb hat sie sich um eine Stelle bei einem IT-Unternehmen beworben. Jetzt wartet sie auf eine Antwort. Sie spricht oft mit einer Freundin über die Bewerbung und denkt jeden Tag daran. Mina hat bereits Erfahrung mit verschiedenen Programmen und ist besonders an Cloud-Technologien interessiert. Sie freut sich auf neue Aufgaben, hat aber auch ein bisschen Angst vor dem Vorstellungsgespräch. Trotzdem ist sie stolz auf ihre bisherigen Erfolge."
+}

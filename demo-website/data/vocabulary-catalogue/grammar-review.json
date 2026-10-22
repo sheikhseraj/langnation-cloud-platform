@@ -1,0 +1,3491 @@
+{
+  "version": "grammar-filter-review-20261009",
+  "sourceVersion": "c9e350ea49bb2cc5cc5a2e629e230678471822d45e7aa2571ec7f172f24b4b8d",
+  "rows": [
+    {
+      "key": "dürfen|W02",
+      "word": "dürfen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G15",
+        "G19",
+        "G23"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "dürfen + Infinitiv ohne zu",
+      "note": "Mit einem weiteren Infinitiv steht im Perfekt der Ersatzinfinitiv: hat gehen dürfen. Als Vollverb ist ein Partizip möglich.",
+      "id": 5180,
+      "expected": {
+        "word_de": "dürfen",
+        "word_en": "to be allowed",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "irregular": true,
+      "forms": {
+        "praesens": [
+          "darf",
+          "darfst",
+          "darf",
+          "dürfen",
+          "dürft",
+          "dürfen"
+        ],
+        "praeteritum": [
+          "durfte",
+          "durftest",
+          "durfte",
+          "durften",
+          "durftet",
+          "durften"
+        ],
+        "perfekt": [
+          "habe gedurft",
+          "hast gedurft",
+          "hat gedurft",
+          "haben gedurft",
+          "habt gedurft",
+          "haben gedurft"
+        ],
+        "auxiliary": "haben",
+        "partizip2": "gedurft",
+        "irregular": 1
+      }
+    },
+    {
+      "key": "können|W02",
+      "word": "können",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G15",
+        "G19",
+        "G23"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "können + Infinitiv ohne zu",
+      "note": "Mit einem weiteren Infinitiv steht im Perfekt der Ersatzinfinitiv: hat gehen können. Als Vollverb ist ein Partizip möglich.",
+      "id": 5288,
+      "expected": {
+        "word_de": "können",
+        "word_en": "to be able to, can",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "irregular": true,
+      "forms": {
+        "praesens": [
+          "kann",
+          "kannst",
+          "kann",
+          "können",
+          "könnt",
+          "können"
+        ],
+        "praeteritum": [
+          "konnte",
+          "konntest",
+          "konnte",
+          "konnten",
+          "konntet",
+          "konnten"
+        ],
+        "perfekt": [
+          "habe gekonnt",
+          "hast gekonnt",
+          "hat gekonnt",
+          "haben gekonnt",
+          "habt gekonnt",
+          "haben gekonnt"
+        ],
+        "auxiliary": "haben",
+        "partizip2": "gekonnt",
+        "irregular": 1
+      }
+    },
+    {
+      "key": "mögen|W02",
+      "word": "mögen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G05",
+        "G15",
+        "G19",
+        "G21"
+      ],
+      "themes": [
+        "T04"
+      ],
+      "pattern": "mögen + Infinitiv ohne zu",
+      "note": "Mit einem weiteren Infinitiv steht im Perfekt der Ersatzinfinitiv: hat gehen mögen. Als Vollverb ist ein Partizip möglich.",
+      "id": 41,
+      "expected": {
+        "word_de": "mögen",
+        "word_en": "to like",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "irregular": true,
+      "forms": {
+        "praesens": [
+          "mag",
+          "magst",
+          "mag",
+          "mögen",
+          "mögt",
+          "mögen"
+        ],
+        "praeteritum": [
+          "mochte",
+          "mochtest",
+          "mochte",
+          "mochten",
+          "mochtet",
+          "mochten"
+        ],
+        "perfekt": [
+          "habe gemocht",
+          "hast gemocht",
+          "hat gemocht",
+          "haben gemocht",
+          "habt gemocht",
+          "haben gemocht"
+        ],
+        "auxiliary": "haben",
+        "partizip2": "gemocht",
+        "irregular": 1
+      }
+    },
+    {
+      "key": "möchten|W02",
+      "word": "möchten",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G15",
+        "G19"
+      ],
+      "themes": [
+        "T05"
+      ],
+      "pattern": "möchten + Infinitiv; Konjunktiv II von mögen",
+      "note": "Höflicher Wunsch: Konjunktiv II von mögen. Kein eigenes Präteritum oder Partizip II für diese Lehrform.",
+      "id": 7076,
+      "expected": {
+        "word_de": "möchten",
+        "word_en": "would like",
+        "pos": "verb",
+        "grammar_note": "Modal verb; takes infinitive without 'zu'. Präteritum 'mochte' is preferred in polite subjunctive II forms (ich möchte = I would like). Takes haben as auxiliary in Perfekt."
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          "möchte",
+          "möchtest",
+          "möchte",
+          "möchten",
+          "möchtet",
+          "möchten"
+        ],
+        "formOf": "mögen",
+        "mood": "Konjunktiv II"
+      },
+      "replaceGrammarNote": true,
+      "irregular": true,
+      "verbPatch": {
+        "praeteritum": null,
+        "perfekt": null,
+        "auxiliary": null,
+        "partizip2": null,
+        "irregular": 1
+      },
+      "expectedVerbForms": [
+        {
+          "id": 1538,
+          "vocab_id": 7076,
+          "infinitive_de": "möchten",
+          "auxiliary": "haben",
+          "partizip2": "gemocht",
+          "irregular": 0,
+          "praesens": [
+            "möchte",
+            "möchtest",
+            "möchte",
+            "möchten",
+            "möchtet",
+            "möchten"
+          ],
+          "praeteritum": [
+            "mochte",
+            "mochtest",
+            "mochte",
+            "mochten",
+            "mochtet",
+            "mochten"
+          ],
+          "perfekt": [
+            "habe gemocht",
+            "hast gemocht",
+            "hat gemocht",
+            "haben gemocht",
+            "habt gemocht",
+            "haben gemocht"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "müssen|W02",
+      "word": "müssen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G15",
+        "G19",
+        "G23"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "müssen + Infinitiv ohne zu",
+      "note": "Mit einem weiteren Infinitiv steht im Perfekt der Ersatzinfinitiv: hat gehen müssen. Als Vollverb ist ein Partizip möglich.",
+      "id": 9614,
+      "expected": {
+        "word_de": "müssen",
+        "word_en": "must / to have to",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "irregular": true,
+      "forms": {
+        "praesens": [
+          "muss",
+          "musst",
+          "muss",
+          "müssen",
+          "müsst",
+          "müssen"
+        ],
+        "praeteritum": [
+          "musste",
+          "musstest",
+          "musste",
+          "mussten",
+          "musstet",
+          "mussten"
+        ],
+        "perfekt": [
+          "habe gemusst",
+          "hast gemusst",
+          "hat gemusst",
+          "haben gemusst",
+          "habt gemusst",
+          "haben gemusst"
+        ],
+        "auxiliary": "haben",
+        "partizip2": "gemusst",
+        "irregular": 1
+      },
+      "verbPatch": {
+        "infinitive_de": "müssen",
+        "praesens": [
+          "muss",
+          "musst",
+          "muss",
+          "müssen",
+          "müsst",
+          "müssen"
+        ],
+        "praeteritum": [
+          "musste",
+          "musstest",
+          "musste",
+          "mussten",
+          "musstet",
+          "mussten"
+        ],
+        "perfekt": [
+          "habe gemusst",
+          "hast gemusst",
+          "hat gemusst",
+          "haben gemusst",
+          "habt gemusst",
+          "haben gemusst"
+        ],
+        "auxiliary": "haben",
+        "partizip2": "gemusst",
+        "irregular": 1
+      },
+      "expectedVerbForms": []
+    },
+    {
+      "key": "sollen|W02",
+      "word": "sollen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G15",
+        "G19",
+        "G23"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "sollen + Infinitiv ohne zu",
+      "note": "Mit einem weiteren Infinitiv steht im Perfekt der Ersatzinfinitiv: hat gehen sollen. Als Vollverb ist ein Partizip möglich.",
+      "id": 5290,
+      "expected": {
+        "word_de": "sollen",
+        "word_en": "should, to be supposed to",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "irregular": true,
+      "forms": {
+        "praesens": [
+          "soll",
+          "sollst",
+          "soll",
+          "sollen",
+          "sollt",
+          "sollen"
+        ],
+        "praeteritum": [
+          "sollte",
+          "solltest",
+          "sollte",
+          "sollten",
+          "solltet",
+          "sollten"
+        ],
+        "perfekt": [
+          "habe gesollt",
+          "hast gesollt",
+          "hat gesollt",
+          "haben gesollt",
+          "habt gesollt",
+          "haben gesollt"
+        ],
+        "auxiliary": "haben",
+        "partizip2": "gesollt",
+        "irregular": 1
+      }
+    },
+    {
+      "key": "wollen|W02",
+      "word": "wollen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G15",
+        "G19",
+        "G23"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "wollen + Infinitiv ohne zu",
+      "note": "Mit einem weiteren Infinitiv steht im Perfekt der Ersatzinfinitiv: hat gehen wollen. Als Vollverb ist ein Partizip möglich.",
+      "id": 10,
+      "expected": {
+        "word_de": "wollen",
+        "word_en": "to want",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "irregular": true,
+      "forms": {
+        "praesens": [
+          "will",
+          "willst",
+          "will",
+          "wollen",
+          "wollt",
+          "wollen"
+        ],
+        "praeteritum": [
+          "wollte",
+          "wolltest",
+          "wollte",
+          "wollten",
+          "wolltet",
+          "wollten"
+        ],
+        "perfekt": [
+          "habe gewollt",
+          "hast gewollt",
+          "hat gewollt",
+          "haben gewollt",
+          "habt gewollt",
+          "haben gewollt"
+        ],
+        "auxiliary": "haben",
+        "partizip2": "gewollt",
+        "irregular": 1
+      }
+    },
+    {
+      "key": "bis|W05",
+      "word": "bis",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G02",
+        "G10",
+        "G26"
+      ],
+      "themes": [
+        "T30"
+      ],
+      "pattern": "bis + Akk.",
+      "note": "Direkt vor einer Nominalgruppe: bis nächsten Freitag. Bei bis zu bestimmt zu den Dativ: bis zum Bahnhof. Als Subjunktion: bis er kommt.",
+      "id": 10001,
+      "expected": {
+        "word_de": "bis",
+        "word_en": "until, by",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "extraTypes": [
+        "W06"
+      ]
+    },
+    {
+      "key": "durch|W05",
+      "word": "durch",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G02",
+        "G10"
+      ],
+      "themes": [
+        "T22",
+        "T23"
+      ],
+      "pattern": "durch + Akk.",
+      "note": null,
+      "id": 6180,
+      "expected": {
+        "word_de": "durch",
+        "word_en": "through",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "für|W05",
+      "word": "für",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G02",
+        "G10"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "für + Akk.",
+      "note": null,
+      "id": 6172,
+      "expected": {
+        "word_de": "für",
+        "word_en": "for",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "gegen|W05",
+      "word": "gegen",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G02",
+        "G10"
+      ],
+      "themes": [
+        "T03",
+        "T30"
+      ],
+      "pattern": "gegen + Akk.",
+      "note": null,
+      "id": 6216,
+      "expected": {
+        "word_de": "gegen",
+        "word_en": "against",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "ohne|W05",
+      "word": "ohne",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G02",
+        "G10"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "ohne + Akk.",
+      "note": null,
+      "id": 6174,
+      "expected": {
+        "word_de": "ohne",
+        "word_en": "without",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "um|W05",
+      "word": "um",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G02",
+        "G10"
+      ],
+      "themes": [
+        "T30",
+        "T23"
+      ],
+      "pattern": "um + Akk.",
+      "note": null,
+      "id": 6218,
+      "expected": {
+        "word_de": "um",
+        "word_en": "around, at (time)",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "entlang|W05",
+      "word": "entlang",
+      "type": "W05",
+      "level": "A2",
+      "grammar": [
+        "G02",
+        "G10"
+      ],
+      "themes": [
+        "T23"
+      ],
+      "pattern": "den Weg entlang (Akk.); entlang des Weges (Gen.), seltener entlang dem Weg (Dat.)",
+      "note": "Nachgestellt: Akkusativ. Vorangestellt: Genitiv, seltener Dativ. Keine pauschale Dativ-Regel.",
+      "id": 6219,
+      "expected": {
+        "word_de": "entlang",
+        "word_en": "along",
+        "pos": "phrase",
+        "grammar_note": "Takes dative (entlang + dat.) when postpositive; takes accusative (entlang + acc.) or genitive when antepositive. Most common: postpositive with dative."
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "replaceGrammarNote": true
+    },
+    {
+      "key": "aus|W05",
+      "word": "aus",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T01",
+        "T23"
+      ],
+      "pattern": "aus + Dat.",
+      "note": null,
+      "curriculumId": "LN00188",
+      "expected": {
+        "word_de": "aus",
+        "word_en": "from / out of",
+        "pos": "preposition"
+      },
+      "id": 13574
+    },
+    {
+      "key": "ab|W05",
+      "word": "ab",
+      "type": "W05",
+      "level": "A2",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T30"
+      ],
+      "pattern": "ab + Dat.",
+      "note": "Meist Dativ: ab dem Bahnhof. Bei artikellosen Zeit- und Mengenangaben ist auch Akkusativ möglich.",
+      "id": 6346,
+      "expected": {
+        "word_de": "ab",
+        "word_en": "from/starting",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "außer|W05",
+      "word": "außer",
+      "type": "W05",
+      "level": "A2",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "außer + Dat.",
+      "note": "Im Kerngebrauch Dativ: außer mir. Einzelne feste Verwendungen weichen davon ab.",
+      "id": 7743,
+      "expected": {
+        "word_de": "außer",
+        "word_en": "except",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "bei|W05",
+      "word": "bei",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T03",
+        "T16"
+      ],
+      "pattern": "bei + Dat.",
+      "note": null,
+      "id": 6217,
+      "expected": {
+        "word_de": "bei",
+        "word_en": "at, near, with",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "mit|W05",
+      "word": "mit",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T03",
+        "T22"
+      ],
+      "pattern": "mit + Dat.",
+      "note": null,
+      "id": 6171,
+      "expected": {
+        "word_de": "mit",
+        "word_en": "with",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "nach|W05",
+      "word": "nach",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T21",
+        "T22",
+        "T30"
+      ],
+      "pattern": "nach + Dat.",
+      "note": null,
+      "id": 6176,
+      "expected": {
+        "word_de": "nach",
+        "word_en": "after, to",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "seit|W05",
+      "word": "seit",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "seit + Dat.",
+      "note": null,
+      "id": 6181,
+      "expected": {
+        "word_de": "seit",
+        "word_en": "since, for",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "von|W05",
+      "word": "von",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "von + Dat.",
+      "note": null,
+      "id": 6169,
+      "expected": {
+        "word_de": "von",
+        "word_en": "from, of, by",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "zu|W05",
+      "word": "zu",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T22",
+        "T23"
+      ],
+      "pattern": "zu + Dat.",
+      "note": null,
+      "id": 6170,
+      "expected": {
+        "word_de": "zu",
+        "word_en": "to, at, for",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "gegenüber|W05",
+      "word": "gegenüber",
+      "type": "W05",
+      "level": "A2",
+      "grammar": [
+        "G03",
+        "G11"
+      ],
+      "themes": [
+        "T23"
+      ],
+      "pattern": "gegenüber + Dat.",
+      "note": "Vor- oder nachgestellt: gegenüber dem Bahnhof / dem Bahnhof gegenüber.",
+      "id": 6184,
+      "expected": {
+        "word_de": "gegenüber",
+        "word_en": "opposite, across from",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "an|W05",
+      "word": "an",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G12",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T07",
+        "T23"
+      ],
+      "pattern": "an + Akk. (Wohin?) / Dat. (Wo?)",
+      "note": "Akkusativ: Ziel oder Wechsel des Ortes. Dativ: Position oder Ort einer Bewegung. Bewegung allein bedeutet nicht Akkusativ.",
+      "id": 6209,
+      "expected": {
+        "word_de": "an",
+        "word_en": "on, at",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "auf|W05",
+      "word": "auf",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G12",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T07",
+        "T23"
+      ],
+      "pattern": "auf + Akk. (Wohin?) / Dat. (Wo?)",
+      "note": "Akkusativ: Ziel oder Wechsel des Ortes. Dativ: Position oder Ort einer Bewegung. Bewegung allein bedeutet nicht Akkusativ.",
+      "id": 6167,
+      "expected": {
+        "word_de": "auf",
+        "word_en": "on, onto",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "hinter|W05",
+      "word": "hinter",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G12",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T07",
+        "T23"
+      ],
+      "pattern": "hinter + Akk. (Wohin?) / Dat. (Wo?)",
+      "note": "Akkusativ: Ziel oder Wechsel des Ortes. Dativ: Position oder Ort einer Bewegung. Bewegung allein bedeutet nicht Akkusativ.",
+      "id": 6213,
+      "expected": {
+        "word_de": "hinter",
+        "word_en": "behind",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "in|W05",
+      "word": "in",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G12",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T07",
+        "T23"
+      ],
+      "pattern": "in + Akk. (Wohin?) / Dat. (Wo?)",
+      "note": "Akkusativ: Ziel oder Wechsel des Ortes. Dativ: Position oder Ort einer Bewegung. Bewegung allein bedeutet nicht Akkusativ.",
+      "id": 6166,
+      "expected": {
+        "word_de": "in",
+        "word_en": "in, into",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "neben|W05",
+      "word": "neben",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G12",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T07",
+        "T23"
+      ],
+      "pattern": "neben + Akk. (Wohin?) / Dat. (Wo?)",
+      "note": "Akkusativ: Ziel oder Wechsel des Ortes. Dativ: Position oder Ort einer Bewegung. Bewegung allein bedeutet nicht Akkusativ.",
+      "id": 6109,
+      "expected": {
+        "word_de": "neben",
+        "word_en": "next to / beside",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "über|W05",
+      "word": "über",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G02",
+        "G03",
+        "G12"
+      ],
+      "themes": [
+        "T23"
+      ],
+      "pattern": "über + Akk. (Wohin?) / Dat. (Wo?)",
+      "note": "Akkusativ: Ziel oder Wechsel des Ortes. Dativ: Position oder Ort einer Bewegung. Bewegung allein bedeutet nicht Akkusativ.",
+      "id": 6111,
+      "expected": {
+        "word_de": "über",
+        "word_en": "over / above",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "unter|W05",
+      "word": "unter",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G12",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T07",
+        "T23"
+      ],
+      "pattern": "unter + Akk. (Wohin?) / Dat. (Wo?)",
+      "note": "Akkusativ: Ziel oder Wechsel des Ortes. Dativ: Position oder Ort einer Bewegung. Bewegung allein bedeutet nicht Akkusativ.",
+      "id": 6110,
+      "expected": {
+        "word_de": "unter",
+        "word_en": "under / below",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "vor|W05",
+      "word": "vor",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G12",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T07",
+        "T23",
+        "T30"
+      ],
+      "pattern": "vor + Akk. (Wohin?) / Dat. (Wo?)",
+      "note": "Akkusativ: Ziel oder Wechsel des Ortes. Dativ: Position oder Ort einer Bewegung. Bewegung allein bedeutet nicht Akkusativ.",
+      "id": 6175,
+      "expected": {
+        "word_de": "vor",
+        "word_en": "before, in front of",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "zwischen|W05",
+      "word": "zwischen",
+      "type": "W05",
+      "level": "A1",
+      "grammar": [
+        "G12",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T07",
+        "T23"
+      ],
+      "pattern": "zwischen + Akk. (Wohin?) / Dat. (Wo?)",
+      "note": "Akkusativ: Ziel oder Wechsel des Ortes. Dativ: Position oder Ort einer Bewegung. Bewegung allein bedeutet nicht Akkusativ.",
+      "id": 6112,
+      "expected": {
+        "word_de": "zwischen",
+        "word_en": "between",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "wegen|W05",
+      "word": "wegen",
+      "type": "W05",
+      "level": "B1",
+      "grammar": [
+        "G13",
+        "G31",
+        "G04"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "wegen + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 5592,
+      "expected": {
+        "word_de": "wegen",
+        "word_en": "because of",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "trotz|W05",
+      "word": "trotz",
+      "type": "W05",
+      "level": "B1",
+      "grammar": [
+        "G13",
+        "G28",
+        "G04"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "trotz + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 5591,
+      "expected": {
+        "word_de": "trotz",
+        "word_en": "despite, in spite of",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "während|W05",
+      "word": "während",
+      "type": "W05",
+      "level": "B1",
+      "grammar": [
+        "G13",
+        "G29",
+        "G04"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "während + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 6223,
+      "expected": {
+        "word_de": "während",
+        "word_en": "during",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "statt|W05",
+      "word": "statt",
+      "type": "W05",
+      "level": "B1",
+      "grammar": [
+        "G13",
+        "G28",
+        "G04"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "statt + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 6222,
+      "expected": {
+        "word_de": "statt",
+        "word_en": "instead of",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "anstatt|W05",
+      "word": "anstatt",
+      "type": "W05",
+      "level": "B1",
+      "grammar": [
+        "G04",
+        "G13"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "anstatt + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 6274,
+      "expected": {
+        "word_de": "anstatt",
+        "word_en": "instead of",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "innerhalb|W05",
+      "word": "innerhalb",
+      "type": "W05",
+      "level": "B1",
+      "grammar": [
+        "G13",
+        "G30",
+        "G04"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "innerhalb + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 6224,
+      "expected": {
+        "word_de": "innerhalb",
+        "word_en": "within",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "außerhalb|W05",
+      "word": "außerhalb",
+      "type": "W05",
+      "level": "B1",
+      "grammar": [
+        "G13",
+        "G30",
+        "G04"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "außerhalb + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 6225,
+      "expected": {
+        "word_de": "außerhalb",
+        "word_en": "outside of",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "oberhalb|W05",
+      "word": "oberhalb",
+      "type": "W05",
+      "level": "B1",
+      "grammar": [
+        "G04",
+        "G13"
+      ],
+      "themes": [
+        "T23"
+      ],
+      "pattern": "oberhalb + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 8975,
+      "expected": {
+        "word_de": "oberhalb",
+        "word_en": "above",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "unterhalb|W05",
+      "word": "unterhalb",
+      "type": "W05",
+      "level": "B1",
+      "grammar": [
+        "G04",
+        "G13"
+      ],
+      "themes": [
+        "T23"
+      ],
+      "pattern": "unterhalb + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 8974,
+      "expected": {
+        "word_de": "unterhalb",
+        "word_en": "below",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "hinsichtlich|W05",
+      "word": "hinsichtlich",
+      "type": "W05",
+      "level": "B2",
+      "grammar": [
+        "G13",
+        "G28",
+        "G04"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "hinsichtlich + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 10821,
+      "expected": {
+        "word_de": "hinsichtlich",
+        "word_en": "with respect to",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "bezüglich|W05",
+      "word": "bezüglich",
+      "type": "W05",
+      "level": "B2",
+      "grammar": [
+        "G13",
+        "G28",
+        "G04"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "bezüglich + Gen.",
+      "note": "Standardsprachlicher Lernergebrauch: Genitiv. Kasusvariation und Konstruktionen mit von sind vom jeweiligen Ausdruck und Register abhängig.",
+      "id": 10820,
+      "expected": {
+        "word_de": "bezüglich",
+        "word_en": "regarding",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "zugunsten|W05",
+      "word": "zugunsten",
+      "type": "W05",
+      "level": "B2",
+      "grammar": [
+        "G13",
+        "G34",
+        "G04"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "zugunsten + Gen.",
+      "note": "Auch zugunsten von + Dativ.",
+      "id": 12722,
+      "expected": {
+        "word_de": "zugunsten",
+        "word_en": "in favor of",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "und|W06",
+      "word": "und",
+      "type": "W06",
+      "level": "A1",
+      "grammar": [
+        "G25"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Nebenordnend; Hauptsatz-Wortstellung bleibt erhalten.",
+      "id": 6154,
+      "expected": {
+        "word_de": "und",
+        "word_en": "and",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "oder|W06",
+      "word": "oder",
+      "type": "W06",
+      "level": "A1",
+      "grammar": [
+        "G25"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Nebenordnend; Hauptsatz-Wortstellung bleibt erhalten.",
+      "id": 6155,
+      "expected": {
+        "word_de": "oder",
+        "word_en": "or",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "aber|W06",
+      "word": "aber",
+      "type": "W06",
+      "level": "A1",
+      "grammar": [
+        "G25"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Nebenordnend; Hauptsatz-Wortstellung bleibt erhalten.",
+      "id": 6156,
+      "expected": {
+        "word_de": "aber",
+        "word_en": "but",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "denn|W06",
+      "word": "denn",
+      "type": "W06",
+      "level": "A1",
+      "grammar": [
+        "G25"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Nebenordnend; Hauptsatz-Wortstellung bleibt erhalten.",
+      "id": 6312,
+      "expected": {
+        "word_de": "denn",
+        "word_en": "for/because",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "sondern|W06",
+      "word": "sondern",
+      "type": "W06",
+      "level": "A1",
+      "grammar": [
+        "G25"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Nebenordnend; Hauptsatz-Wortstellung bleibt erhalten.",
+      "id": 6228,
+      "expected": {
+        "word_de": "sondern",
+        "word_en": "but (on the contrary)",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "weil|W06",
+      "word": "weil",
+      "type": "W06",
+      "level": "A2",
+      "grammar": [
+        "G26",
+        "G31"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 6158,
+      "expected": {
+        "word_de": "weil",
+        "word_en": "because",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "dass|W06",
+      "word": "dass",
+      "type": "W06",
+      "level": "A2",
+      "grammar": [
+        "G26",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 6326,
+      "expected": {
+        "word_de": "dass",
+        "word_en": "that",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "wenn|W06",
+      "word": "wenn",
+      "type": "W06",
+      "level": "A2",
+      "grammar": [
+        "G26",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 6160,
+      "expected": {
+        "word_de": "wenn",
+        "word_en": "if, when",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "obwohl|W06",
+      "word": "obwohl",
+      "type": "W06",
+      "level": "A2",
+      "grammar": [
+        "G26",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 6199,
+      "expected": {
+        "word_de": "obwohl",
+        "word_en": "although, even though",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "während|W06",
+      "word": "während",
+      "type": "W06",
+      "level": "A2",
+      "grammar": [
+        "G26",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 10020,
+      "expected": {
+        "word_de": "während",
+        "word_en": "while",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "bevor|W06",
+      "word": "bevor",
+      "type": "W06",
+      "level": "A2",
+      "grammar": [
+        "G26",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 6162,
+      "expected": {
+        "word_de": "bevor",
+        "word_en": "before",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "nachdem|W06",
+      "word": "nachdem",
+      "type": "W06",
+      "level": "A2",
+      "grammar": [
+        "G26",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 6163,
+      "expected": {
+        "word_de": "nachdem",
+        "word_en": "after",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "damit|W06",
+      "word": "damit",
+      "type": "W06",
+      "level": "A2",
+      "grammar": [
+        "G26",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 3408,
+      "expected": {
+        "word_de": "damit",
+        "word_en": "so that",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "falls|W06",
+      "word": "falls",
+      "type": "W06",
+      "level": "A2",
+      "grammar": [
+        "G26",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 6269,
+      "expected": {
+        "word_de": "falls",
+        "word_en": "in case / if",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "sofern|W06",
+      "word": "sofern",
+      "type": "W06",
+      "level": "B2",
+      "grammar": [
+        "G26",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 10809,
+      "expected": {
+        "word_de": "sofern",
+        "word_en": "provided that",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "sobald|W06",
+      "word": "sobald",
+      "type": "W06",
+      "level": "B1",
+      "grammar": [
+        "G26",
+        "G29"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 6164,
+      "expected": {
+        "word_de": "sobald",
+        "word_en": "as soon as",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "solange|W06",
+      "word": "solange",
+      "type": "W06",
+      "level": "B1",
+      "grammar": [
+        "G26",
+        "G29"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 6271,
+      "expected": {
+        "word_de": "solange",
+        "word_en": "as long as",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "seitdem|W06",
+      "word": "seitdem",
+      "type": "W06",
+      "level": "B1",
+      "grammar": [
+        "G26",
+        "G29"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Unterordnend; das finite Verb steht im Nebensatz am Ende.",
+      "id": 9038,
+      "expected": {
+        "word_de": "seitdem",
+        "word_en": "since then|ever since",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "deshalb|W04",
+      "word": "deshalb",
+      "type": "W04",
+      "level": "A2",
+      "grammar": [
+        "G27",
+        "G31"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Konjunktionaladverb; besetzt ein Satzglied. Im Hauptsatz folgt das finite Verb an zweiter Stelle.",
+      "id": 6186,
+      "expected": {
+        "word_de": "deshalb",
+        "word_en": "therefore, that's why",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "deswegen|W04",
+      "word": "deswegen",
+      "type": "W04",
+      "level": "B1",
+      "grammar": [
+        "G27"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Konjunktionaladverb; besetzt ein Satzglied. Im Hauptsatz folgt das finite Verb an zweiter Stelle.",
+      "id": 6187,
+      "expected": {
+        "word_de": "deswegen",
+        "word_en": "therefore, for that reason",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "daher|W04",
+      "word": "daher",
+      "type": "W04",
+      "level": "B1",
+      "grammar": [
+        "G27",
+        "G31"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Konjunktionaladverb; besetzt ein Satzglied. Im Hauptsatz folgt das finite Verb an zweiter Stelle.",
+      "id": 6185,
+      "expected": {
+        "word_de": "daher",
+        "word_en": "therefore, that's why",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "trotzdem|W04",
+      "word": "trotzdem",
+      "type": "W04",
+      "level": "A2",
+      "grammar": [
+        "G27",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Konjunktionaladverb; besetzt ein Satzglied. Im Hauptsatz folgt das finite Verb an zweiter Stelle.",
+      "id": 6194,
+      "expected": {
+        "word_de": "trotzdem",
+        "word_en": "nevertheless, still, anyway",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "außerdem|W04",
+      "word": "außerdem",
+      "type": "W04",
+      "level": "A2",
+      "grammar": [
+        "G27",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Konjunktionaladverb; besetzt ein Satzglied. Im Hauptsatz folgt das finite Verb an zweiter Stelle.",
+      "id": 6188,
+      "expected": {
+        "word_de": "außerdem",
+        "word_en": "besides, moreover, in addition",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "dennoch|W04",
+      "word": "dennoch",
+      "type": "W04",
+      "level": "B1",
+      "grammar": [
+        "G27",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Konjunktionaladverb; besetzt ein Satzglied. Im Hauptsatz folgt das finite Verb an zweiter Stelle.",
+      "id": 6195,
+      "expected": {
+        "word_de": "dennoch",
+        "word_en": "nevertheless, yet, however",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "folglich|W04",
+      "word": "folglich",
+      "type": "W04",
+      "level": "B1",
+      "grammar": [
+        "G27",
+        "G31"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Konjunktionaladverb; besetzt ein Satzglied. Im Hauptsatz folgt das finite Verb an zweiter Stelle.",
+      "id": 6322,
+      "expected": {
+        "word_de": "folglich",
+        "word_en": "consequently",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "somit|W04",
+      "word": "somit",
+      "type": "W04",
+      "level": "B1",
+      "grammar": [
+        "G27",
+        "G31"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Konjunktionaladverb; besetzt ein Satzglied. Im Hauptsatz folgt das finite Verb an zweiter Stelle.",
+      "id": 6323,
+      "expected": {
+        "word_de": "somit",
+        "word_en": "thus/so",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "allerdings|W04",
+      "word": "allerdings",
+      "type": "W04",
+      "level": "B1",
+      "grammar": [
+        "G27",
+        "G28"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": null,
+      "note": "Konjunktionaladverb; besetzt ein Satzglied. Im Hauptsatz folgt das finite Verb an zweiter Stelle.",
+      "id": 6190,
+      "expected": {
+        "word_de": "allerdings",
+        "word_en": "however, though, certainly",
+        "pos": "phrase"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "helfen|W02",
+      "word": "helfen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G06",
+        "G15",
+        "G21",
+        "G09"
+      ],
+      "themes": [
+        "T02",
+        "T03"
+      ],
+      "pattern": "jemandem helfen (Dat.); helfen bei + Dat.",
+      "note": null,
+      "id": 26,
+      "expected": {
+        "word_de": "helfen",
+        "word_en": "to help",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "hilft"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "half"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat geholfen"
+        ]
+      }
+    },
+    {
+      "key": "danken|W02",
+      "word": "danken",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G06",
+        "G14",
+        "G21"
+      ],
+      "themes": [
+        "T05",
+        "T35"
+      ],
+      "pattern": "danken + Dat.",
+      "note": null,
+      "id": 307,
+      "expected": {
+        "word_de": "danken",
+        "word_en": "to thank",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "dankt"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "dankte"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat gedankt"
+        ]
+      }
+    },
+    {
+      "key": "gefallen|W02",
+      "word": "gefallen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G06",
+        "G15",
+        "G21"
+      ],
+      "themes": [
+        "T04"
+      ],
+      "pattern": "gefallen + Dat.",
+      "note": null,
+      "id": 7075,
+      "expected": {
+        "word_de": "gefallen",
+        "word_en": "to please",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "gefällt"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "gefiel"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat gefallen"
+        ]
+      }
+    },
+    {
+      "key": "gehören|W02",
+      "word": "gehören",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G06",
+        "G14",
+        "G21"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "gehören + Dat.",
+      "note": null,
+      "curriculumId": "LN00623",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "gehört"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "gehörte"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat gehört"
+        ]
+      },
+      "expected": {
+        "word_de": "gehören",
+        "word_en": "to belong",
+        "pos": "verb"
+      },
+      "id": 13677
+    },
+    {
+      "key": "schmecken|W02",
+      "word": "schmecken",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G03",
+        "G06",
+        "G14",
+        "G21"
+      ],
+      "themes": [
+        "T08",
+        "T29"
+      ],
+      "pattern": "schmecken + Dat.",
+      "note": null,
+      "id": 4197,
+      "expected": {
+        "word_de": "schmecken",
+        "word_en": "to taste",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "schmeckt"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "schmeckte"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat geschmeckt"
+        ]
+      }
+    },
+    {
+      "key": "passen|W02",
+      "word": "passen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G06",
+        "G14",
+        "G21"
+      ],
+      "themes": [
+        "T10",
+        "T09"
+      ],
+      "pattern": "passen + Dat.",
+      "note": null,
+      "id": 10157,
+      "expected": {
+        "word_de": "passen",
+        "word_en": "to fit",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "passt"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "passte"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat gepasst"
+        ]
+      }
+    },
+    {
+      "key": "fehlen|W02",
+      "word": "fehlen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G06",
+        "G14",
+        "G21"
+      ],
+      "themes": [
+        "T03",
+        "T12"
+      ],
+      "pattern": "fehlen + Dat.",
+      "note": null,
+      "id": 5285,
+      "expected": {
+        "word_de": "fehlen",
+        "word_en": "to be missing, to lack",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "fehlt"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "fehlte"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat gefehlt"
+        ]
+      }
+    },
+    {
+      "key": "folgen|W02",
+      "word": "folgen",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G03",
+        "G06"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": "folgen + Dat.",
+      "note": null,
+      "id": 254,
+      "expected": {
+        "word_de": "folgen",
+        "word_en": "to follow",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "vertrauen|W02",
+      "word": "vertrauen",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G03",
+        "G06"
+      ],
+      "themes": [
+        "T05"
+      ],
+      "pattern": "vertrauen + Dat.",
+      "note": null,
+      "id": 336,
+      "expected": {
+        "word_de": "vertrauen",
+        "word_en": "to trust",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses."
+    },
+    {
+      "key": "antworten|W02",
+      "word": "antworten",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G03",
+        "G06",
+        "G14",
+        "G21"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "antworten + Dat.",
+      "note": null,
+      "id": 36,
+      "expected": {
+        "word_de": "antworten",
+        "word_en": "to answer",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "antwortet"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "antwortete"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat geantwortet"
+        ]
+      }
+    },
+    {
+      "key": "sagen|W02",
+      "word": "sagen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G14",
+        "G21",
+        "G05",
+        "G08"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "jemandem etwas sagen (Dat. + Akk.)",
+      "note": "Der Empfänger steht im Dativ, der Inhalt im Akkusativ. Kein reines Dativverb.",
+      "id": 6,
+      "expected": {
+        "word_de": "sagen",
+        "word_en": "to say",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "sagt"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "sagte"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat gesagt"
+        ]
+      }
+    },
+    {
+      "key": "warten|W02",
+      "word": "warten",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G09",
+        "G14",
+        "G21"
+      ],
+      "themes": [
+        "T03",
+        "T22"
+      ],
+      "pattern": "warten auf + Akk.",
+      "note": null,
+      "id": 37,
+      "expected": {
+        "word_de": "warten",
+        "word_en": "to wait",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "wartet"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "wartete"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat gewartet"
+        ]
+      }
+    },
+    {
+      "key": "denken|W02",
+      "word": "denken",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G09",
+        "G15",
+        "G21"
+      ],
+      "themes": [
+        "T04"
+      ],
+      "pattern": "denken an + Akk.",
+      "note": null,
+      "id": 9,
+      "expected": {
+        "word_de": "denken",
+        "word_en": "to think",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "removeGrammar": [
+        "G14"
+      ],
+      "irregular": true
+    },
+    {
+      "key": "sich freuen|W02",
+      "word": "sich freuen",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G09",
+        "G14",
+        "G18",
+        "G21"
+      ],
+      "themes": [
+        "T04",
+        "T05"
+      ],
+      "pattern": "sich freuen auf + Akk. / sich freuen über + Akk.",
+      "note": null,
+      "id": 4276,
+      "expected": {
+        "word_de": "sich freuen",
+        "word_en": "to be pleased, to be glad, to look forward to",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "freut sich"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "freute sich"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat sich gefreut"
+        ]
+      }
+    },
+    {
+      "key": "teilnehmen|W02",
+      "word": "teilnehmen",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G09",
+        "G15",
+        "G16",
+        "G21"
+      ],
+      "themes": [
+        "T16",
+        "T17",
+        "T18"
+      ],
+      "pattern": "teilnehmen an + Dat.",
+      "note": null,
+      "id": 427,
+      "expected": {
+        "word_de": "teilnehmen",
+        "word_en": "to participate",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "nimmt teil"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "nahm teil"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat teilgenommen"
+        ]
+      }
+    },
+    {
+      "key": "sprechen|W02",
+      "word": "sprechen",
+      "type": "W02",
+      "level": "A1",
+      "grammar": [
+        "G15",
+        "G21",
+        "G09"
+      ],
+      "themes": [
+        "T14",
+        "T35"
+      ],
+      "pattern": "sprechen mit + Dat. / sprechen über + Akk.",
+      "note": null,
+      "id": 11,
+      "expected": {
+        "word_de": "sprechen",
+        "word_en": "to speak",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "spricht"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "sprach"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat gesprochen"
+        ]
+      }
+    },
+    {
+      "key": "abhängen|W02",
+      "word": "abhängen",
+      "type": "W02",
+      "level": "B1",
+      "grammar": [
+        "G09",
+        "G16",
+        "G15",
+        "G21"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "abhängen von + Dat.",
+      "note": null,
+      "id": 11644,
+      "expected": {
+        "word_de": "abhängen",
+        "word_en": "to depend",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "hängt ab"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "hing ab"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat abgehangen"
+        ]
+      }
+    },
+    {
+      "key": "sich kümmern|W02",
+      "word": "sich kümmern",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G18",
+        "G09",
+        "G14",
+        "G21"
+      ],
+      "themes": [
+        "T16",
+        "T17",
+        "T18"
+      ],
+      "pattern": "sich kümmern um + Akk.",
+      "note": null,
+      "curriculumId": "LN00981",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "kümmert sich"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "kümmerte sich"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat sich gekümmert"
+        ]
+      },
+      "expected": {
+        "word_de": "sich kümmern",
+        "word_en": "to take care",
+        "pos": "verb"
+      },
+      "id": 13770
+    },
+    {
+      "key": "sich bewerben|W02",
+      "word": "sich bewerben",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G18",
+        "G09",
+        "G21",
+        "G15"
+      ],
+      "themes": [
+        "T16",
+        "T17",
+        "T18"
+      ],
+      "pattern": "sich bewerben um + Akk.",
+      "note": "Starkes Verb; kein regelmäßiges Verb.",
+      "id": 3931,
+      "expected": {
+        "word_de": "sich bewerben",
+        "word_en": "to apply",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "bewirbt sich"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "bewarb sich"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat sich beworben"
+        ]
+      },
+      "removeGrammar": [
+        "G14"
+      ],
+      "irregular": true
+    },
+    {
+      "key": "herunterladen|W02",
+      "word": "herunterladen",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G05",
+        "G16",
+        "G21",
+        "G15"
+      ],
+      "themes": [
+        "T35",
+        "T36",
+        "T39"
+      ],
+      "pattern": "etwas herunterladen + Akk.",
+      "note": "Starkes Verb; kein regelmäßiges Verb.",
+      "id": 391,
+      "expected": {
+        "word_de": "herunterladen",
+        "word_en": "to download",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "lädt herunter"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "lud herunter"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat heruntergeladen"
+        ]
+      },
+      "removeGrammar": [
+        "G14"
+      ],
+      "irregular": true
+    },
+    {
+      "key": "hochladen|W02",
+      "word": "hochladen",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G05",
+        "G16",
+        "G21",
+        "G15"
+      ],
+      "themes": [
+        "T35",
+        "T36",
+        "T39"
+      ],
+      "pattern": "etwas hochladen + Akk.",
+      "note": "Starkes Verb; kein regelmäßiges Verb.",
+      "id": 392,
+      "expected": {
+        "word_de": "hochladen",
+        "word_en": "to upload",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "lädt hoch"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "lud hoch"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat hochgeladen"
+        ]
+      },
+      "removeGrammar": [
+        "G14"
+      ],
+      "irregular": true
+    },
+    {
+      "key": "überweisen|W02",
+      "word": "überweisen",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G05",
+        "G08",
+        "G21",
+        "G15"
+      ],
+      "themes": [
+        "T19",
+        "T11"
+      ],
+      "pattern": "jemandem etwas überweisen",
+      "note": "Starkes Verb; kein regelmäßiges Verb.",
+      "id": 5276,
+      "expected": {
+        "word_de": "überweisen",
+        "word_en": "to transfer money",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "überweist"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "überwies"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat überwiesen"
+        ]
+      },
+      "removeGrammar": [
+        "G14"
+      ],
+      "irregular": true
+    },
+    {
+      "key": "erziehen|W02",
+      "word": "erziehen",
+      "type": "W02",
+      "level": "B1",
+      "grammar": [
+        "G05",
+        "G21",
+        "G15"
+      ],
+      "themes": [
+        "T02",
+        "T03"
+      ],
+      "pattern": "ein Kind erziehen",
+      "note": "Starkes Verb; kein regelmäßiges Verb.",
+      "id": 5463,
+      "expected": {
+        "word_de": "erziehen",
+        "word_en": "to educate",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "erzieht"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "erzog"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat erzogen"
+        ]
+      },
+      "removeGrammar": [
+        "G14"
+      ],
+      "irregular": true
+    },
+    {
+      "key": "der|W08",
+      "word": "der",
+      "type": "W08",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03",
+        "G04"
+      ],
+      "themes": [
+        "T14"
+      ],
+      "pattern": null,
+      "note": "Formen nach Nominativ, Akkusativ, Dativ und Genitiv; die vorhandene Curriculum-Architektur behält ein und eine als Lehrartikel.",
+      "curriculumId": "LN00232",
+      "forms": {
+        "nominativ": "der",
+        "akkusativ": "den",
+        "dativ": "dem",
+        "genitiv": "des"
+      },
+      "expected": {
+        "word_de": "der",
+        "word_en": "the (masculine)",
+        "pos": "article"
+      },
+      "id": 13582
+    },
+    {
+      "key": "die|W08",
+      "word": "die",
+      "type": "W08",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03",
+        "G04"
+      ],
+      "themes": [
+        "T14"
+      ],
+      "pattern": null,
+      "note": "Formen nach Nominativ, Akkusativ, Dativ und Genitiv; die vorhandene Curriculum-Architektur behält ein und eine als Lehrartikel.",
+      "curriculumId": "LN00233",
+      "forms": {
+        "nominativ": "die",
+        "akkusativ": "die",
+        "dativ": "der",
+        "genitiv": "der",
+        "plural": {
+          "nominativ": "die",
+          "akkusativ": "die",
+          "dativ": "den",
+          "genitiv": "der"
+        }
+      },
+      "expected": {
+        "word_de": "die",
+        "word_en": "the (feminine/plural)",
+        "pos": "article"
+      },
+      "id": 13583
+    },
+    {
+      "key": "das|W08",
+      "word": "das",
+      "type": "W08",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03",
+        "G04"
+      ],
+      "themes": [
+        "T14"
+      ],
+      "pattern": null,
+      "note": "Formen nach Nominativ, Akkusativ, Dativ und Genitiv; die vorhandene Curriculum-Architektur behält ein und eine als Lehrartikel.",
+      "curriculumId": "LN00234",
+      "forms": {
+        "nominativ": "das",
+        "akkusativ": "das",
+        "dativ": "dem",
+        "genitiv": "des"
+      },
+      "expected": {
+        "word_de": "das",
+        "word_en": "the (neuter)",
+        "pos": "article"
+      },
+      "id": 13584
+    },
+    {
+      "key": "ein|W08",
+      "word": "ein",
+      "type": "W08",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03",
+        "G04"
+      ],
+      "themes": [
+        "T14"
+      ],
+      "pattern": null,
+      "note": "Formen nach Nominativ, Akkusativ, Dativ und Genitiv; die vorhandene Curriculum-Architektur behält ein und eine als Lehrartikel.",
+      "curriculumId": "LN00235",
+      "forms": {
+        "maskulin": [
+          "ein",
+          "einen",
+          "einem",
+          "eines"
+        ],
+        "neutrum": [
+          "ein",
+          "ein",
+          "einem",
+          "eines"
+        ]
+      },
+      "expected": {
+        "word_de": "ein",
+        "word_en": "a / an",
+        "pos": "article"
+      },
+      "id": 13585
+    },
+    {
+      "key": "eine|W08",
+      "word": "eine",
+      "type": "W08",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03",
+        "G04"
+      ],
+      "themes": [
+        "T14"
+      ],
+      "pattern": null,
+      "note": "Formen nach Nominativ, Akkusativ, Dativ und Genitiv; die vorhandene Curriculum-Architektur behält ein und eine als Lehrartikel.",
+      "curriculumId": "LN00236",
+      "forms": {
+        "feminin": [
+          "eine",
+          "eine",
+          "einer",
+          "einer"
+        ]
+      },
+      "expected": {
+        "word_de": "eine",
+        "word_en": "a / an (feminine)",
+        "pos": "article"
+      },
+      "id": 13586
+    },
+    {
+      "key": "kein|W08",
+      "word": "kein",
+      "type": "W08",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03",
+        "G04"
+      ],
+      "themes": [
+        "T03"
+      ],
+      "pattern": null,
+      "note": "Negativartikel vor einem Nomen; als Stellvertreter auch Pronomen. Keine eigene neue Lexemzeile für keine.",
+      "id": 4217,
+      "expected": {
+        "word_de": "kein",
+        "word_en": "no",
+        "pos": "adjective"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "extraTypes": [
+        "W07"
+      ],
+      "forms": {
+        "maskulin": [
+          "kein",
+          "keinen",
+          "keinem",
+          "keines"
+        ],
+        "neutrum": [
+          "kein",
+          "kein",
+          "keinem",
+          "keines"
+        ],
+        "feminin": [
+          "keine",
+          "keine",
+          "keiner",
+          "keiner"
+        ],
+        "plural": [
+          "keine",
+          "keine",
+          "keinen",
+          "keiner"
+        ]
+      }
+    },
+    {
+      "key": "ich|W07",
+      "word": "ich",
+      "type": "W07",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T01"
+      ],
+      "pattern": null,
+      "note": null,
+      "curriculumId": "LN00225",
+      "forms": {
+        "nominativ": "ich",
+        "akkusativ": "mich",
+        "dativ": "mir"
+      },
+      "expected": {
+        "word_de": "ich",
+        "word_en": "I",
+        "pos": "pronoun"
+      },
+      "id": 13575
+    },
+    {
+      "key": "du|W07",
+      "word": "du",
+      "type": "W07",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T01"
+      ],
+      "pattern": null,
+      "note": null,
+      "curriculumId": "LN00226",
+      "forms": {
+        "nominativ": "du",
+        "akkusativ": "dich",
+        "dativ": "dir"
+      },
+      "expected": {
+        "word_de": "du",
+        "word_en": "you (informal singular)",
+        "pos": "pronoun"
+      },
+      "id": 13576
+    },
+    {
+      "key": "er|W07",
+      "word": "er",
+      "type": "W07",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T01"
+      ],
+      "pattern": null,
+      "note": null,
+      "curriculumId": "LN00227",
+      "forms": {
+        "nominativ": "er",
+        "akkusativ": "ihn",
+        "dativ": "ihm"
+      },
+      "expected": {
+        "word_de": "er",
+        "word_en": "he",
+        "pos": "pronoun"
+      },
+      "id": 13577
+    },
+    {
+      "key": "sie|W07",
+      "word": "sie",
+      "type": "W07",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T01"
+      ],
+      "pattern": null,
+      "note": "sie: she (Singular) oder they (Plural). Getrennte Lesarten; formelles Sie ist ein anderes Lehrlexem.",
+      "curriculumId": "LN00228",
+      "forms": {
+        "nominativ": "sie",
+        "akkusativ": "sie",
+        "dativ": "ihr / ihnen"
+      },
+      "senses": [
+        {
+          "meaning": "she",
+          "number": "Singular",
+          "dativ": "ihr"
+        },
+        {
+          "meaning": "they",
+          "number": "Plural",
+          "dativ": "ihnen"
+        }
+      ],
+      "expected": {
+        "word_de": "sie",
+        "word_en": "she / they",
+        "pos": "pronoun"
+      },
+      "id": 13578
+    },
+    {
+      "key": "es|W07",
+      "word": "es",
+      "type": "W07",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T01"
+      ],
+      "pattern": null,
+      "note": null,
+      "curriculumId": "LN00229",
+      "forms": {
+        "nominativ": "es",
+        "akkusativ": "es",
+        "dativ": "ihm"
+      },
+      "expected": {
+        "word_de": "es",
+        "word_en": "it",
+        "pos": "pronoun"
+      },
+      "id": 13579
+    },
+    {
+      "key": "wir|W07",
+      "word": "wir",
+      "type": "W07",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T01"
+      ],
+      "pattern": null,
+      "note": null,
+      "curriculumId": "LN00230",
+      "forms": {
+        "nominativ": "wir",
+        "akkusativ": "uns",
+        "dativ": "uns"
+      },
+      "expected": {
+        "word_de": "wir",
+        "word_en": "we",
+        "pos": "pronoun"
+      },
+      "id": 13580
+    },
+    {
+      "key": "ihr|W07",
+      "word": "ihr",
+      "type": "W07",
+      "level": "A1",
+      "grammar": [
+        "G01",
+        "G02",
+        "G03"
+      ],
+      "themes": [
+        "T01"
+      ],
+      "pattern": null,
+      "note": null,
+      "curriculumId": "LN00231",
+      "forms": {
+        "nominativ": "ihr",
+        "akkusativ": "euch",
+        "dativ": "euch"
+      },
+      "expected": {
+        "word_de": "ihr",
+        "word_en": "you (informal plural)",
+        "pos": "pronoun"
+      },
+      "id": 13581
+    },
+    {
+      "key": "informieren|W02",
+      "word": "informieren",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G14",
+        "G21",
+        "G05",
+        "G09"
+      ],
+      "themes": [
+        "T16",
+        "T18",
+        "T35"
+      ],
+      "pattern": "jemanden über etwas informieren (Akk. + über Akk.)",
+      "note": null,
+      "id": 295,
+      "expected": {
+        "word_de": "informieren",
+        "word_en": "to inform",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "informiert"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "informierte"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat informiert"
+        ]
+      },
+      "removeGrammar": [
+        "G08"
+      ]
+    },
+    {
+      "key": "teilen|W02",
+      "word": "teilen",
+      "type": "W02",
+      "level": "A2",
+      "grammar": [
+        "G05",
+        "G14",
+        "G21",
+        "G09"
+      ],
+      "themes": [
+        "T36",
+        "T38",
+        "T39"
+      ],
+      "pattern": "etwas mit jemandem teilen (Akk. + mit Dat.)",
+      "note": null,
+      "id": 400,
+      "expected": {
+        "word_de": "teilen",
+        "word_en": "to share",
+        "pos": "verb"
+      },
+      "reason": "Reviewed existing bilingual sense; preserve this ID and other senses.",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "teilt"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "teilte"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat geteilt"
+        ]
+      },
+      "removeGrammar": [
+        "G08"
+      ]
+    },
+    {
+      "key": "instand halten|W02",
+      "word": "instand halten",
+      "type": "W02",
+      "level": "B2",
+      "grammar": [
+        "G05",
+        "G21",
+        "G15"
+      ],
+      "themes": [
+        "T07",
+        "T11",
+        "T44"
+      ],
+      "pattern": "etwas instand halten + Akk.",
+      "note": "Starkes Verb: hält instand, hielt instand, hat instand gehalten.",
+      "curriculumId": "LN02142",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "hält instand"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "hielt instand"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat instand gehalten"
+        ]
+      },
+      "removeGrammar": [
+        "G14"
+      ],
+      "irregular": true,
+      "expected": {
+        "word_de": "instand halten",
+        "word_en": "to maintain",
+        "pos": "verb"
+      },
+      "id": 14435
+    },
+    {
+      "key": "sich einer Sache bedienen|W02",
+      "word": "sich einer Sache bedienen",
+      "type": "W02",
+      "level": "C2",
+      "grammar": [
+        "G04",
+        "G07",
+        "G18",
+        "G21",
+        "G14"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "sich einer Sache bedienen + Gen.",
+      "note": "Schwaches Verb mit Genitivkonstruktion.",
+      "curriculumId": "LN03077",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "bedient sich"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "bediente sich"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat sich bedient"
+        ]
+      },
+      "removeGrammar": [
+        "G15"
+      ],
+      "irregular": false,
+      "expected": {
+        "word_de": "sich einer Sache bedienen",
+        "word_en": "to make use of something",
+        "pos": "verb"
+      },
+      "id": 15222
+    },
+    {
+      "key": "einer Sache entbehren|W02",
+      "word": "einer Sache entbehren",
+      "type": "W02",
+      "level": "C2",
+      "grammar": [
+        "G04",
+        "G07",
+        "G21",
+        "G14"
+      ],
+      "themes": [
+        "T35"
+      ],
+      "pattern": "einer Sache entbehren + Gen.",
+      "note": "Schwaches Verb mit Genitivkonstruktion.",
+      "curriculumId": "LN03078",
+      "forms": {
+        "praesens": [
+          null,
+          null,
+          "entbehrt"
+        ],
+        "praeteritum": [
+          null,
+          null,
+          "entbehrte"
+        ],
+        "perfekt": [
+          null,
+          null,
+          "hat entbehrt"
+        ]
+      },
+      "removeGrammar": [
+        "G15"
+      ],
+      "irregular": false,
+      "expected": {
+        "word_de": "einer Sache entbehren",
+        "word_en": "to lack something",
+        "pos": "verb"
+      },
+      "id": 15223
+    }
+  ],
+  "pendingNewEntries": [
+    {
+      "word": "Sie",
+      "reason": "A canonical Dictionary ID must be assigned before synchronization."
+    }
+  ]
+}

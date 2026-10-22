@@ -1,0 +1,58 @@
+{
+  "name": "langnation-web",
+  "version": "1.0.0",
+  "description": "LangNation Language Institute — main website (EN/DE), server-rendered, PWA-ready",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "migrate:extract": "node tools/extract-old-content.js",
+    "icons": "node tools/build-icons.js",
+    "admin:password": "node tools/admin-password.js",
+    "check": "node tools/check.js && node tools/check-sql.js && node tools/check-students.js && node tools/check-teachers.js && node tools/check-views.js && node tools/check-exercises.js && node --test tools/check-homework-learning.js tools/check-homework-chapters.js && node tools/check-enquiries.js && node tools/check-chat.js && node --test tools/check-chat-position.cjs && node tools/check-billing.js && node --test tools/check-portal-flows.cjs && node --test tools/check-billing-address.js tools/check-invoice-address-requests.js && node tools/check-einbuergerungstest.js && npm run check:reading && npm run check:community && npm run check:vocabulary",
+    "check:db": "node tools/check-db.js",
+    "check:views": "node tools/check-views.js",
+    "check:students": "node tools/check-students.js",
+    "check:teachers": "node tools/check-teachers.js",
+    "check:sql": "node tools/check-sql.js",
+    "downloads": "node tools/copy-downloads.js",
+    "audit": "node tools/audit.js",
+    "logos": "node tools/build-logos.js",
+    "brand": "node tools/brand.js --rebuild",
+    "brand:seal": "node tools/brand.js seal",
+    "brand:crest": "node tools/brand.js crest",
+    "brand:crop": "node tools/crop-brand-sheet.js",
+    "migrate:courses": "node tools/migrate-courses.js",
+    "translate:pages": "node tools/translate-pages.js",
+    "check:et": "node tools/check-einbuergerungstest.js",
+    "check:exercises": "node tools/check-exercises.js",
+    "check:homework": "node --test tools/check-homework-learning.js tools/check-homework-chapters.js",
+    "check:enquiries": "node tools/check-enquiries.js",
+    "check:chat": "node tools/check-chat.js",
+    "check:billing": "node tools/check-billing.js",
+    "check:reading": "node --test tools/check-reading.js tools/check-dictionary-client.js tools/check-dictionary-text.js tools/check-dictionary-ranking.js tools/check-dictionary-presentation.js",
+    "check:community": "node --test tools/check-community-*.js",
+    "community:setup": "node tools/community-setup.js",
+    "check:vocabulary": "node --test tools/check-vocabulary-learning.js tools/check-vocabulary-dashboard.js tools/check-vocabulary-workspace.js tools/check-vocabulary-filter-ui.js tools/check-local-vocabulary.js tools/check-vocabulary-catalogue-admin.js",
+    "check:vocabulary:integration": "node --test tools/check-vocabulary-integration.js",
+    "vocabulary:sync": "node tools/sync-vocabulary-catalogue.js",
+    "icons:app": "node tools/build-app-icons.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1155.0",
+    "@aws-sdk/client-s3vectors": "^3.1155.0",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.8.2",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "mysql2": "^3.11.0",
+    "nodemailer": "^10.0.13"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}

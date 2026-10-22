@@ -1,0 +1,447 @@
+<%#
+  Everything a student has been given.
+
+  ── Why there are two dropdowns ─────────────────────────────────────
+
+  Because a workbook is forty-one chapters and a list of forty-one
+  chapters is not a list, it is a wall. Level first, then topic, and
+  the page is three rows instead of forty.
+
+  Neither one reloads the page. They hide rows, exactly the way the
+  office's give-out screen does, and for the same reason: a filter
+  that rebuilds the page is a filter that loses whatever you were
+  looking at. With JavaScript off the dropdowns do nothing and every
+  chapter is listed, which is longer and still correct.
+
+  ── Levels the student has nothing at ───────────────────────────────
+
+  They stay in the dropdown rather than being dropped from it. A
+  student who can only see A1 should be able to find out that B1
+  exists and ask for it — hiding it would mean the only people who
+  know what the school teaches are the ones already being taught it.
+  Choosing one says so plainly and offers the way to ask.
+%>
+<%
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", {
+        weekday: "short", day: "numeric", month: "short", timeZone: "Europe/Berlin",
+      })
+    : null);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const isOverdue = (v) => v && new Date(v) < today;
+
+  /* Grouped by BATCH, because that is the thing that is unique.
+
+     Two batches can run the same course: LNIKB01 and LNIKB02 are both
+     "Fast Track". Keying on the title merged them, so a student on
+     both saw one pile of homework with the chapter numbers of two
+     running through it.
+
+     The key comes from lib/exercises so this page and the server mean
+     the same thing by it. Homework given to chosen people has no batch
+     at all and keeps its own group — the old key was undefined for
+     every one of those, which put them together under a blank
+     heading. */
+  const keyOf = (it) => String(it.batch_code || "").trim() || "—";
+  const nameOf = (it) => {
+    if (keyOf(it) === "—") return "Set for you";
+    // The code first, because it is what tells two batches of one
+    // course apart; the course name after it, for people who know
+    // their course and not their code.
+    return it.course_title ? it.batch_code + " — " + it.course_title : it.batch_code;
+  };
+
+  const byCourse = new Map();
+  items.forEach(function (it) {
+    const key = keyOf(it);
+    if (!byCourse.has(key)) {
+      byCourse.set(key, { key, title: nameOf(it), code: it.batch_code, rows: [] });
+    }
+    byCourse.get(key).rows.push(it);
+  });
+
+  /* The course dropdown is always there.
+     It was drawn only when there was more than one course, on the
+     reasoning that one course is not a filter but a word taking up a
+     row. That reasoning was wrong in use: with it missing there is no
+     way to tell "you are on one course" from "the course was never
+     recorded on this homework", and those are very different problems
+     to have. It says which course the work belongs to, and narrows
+     when there is something to narrow. */
+  const courses = [...byCourse.values()];
+
+  const done = items.filter((i) => i.tries > 0).length;
+
+  // The whole ladder, not only the rungs this student is standing on.
+  const LADDER = ["A1", "A2", "B1", "B2", "C1", "C2"];
+  const have = new Set(items.map((i) => (i.level || "").trim().toUpperCase()).filter(Boolean));
+  const someUngraded = items.some((i) => !String(i.level || "").trim());
+
+  const lvl = (it) => String(it.level || "").trim().toUpperCase();
+
+  /* The tick, worked out in lib/exercises (markOf): 80% of the
+     questions on the best attempt. It used to be decided here AND in
+     the chapter list beside a worksheet, and the two disagreed within
+     a day of each other, so neither of them decides it any more. */
+  const stateOf = (it) => (it.mark ? "is-" + it.mark : "");
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "Aufgaben",
+  pageLead: items.length
+    ? done + " of " + items.length + " started"
+    : "Nothing set yet.",
+  nav: "homework", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue, notice: notice,
+}) %>
+
+<% if (!items.length) { %>
+  <div class="sp-card sp-wide">
+    <p class="sp-empty">
+      Noch keine Aufgaben. Sobald deine Lehrkraft Aufgaben bereitstellt, findest du sie hier.
+      Beim Bearbeiten siehst du sofort, ob deine Antwort richtig ist.
+    </p>
+  </div>
+<% } else { %>
+
+  <%#
+    Where you stand: the rank on the left, the progress on the right.
+
+    Built to the same pattern as the dictionary's dashboard card, which
+    is where this was asked to come from: a dark band across the top, a
+    rank on one side and a boxed figure on the other, and the two
+    staying side by side all the way down to a phone rather than
+    stacking. What is in the box here is the progress rather than a
+    user id, because that is the number this page is about.
+
+    Dark in BOTH themes, using the footer's tokens. --navy is the brand
+    colour in light mode and an accent blue in dark mode, so a band
+    built on it turns pale exactly when it should not.
+
+    One card, not one per class. The figures in it are the student's
+    own and do not change from one class to the next; only who they are
+    ranked against does. Three classes used to draw three cards with
+    the same bar in them, and one of them read "1 of 52 passed" because
+    the denominator was per batch while the numerator was not.
+
+    It never names another student and never shows anybody else's score
+    — see lib/exercises.
+  %>
+  <% if (typeof standings !== "undefined" && standings && standings.classes.length) { %>
+    <%
+      const st = standings;
+      const lead = st.classes[0];      // the biggest class; see standings()
+      const rest = st.classes.slice(1);
+
+      const total = Math.max(items.length, st.passed);
+      const pct = total ? Math.min(100, Math.round((st.passed / total) * 100)) : 0;
+
+      const place = (n) => {
+        const a = n % 10, b = n % 100;
+        if (a === 1 && b !== 11) return n + "st";
+        if (a === 2 && b !== 12) return n + "nd";
+        if (a === 3 && b !== 13) return n + "rd";
+        return n + "th";
+      };
+
+      /* A band, not a percentile to two decimal places. Only for a
+         class big enough for the fraction to mean anything — "top
+         half" of two people is one person, and saying it is worse than
+         saying nothing. */
+      const band = (r, of) => {
+        if (of < 5) return null;
+        const share = r / of;
+        if (share <= 0.1) return "Top 10%";
+        if (share <= 0.25) return "Top 25%";
+        if (share <= 0.5) return "Top half";
+        return null;
+      };
+      const badge = band(lead.rank, lead.of);
+    %>
+    <div class="sp-card sp-wide hw-rank">
+      <div class="hw-rank-row">
+
+        <%# ── Left: where you come ───────────────────────────────── %>
+        <div class="hw-rank-left">
+          <p class="hw-rank-label">Your rank</p>
+          <div class="hw-rank-who">
+            <%# The medal: a ribbon and a filled disc, gold, silver
+                and bronze for the first three and a plain disc after
+                that — a medal everybody gets is not a medal.
+
+                Drawn rather than 🥇🥈🥉. The emoji are what the
+                reference uses, and they are a different picture on
+                every platform: a ribbon on Windows, a flat roundel on
+                Android, a different gold again on a Mac. A rank that
+                changes shape depending on the student's phone is not a
+                rank they can compare with anybody.
+
+                The number is a real character over the disc, so it
+                stays selectable and follows the browser's text size. %>
+            <% const MEDALS = { 1: "is-gold", 2: "is-silver", 3: "is-bronze" }; %>
+            <span class="hw-rank-medal <%= MEDALS[lead.rank] || "is-plain" %>" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <% if (MEDALS[lead.rank]) { %>
+                  <path class="hw-medal-ribbon" d="M5.6 1.8h4.2L7.4 9.2 3.2 5.6z"/>
+                  <path class="hw-medal-ribbon" d="M18.4 1.8h-4.2l2.4 7.4 4.2-3.6z"/>
+                <% } %>
+                <circle class="hw-medal-disc" cx="12" cy="15.6" r="6.8"/>
+                <circle class="hw-medal-rim" cx="12" cy="15.6" r="4.9"/>
+              </svg>
+              <b><%= lead.rank %></b>
+            </span>
+
+            <div class="hw-rank-what">
+              <p class="hw-rank-place">
+                <strong><%= place(lead.rank) %></strong> of <%= lead.of %>
+              </p>
+              <p class="hw-rank-where">
+                <%= lead.batch.code %><% if (lead.batch.course_title) { %> · <%= lead.batch.course_title %><% } %>
+              </p>
+              <p class="hw-rank-tier">
+                <% if (badge) { %><span class="hw-rank-badge"><%= badge %></span><% } %>
+                <% if (lead.top > st.passed) { %>
+                  Best is <%= lead.top %> — <%= lead.top - st.passed %> to go.
+                <% } else if (st.passed) { %>
+                  Nobody has passed more.
+                <% } %>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <%# ── Right: how far along you are ─────────────────────────
+
+            The bar as it was: across the space it has, with the count
+            under it in words. It was briefly a small boxed figure in
+            the corner, which is the shape the dictionary's card uses
+            for a user id — a thing you read once — and the wrong shape
+            for a thing whose whole job is to show a length. %>
+        <div class="hw-rank-box">
+          <p class="hw-rank-label">Your progress</p>
+          <div class="hw-rank-bar" role="progressbar" aria-valuemin="0"
+               aria-valuemax="<%= total %>" aria-valuenow="<%= st.passed %>"
+               aria-label="Chapters passed">
+            <span style="width:<%= pct %>%"></span>
+          </div>
+          <p class="hw-rank-note">
+            <strong><%= st.passed %></strong> of <%= total %> passed<%
+              if (st.accuracy !== null) { %> · <strong><%= st.accuracy %>%</strong> right<% } %>
+          </p>
+        </div>
+      </div>
+
+      <%# The other classes, on one line each. A student on three of
+          them has three places and two of them are a footnote. %>
+      <% if (rest.length) { %>
+        <ul class="hw-rank-also">
+          <% rest.forEach(function (c) { %>
+            <li>
+              <span class="hw-rank-also-n"><%= c.rank %></span>
+              <span><strong><%= place(c.rank) %></strong> of <%= c.of %>
+                · <%= c.batch.code %></span>
+            </li>
+          <% }); %>
+        </ul>
+      <% } %>
+    </div>
+  <% } %>
+
+  <%# The dropdowns. Not a form: nothing here is submitted. %>
+  <div class="sp-card sp-wide hw-filter" data-hw-filter>
+    <%# Somebody on two courses has two piles of homework whose
+        chapter numbers run over each other, and "A1 · Kapitel 03"
+        says nothing about which course set it. Somebody on one course
+        still gets to see which one it is. %>
+    <label class="field hw-filter-course">
+        <span>Course</span>
+        <select data-hw-course>
+          <option value="">All my courses</option>
+          <% courses.forEach(function (c) { %>
+            <option value="<%= c.key %>"><%= c.title %></option>
+        <% }); %>
+      </select>
+    </label>
+
+    <div class="hw-filter-row">
+      <%# The book it is from.
+       *
+       * A Fast Track chapter runs A1 to B1 and so has no CEFR level
+       * of its own, which filed it under "Not graded" — true, and no
+       * use at all to somebody looking for it. The book is the thing
+       * a student actually has: they were given Fast Track A1–B1, or
+       * German Regular A2, not a letter.
+       *
+       * Only when there is more than one, because a dropdown with a
+       * single answer is a label pretending to be a choice.
+       %>
+      <%
+        /* The books the student actually HAS, from the rows on this
+           page — not a list passed in beside them. The Topic dropdown
+           is built from the rows for the same reason: two lists of
+           what exists will eventually disagree, and the one somebody
+           believes is whichever they clicked. */
+        const books = (() => {
+          const seen = new Map();
+          (items || []).forEach(function (it) {
+            if (it.book && !seen.has(it.book)) seen.set(it.book, { slug: it.book, title: it.bookTitle });
+          });
+          return [...seen.values()].sort((a, b) => String(a.title).localeCompare(String(b.title)));
+        })();
+      %>
+      <% if (books.length > 1) { %>
+        <label class="field">
+          <span>Book</span>
+          <select data-hw-book>
+            <option value="">All books</option>
+            <% books.forEach(function (b) { %>
+              <option value="<%= b.slug %>"><%= b.title %></option>
+            <% }); %>
+          </select>
+        </label>
+      <% } %>
+
+      <label class="field">
+        <span>Level</span>
+        <select data-hw-level>
+          <option value="">All levels</option>
+          <% LADDER.forEach(function (L) { %>
+            <%# Short, because this dropdown is a phone's width of a
+                narrow column. The sentence about what to do next is
+                on the panel that appears when one is chosen — which
+                is where somebody is looking by then anyway. %>
+            <option value="<%= L %>"><%= L %><%= have.has(L) ? "" : " (locked)" %></option>
+          <% }); %>
+          <% if (someUngraded) { %>
+            <option value="—">Not graded</option>
+          <% } %>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Topic</span>
+        <%# Filled in by the script from the rows below, so the two can
+            never disagree about what exists. Disabled until then: a
+            dropdown that does nothing is better shut than open. %>
+        <select data-hw-topic disabled>
+          <option value="">All topics</option>
+        </select>
+      </label>
+    </div>
+
+    <%# One button for the whole of what is showing.
+        Picking a level and then hunting down the first chapter in it
+        is two decisions for one intention. This takes the first one
+        that is not finished — so it reads "Start" the first time and
+        carries on from wherever somebody got to after that. The
+        script points it; without one it opens the first chapter on
+        the page, which is the same thing on a fresh account. %>
+    <p class="hw-filter-go">
+      <a class="btn" href="/portal/homework/<%= items[0].id %>" data-hw-go target="_blank" rel="noopener noreferrer">Start</a>
+      <span class="hw-filter-sum" data-hw-shown></span>
+    </p>
+  </div>
+
+  <%# Said when the level chosen has nothing at it. The address is the
+      school's own, and the subject is filled in by the script so the
+      office can see at a glance what is being asked for. %>
+  <div class="sp-card sp-wide hw-none" data-hw-none hidden>
+    <p class="hw-none-head">
+      No <strong data-hw-none-level>—</strong> exercises yet.
+    </p>
+    <p class="hw-none-note">
+      Your teacher unlocks each level as you get there. If you are ready for
+      this one, ask — it takes them a minute.
+    </p>
+    <a class="btn btn-sm" href="mailto:<%= site.contact.email %>" data-hw-none-ask>
+      Ask for these exercises
+    </a>
+  </div>
+
+  <% byCourse.forEach(function (group) { %>
+    <div class="sp-card sp-wide" data-hw-group>
+      <div class="sp-card-head">
+        <h2><%= group.title %></h2>
+        <%- include("../../partials/batch-code", { code: group.code }) %>
+      </div>
+
+      <ul class="sp-list hw-index">
+        <% group.rows.forEach(function (it) { %>
+          <%
+            // Out of how many, and what they got. best is null until
+            // they have finished it once.
+            const pct = it.tries && it.questions
+              ? Math.round((Number(it.best || 0) / it.questions) * 100)
+              : null;
+            const band = pct === null ? "" : pct >= 90 ? " is-good" : pct >= 60 ? " is-ok" : " is-poor";
+            const due = day(it.due_on);
+            const late = isOverdue(it.due_on) && !it.tries;
+            const mark = stateOf(it);
+          %>
+          <li data-hw-item data-level="<%= lvl(it) || "—" %>" data-id="<%= it.id %>"
+              data-title="<%= it.title %>" data-course="<%= keyOf(it) %>"
+              data-book="<%= it.book || "" %>"
+              data-state="<%= mark === "is-done" ? "done" : mark === "is-part" ? "part" : "new" %>">
+            <%# The tick, first thing on the row. Whether this one is
+                still owed is the question the page is being opened to
+                answer, and it should not be at the far end of it. %>
+            <span class="hw-tick <%= mark %>" aria-hidden="true">
+              <% if (mark === "is-done") { %>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+              <% } %>
+            </span>
+
+            <div>
+              <strong>
+                <a href="/portal/homework/<%= it.id %>" target="_blank" rel="noopener noreferrer"><%= it.title %></a>
+              </strong>
+              <% if (mark) { %>
+                <span class="sr-only">— <%= mark === "is-done" ? "completed" : "started" %></span>
+              <% } %>
+              <div class="muted" style="font-size:.82rem">
+                <%= it.questions %> <%= Number(it.questions) === 1 ? "question" : "questions" %>
+                <% if (it.level) { %> · <%= it.level %><% } %>
+                <% if (due) { %>
+                  · <span class="<%= late ? "hw-late" : "" %>">
+                      <%= late ? "was due " : "due " %><%= due %>
+                    </span>
+                <% } %>
+              </div>
+              <% if (it.intro) { %>
+                <div class="sp-lesson-note"><%= it.intro %></div>
+              <% } %>
+            </div>
+
+            <div class="sp-list-end">
+              <%# What they got, not whether they "passed". This is
+                  practice with unlimited goes — a pass mark would turn
+                  a thing you do to learn into a thing you can fail. %>
+              <% if (pct !== null) { %>
+                <span class="hw-badge<%= band %>"><%= it.best %>/<%= it.questions %></span>
+                <% if (it.tries > 1) { %>
+                  <span class="muted" style="font-size:.76rem"><%= it.tries %> tries</span>
+                <% } %>
+              <% } %>
+              <%# Handed in at least once is "Again"; opened and walked
+                  away from is "Continue", because there is an attempt
+                  sitting there with answers in it and "Start" would
+                  suggest otherwise. %>
+              <a class="btn btn-sm<%= it.mark ? " btn-ghost" : "" %>"
+                 href="/portal/homework/<%= it.id %>" target="_blank" rel="noopener noreferrer">
+                <%= it.tries ? "Again" : it.mark ? "Continue" : "Start" %>
+              </a>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    </div>
+  <% }); %>
+
+  <p class="muted" style="font-size:.85rem">
+    You can do these as often as you like — the score kept is your best one.
+  </p>
+<% } %>
+
+<%- include("../../partials/dictionary-popover", {dictionaryModule:"homework"}) %>
+<%- include("../../partials/portal-shell-foot") %>

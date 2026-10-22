@@ -1,0 +1,364 @@
+<% const hwBase = typeof locals.hwBase === "string" ? locals.hwBase : "/rootadmin"; const hwLabel = locals.hwLabel || "Aufgaben"; const readingAdmin = !!locals.readingAdmin; const csrfToken = locals.csrfToken || ""; %>
+<%#
+  One piece of homework: what it asks, and who gets it.
+
+  Two things were wrong with the first version of this page and both
+  came back as the same complaint — "I need automation and I don't want
+  to type."
+
+  It opened on an empty box with instructions for writing German
+  exercises by hand, which is not the job: forty chapters are already
+  written and sitting in content/homework. So the box is now the second
+  thing on the page and the list of ready-made chapters is the first.
+
+  And "which batch" was a required dropdown, which made one group the
+  only possible answer. A grammar chapter is not about one batch — the
+  same Reflexive Verben goes to A2 on Tuesday and the intensive group
+  on Thursday — so there are three answers now, and whichever is chosen
+  the page names the students who will actually get it.
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: ex.title || ("New " + hwLabel), site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: readingAdmin ? "lesen" : "exercises", adArea: "content" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: ex.title || ("New " + hwLabel),
+      adCrumbs: [
+        { label: "Root admin", href: "/rootadmin" },
+        { label: hwLabel, href: (hwBase + "/exercises") },
+        { label: ex.title || "New" },
+      ],
+      adLogout: "/rootadmin/logout",
+    }) %>
+
+    <main class="ad-main">
+    <% if(readingAdmin && ex.id){ %><a class="btn btn-sm" href="<%= hwBase %>/exercise/<%= ex.id %>/preview" target="_blank" rel="noopener">Vorschau öffnen</a><p>Status: <%= Number(ex.published)?'Published':'Draft' %> · Vorschau zeigt den gespeicherten Stand.</p><% } %>
+
+      <% if (done) { %><p class="notice notice-ok"><%= done %></p><% } %>
+      <% if (problem) { %><p class="notice notice-bad"><%= problem %></p><% } %>
+
+      <% if (problems && problems.length) { %>
+        <p class="notice notice-bad">
+          <%= problems.length %> line<%= problems.length === 1 ? "" : "s" %>
+          could not be read, and <%= problems.length === 1 ? "that question was" : "those questions were" %>
+          left out:
+          <% problems.forEach(function (p) { %>
+            <br><strong>Line <%= p.line %></strong> — <%= p.why %>
+          <% }); %>
+        </p>
+      <% } %>
+
+      <%# Pick one. This is the whole point of the page: the chapters
+          are already written, and choosing one is two clicks rather
+          than a paste. Its own form, so it can load the text without
+          touching anything else on the page. %>
+      <% if (!ex.id && library.length) { %>
+        <div class="ad-card ad-pick">
+          <div class="ad-card-head">
+            <h2>Use a ready-made chapter</h2>
+            <span class="muted"><%= library.length %> available</span>
+          </div>
+
+          <form method="get" action="<%= hwBase %>/exercise/new"
+                class="row" style="gap:.6rem;align-items:flex-end;flex-wrap:wrap">
+            <label class="field" style="flex:1 1 26rem;margin:0">
+              <span>Chapter</span>
+              <select name="from" data-enhance
+                      data-search-label="Type a level or a topic…">
+                <option value="">— choose a chapter —</option>
+                <% library.forEach(function (c) { %>
+                  <option value="<%= c.id %>"<%= picked && picked.id === c.id ? " selected" : "" %>>
+                    <%= c.title %> — <%= c.questions %> questions
+                  </option>
+                <% }); %>
+              </select>
+            </label>
+            <button class="btn btn-sm" type="submit">Load it</button>
+          </form>
+
+          <p class="muted" style="font-size:.84rem;margin:.8rem 0 0">
+            From <code>content/<%= readingAdmin?"reading":"homework" %></code>, read out of the school's own
+            workbooks. Loading one fills the box below in — you can still change
+            it before saving.
+          </p>
+        </div>
+      <% } %>
+
+      <% if(readingAdmin){ %><div class="form-row">
+   <label class="field"><span>Available from (UTC)</span><input type="datetime-local" form="exercise-edit" name="available_from" value="<%= typeof ex!=='undefined' && ex.available_from ? (ex.available_from instanceof Date ? ex.available_from.toISOString() : String(ex.available_from).replace(' ','T')).slice(0,16) : '' %>"></label>
+   <label class="field"><span>Available until (UTC)</span><input type="datetime-local" form="exercise-edit" name="available_until" value="<%= typeof ex!=='undefined' && ex.available_until ? (ex.available_until instanceof Date ? ex.available_until.toISOString() : String(ex.available_until).replace(' ','T')).slice(0,16) : '' %>"></label>
+   <label class="field"><span>Assignment</span><select form="exercise-edit" name="is_required"><option value="1">Required</option><option value="0" <%= typeof ex!=='undefined' && Number(ex.is_required)===0?'selected':'' %>>Optional</option></select></label>
+  </div><% } %>
+      <form id="exercise-edit" method="post" action="<%= ex.id ? (hwBase + "/exercise/") + ex.id : (hwBase + "/exercises") %>">
+        <% if(readingAdmin){ %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+
+        <%# ── Who gets it ──────────────────────────────────────────── %>
+        <div class="ad-card">
+          <h2>Who gets it</h2>
+
+          <div class="ad-aud">
+            <label class="ad-aud-one">
+              <input type="radio" name="audience" value="all" data-aud
+                     <%= audience === "all" ? "checked" : "" %>>
+              <span class="ad-aud-t">Everybody studying</span>
+              <span class="ad-aud-n">
+                every student with an active enrolment, on any batch
+              </span>
+            </label>
+
+            <label class="ad-aud-one">
+              <input type="radio" name="audience" value="batch" data-aud
+                     <%= audience === "batch" ? "checked" : "" %>>
+              <span class="ad-aud-t">One batch</span>
+              <span class="ad-aud-n">just the students on it</span>
+            </label>
+
+            <label class="ad-aud-one">
+              <input type="radio" name="audience" value="people" data-aud
+                     <%= audience === "people" ? "checked" : "" %>>
+              <span class="ad-aud-t">Only certain people</span>
+              <span class="ad-aud-n">
+                nobody else sees it, enrolled or not — for trying it yourself
+              </span>
+            </label>
+          </div>
+
+          <div class="ad-aud-batch" data-aud-batch>
+            <label class="field">
+              <span>Which batch</span>
+              <select name="intake_id">
+                <option value="">— choose —</option>
+                <% batches.forEach(function (b) { %>
+                  <option value="<%= b.id %>"<%= Number(ex.intake_id) === Number(b.id) ? " selected" : "" %>>
+                    <%= b.code %><%= b.course_title ? " — " + b.course_title : "" %>
+                    (<%= b.heads %> <%= Number(b.heads) === 1 ? "student" : "students" %>)
+                  </option>
+                <% }); %>
+              </select>
+            </label>
+          </div>
+
+          <%# Who that actually is. Rendered for whichever choice is
+              saved, so it is right with the script blocked; the only
+              thing JavaScript adds is that it keeps up when the choice
+              is changed before saving. %>
+          <div class="ad-aud-who" data-aud-who>
+            <% if (audience === "people") { %>
+              <p class="muted" style="font-size:.85rem">
+                Chosen below — <%= unlocked.length %>
+                <%= unlocked.length === 1 ? "person" : "people" %> so far.
+              </p>
+            <% } else if (!willGet.length) { %>
+              <p class="sp-empty">
+                <%= audience === "all"
+                      ? "Nobody has an active enrolment yet, so nobody would get this."
+                      : "Choose a batch and save, and the students on it are listed here." %>
+              </p>
+            <% } else { %>
+              <p class="muted" style="font-size:.85rem">
+                <strong><%= willGet.length %></strong>
+                <%= willGet.length === 1 ? "student gets" : "students get" %> this:
+              </p>
+              <ul class="ad-who">
+                <% willGet.forEach(function (s) { %>
+                  <li>
+                    <strong><%= s.name %></strong>
+                    <span class="muted"><%= s.student_ref || s.email %></span>
+                  </li>
+                <% }); %>
+              </ul>
+            <% } %>
+          </div>
+
+          <label class="field field-check">
+            <input type="checkbox" name="published" value="1"<%= Number(ex.published) ? " checked" : "" %>>
+            <span>Published — they can see it now</span>
+          </label>
+          <p class="muted" style="font-size:.84rem;margin-top:-.4rem">
+            Leave it off to keep working on it. Anybody in <strong>Only certain
+            people</strong> sees it either way — that is what makes it useful for
+            trying one out.
+          </p>
+        </div>
+
+        <%# ── What it asks ─────────────────────────────────────────── %>
+        <div class="ad-card">
+          <div class="form-row">
+            <label class="field">
+              <span>Title <span class="muted">(or leave it and the first # line is used)</span></span>
+              <input type="text" name="title" maxlength="200" value="<%= ex.title || "" %>"
+                     placeholder="A2 · Kapitel 16 — Reflexive Verben">
+            </label>
+            <label class="field">
+              <span>Due <span class="muted">(optional)</span></span>
+              <input type="date" name="due_on" value="<%= ex.due_on ? String(ex.due_on).slice(0, 10) : "" %>">
+            </label>
+          </div>
+
+          <label class="field">
+            <span>The questions</span>
+            <% if(readingAdmin){ %><p>Paste <code>@reading</code> followed by a reusable lesson JSON. All options, accepted answers, hints and feedback are validated before saving. Use a new lessonId for a new version after students have started.</p><% } %>
+            <textarea name="source" rows="16" class="ad-mono" spellcheck="false"
+                      placeholder="Load a chapter above, or write your own — open “How to write them” below."><%= ex.source || "" %></textarea>
+          </label>
+
+          <p class="muted" style="font-size:.85rem">
+            <% if (ex.id) { %>
+              <%= questionCount %> question<%= questionCount === 1 ? "" : "s" %> read from this.
+            <% } else if (picked) { %>
+              <%= picked.questions %> questions loaded. Save to keep them.
+            <% } else { %>
+              Save to see how many questions it reads.
+            <% } %>
+          </p>
+
+          <%# Second, and folded away. Somebody using the library never
+              needs it; somebody writing their own needs all of it. %>
+          <details class="ad-help">
+            <summary>How to write them — only if you are writing your own</summary>
+            <p>Reusable self-learning chapters use a <code># Chapter title</code> line,
+              then <code>@learning</code> and a JSON configuration in this same editor.
+              Edit section examples and each question’s <code>type</code>, <code>accepted</code>
+              variants, two <code>hints</code>, and <code>feedback</code> there.
+              Choose Kapitel 09 from the library for a complete example. Invalid configurations
+              are rejected before saving. Keep question IDs stable to preserve progress.</p>
+            <div class="ad-help-body">
+              <p>Write the sentence. How you write the answer decides what kind of question it is.</p>
+              <pre>Ich ___ Student.        ← a gap, with options under it
+* bin                   ← the * marks the right one
+  bist
+  ist
+&gt; „sein" in der 1. Person Singular.   ← why (optional)
+
+Sie ___ aus Italien.    ← a gap and a typed answer
+= kommt
+
+Wir ___ nach Berlin und ___ dort.   ← two gaps, two answers
+= fahren
+= bleiben
+
+Ich [bin|bist|ist] Student.   ← a dropdown inside the sentence
+
+= kommt|kommen          ← more than one answer accepted
+! /img/markt.jpg        ← a picture above the question
+
+# A title, then the instruction students read
+~~~
+A reading text goes between two of these.
+~~~</pre>
+              <p class="muted">
+                Capitals and umlauts are handled: <code>gruen</code> is accepted for
+                <code>grün</code>, and a capital is only required where the answer
+                has one — so a noun has to be capitalised and a verb does not.
+              </p>
+            </div>
+          </details>
+        </div>
+
+        <button class="btn" type="submit">Save</button>
+        <% if (ex.id) { %>
+          <a class="btn btn-ghost" href="<%= hwBase %>/exercise/<%= ex.id %>/results">Results</a>
+        <% } %>
+        <a class="btn btn-ghost" href="<%= hwBase %>/exercises">Back</a>
+      </form>
+
+      <%# Choosing the people, when that is the answer. Its own form
+          outside the Save, because it takes effect on its own — and
+          because a Save that rewrote this list would be a way to hand a
+          draft to a whole class by accident. %>
+      <% if (ex.id) { %>
+        <div class="ad-card" id="unlock">
+          <div class="ad-card-head">
+            <h2>Only certain people</h2>
+          </div>
+
+          <p class="muted" style="font-size:.85rem;margin-top:-.4rem">
+            Anybody listed here sees this <%= readingAdmin?"Lesen":"homework" %> and <strong>nobody else
+            does</strong> — whatever is chosen above, and whether it is published
+            or not. Empty the list and it goes back to the choice above.
+          </p>
+
+          <% if (!hasUnlock) { %>
+            <p class="notice notice-bad">
+              This needs migration 29, which has not run yet. It applies itself the
+              next time the site restarts.
+            </p>
+          <% } else { %>
+
+            <form method="post" action="<%= hwBase %>/exercise/<%= ex.id %>/unlock"
+                  class="row" style="gap:.6rem;align-items:flex-end;margin-top:1rem;flex-wrap:wrap">
+        <% if(readingAdmin){ %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+              <label class="field" style="flex:1 1 22rem;margin:0">
+                <span>Student</span>
+                <select name="email" data-student-picker data-enhance required
+                        aria-label="Student to give this to"
+                        data-search-label="Type a name, email or reference…">
+                  <option value="">— choose a student —</option>
+                  <% people.forEach(function (s) { %>
+                    <option value="<%= s.email %>"
+                            data-created="<%= s.created_at ? new Date(s.created_at).getTime() : 0 %>"
+                            data-name="<%= (s.name || "").toLowerCase() %>">
+                      <%= s.name %> — <%= s.student_ref || "no reference" %> — <%= s.email %>
+                    </option>
+                  <% }); %>
+                </select>
+              </label>
+              <button class="btn btn-sm" type="submit">Add</button>
+            </form>
+
+            <% if (!people.length) { %>
+              <p class="muted" style="font-size:.84rem;margin:.7rem 0 0">
+                No student accounts yet — somebody appears here once the office has
+                approved their request.
+              </p>
+            <% } %>
+
+            <% if (unlocked.length) { %>
+              <ul class="sp-list" style="margin-top:1rem">
+                <% unlocked.forEach(function (u) { %>
+                  <li>
+                    <div>
+                      <strong><%= u.name || u.email %></strong>
+                      <div class="muted" style="font-size:.8rem">
+                        <%= u.email %><% if (u.student_ref) { %> · <%= u.student_ref %><% } %>
+                        <% if (!u.id) { %> · <span style="color:var(--danger)">no account with this address</span><% } %>
+                      </div>
+                    </div>
+                    <div class="sp-list-end">
+                      <form method="post" action="<%= hwBase %>/exercise/<%= ex.id %>/unlock">
+        <% if(readingAdmin){ %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+                        <input type="hidden" name="email" value="<%= u.email %>">
+                        <input type="hidden" name="remove" value="1">
+                        <button class="btn btn-sm btn-ghost" type="submit">Remove</button>
+                      </form>
+                    </div>
+                  </li>
+                <% }); %>
+              </ul>
+              <p class="muted" style="font-size:.84rem;margin-top:.8rem">
+                Only <%= unlocked.length === 1 ? "this one person" : "these " + unlocked.length + " people" %>
+                can see this. <a href="<%= readingAdmin?"/portal/lesen":"/portal/homework" %>">Open the student portal ↗</a>
+              </p>
+            <% } else { %>
+              <p class="sp-empty" style="margin-top:1rem">
+                Nobody chosen, so the choice above applies.
+              </p>
+            <% } %>
+          <% } %>
+        </div>
+      <% } %>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

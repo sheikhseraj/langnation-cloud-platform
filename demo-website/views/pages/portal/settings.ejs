@@ -1,0 +1,145 @@
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "Settings",
+  pageLead: "Your photo, password and invoice address.",
+  nav: "settings", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue, notice: notice, error: error,
+}) %>
+
+<%- include('../../partials/billing-address') %>
+
+<div class="sp-cols">
+  <section>
+    <%#
+      The photo is resized to 256x256 in the browser before it is sent,
+      and posted as a data: URL through the ordinary form encoding —
+      so a 4MB phone photo leaves as about 20KB and the server needs
+      no upload library. Without JavaScript the file input is hidden
+      and the section says so, rather than offering a control that
+      would silently do nothing.
+    %>
+    <div class="sp-card">
+      <h2>Profile photo</h2>
+
+      <div class="sp-photo">
+        <%- include("../../partials/portal-avatar", {
+          avatarUrl: avatarUrl, initials: initials, hue: hue,
+          size: "lg", name: student.name,
+        }) %>
+
+        <div class="sp-photo-side">
+          <p class="muted" style="font-size:.86rem;margin-top:0">
+            A square picture works best. It is resized on your own device before
+            it is sent, and only you and the office ever see it.
+          </p>
+
+          <form method="post" action="/portal/settings/avatar" data-avatar-form hidden>
+            <input type="hidden" name="image" data-avatar-payload>
+            <label class="btn btn-sm" style="cursor:pointer">
+              <%= avatarUrl ? "Change photo" : "Upload a photo" %>
+              <input type="file" accept="image/png,image/jpeg,image/webp"
+                     data-avatar-input hidden>
+            </label>
+            <span class="muted" style="margin-left:.6rem;font-size:.84rem" data-avatar-status></span>
+          </form>
+
+          <noscript>
+            <p class="notice" style="margin:0">
+              Uploading a photo needs JavaScript, because the picture is resized
+              in your browser before it is sent. Everything else on this page
+              works without it.
+            </p>
+          </noscript>
+
+          <% if (avatarUrl) { %>
+            <form method="post" action="/portal/settings/avatar" style="margin-top:.7rem"
+                  data-confirm-delete="your profile photo">
+              <input type="hidden" name="remove" value="1">
+              <button class="linklike" type="submit">Remove my photo</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp-card">
+      <h2>Password</h2>
+      <form method="post" action="/portal/settings/password">
+        <%- include("../../partials/password-field", {
+          id: "current_password", name: "current_password", label: "Current password",
+        }) %>
+        <%- include("../../partials/password-field", {
+          id: "new_password", name: "new_password", label: "New password",
+          autocomplete: "new-password", minlength: 10,
+          hint: "At least 10 characters, and not your own name or address.",
+        }) %>
+        <button class="btn" type="submit">Change my password</button>
+      </form>
+      <p class="muted" style="font-size:.82rem;margin:.9rem 0 0">
+        Changing it signs out every other device. You stay signed in here.
+      </p>
+    </div>
+  </section>
+
+  <aside>
+    <div class="sp-card">
+      <h2>Your account</h2>
+      <dl class="sp-facts">
+        <div><dt>Email</dt><dd><%= student.email %></dd></div>
+        <div><dt>Status</dt><dd><span class="pill pill-live"><%= student.status %></span></dd></div>
+        <% if (student.last_login_at) { %>
+          <div><dt>Last signed in</dt><dd>
+            <%= new Date(student.last_login_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) %>
+          </dd></div>
+        <% } %>
+      </dl>
+    </div>
+
+    <div class="sp-card">
+      <h2>Your data</h2>
+      <p class="muted" style="font-size:.86rem;margin-top:-.3rem">
+        You can ask for a copy of everything we hold about you. That is your
+        right under the GDPR and it costs nothing.
+      </p>
+      <p style="margin:0"><a href="/contact">Make a request</a> · <a href="/privacy">Privacy policy</a></p>
+    </div>
+  </aside>
+</div>
+
+<%#
+  Deleting the account. Last on the page and in its own bordered card,
+  because it is the one thing here that cannot be undone.
+
+  The password is asked for even though they are signed in: a borrowed
+  or unattended laptop should not be enough to erase somebody's
+  account. On top of that the button opens the type-the-word dialog.
+
+  What survives is stated plainly rather than buried in the privacy
+  policy. Invoices have to be kept for ten years under German
+  bookkeeping law and a certificate has to stay checkable for whoever
+  it was shown to — a person deciding whether to delete deserves to
+  know that before they do, not after.
+%>
+<div class="sp-card sp-danger" style="margin-top:1rem">
+  <h2>Delete my account</h2>
+  <p style="font-size:.9rem;margin-top:-.3rem">
+    This closes your account and removes your photo, phone number, address,
+    date of birth and password. You will be signed out everywhere and will not
+    be able to sign in again.
+  </p>
+  <p class="muted" style="font-size:.86rem">
+    Your invoices and any certificates already issued are kept — German
+    bookkeeping law requires invoices to be held for ten years, and a
+    certificate has to stay verifiable for whoever you showed it to. Those
+    records keep the name they were issued under. Nothing else does.
+  </p>
+
+  <form method="post" action="/portal/settings/close" data-confirm-delete="your account">
+    <label class="field" style="max-width:22rem">
+      <span>Your password</span>
+      <input type="password" name="password" required autocomplete="current-password">
+    </label>
+    <button class="btn btn-sm sp-danger-btn" type="submit">Delete my account</button>
+  </form>
+</div>
+
+<%- include("../../partials/portal-shell-foot") %>

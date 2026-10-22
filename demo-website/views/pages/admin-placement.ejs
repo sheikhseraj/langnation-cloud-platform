@@ -1,0 +1,134 @@
+<%#
+  Every placement test taken, newest first.
+
+  Grouped by what it wants from the reader rather than by date: the
+  ones waiting for a level are the only reason to open this page, so
+  they sit at the top and everything else is history below them.
+%>
+<%
+  const stamp = (v) => (v ? new Date(v).toISOString().slice(0, 16).replace("T", " ") : "—");
+  const waiting = rows.filter((r) => r.placement && !r.confirmed_at);
+  const rest = rows.filter((r) => !(r.placement && !r.confirmed_at));
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Placement tests", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "placement" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Placement tests",
+      adCrumbs: [{ label: "Admin", href: "/admin/dashboard" }, { label: "Placement" }],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (notice) { %><p class="notice notice-ok"><%= notice %></p><% } %>
+
+      <div class="ad-card">
+        <h2><%= waiting.length %> waiting for a level</h2>
+        <% if (!waiting.length) { %>
+          <p class="muted" style="margin:0">Nothing to review. Every finished test has been confirmed.</p>
+        <% } else { %>
+          <p class="muted" style="font-size:.86rem;margin-top:-.4rem">
+            Each of these people has been told a teacher will look at their writing
+            and email them again.
+          </p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr><th>Candidate</th><th>Test said</th><th>Score</th><th>Written</th><th>Taken</th><th></th></tr>
+              </thead>
+              <tbody>
+                <% waiting.forEach(function (r) { %>
+                  <tr>
+                    <td>
+                      <strong><%= r.name || r.email %></strong>
+                      <% if (r.name) { %>
+                        <div class="muted" style="font-size:.8rem"><%= r.email %></div>
+                      <% } %>
+                    </td>
+                    <td><span class="pill pill-level"><%= r.placement %></span></td>
+                    <td><%= r.score === null ? "—" : r.score + "%" %></td>
+                    <td>
+                      <% if (r.writing_words) { %>
+                        <%= r.writing_words %> words
+                      <% } else { %>
+                        <span class="muted">skipped</span>
+                      <% } %>
+                    </td>
+                    <td class="muted" style="font-size:.82rem"><%= stamp(r.created_at) %></td>
+                    <td><a class="btn btn-sm" href="/admin/placement/<%= r.id %>">Review</a></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="ad-card">
+        <h2>Everything else</h2>
+        <% if (!rest.length) { %>
+          <p class="muted" style="margin:0">Nothing yet.</p>
+        <% } else { %>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr><th>Candidate</th><th>Level</th><th>Score</th><th>State</th><th>Taken</th><th></th></tr>
+              </thead>
+              <tbody>
+                <% rest.forEach(function (r) { %>
+                  <tr>
+                    <td>
+                      <strong><%= r.name || r.email %></strong>
+                      <% if (r.name) { %>
+                        <div class="muted" style="font-size:.8rem"><%= r.email %></div>
+                      <% } %>
+                    </td>
+                    <td>
+                      <% if (r.confirmed_at) { %>
+                        <span class="pill pill-level"><%= r.final_level || r.placement %></span>
+                        <% if (r.final_level && r.final_level !== r.placement) { %>
+                          <span class="muted" style="font-size:.78rem">was <%= r.placement %></span>
+                        <% } %>
+                      <% } else { %>
+                        <span class="muted">—</span>
+                      <% } %>
+                    </td>
+                    <td><%= r.score === null ? "—" : r.score + "%" %></td>
+                    <td>
+                      <% if (r.confirmed_at) { %>
+                        <span class="pill">confirmed</span>
+                      <% } else if (r.reset_at) { %>
+                        <span class="pill">reset</span>
+                      <% } else { %>
+                        <%# Started and never submitted. Worth showing: it is
+                            usually somebody who ran out of time, and they
+                            still hold a used-up attempt for the day. %>
+                        <span class="muted" style="font-size:.82rem">not finished</span>
+                      <% } %>
+                    </td>
+                    <td class="muted" style="font-size:.82rem"><%= stamp(r.created_at) %></td>
+                    <td><a class="btn btn-sm btn-ghost" href="/admin/placement/<%= r.id %>">Open</a></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

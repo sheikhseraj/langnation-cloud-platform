@@ -1,0 +1,87 @@
+<%#
+  Every batch. Running ones first, because those are the ones somebody
+  might need to change today; finished and cancelled sink to the bottom
+  but stay visible — a certificate references its batch by code.
+%>
+<%
+  const day = (v) => (v ? new Date(v).toISOString().slice(0, 10) : "—");
+  const rank = { running: 0, planned: 1, finished: 2, cancelled: 3 };
+  const sorted = rows.slice().sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9));
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Batches", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "batches", adArea: "content" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Batches",
+      adCrumbs: [{ label: "Root admin", href: "/rootadmin" }, { label: "Batches" }],
+      adLogout: "/rootadmin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (notice) { %><p class="notice notice-ok"><%= notice %></p><% } %>
+
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+        <p class="muted" style="margin:0;font-size:.9rem">
+          A course is what you teach; a batch is when. The code goes on invoices and certificates.
+        </p>
+        <a class="btn" href="/rootadmin/batch/new">New batch</a>
+      </div>
+
+      <div class="ad-card">
+        <% if (!sorted.length) { %>
+          <p class="muted" style="margin:0">
+            No batches yet. Create one and it becomes something students can be enrolled on.
+          </p>
+        <% } else { %>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Code</th><th>Course</th><th>Teacher</th>
+                  <th>Starts</th><th>Ends</th><th>Enrolled</th><th>Status</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% sorted.forEach(function (b) { %>
+                  <tr>
+                    <td>
+                      <a href="/rootadmin/batch/<%= b.id %>"><strong><%= b.code %></strong></a>
+                      <% if (b.title) { %>
+                        <div class="muted" style="font-size:.8rem"><%= b.title %></div>
+                      <% } %>
+                    </td>
+                    <td><%= b.course_title || "— course deleted —" %></td>
+                    <td><%= b.teacher_name || "—" %></td>
+                    <td><%= day(b.starts_on) %></td>
+                    <td><%= day(b.ends_on) %></td>
+                    <td>
+                      <%= b.enrolled %><% if (b.seats) { %> / <%= b.seats %><% } %>
+                    </td>
+                    <td>
+                      <span class="pill<%= b.status === "running" ? " pill-live" : "" %>"><%= b.status %></span>
+                    </td>
+                    <td><a class="btn btn-sm btn-ghost" href="/rootadmin/batch/<%= b.id %>">Edit</a></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

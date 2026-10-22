@@ -1,0 +1,75 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<%
+  // One post is not a set to navigate, so the panel needs a second.
+  const hasNav = more && more.length > 1;
+  const hasToc = toc && toc.length >= 3;
+%>
+<article class="section-tight">
+  <div class="wrap<%= hasNav || hasToc ? " page-with-nav" : " wrap-narrow" %><%= hasNav && hasToc ? " page-with-both" : "" %><%= !hasNav && hasToc ? " page-toc-only" : "" %>">
+
+    <%# The same contents panel the guide pages use: beside the text from
+        900px, a closed one-line disclosure on a phone, and the post you
+        are reading marked. It replaces the cards that used to sit under
+        the article, which said the same thing in the one place a reader
+        has to finish the page to reach. %>
+    <% if (hasNav) { %>
+      <nav class="page-nav-wrap" aria-label="<%= t("cta.allPosts") %>">
+        <details class="page-nav" open data-label="<%= t("cta.allPosts") %>">
+          <summary class="page-nav-head"><%= t("cta.allPosts") %></summary>
+          <ul>
+            <% more.forEach(function (p) { %>
+              <% const here = p.slug === post.slug; %>
+              <li>
+                <a href="<%= lp('/blog/' + p.slug) %>"
+                   class="<%= here ? "is-here" : "" %>"
+                   <%- here ? 'aria-current="page"' : "" %>><%= p.title %></a>
+              </li>
+            <% }); %>
+          </ul>
+        </details>
+      </nav>
+    <% } %>
+
+    <div class="page-main">
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <span><a href="<%= lp('/') %>"><%= t("nav.home") %></a></span>
+      <span><a href="<%= lp('/blog') %>"><%= t("nav.blog") %></a></span>
+    </nav>
+
+    <% if (post.category) { %><p class="eyebrow"><%= post.category %></p><% } %>
+    <h1><%= post.title %></h1>
+    <p class="muted" style="margin-top:.85rem;font-size:.9rem">
+      <%= t("blog.published") %> <time datetime="<%= post.date %>"><%= post.dateLabel %></time>
+    </p>
+
+    <% if (post.image) { %>
+      <div class="hero-art" style="margin:2rem 0;aspect-ratio:16/9">
+        <img src="<%= post.image.src %>"
+             <% if (post.image.srcset) { %>srcset="<%= post.image.srcset %>" sizes="(min-width:760px) 720px, 92vw"<% } %>
+             width="1280" height="720" fetchpriority="high" decoding="async" alt="">
+      </div>
+    <% } %>
+
+    <% if (!post.translated) { %>
+      <p class="notice"><%= t("translated.notice") %></p>
+    <% } %>
+
+    <div class="prose"><%- post.body %></div>
+
+      <%# The list of other posts is in the panel now. What belongs here
+          is the way out of the blog entirely. %>
+      <hr class="rule">
+      <p class="center">
+        <a class="btn btn-ghost" href="<%= lp('/blog') %>"><%= t("cta.viewBlog") %> →</a>
+      </p>
+    </div>
+
+    <%- include("../partials/page-toc", { toc: toc }) %>
+
+  </div>
+</article>
+
+<%- include("../partials/footer") %>

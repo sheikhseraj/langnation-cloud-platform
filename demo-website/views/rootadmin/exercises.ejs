@@ -1,0 +1,153 @@
+<% const hwBase = typeof locals.hwBase === "string" ? locals.hwBase : "/rootadmin"; const hwLabel = locals.hwLabel || "Aufgaben"; const readingAdmin = !!locals.readingAdmin; const csrfToken = locals.csrfToken || ""; %>
+<%#
+  Every piece of homework, by batch.
+
+  Two things are worth seeing at a glance and neither is the title: how
+  many people have actually done it, and who can see it. A list of
+  homework nobody has opened is a list that needs chasing, and an
+  exercise still unlocked for one person is one that was never given
+  to the class.
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: hwLabel, site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: readingAdmin ? "lesen" : "exercises", adArea: "content" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: hwLabel,
+      adCrumbs: [{ label: "Root admin", href: "/rootadmin" }, { label: hwLabel }],
+      adLogout: "/rootadmin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (done) { %><p class="notice notice-ok"><%= done %></p><% } %>
+      <% if (problem) { %><p class="notice notice-bad"><%= problem %></p><% } %>
+
+      <p>
+        <a class="btn" href="<%= hwBase %>/give">Give out <%= hwLabel %></a>
+        <a class="btn btn-ghost" href="<%= hwBase %>/exercise/new">Write one from scratch</a>
+      </p>
+
+      <%
+        // Whether anybody has done any of it. A confirmation that says
+        // "and 14 attempts" is a different decision from one that does
+        // not, so the number is worked out before the button is drawn.
+        const everything = groups.reduce((n, g) => n.concat(g.rows), []);
+        const work = everything.reduce((n, r) => n + Number(r.students || 0), 0);
+      %>
+
+      <% if (!groups.length) { %>
+        <div class="ad-card">
+          <p class="sp-empty">
+            No <%= readingAdmin ? "Lesen" : "homework" %> yet. Write one and it appears in the students' portal,
+            marking itself as they go — or unlock it for yourself first and try
+            it the way they will.
+          </p>
+        </div>
+      <% } else { %>
+      <%# One form over every group, so taking back thirty-nine things
+          is one action. Removing them one at a time is not an undo
+          anybody uses. %>
+      <form method="post" action="<%= hwBase %>/exercises/remove"
+            data-confirm-delete="the ticked <%= readingAdmin?"Lesen":"homework" %><%= work ? " and " + work + " student attempt" + (work === 1 ? "" : "s") + " against it" : "" %>">
+        <% if(readingAdmin){ %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+        <% groups.forEach(function (g) { %>
+          <div class="ad-card">
+            <div class="ad-card-head">
+              <h2><%= g.code %><%= g.course_title ? " · " + g.course_title : "" %></h2>
+              <a href="/rootadmin/batch/<%= g.id %>">Batch</a>
+            </div>
+
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:2.4rem">
+                      <input type="checkbox" data-tick-all="ex" aria-label="Tick all in this batch">
+                    </th>
+                    <th><%= hwLabel %></th>
+                    <th style="text-align:right">Questions</th>
+                    <th style="text-align:right">Done by</th>
+                    <th>Who can see it</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% g.rows.forEach(function (r) {
+                       const locked = String(r.unlock_emails || "").trim();
+                       const names = locked ? locked.split(",").filter(Boolean) : [];
+                  %>
+                    <tr>
+                      <td>
+                        <input type="checkbox" name="id" value="<%= r.id %>" data-tick="ex"
+                               aria-label="Tick <%= r.title %>">
+                      </td>
+                      <td>
+                        <a href="<%= hwBase %>/exercise/<%= r.id %>"><strong><%= r.title %></strong></a>
+                        <% if (r.level) { %>
+                          <div class="muted" style="font-size:.78rem"><%= r.level %></div>
+                        <% } %>
+                      </td>
+                      <td style="text-align:right;font-variant-numeric:tabular-nums"><%= r.questions %></td>
+                      <td style="text-align:right;font-variant-numeric:tabular-nums">
+                        <%= r.students || "—" %>
+                      </td>
+                      <td>
+                        <%# The unlock beats everything else, so it is
+                            said first and on its own — an exercise
+                            unlocked for one person is not "published"
+                            in any sense a student would recognise. %>
+                        <% if (names.length) { %>
+                          <span class="pill pill-cover">
+                            <%= names.length === 1 ? names[0] : names.length + " people" %>
+                          </span>
+                        <% } else if (Number(r.published)) { %>
+                          <span class="pill pill-live">the batch</span>
+                        <% } else { %>
+                          <span class="pill">draft — nobody</span>
+                        <% } %>
+                      </td>
+                      <td style="text-align:right;white-space:nowrap">
+                        <%# Results only once somebody has done it. A
+                            link to an empty page is a link that teaches
+                            people not to press it. %>
+                        <% if (Number(r.students)) { %>
+                          <a class="btn btn-sm btn-ghost" href="<%= hwBase %>/exercise/<%= r.id %>/results">Results</a>
+                        <% } %>
+                        <a class="btn btn-sm btn-ghost" href="<%= hwBase %>/exercise/<%= r.id %>#unlock">Unlock</a>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% }); %>
+
+        <%# The count is on the button because it is the thing being
+            decided: a student's work goes with the homework it is
+            against, and that is not something to do quietly. %>
+        <div class="ad-card">
+          <p class="muted" style="font-size:.85rem;margin-top:0">
+            Ticking and removing takes <%= readingAdmin?"Lesen":"homework" %> back completely — nobody can see it
+            any more, and any answers already given against it go with it.
+            To take it away from <strong>one person</strong> instead, open it and
+            remove them from the list at the bottom.
+          </p>
+          <button class="btn btn-ghost" type="submit">Remove ticked</button>
+        </div>
+      </form>
+      <% } %>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

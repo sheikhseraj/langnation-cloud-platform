@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Admin", site: site }) %>
+</head>
+<body>
+<%#
+  Signed out, there is no sidebar: its links lead nowhere useful until
+  you are in, and a navigation you cannot use reads as a broken page.
+%>
+<% if (!authed) { %>
+<header class="ad-top">
+  <%- include("../partials/brand", { sub: "Admin" }) %>
+  <div class="ad-spacer"></div>
+  <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch theme">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" data-icon-sun>
+      <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+    </svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon-moon hidden>
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+    </svg>
+  </button>
+</header>
+<% } %>
+
+<div class="<%= authed ? "ad-shell" : "" %>">
+<% if (authed) { %>
+  <%- include("../partials/admin-side", { adCurrent: "enquiries" }) %>
+<% } %>
+
+  <div class="<%= authed ? "ad-body" : "" %>">
+<% if (authed) { %>
+    <%- include("../partials/admin-top", {
+      adTitle: "Enquiries",
+      adCrumbs: [{ label: "Admin" }, { label: "Enquiries" }],
+      adLogout: "/admin/logout",
+    }) %>
+<% } %>
+
+
+    <main class="ad-main">
+
+  <% if (!authed) { %>
+    <div class="wrap-narrow" style="max-width:420px;margin-inline:auto;padding:0">
+      <h1 style="font-size:1.9rem">Sign in</h1>
+      <p class="lead" style="margin:.75rem 0 1.75rem;font-size:1rem">This is the school's own side of the site. Enter the admin password.</p>
+      <% if (error) { %><p class="notice notice-bad"><%= error %></p><% } %>
+      <form class="form" method="post" action="/admin/login">
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="pw" data-password>
+            <input type="password" id="password" name="password" required autocomplete="current-password" autofocus>
+          </div>
+        </div>
+        <button class="btn btn-block" type="submit">Sign in</button>
+      </form>
+    </div>
+
+  <% } else { %>
+    <% if (notice) { %><p class="notice notice-ok"><%= notice %></p><% } %>
+
+    <div class="section-head">
+      <h1 style="font-size:2rem">Enquiries</h1>
+      <p class="lead" style="font-size:1rem">
+        <%= total %> total<% if (!dbOk) { %> · <strong style="color:var(--danger)">database unavailable — showing the disk fallback</strong><% } %>
+      </p>
+    </div>
+
+    <% if (topPages.length) { %>
+      <details class="acc" style="margin-bottom:2rem">
+        <summary style="padding:1rem 1.25rem;cursor:pointer;font-weight:600;display:flex;justify-content:space-between;align-items:center">
+          <span>Most-viewed pages · last 30 days</span>
+          <span class="muted" style="font-size:.82rem;font-weight:400">
+            <%= topPages.reduce(function (n, r) { return n + Number(r.views); }, 0).toLocaleString() %> views
+          </span>
+        </summary>
+        <div style="padding:0 1.25rem 1.25rem">
+          <%# Bars are sized against the busiest page, so the shape is readable
+              whatever the absolute numbers are. %>
+          <% const peak = Math.max.apply(null, topPages.map(function (r) { return Number(r.views); })); %>
+          <ul style="list-style:none;display:grid;gap:.5rem">
+            <% topPages.forEach(function (r) { %>
+              <li style="display:grid;grid-template-columns:1fr auto;gap:.5rem 1rem;align-items:center">
+                <a href="<%= r.lang === 'de' ? '/de' : '' %><%= r.path === '/' ? '/' : r.path %>"
+                   style="font-size:.88rem;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                  <span class="pill" style="font-size:.66rem;padding:.1rem .4rem"><%= r.lang %></span>
+                  <%= r.path %>
+                </a>
+                <span class="muted" style="font-size:.82rem;font-variant-numeric:tabular-nums"><%= Number(r.views).toLocaleString() %></span>
+                <span style="grid-column:1/-1;height:4px;border-radius:2px;background:var(--line)">
+                  <span style="display:block;height:100%;border-radius:2px;background:var(--gold);width:<%= Math.max(2, Math.round((Number(r.views) / peak) * 100)) %>%"></span>
+                </span>
+              </li>
+            <% }); %>
+          </ul>
+          <p class="muted" style="font-size:.78rem;margin-top:1rem">
+            Counted on this server. No cookies, no visitor tracking, no third-party script —
+            just a total per page per day. Visitors sending "Do Not Track" are not counted.
+          </p>
+        </div>
+      </details>
+    <% } %>
+
+    <%# Writing to somebody who has not written to you.
+
+        Everything else on this page answers an enquiry. This does not:
+        it is for the student who rang, or the one whose reply went to
+        the wrong inbox, or a note to a teacher.
+
+        The same editor, the same formatter and the same From address as
+        a reply — one route with one branch — so a message sent from
+        here is indistinguishable from one sent under an enquiry, which
+        is the point. If they diverged, the office would have two
+        different-looking emails going out under one name.
+
+        Closed until wanted, and reopens by itself if a send fails. %>
+    <details class="ad-reply ad-compose"<%= compose ? " open" : "" %>>
+      <%# A button, because it opens a thing rather than going
+          somewhere, and it sat above the folder chips reading as a
+          stray link. %>
+      <summary class="btn btn-sm btn-ghost">Compose email</summary>
+      <form method="post" action="/admin/reply">
+        <div class="ad-compose-to">
+          <label class="field">
+            <span>To</span>
+            <%# A plain email field. Anybody can be written to, whether
+                or not the school has ever heard of them. %>
+            <input type="email" name="to" required
+                   placeholder="somebody@example.com" autocomplete="off"
+                   data-contact-to>
+          </label>
+
+          <% if (contacts && contacts.length) { %>
+            <%# A dropdown of its own, beside the address rather than
+                behind it.
+
+                This was a datalist, which is the browser's own
+                suggestion list and cannot be styled at all: it drew the
+                address large and the person's name small underneath, in
+                a column down the side of the page, and reading it meant
+                reading addresses to find a name.
+
+                A real <select> can say "Anita Sharma — anita@…" in one
+                line, group the teachers apart from the students, and be
+                opened deliberately rather than appearing while you
+                type. It fills the field beside it; the field is still
+                the thing that submits and is still free text. %>
+            <%# A div and not a <label>, and that is not a style choice.
+
+                A label activates its control when anything inside it is
+                clicked. app.js builds a listbox in here, so clicking a
+                person in that list was activating the label's control —
+                which is the button that opens the list — and the panel
+                reopened the instant it closed. The address was filled
+                in correctly and the list simply would not go away.
+
+                This is the second time a wrapping <label> has done
+                this: the same behaviour put the caret in the editor's
+                heading dropdown. A caption that is not a <label> cannot
+                do it, and the select below carries its own name
+                instead. %>
+            <div class="field">
+              <span>Or pick somebody</span>
+              <select data-contact-pick aria-label="Pick somebody to write to">
+                <option value="">Choose from <%= contacts.length %> people…</option>
+                <% ["teacher", "student"].forEach(function (kind) { %>
+                  <% const group = contacts.filter(function (c) { return c.kind === kind; }); %>
+                  <% if (group.length) { %>
+                    <optgroup label="<%= kind === "teacher" ? "Teachers" : "Students" %>">
+                      <% group.forEach(function (c) { %>
+                        <option value="<%= c.email %>" data-name="<%= c.name %>">
+                          <%= c.name %> — <%= c.email %>
+                        </option>
+                      <% }); %>
+                    </optgroup>
+                  <% } %>
+                <% }); %>
+              </select>
+            </div>
+          <% } %>
+          <label class="field">
+            <%# Optional, and the greeting is what it controls: no name
+                means no "Hello there," at the top, which on a cold
+                email reads like a mailshot. %>
+            <span>Their name <span class="muted">— optional</span></span>
+            <input type="text" name="name" maxlength="120"
+                   placeholder="Leave empty for no greeting" autocomplete="off"
+                   data-contact-name>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Subject</span>
+          <input type="text" name="subject" maxlength="200" value="LangNation">
+        </label>
+
+        <label class="field">
+          <span>Message</span>
+          <textarea name="body" rows="10" required data-rich
+                    placeholder="Dear…"></textarea>
+        </label>
+
+        <%# Documents.
+
+            The file input is the real control and carries no
+            name, so nothing of it is submitted: app.js reads
+            each file and writes it into a hidden field as a
+            data: URL, which is how profile photos already
+            travel. No multipart parser, and nothing to install
+            on the host after a deploy.
+
+            Everything is re-checked on the server — the name,
+            the declared type, the first bytes and the length —
+            because all of this arrives from the page.
+
+            With JavaScript off the picker does nothing and the
+            email still sends without it, which is the right way
+            round for something that is an extra. %>
+        <div class="ad-attach" data-attach>
+          <label class="ad-attach-pick">
+            <input type="file" multiple data-attach-input>
+            <span class="btn btn-sm btn-ghost">Attach a document</span>
+          </label>
+          <ul class="ad-attach-list" data-attach-list></ul>
+          <p class="ad-attach-note muted">
+            Up to 5 files, 5MB in total. Documents, spreadsheets,
+            slides, text, a zip or an image — anything but a program.
+          </p>
+        </div>
+
+        <div class="row" style="gap:.6rem;align-items:center">
+          <button class="btn btn-sm" type="submit">Send</button>
+          <span class="muted" style="font-size:.8rem">
+            From info@langnation.com. Nothing is filed against an
+            enquiry, because there is no enquiry.
+          </span>
+        </div>
+      </form>
+    </details>
+
+    <%# Folders, and the page opens in the first of them.
+
+        These were the same five links before, and they were fine — what
+        was wrong was where you landed. "All" was the default, so an
+        enquiry you had answered sat above the ones you had not, and
+        replying to something changed nothing about what you were
+        looking at. Now the inbox is what opens, replying empties it by
+        one, and the answered ones are somewhere rather than nowhere.
+
+        The counts are here because a row of words does not say which
+        one needs you — and because "Spam" with no number beside it is
+        the folder somebody clicks to find out. %>
+    <div class="filters">
+      <div class="filter-group">
+        <span>Folder</span>
+        <div class="chips">
+          <% [
+               { key: "new",     label: "Inbox" },
+               { key: "replied", label: "Replied" },
+               { key: "closed",  label: "Closed" },
+               { key: "spam",    label: "Spam" },
+               { key: "sent",    label: "Sent" },
+               { key: "drafts",  label: "Drafts" },
+               { key: "all",     label: "All" },
+             ].forEach(function (f) { %>
+            <%# The unescaped output tag: an attribute written through the
+                escaping one arrives as aria-pressed=&#34;true&#34; and
+                applies to nothing at all. %>
+            <a class="chip" href="/admin?status=<%= f.key %>"<%-
+                 folder === f.key ? ' aria-pressed="true"' : ' aria-pressed="false"' %>>
+              <%= f.label %><%
+                if (f.key === "drafts") { %>
+                <%# Written by app.js: the drafts are in this browser and
+                    the server has never seen them. Empty until it says
+                    otherwise, so a count of nothing shows nothing. %>
+                <span class="chip-n" data-draft-count hidden></span>
+              <% } else if (f.key !== "all" && folderCounts && folderCounts[f.key]) { %>
+                <span class="chip-n"><%= folderCounts[f.key] %></span>
+              <% } %>
+            </a>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <% if (folder === "spam") { %>
+      <p class="notice">
+        Anything in here is blocked: a new enquiry from one of these
+        addresses is refused before it is stored, and the sender is
+        answered as though it went through, so they have nothing to learn
+        from. Moving one back to the inbox lifts that immediately — this
+        folder <em>is</em> the block list, so there is nothing else to
+        undo.
+      </p>
+    <% } %>
+
+    <% if (folder === "drafts") { %>
+      <%# Anything typed and not sent.
+
+          Saved in this browser, not on the server, and that is the
+          point rather than a shortcut. The two things a draft has to
+          survive are closing the tab and the internet going, and in the
+          second one there is no server to save to. A message is written
+          down as it is typed and stays until it has actually gone.
+
+          It follows that drafts are per browser and per machine. That
+          is said on the page, because a Drafts folder that quietly
+          means "on this computer" is one somebody will be surprised by
+          exactly once, at the worst moment. %>
+      <div data-drafts-list>
+        <p class="notice">
+          Drafts are kept in this browser, so this needs JavaScript. With
+          it off, nothing is lost that was not already lost — the boxes
+          simply do not remember.
+        </p>
+      </div>
+      <p class="muted" style="font-size:.82rem">
+        Kept in this browser on this computer, not on the server — so a
+        draft written here will not appear on another machine. Anything
+        typed is saved as you type and cleared once it has sent.
+      </p>
+    <% } else if (folder === "sent") { %>
+      <%# What the office sent.
+
+          A different table and so a different list, sharing this page
+          because it answers the question the folder chips are already
+          asking. Replying marked an enquiry "replied", which says that
+          A reply happened and nothing about what it said; an email from
+          the compose box left no trace at all.
+
+          This is the only copy: the mailbox the mail goes out through
+          is a relay, not an archive. %>
+      <% if (!sentReady) { %>
+        <p class="notice">
+          This needs migration 31, which runs by itself the next time the
+          site restarts. Nothing is lost in the meantime — emails still
+          send; they are simply not written down yet.
+        </p>
+      <% } else if (!sentRows.length) { %>
+        <p class="notice">Nothing sent yet.</p>
+      <% } else { %>
+        <div class="stack">
+          <% sentRows.forEach(function (m) { %>
+            <article class="card" style="padding:1.25rem 1.4rem;gap:.85rem">
+              <div class="row" style="justify-content:space-between;align-items:flex-start;gap:1rem">
+                <div>
+                  <strong><%= m.subject %></strong>
+                  <div class="muted" style="font-size:.85rem">
+                    To <%= m.to_name ? m.to_name + " · " : "" %><a href="mailto:<%= m.to_email %>"><%= m.to_email %></a>
+                  </div>
+                </div>
+                <span class="pill"><%= m.enquiry_id ? "reply" : "written" %></span>
+              </div>
+
+              <%# As composed, which is the small HTML this site's editor
+                  writes and nothing else. It was cleaned by
+                  lib/rich-text.js on the way out, and the unescaped tag
+                  here is what shows it as the office wrote it rather
+                  than as a page of angle brackets. %>
+              <div class="ad-sent-body"><%- m.body %></div>
+
+              <div class="row" style="justify-content:space-between;align-items:center;gap:1rem">
+                <span class="muted" style="font-size:.8rem">
+                  <%= new Date(m.sent_at).toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) %>
+                </span>
+                <% if (m.files && m.files.length) { %>
+                  <span class="muted" style="font-size:.8rem">
+                    <%# The names only. Keeping the files would turn a
+                        log into a file store; the names answer the
+                        question that actually gets asked, which is
+                        whether the terms went. %>
+                    📎 <%= m.files.join(", ") %>
+                  </span>
+                <% } %>
+              </div>
+            </article>
+          <% }); %>
+        </div>
+      <% } %>
+    <% } else if (!rows.length) { %>
+      <p class="notice">No enquiries yet.</p>
+    <% } else { %>
+      <div class="stack">
+        <% rows.forEach(function (r) { %>
+          <article class="card" style="padding:1.25rem 1.4rem;gap:.85rem">
+            <div class="row" style="justify-content:space-between;align-items:flex-start">
+              <div>
+                <h3 style="font-size:1.1rem"><%= r.name %></h3>
+                <p class="muted" style="font-size:.86rem;margin-top:.2rem">
+                  <a href="mailto:<%= r.email %>"><%= r.email %></a>
+                  <% if (r.phone) { %> · <a href="https://wa.me/<%= String(r.phone).replace(/[^0-9]/g, '') %>" rel="noopener"><%= r.phone %></a><% } %>
+                  <% if (r.country) { %> · <%= r.country %><% } %>
+                </p>
+              </div>
+              <div class="row" style="gap:.4rem">
+                <span class="pill"><%= r.lang %></span>
+                <% if (r.course_slug) { %><span class="pill pill-level"><%= r.course_slug %></span><% } %>
+                <span class="pill <%= r.status === 'new' ? 'pill-live' : '' %>"><%= r.status %></span>
+              <% if (r.spam_reasons) { %>
+                <%# Why the check flagged it, so a wrong call is obvious. %>
+                <span class="pill" title="<%= r.spam_reasons %>">score <%= r.spam_score %></span>
+              <% } %>
+              </div>
+            </div>
+
+            <p style="white-space:pre-wrap;font-size:.94rem"><%= r.message %></p>
+
+            <div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:.85rem">
+              <span class="muted" style="font-size:.8rem">
+                <%= r.createdLabel %><% if (r.source_page) { %> · <%= r.source_page %><% } %>
+              </span>
+              <% if (dbOk) { %>
+                <form method="post" action="/admin/status" class="row" style="gap:.4rem">
+                  <input type="hidden" name="id" value="<%= r.id %>">
+                  <%# Spam does more than file it now, so the button says
+                      so. The others are filing and read as filing. %>
+                  <% ["new", "replied", "closed", "spam"].filter(function (s) { return s !== r.status; }).forEach(function (s) { %>
+                    <button class="btn btn-sm btn-ghost" type="submit" name="status" value="<%= s %>"
+                            title="<%= s === "spam"
+                              ? "File as spam and refuse anything else from " + r.email
+                              : "File as " + s %>">Mark <%= s %></button>
+                  <% }); %>
+                </form>
+              <% } %>
+            </div>
+
+            <%#
+              Replying here rather than through a mailto: link. A mailto:
+              opens whatever client the machine has configured, sends from
+              whatever address that is, and leaves nothing behind; this
+              sends from info@ in the site's own styling and marks the
+              enquiry replied in the same action.
+
+              A <details> rather than a script: the box is closed until
+              wanted, opens with no JavaScript, and reopens by itself if a
+              send fails.
+            %>
+            <details class="ad-reply"<%= reply === r.id ? " open" : "" %>>
+              <summary>Reply to <%= r.name %></summary>
+              <form method="post" action="/admin/reply">
+                <input type="hidden" name="id" value="<%= r.id %>">
+                <input type="hidden" name="to" value="<%= r.email %>">
+                <input type="hidden" name="name" value="<%= r.name %>">
+
+                <label class="field">
+                  <span>Subject</span>
+                  <input type="text" name="subject" maxlength="200"
+                         value="Re: your enquiry — LangNation">
+                </label>
+
+                <%# The same editor the course content boxes use.
+
+                    data-rich is all it takes: /js/editor.js finds the
+                    textarea and puts a toolbar and a contenteditable
+                    surface over it. Reusing it rather than writing a
+                    second one means one place to fix, and it already
+                    solves the things that are easy to get wrong here —
+                    no library (the CSP allows scripts from 'self'
+                    only), bold as <strong> rather than a styled span,
+                    and paste cleaned on the way in.
+
+                    The textarea is still the field that submits, so
+                    with JavaScript off this is the plain box it was.
+
+                    What the editor writes is page HTML with no styling
+                    on it, which is not what an email wants: Outlook
+                    renders through Word, so every element has to carry
+                    its own inline style. lib/rich-text.js rebuilds it
+                    on the way out. %>
+                <label class="field">
+                  <span>Message</span>
+                  <textarea name="body" rows="10" required data-rich
+                            placeholder="Thank you for getting in touch…"></textarea>
+                </label>
+                <p class="muted" style="font-size:.78rem;margin:-.3rem 0 .2rem">
+                  Headings, bold, italic, lists, quotes and links come
+                  through. Anything else is dropped on the way out, so a
+                  paste from Word cannot take its markup with it.
+                </p>
+
+                <%# Documents.
+
+                    The file input is the real control and carries no
+                    name, so nothing of it is submitted: app.js reads
+                    each file and writes it into a hidden field as a
+                    data: URL, which is how profile photos already
+                    travel. No multipart parser, and nothing to install
+                    on the host after a deploy.
+
+                    Everything is re-checked on the server — the name,
+                    the declared type, the first bytes and the length —
+                    because all of this arrives from the page.
+
+                    With JavaScript off the picker does nothing and the
+                    email still sends without it, which is the right way
+                    round for something that is an extra. %>
+                <div class="ad-attach" data-attach>
+                  <label class="ad-attach-pick">
+                    <%# No accept list.
+
+                        With one, the file dialog opens on a filter and
+                        the office saw only PDFs — everything else was
+                        there, behind a dropdown nobody thinks to
+                        change. Showing every file and explaining the
+                        one that cannot go is the better trade: the
+                        refusal names the file and says why. %>
+                    <input type="file" multiple data-attach-input>
+                    <span class="btn btn-sm btn-ghost">Attach a document</span>
+                  </label>
+                  <ul class="ad-attach-list" data-attach-list></ul>
+                  <p class="ad-attach-note muted">
+                    Up to 5 files, 5MB in total. Documents, spreadsheets,
+                    slides, text, a zip or an image — anything but a program.
+                  </p>
+                </div>
+
+                <div class="row" style="gap:.6rem;align-items:center">
+                  <button class="btn btn-sm" type="submit">Send</button>
+                  <span class="muted" style="font-size:.8rem">
+                    From info@langnation.com, in the usual LangNation styling.
+                    Their replies come back to the office inbox.
+                  </span>
+                </div>
+              </form>
+            </details>
+          </article>
+        <% }); %>
+      </div>
+
+      <% if (pages > 1) { %>
+        <div class="row" style="justify-content:center;margin-top:2rem">
+          <% for (let i = 1; i <= pages; i++) { %>
+            <a class="chip" href="/admin?status=<%= status %>&page=<%= i %>" aria-pressed="<%= i === page ? 'true' : 'false' %>"><%= i %></a>
+          <% } %>
+        </div>
+      <% } %>
+    <% } %>
+  <% } %>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+<%# The reply box. Loaded on this page only, and only because the box
+    is here: it does nothing at all unless it finds a textarea with
+    data-rich on it. %>
+<script src="/js/editor.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

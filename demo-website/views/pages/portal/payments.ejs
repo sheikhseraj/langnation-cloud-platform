@@ -1,0 +1,200 @@
+<%
+  /*
+    Payments.
+
+    One card per enrolment, because two courses are two accounts: paying
+    for one does not settle the other, and a single combined figure
+    would be the one number on this page nobody could act on.
+
+    Not a table. A financial table on a phone is either squeezed to
+    nothing or scrolled sideways, and sideways is how a due date goes
+    unread. Every row here is a grid that is a row on a laptop and a
+    small card on a phone, so there is one piece of markup and no
+    horizontal scroll anywhere.
+  */
+  const money = (c, cur) => new Intl.NumberFormat("en-GB", {
+    style: "currency", currency: cur || "EUR",
+  }).format((Number(c) || 0) / 100);
+  /* Takes a Date as well as a string. mysql2 returns DATE columns as
+     Date objects, and String(thatDate).slice(0, 10) is "Thu Oct 0" —
+     which rendered as "Invalid Date" down the whole payment history.
+     Normalised in lib/billing.js too; this is the second line of
+     defence, because a view should not break on a plain Date. */
+  const day = (v) => {
+    if (!v) return "—";
+    const iso = v instanceof Date
+      ? `${v.getFullYear()}-${String(v.getMonth() + 1).padStart(2, "0")}-${String(v.getDate()).padStart(2, "0")}`
+      : String(v).slice(0, 10);
+    const d = new Date(`${iso}T00:00:00Z`);
+    return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en-GB", {
+      day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  };
+  const methods = {
+    bank_transfer: "Bank transfer", cash: "Cash",
+    sepa_direct_debit: "SEPA direct debit", card: "Card", other: "Other",
+  };
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "Payments",
+  pageLead: plans.length
+    ? "What each course costs, what you have paid, and when the rest is due."
+    : null,
+  nav: "payments", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+
+
+<% const unbilled=locals.pendingFees||[]; %>
+<% unbilled.forEach(function(e){ %>
+  <section class="sp-card pay-plan">
+    <header class="pay-head"><div><h2 class="pay-title"><%= e.course_title||'Course' %></h2><p class="pay-batch"><%= e.batch_code %></p></div>
+      <span class="pay-badge"><%= e.fee===0?'No fee':'Payment setup pending' %></span></header>
+    <% if(e.fee!==null){ %><dl class="pay-sum"><div><dt>Course fee</dt><dd><%= money(e.fee,'EUR') %></dd></div></dl><% } %>
+    <p><%= e.fee===0?'This course has no fee.':e.fee===null?'The office needs to confirm the course fee.':'You are enrolled. The office has not issued an invoice for this enrolment yet.' %></p>
+    <% if(e.fee!==0){ %><a class="btn btn-ghost" href="/contact">Contact the office</a><% } %>
+  </section>
+<% }); %>
+<% if (!plans.length && !unbilled.length) { %>
+  <div class="sp-card">
+    <p class="sp-empty" style="margin:0">
+      Nothing to pay yet. When the office bills you for a course it appears
+      here, with what has been paid and what is still owed.
+    </p>
+  </div>
+<% } else { %>
+
+  <% plans.forEach(function (p) { %>
+    <section class="sp-card pay-plan">
+      <header class="pay-head">
+        <div>
+          <h2 class="pay-title"><%= p.label %></h2>
+          <% if (p.batch) { %><p class="pay-batch"><%= p.batch %></p><% } %>
+        </div>
+        <%# The word as well as the colour. A green dot means nothing to
+            somebody who cannot tell it from an amber one. %>
+        <span class="pay-badge is-<%= p.state %>"><%= summaryLabel[p.state] %></span>
+      </header>
+
+      <dl class="pay-sum">
+        <div><dt>Course fee</dt><dd><%= money(p.total, p.currency) %></dd></div>
+        <div><dt>Paid</dt><dd><%= money(p.paid, p.currency) %></dd></div>
+        <div class="is-rest">
+          <dt>Remaining</dt>
+          <dd><%= money(p.owed, p.currency) %></dd>
+        </div>
+      </dl>
+
+      <% if (p.state === "overdue") { %>
+        <p class="notice notice-bad pay-note">
+          <strong><%= money(p.overdueAmount, p.currency) %> is overdue.</strong>
+          Please arrange the payment, or
+          <a href="/contact">tell the office</a> if something is wrong.
+        </p>
+      <% } else if (p.next && p.next.state === "due") { %>
+        <p class="notice pay-note">
+          Your next payment of <strong><%= money(p.next.owed, p.currency) %></strong>
+          is due on <strong><%= day(p.next.due) %></strong>.
+        </p>
+      <% } %>
+
+      <%# One invoice is not a plan, so the list below does not render
+          and there would be nothing at all to click. The document is
+          still the thing the student actually needs. %>
+      <% if (!p.planned) { %>
+        <% const one = (p.parts || []).find(function (i) { return i.id && i.number; }); %>
+        <% if (one) { %>
+          <p class="pay-doc">
+            <a class="pay-doc-link" href="/portal/payments/invoice/<%= one.id %>">
+              Invoice <%= one.number %>
+            </a>
+          </p>
+        <% } %>
+      <% } %>
+
+      <% if (p.planned) { %>
+        <%# Only when there is actually a plan. One invoice with three
+            headings over it is a table pretending to be information. %>
+        <h3 class="pay-sub">Payment plan</h3>
+        <ol class="pay-list">
+          <% p.parts.forEach(function (i) { %>
+            <li class="pay-row is-<%= i.state %>">
+              <span class="pay-n">
+                <%# The name of the row, as plain text. It used to be the
+                    link itself, which told the reader an instalment was
+                    clickable without saying what it opened -- and the
+                    thing it opens is an invoice, which is a different
+                    noun. %>
+                <strong class="pay-row-name">
+                  <% if (i.instalment_no) { %>
+                    Instalment <%= i.instalment_no %><% if (i.instalment_of) { %> of <%= i.instalment_of %><% } %>
+                  <% } else { %>
+                    <%= i.number || "Invoice" %>
+                  <% } %>
+                </strong>
+                <%# The number and the way to the document, under it. A
+                    draft has neither, and is left as a name alone. %>
+                <% if (i.id && i.number) { %>
+                  <a class="pay-doc-link" href="/portal/payments/invoice/<%= i.id %>">
+                    Invoice <%= i.number %>
+                  </a>
+                <% } %>
+              </span>
+              <span class="pay-amt">
+                <%= money(i.total, p.currency) %>
+                <% if (i.partial) { %>
+                  <small><%= money(i.paid, p.currency) %> paid</small>
+                <% } %>
+              </span>
+              <span class="pay-due">
+                <% if (i.due) { %>Due <%= day(i.due) %><% } else { %>—<% } %>
+              </span>
+              <span class="pay-mark"><%= stateLabel[i.state] %></span>
+            </li>
+          <% }); %>
+        </ol>
+      <% } %>
+
+      <% if (p.history && p.history.length) { %>
+        <h3 class="pay-sub">Payment history</h3>
+        <%# The plan and the money that arrived are not the same thing.
+            An instalment says what was asked for; this says what was
+            received, when, and how — which is the record somebody
+            needs when a transfer goes astray. %>
+        <ol class="pay-list is-history">
+          <% p.history.forEach(function (h) { %>
+            <li class="pay-row">
+              <span class="pay-n"><%= day(h.received_on) %></span>
+              <span class="pay-amt"><%= money(h.amount_cents, h.currency || p.currency) %></span>
+              <span class="pay-due">
+                <%= methods[h.method] || h.method %><% if (h.instalment_no) { %> · instalment <%= h.instalment_no %><% } %><% if (h.reference) { %> · <%= h.reference %><% } %>
+              </span>
+              <%# Three different things, and they all said "Received":
+                  money that arrived, money that was taken back off a
+                  mistake, and the entry that mistake was. The middle
+                  one is a negative number labelled as a receipt, on
+                  the page somebody opens when they think they have
+                  paid twice. %>
+              <span class="pay-mark">
+                <% if (h.reverses_id) { %>Put back<% }
+                   else if (h.reversed_by) { %>Corrected<% }
+                   else { %>Received<% } %>
+              </span>
+            </li>
+          <% }); %>
+        </ol>
+      <% } %>
+    </section>
+  <% }); %>
+
+  <p class="muted" style="font-size:.85rem;margin-top:1.25rem">
+    Your student reference is
+    <strong><%= student.student_ref || "not yet issued" %></strong>. Quote it with
+    the invoice number when you pay, and
+    <a href="/contact">tell the office</a> if you think any of this is wrong —
+    these figures are kept by the school, and nothing on this page can be
+    changed from here.
+  </p>
+<% } %>
+
+<%- include("../../partials/portal-shell-foot") %>

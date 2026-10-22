@@ -1,0 +1,104 @@
+<%#
+  Shared head and styling for the content editor.
+
+  Deliberately self-contained: no site.css, no shared partials, no `site`
+  local. The editor must keep working while you are in the middle of
+  changing the public stylesheet, and it should look obviously different
+  from the live site so there is never any doubt which one you are on.
+%>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<style>
+  :root {
+    --bg:      #0f1720;
+    --panel:   #17212c;
+    --panel-2: #1e2a37;
+    --line:    #2a3846;
+    --ink:     #e8eef5;
+    --muted:   #93a4b6;
+    --gold:    #D4AF37;
+    --ok:      #3fa971;
+    --warn:    #d98b2b;
+    --bad:     #d1495b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: var(--gold); }
+  .bar {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 5;
+  }
+  .bar h1 { font-size: 16px; margin: 0; font-weight: 650; letter-spacing: .01em; }
+  .bar .tag {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+    color: #0f1720; background: var(--gold);
+    padding: 2px 7px; border-radius: 3px; font-weight: 700;
+  }
+  .bar .spacer { margin-left: auto; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 64px; }
+  .panel {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; padding: 20px; margin-bottom: 18px;
+  }
+  h2 { font-size: 15px; margin: 0 0 14px; color: var(--muted);
+       text-transform: uppercase; letter-spacing: .07em; font-weight: 650; }
+  label { display: block; margin-bottom: 14px; }
+  label > span {
+    display: block; font-size: 12px; color: var(--muted);
+    margin-bottom: 5px; letter-spacing: .02em;
+  }
+  input[type=text], input[type=number], input[type=password], select, textarea {
+    width: 100%; padding: 9px 11px;
+    background: var(--bg); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 5px;
+    font: inherit;
+  }
+  textarea { min-height: 130px; resize: vertical; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 18px; }
+  @media (max-width: 720px) { .row, .row-3 { grid-template-columns: 1fr; } }
+  button, .btn {
+    font: inherit; font-weight: 600; cursor: pointer;
+    padding: 9px 18px; border-radius: 5px;
+    border: 1px solid var(--gold); background: var(--gold); color: #0f1720;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-quiet { background: transparent; color: var(--ink); border-color: var(--line); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+  .pill {
+    font-size: 11px; padding: 2px 8px; border-radius: 20px;
+    border: 1px solid var(--line); color: var(--muted);
+  }
+  .pill.published { color: var(--ok);   border-color: #24593f; }
+  .pill.draft     { color: var(--warn); border-color: #5c421d; }
+  .pill.archived  { color: var(--muted); }
+  .pill.missing   { color: var(--bad);  border-color: #5c2028; }
+  .note {
+    padding: 11px 14px; border-radius: 6px; margin-bottom: 16px;
+    border: 1px solid var(--line); background: var(--panel-2); font-size: 14px;
+  }
+  .note.ok   { border-color: #24593f; color: #9fe0bd; }
+  .note.bad  { border-color: #5c2028; color: #f0a8b1; }
+  .note.warn { border-color: #5c421d; color: #f0c98b; }
+  .hint { font-size: 12px; color: var(--muted); margin: -9px 0 14px; }
+  .lang-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .lang-tabs a {
+    padding: 7px 16px; border-radius: 5px; text-decoration: none;
+    border: 1px solid var(--line); color: var(--muted); font-weight: 600; font-size: 14px;
+  }
+  .lang-tabs a.on { background: var(--panel-2); color: var(--ink); border-color: var(--gold); }
+</style>

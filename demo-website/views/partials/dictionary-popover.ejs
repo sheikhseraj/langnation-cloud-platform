@@ -1,0 +1,12 @@
+<% const dictIcon = name => {const p={book:'<path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Z"/><path d="M12 5v15"/>',language:'<path d="M3 5h12M9 2v3M5 5c0 5 4 8 8 10M13 5c0 5-4 8-8 10m9 6 4-10 4 10m-7-3h6"/>',speaker:'<path d="m11 4-6 5H2v6h3l6 5V4ZM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/>',star:'<path d="m12 3 3 6 6 1-5 4 1 7-5-3-5 3 1-7-5-4 6-1 3-6Z"/>',close:'<path d="m6 6 12 12M6 18 18 6"/>'};return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p[name]+'</svg>';}; %>
+<link rel="stylesheet" href="/css/dictionary-popover.css?v=<%= site.assetVersion %>">
+<div id="reading-toolbar" class="reading-toolbar" role="toolbar" aria-label="Auswahl" hidden>
+  <button type="button" data-dict-action="meaning"><%- dictIcon('book') %> Meaning</button><button type="button" data-dict-action="translate"><%- dictIcon('language') %> Translate</button><button type="button" data-dict-action="listen"><%- dictIcon('speaker') %> Listen</button><button type="button" data-dict-action="save"><%- dictIcon('star') %> Save</button>
+</div>
+<dialog id="dictionary-panel" aria-labelledby="dictionary-title"><div class="dictionary-body"><div class="dictionary-header"><div><span class="dictionary-brand">LangNation</span><h2 id="dictionary-title">Dictionary</h2></div><button type="button" id="dictionary-close" aria-label="Wörterbuch schließen"><%- dictIcon('close') %></button></div><p id="dictionary-query" class="dictionary-query"></p><div id="dictionary-result" aria-live="polite"></div></div></dialog>
+<script id="dictionary-data" type="application/json"><%- JSON.stringify({exercise:locals.ex?.id||null,module:locals.dictionaryModule||'reading',csrf:locals.dictionaryCsrf||locals.csrf||'',preview:!!locals.preview}).replace(/</g,'\\u003c') %></script>
+<script src="/js/study-icons.js?v=<%= site.assetVersion %>" defer></script>
+<script src="/js/dictionary-text.js?v=<%= site.assetVersion %>" defer></script>
+<script src="/js/dictionary-presentation.js?v=<%= site.assetVersion %>" defer></script>
+<script src="/js/reading-popover.js?v=<%= site.assetVersion %>" defer></script>
+<script src="/js/dictionary-page.js?v=<%= site.assetVersion %>" defer></script>

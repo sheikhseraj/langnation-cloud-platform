@@ -1,0 +1,26 @@
+<link rel="stylesheet" href="/css/homework-learning.css?v=<%= site.assetVersion %>">
+<a class="skip-link" href="#hw-sheet">Zu den Aufgaben</a>
+<div class="hw-shell wrap hw-learning" lang="de" data-learning-root>
+  <div class="material-mobile-tools"><div class="material-mobile-back"><%- include('study-back',{studyHref:'/portal/homework'+keep,studyLabel:"Meine Aufgaben"}) %></div><nav class="hw-aside hw-other" aria-label="Meine Aufgaben">
+    <details class="material-lesson-menu" data-responsive-menu data-menu-breakpoint="859" open><summary class="hw-aside-head"><span>Aufgaben</span><svg class="material-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></summary>
+    <ul class="hw-aside-list">
+    <% siblings.forEach(o=>{ %>
+      <li><a class="hw-aside-one hw-chapter<%= Number(o.id)===Number(ex.id)?' is-here':'' %>" href="/portal/homework/<%= o.id %><%= keep %>"><span class="hw-chapter-t"><%= o.title %></span></a></li>
+    <% }) %>
+    </ul>
+  </details></nav></div>
+  <section class="hw-sheet-col" id="hw-sheet" aria-label="Aufgaben">
+    <%- include('study-back',{studyHref:'/portal/homework'+keep,studyLabel:"Meine Aufgaben"}) %>
+    <% if (unlocked && !published) { %><p class="hw-unlocked">Entwurf – noch nicht veröffentlicht.</p><% } %>
+    <div class="learning-overview" role="region" aria-label="Dein Kapitel-Fortschritt" data-learning-overview></div>
+    <div class="hw-intro"><h1><%= learningChapter.title %></h1><p data-learning-position></p></div>
+    <p role="status" aria-live="polite" data-learning-save></p>
+    <div data-learning-sheet></div>
+    <noscript>Bitte aktiviere JavaScript, um die interaktiven Aufgaben zu bearbeiten. Dein gespeicherter Fortschritt bleibt erhalten.</noscript>
+  </section>
+  <nav class="hw-aside hw-learning-progress" aria-label="Kapitel-Fortschritt" data-learning-nav></nav>
+</div>
+</main>
+<script type="application/json" id="learning-data"><%- JSON.stringify({chapter:learningChapter,state:learningState,attempt:attemptId,exercise:ex.id,next:next?'/portal/homework/'+next.id+keep:'/portal/homework'+keep}).replace(/</g,'\\u003c') %></script>
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+<script src="/js/homework-learning.js?v=<%= site.assetVersion %>" defer></script>

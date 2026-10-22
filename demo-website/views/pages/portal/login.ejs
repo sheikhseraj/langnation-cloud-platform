@@ -1,0 +1,53 @@
+<%- include("../../partials/portal-head", { title: "Sign in" }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <%# Both portals open with the same chooser, so somebody who has
+        landed on the wrong one can see it and fix it before typing a
+        password into a form that will never accept it. %>
+    <%- include("../../partials/login-switch", { current: "student" }) %>
+    <h1>Sign in</h1>
+    <p class="sp-lead">
+      Your courses, your certificates and your Einbürgerungstest progress.
+    </p>
+
+    <% if (error) { %>
+      <div class="notice notice-bad" style="margin-top:1.25rem"><%= error %></div>
+    <% } %>
+    <% if (notice) { %>
+      <div class="notice" style="margin-top:1.25rem"><%= notice %></div>
+    <% } %>
+
+    <form class="form" method="post" action="/portal/login" style="margin-top:1.5rem">
+      <%# Carried through the sign-in so somebody following a deep link
+          lands where they were going. The server only honours paths under
+          /portal/ — anything else would be an open redirect. %>
+      <input type="hidden" name="next" value="<%= values.next || '' %>">
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" required autocomplete="email"
+               maxlength="180" value="<%= values.email || '' %>">
+      </div>
+
+      <%- include("../../partials/password-field", {
+        id: "password", name: "password", label: "Password",
+      }) %>
+
+      <%# Before the button, not buried under it. Somebody who cannot
+          remember their password is looking for this, and looking at
+          the form. %>
+      <p class="muted" style="margin:-.4rem 0 1rem;font-size:.86rem">
+        <a href="/portal/forgot">Forgotten your password?</a>
+      </p>
+
+      <button class="btn btn-block" type="submit">Sign in</button>
+    </form>
+
+    <p class="muted" style="margin-top:1.5rem;font-size:.9rem">
+      No account yet? <a href="/portal/register">Create one</a>.
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

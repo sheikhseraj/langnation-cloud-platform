@@ -1,0 +1,24 @@
+<%#
+  Why a class is being called off.
+
+  A partial because three pages offer it — the schedule's two halves
+  and the register — and a list of reasons that says something
+  different on one of them is worse than no list.
+
+  The first option is blank on purpose. A select that starts on
+  "Teacher unavailable" records "Teacher unavailable" for every teacher
+  who did not look at it, which is a field that lies rather than a
+  field that is empty. Nothing is assumed; the library refuses a
+  cancellation that has neither a reason nor a note.
+
+  Expects: cancelReasons.
+%>
+<label class="field">
+  <span>Why — students see this</span>
+  <select name="reason">
+    <option value="">Choose a reason…</option>
+    <% cancelReasons.forEach(function (r) { %>
+      <option value="<%= r.key %>"><%= r.label %></option>
+    <% }); %>
+  </select>
+</label>

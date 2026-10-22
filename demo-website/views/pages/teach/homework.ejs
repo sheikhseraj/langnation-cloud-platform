@@ -1,0 +1,251 @@
+<%#
+  Homework, for the teacher who teaches the class.
+
+  The same three things the office's give-out screen does — give it
+  out, take it back, see who has what — with one difference that runs
+  through all of it: a teacher only ever reaches their own class.
+
+  ── Why that is not done by hiding things ───────────────────────────
+
+  The batch dropdown offers only their batches, but a dropdown is a
+  suggestion and the form behind it can be posted with any number in
+  it. The route checks the batch is theirs, takes the course from that
+  verified row rather than from the form, and drops any address that is
+  not on the class roster. This page is the convenient way to do it,
+  not the thing that makes it safe.
+
+  ── Why it exists ───────────────────────────────────────────────────
+
+  So the office does not have to be in the room. A teacher who has just
+  taught the lesson knows which chapters to set, and asking them to
+  send a message to somebody else who will do it later is how homework
+  stops being set.
+
+  The filters never reload the page, for the same reason as on the
+  office's screen: a filter that rebuilds the page is a filter that
+  loses whatever was ticked. Nothing ticked is ever hidden either —
+  a row ticked under a different level stays on screen, marked.
+%>
+<%- include("../../partials/teach-shell-head", {
+  pageTitle: "Aufgaben",
+  pageLead: chosen
+    ? chosen.code + (chosen.course_title ? " · " + chosen.course_title : "")
+    : "Pick a class to set homework for.",
+  nav: "homework", teacher: teacher, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<% if (done) { %><p class="notice notice-ok"><%= done %></p><% } %>
+<% if (problem) { %><p class="notice notice-bad"><%= problem %></p><% } %>
+
+<% if (!batches.length) { %>
+  <div class="sp-card sp-wide">
+    <p class="sp-empty">
+      No classes are assigned to you yet. Homework is set per class, so this
+      page has nothing to offer until the office puts you on one.
+    </p>
+  </div>
+<% } else { %>
+
+  <%# Which class. A GET, because changing class changes which people
+      and which chapters are on the page, and that is the one thing
+      here that genuinely needs the server. %>
+  <form class="sp-card sp-wide" method="get" action="/teach/homework">
+    <label class="field">
+      <span>Class</span>
+      <select name="batch" onchange="this.form.submit()">
+        <% batches.forEach(function (b) { %>
+          <option value="<%= b.id %>"<%= chosen && Number(b.id) === Number(chosen.id) ? " selected" : "" %>>
+            <%= b.code %><%= b.course_title ? " — " + b.course_title : "" %>
+            (<%= b.active_students %> <%= Number(b.active_students) === 1 ? "student" : "students" %>)
+          </option>
+        <% }); %>
+      </select>
+    </label>
+    <%# The button is what makes this work with no script. %>
+    <p style="margin:.7rem 0 0"><button class="btn btn-sm btn-ghost" type="submit">Show this class</button></p>
+  </form>
+
+  <% if (!chosen) { %>
+    <div class="sp-card sp-wide"><p class="sp-empty">Pick a class above.</p></div>
+  <% } else if (!people.length) { %>
+    <div class="sp-card sp-wide">
+      <p class="sp-empty">
+        Nobody is actively enrolled on <%= chosen.code %> yet, so there is
+        nobody to set homework for.
+      </p>
+    </div>
+  <% } else { %>
+
+    <%# data-batch is what the shared script reads to know which
+        class's slice of the access map to look at. The office's
+        version takes it from its course dropdown; this page has
+        one class and says so here. %>
+    <form method="post" action="/teach/homework" data-give data-mode="give"
+          data-batch="<%= chosen.id %>">
+      <input type="hidden" name="batch" value="<%= chosen.id %>">
+
+      <%# Which of the two things this is doing, chosen before the
+          lists rather than under them. %>
+      <div class="sp-card sp-wide ad-mode-card" data-give-mode hidden>
+        <div class="ad-mode">
+          <button class="ad-mode-btn" type="button" data-mode-set="give" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0"/>
+            </svg>
+            Unlock — give it out
+          </button>
+          <button class="ad-mode-btn" type="button" data-mode-set="lock" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+            </svg>
+            Lock — take it back
+          </button>
+          <button class="ad-mode-btn" type="button" data-mode-set="access" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 5h16M4 12h16M4 19h10"/>
+            </svg>
+            Who has what
+          </button>
+        </div>
+        <p class="muted" style="font-size:.82rem;margin:.6rem 0 0" data-mode-note></p>
+      </div>
+
+      <div class="sp-card sp-wide">
+        <div class="form-row">
+          <label class="field">
+            <span>Level</span>
+            <select data-filter-level>
+              <option value="">All levels</option>
+              <% levels.forEach(function (l) { %>
+                <option value="<%= l %>"><%= l %></option>
+              <% }); %>
+            </select>
+          </label>
+
+          <label class="field" data-give-only>
+            <span>Due <span class="muted">(optional)</span></span>
+            <input type="date" name="due_on" value="<%= due || "" %>">
+          </label>
+        </div>
+        <p class="muted" style="font-size:.82rem;margin:.2rem 0 0" data-scope-note>
+          Everything here is for <%= chosen.code %> only. Nothing ticked is ever
+          hidden — a chapter ticked under a different level stays on screen, marked.
+        </p>
+      </div>
+
+      <div class="sp-cols sp-cols-even" data-pick-only>
+
+        <%# ── Who ──────────────────────────────────────────────── %>
+        <div class="sp-card">
+          <div class="sp-card-head">
+            <h2>Who gets it</h2>
+            <span class="muted" data-count-who><%= people.length %> shown</span>
+          </div>
+
+          <label class="ad-tick ad-tick-all">
+            <input type="checkbox" data-tick-all="who">
+            <span><strong>Select all</strong></span>
+          </label>
+
+          <ul class="ad-ticks" data-list="who">
+            <% people.forEach(function (s) { %>
+              <%# data-batches is what the office's scope filter reads.
+                  Here the class is already chosen, so every row is in
+                  scope and it carries this one batch. %>
+              <li data-batches=",<%= chosen.id %>," data-enrolled="1"
+                  data-has="<%= s.has || "" %>">
+                <label class="ad-tick">
+                  <input type="checkbox" name="who" value="<%= s.email %>" data-tick="who">
+                  <span>
+                    <span class="ad-tick-name"><%= s.name %></span>
+                    <span class="muted"><%= s.student_ref || s.email %></span>
+                    <% if (s.hasAny) { %>
+                      <span class="pill pill-has" data-already><%= s.hasAny %> already</span>
+                    <% } else { %>
+                      <span class="pill pill-has" data-already hidden></span>
+                    <% } %>
+                  </span>
+                </label>
+              </li>
+            <% }); %>
+          </ul>
+          <p class="sp-empty" data-empty="who" hidden>Nobody on that filter.</p>
+        </div>
+
+        <%# ── What ─────────────────────────────────────────────── %>
+        <div class="sp-card">
+          <div class="sp-card-head">
+            <h2>Which chapters</h2>
+            <span class="muted" data-count-what><%= chapters.length %> shown</span>
+          </div>
+
+          <% if (!chapters.length) { %>
+            <p class="sp-empty">
+              No chapters are installed. The office adds these to
+              <code>content/homework</code>.
+            </p>
+          <% } else { %>
+            <label class="ad-tick ad-tick-all">
+              <input type="checkbox" data-tick-all="what">
+              <span><strong>Select all</strong></span>
+            </label>
+
+            <ul class="ad-ticks" data-list="what">
+              <% chapters.forEach(function (c, i) { %>
+                <li data-level="<%= c.level || "" %>" data-ix="<%= i %>"
+                    data-outs="<%= c.outs || "" %>">
+                  <label class="ad-tick">
+                    <input type="checkbox" name="what" value="<%= c.id %>" data-tick="what">
+                    <span>
+                      <span class="ad-tick-name"><%= c.title %></span>
+                      <span class="muted"><%= c.questions %> questions</span>
+                      <span class="pill pill-has" data-out hidden></span>
+                    </span>
+                  </label>
+                </li>
+              <% }); %>
+            </ul>
+            <p class="sp-empty" data-empty="what" hidden>No chapters at that level.</p>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="sp-card sp-wide" data-pick-only>
+        <p class="ad-give-sum" data-give-sum>Nothing ticked yet.</p>
+
+        <p class="muted" style="font-size:.85rem">
+          <strong>Unlock</strong> gives every ticked chapter to every ticked student
+          on <%= chosen.code %>, and they see it straight away.
+          <strong>Lock</strong> takes it back off them again — work they have already
+          done is kept, because a score is a record of what somebody knew.
+        </p>
+
+        <div class="hw-do">
+          <button class="btn" type="submit" data-give-only>Unlock</button>
+          <button class="btn" type="submit" name="lock" value="1" data-lock-only
+                  data-confirm-simple="Take the ticked chapters back off the ticked students?">
+            Lock
+          </button>
+          <a class="btn btn-ghost" href="/teach/progress?batch=<%= chosen.id %>">How the class is doing</a>
+        </div>
+      </div>
+
+      <%# ── Who has what ─────────────────────────────────────────
+          Built by the script from what is already on the page, and
+          scoped to this class the same way everything else here is. %>
+      <div class="sp-card sp-wide" data-access hidden>
+        <div class="sp-card-head">
+          <h2>Who has what</h2>
+          <span class="muted" data-access-count></span>
+        </div>
+        <div data-access-body></div>
+        <p class="sp-empty" data-access-empty hidden>
+          Nobody on this class has any homework yet. Give some out and it appears here.
+        </p>
+      </div>
+    </form>
+  <% } %>
+<% } %>
+
+<%- include("../../partials/teach-shell-foot") %>

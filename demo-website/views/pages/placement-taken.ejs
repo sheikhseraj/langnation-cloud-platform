@@ -1,0 +1,85 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<%#
+  Shown when an address has already sat the test today.
+
+  The tone matters. This person is a prospective student, not a
+  cheat — the commonest reason for a second attempt is a connection
+  that dropped halfway. So it gives them their result if there is one,
+  explains why waiting is in their interest, and offers a way to reach
+  a human who can reset it.
+%>
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <span><a href="<%= lp('/') %>"><%= t("nav.home") %></a></span>
+      <span><a href="<%= lp('/placement-test') %>"><%= t("nav.placement") %></a></span>
+    </nav>
+
+    <h1><%= lang === "de" ? "Sie haben den Test heute bereits gemacht" : "You have already taken the test today" %></h1>
+
+    <p class="lead" style="margin-top:1rem">
+      <%= lang === "de"
+        ? "Mit dieser E-Mail-Adresse wurde der Einstufungstest in den letzten 24 Stunden bereits durchgeführt."
+        : "This email address has already been used for the placement test in the last 24 hours." %>
+    </p>
+
+    <% if (attempt.placement) { %>
+      <div class="facts" style="margin-top:2rem">
+        <h3><%= lang === "de" ? "Ihr Ergebnis" : "Your result" %></h3>
+        <dl>
+          <div>
+            <dt><%= lang === "de" ? "Niveau" : "Level" %></dt>
+            <dd><strong style="font-size:1.15rem"><%= attempt.placement %></strong></dd>
+          </div>
+          <% if (attempt.score !== null && attempt.score !== undefined) { %>
+            <div>
+              <dt><%= lang === "de" ? "Punkte" : "Score" %></dt>
+              <dd><%= attempt.score %>%</dd>
+            </div>
+          <% } %>
+          <div>
+            <dt><%= lang === "de" ? "Gemacht am" : "Taken" %></dt>
+            <dd><%= new Date(attempt.created_at).toISOString().slice(0, 16).replace("T", " ") %></dd>
+          </div>
+        </dl>
+      </div>
+    <% } else { %>
+      <%# A paper was issued but never graded — almost always a test
+          that was abandoned or interrupted. Worth saying plainly, since
+          this is the case where a reset is genuinely warranted. %>
+      <p class="notice" style="margin-top:2rem">
+        <%= lang === "de"
+          ? "Ein Test wurde begonnen, aber nicht abgeschlossen. Wenn Ihre Verbindung abgebrochen ist, setzen wir den Versuch gern zurück — schreiben Sie uns kurz."
+          : "A test was started but never finished. If your connection dropped, we are happy to reset it — just tell us." %>
+      </p>
+    <% } %>
+
+    <h2 style="margin-top:2.5rem;font-size:1.15rem">
+      <%= lang === "de" ? "Warum nur einmal am Tag?" : "Why only once a day?" %>
+    </h2>
+    <p>
+      <%= lang === "de"
+        ? "Ein zweiter Versuch kurz nach dem ersten misst vor allem, woran Sie sich von den Fragen erinnern — nicht Ihr Deutsch. Das Ergebnis wäre also schlechter, nicht besser, und ein zu hohes Niveau kostet Sie im Kurs Wochen."
+        : "A second attempt straight after the first mostly measures what you remember of the questions, not your German. The result would be less accurate, not more — and a level set too high costs you weeks in a class you cannot follow." %>
+    </p>
+
+    <div class="row" style="gap:.6rem;margin-top:1.75rem;flex-wrap:wrap">
+      <a class="btn" href="<%= lp('/contact') %>">
+        <%= lang === "de" ? "Zurücksetzen lassen" : "Ask us to reset it" %>
+      </a>
+      <a class="btn btn-ghost" href="<%= lp('/courses') %>">
+        <%= lang === "de" ? "Kurse ansehen" : "See the courses" %>
+      </a>
+    </div>
+
+    <p class="muted" style="font-size:.88rem;margin-top:1.5rem">
+      <%= lang === "de"
+        ? "Sie können es morgen ohne Weiteres erneut versuchen."
+        : "You can simply try again tomorrow." %>
+    </p>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

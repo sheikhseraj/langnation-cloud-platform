@@ -1,0 +1,460 @@
+<%#
+  Attendance: the term as a list of dates to tick off.
+
+  ── What this adds ──────────────────────────────────────────────────
+
+  Taking a register already existed, one date at a time, reached from a
+  batch page or from the schedule. What did not exist was the question
+  a teacher actually asks — which dates have I done, and which do I
+  still owe. Neither of the other two pages answers it: one shows a row
+  of counts per lesson and leaves the arithmetic to the reader, the
+  other spans every batch and only lists what has already happened.
+
+  So this is a view over what is already recorded, not a second way of
+  recording anything. Every date links to the same register screen,
+  which remains the only thing that writes a mark.
+
+  ── Why what is owed comes first ────────────────────────────────────
+
+  Because a list of dates in order buries it. A teacher who has taught
+  thirty classes and missed two registers wants those two, and reading
+  down thirty rows to find them is how they stay missed.
+
+  ── Why a date with marks on it is not always "done" ────────────────
+
+  A student clicking join writes an attendance row. A lesson four
+  people joined has four marks on it and no register: nobody decided
+  anything, and the three who did not turn up are not recorded as
+  absent. Before migration 25 there is no way to tell the two apart, so
+  such a date is called "marked" rather than "done" and still offers to
+  be opened.
+%>
+<%
+  const zone = (tz) => tz || "Europe/Berlin";
+
+  const day = (v, tz) => new Date(v).toLocaleDateString("en-GB", {
+    weekday: "short", day: "numeric", month: "short", timeZone: zone(tz),
+  });
+  const clock = (v, tz) => new Date(v).toLocaleTimeString("en-GB", {
+    hour: "2-digit", minute: "2-digit", timeZone: zone(tz),
+  });
+  const iso = (v) => String(v).slice(0, 10);
+
+  // One word per state, and the tone it is said in.
+  const SAY = {
+    done:      { label: "Done",     tone: " pill-live" },
+    marked:    { label: "Marks only", tone: "" },
+    pending:   { label: "Not taken", tone: " pill-bad" },
+    upcoming:  { label: "To come",  tone: "" },
+    cancelled: { label: "Called off", tone: " pill-off" },
+  };
+
+  const owedRows = lessons.filter((l) => l.state === "pending");
+  const doneRows = lessons.filter((l) => l.state === "done" || l.state === "marked");
+  const soon = lessons.filter((l) => l.state === "upcoming")
+    .slice()
+    .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
+
+  /* Two lists, in two cards, and that is the whole point.
+
+     They were one: everything coming, ascending, then everything past,
+     descending. Each half was in order and the join between them was
+     not — the dates ran September, October, then September again, and
+     it read as a sorting bug. It was not, but a table nobody can
+     believe is a table nobody can use.
+
+     So: what is coming, soonest first; what is behind, most recent
+     first; a heading on each saying which. The same shape the schedule
+     uses, for the same reason.
+
+     The window narrows both and never what is owed: a register missed
+     two months ago is exactly the one that must not scroll off. */
+  const when = (l) => new Date(l.starts_at).getTime();
+  const now = Date.now();
+  const span = weeks * 7 * 86400000;
+
+  const inWindow = lessons.filter((l) => Math.abs(when(l) - now) <= span);
+  const ahead = inWindow.filter((l) => when(l) >= now).sort((a, b) => when(a) - when(b));
+  const behind = inWindow.filter((l) => when(l) < now).sort((a, b) => when(b) - when(a));
+
+  /* The class about to be taught, and the one just taught.
+     Those are the two rows somebody opens this page for, and in a
+     column of a dozen dates they look like all the others. The first
+     row of each card IS the one — the lists are sorted outwards from
+     now — so it is marked rather than searched for. */
+  const nextUp = ahead[0] || null;
+  const lastUp = behind[0] || null;
+
+  // Today in the batch's own zone, so "today" means the day the class
+  // is on and not the day the server is having.
+  const dayKey = (v, tz) => new Intl.DateTimeFormat("en-CA", {
+    timeZone: zone(tz), year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date(v));
+  const isToday = (l) => dayKey(l.starts_at, l.timezone) === dayKey(new Date(), l.timezone);
+
+  const todayRows = lessons.filter(isToday).sort((a, b) => when(a) - when(b));
+
+  /* Three lists, one at a time.
+
+     They were two, side by side. The page is capped at --wrap, so each
+     half got about 370px however wide the screen was, and a table of
+     dates in 370px is a column of wrapped headings. Stacking them put
+     the join back — the join that read as a sorting fault in the
+     first place.
+
+     A segmented control instead. One list gets the whole width, the
+     order they run in is never in question because only one is on
+     screen, and "today" stops being a row to find among thirty and
+     becomes a place to go. Coming first, then today, then behind. */
+  const PANES = [
+    {
+      key: "next",
+      label: "Next",
+      rows: ahead,
+      head: "Next " + weeks + " weeks",
+      none: "No classes in the next " + weeks + " weeks.",
+      note: "A register can be taken once the class has started, so these have no button yet.",
+    },
+    {
+      key: "today",
+      label: "Today",
+      rows: todayRows,
+      head: "Today",
+      none: "No class today.",
+      note: "",
+    },
+    {
+      key: "past",
+      label: "Previous",
+      rows: behind,
+      head: "Previous " + weeks + " weeks",
+      none: "No classes in the last " + weeks + " weeks. Anything still to take is listed above whatever the window says.",
+      note: "",
+    },
+  ];
+  const pane = PANES.find((p) => p.key === show) || PANES[0];
+
+  // Every control keeps the others: changing the window must not change
+  // which list is open, or the class.
+  //
+  // show is always carried, never left to the default. The default is
+  // whichever list has something in it today, so a link that omitted
+  // show would land somewhere that depends on the date.
+  const here = (over = {}) => {
+    const q = Object.assign({ batch: chosen && chosen.id, weeks, show }, over);
+    const parts = [];
+    if (q.weeks && q.weeks !== 2) parts.push("weeks=" + q.weeks);
+    if (q.show) parts.push("show=" + q.show);
+    if (q.batch) parts.push("batch=" + q.batch);
+    return "/teach/attendance" + (parts.length ? "?" + parts.join("&") : "");
+  };
+%>
+<%- include("../../partials/teach-shell-head", {
+  pageTitle: "Attendance",
+  pageLead: chosen
+    ? chosen.code + (chosen.course_title ? " · " + chosen.course_title : "")
+    : "Pick a class.",
+  nav: "attendance", teacher: teacher, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<% if (!batches.length) { %>
+  <div class="sp-card sp-wide">
+    <p class="sp-empty">
+      No classes are assigned to you yet. A register belongs to a class, so
+      this page has nothing to show until the office puts you on one.
+    </p>
+  </div>
+<% } else { %>
+
+  <form class="sp-card sp-wide" method="get" action="/teach/attendance">
+    <label class="field">
+      <span>Class</span>
+      <select name="batch" onchange="this.form.submit()">
+        <% batches.forEach(function (b) { %>
+          <option value="<%= b.id %>"<%= chosen && Number(b.id) === Number(chosen.id) ? " selected" : "" %>>
+            <%= b.code %><%= b.course_title ? " — " + b.course_title : "" %>
+          </option>
+        <% }); %>
+      </select>
+    </label>
+    <%# The button is what makes the dropdown work with no script. %>
+    <p style="margin:.7rem 0 0"><button class="btn btn-sm btn-ghost" type="submit">Show this class</button></p>
+  </form>
+
+  <% if (!chosen) { %>
+    <div class="sp-card sp-wide"><p class="sp-empty">Pick a class above.</p></div>
+  <% } else if (!lessons.length) { %>
+    <div class="sp-card sp-wide">
+      <p class="sp-empty">
+        <%= chosen.code %> has no lessons on the timetable yet, so there is
+        nothing to take a register for. The office sets the pattern that
+        creates them.
+      </p>
+    </div>
+  <% } else { %>
+
+    <%# ── What is owed, first ───────────────────────────────────────
+        A list in date order buries the two that were missed among the
+        thirty that were not. %>
+    <% if (owed) { %>
+      <div class="sp-card sp-wide att-owed">
+        <div class="sp-card-head">
+          <h2><%= owed %> <%= owed === 1 ? "register" : "registers" %> still to take</h2>
+          <span class="muted"><%= doneRows.length %> done</span>
+        </div>
+        <ul class="sp-list att-list">
+          <% owedRows.forEach(function (l) { %>
+            <li>
+              <div>
+                <strong><%= day(l.starts_at, l.timezone) %></strong>
+                <span class="muted"><%= clock(l.starts_at, l.timezone) %></span>
+                <div class="muted" style="font-size:.8rem">
+                  <%= l.title || "Lesson" %> ·
+                  <%= l.students %> <%= Number(l.students) === 1 ? "student" : "students" %>
+                </div>
+
+                <%# The other answer to "this one is still open".
+
+                    Every row here is a class that is behind with
+                    nothing marked on it, and until now the only thing
+                    on offer was to take its register — which assumes
+                    it happened. When it did not, the row stayed in
+                    this list for ever, because the only honest
+                    register for a class that did not happen is no
+                    register at all. Same control and same reasons as
+                    the schedule; this is just the other page that
+                    lists the same rows. %>
+                <div class="tl-changes">
+                  <details class="tl-change">
+                    <summary>It did not happen</summary>
+                    <form method="post" action="/teach/lesson/<%= l.id %>/cancel" class="tl-form tl-form-off">
+                      <%- include("../../partials/cancel-reason", { cancelReasons: cancelReasons }) %>
+                      <label class="field">
+                        <span>Anything to add</span>
+                        <input type="text" name="note" maxlength="<%= noteMax %>"
+                               placeholder="Nobody came, no notice given">
+                      </label>
+                      <button class="btn btn-sm btn-ghost" type="submit">Call this class off</button>
+                    </form>
+                  </details>
+                </div>
+              </div>
+              <div class="sp-list-end">
+                <a class="btn btn-sm" href="/teach/batch/<%= chosen.id %>/register?date=<%= iso(l.day) %>">
+                  Take it
+                </a>
+              </div>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } else { %>
+      <div class="sp-card sp-wide">
+        <p class="sp-empty">
+          Every class that has happened has a register against it. Nothing owed.
+        </p>
+      </div>
+    <% } %>
+
+    <%# ── Which dates ───────────────────────────────
+
+        The same control the homework screen uses to switch between
+        giving out and taking back, for the same reason: there are a
+        small number of them, they are alternatives, and the one you are
+        looking at should be readable without opening anything.
+
+        The count is on the segment because an empty list is worth
+        knowing about before clicking it. %>
+    <nav class="ad-mode att-mode" aria-label="Which dates to show">
+      <% PANES.forEach(function (p) { %>
+        <% if (p.key === show) { %>
+          <%# A span and not a link: it goes nowhere, and a link to the
+              page you are on is a link that does nothing. %>
+          <span class="ad-mode-btn is-on" aria-current="true">
+            <%= p.label %>
+            <span class="att-mode-n"><%= p.rows.length %></span>
+          </span>
+        <% } else { %>
+          <a class="ad-mode-btn" href="<%= here({ show: p.key }) %>">
+            <%= p.label %>
+            <span class="att-mode-n"><%= p.rows.length %></span>
+          </a>
+        <% } %>
+      <% }); %>
+    </nav>
+
+    <div class="sp-card sp-wide">
+      <div class="sp-card-head">
+        <h2><%= pane.head %></h2>
+        <span class="muted">
+          <% if (show === "today") { %>
+            <% const owedHere = todayRows.filter((l) => l.state === "pending").length; %>
+            <% if (owedHere) { %><%= owedHere %> still to mark<% } %>
+          <% } else { %>
+            <%# The window means nothing to a list of one day. %>
+            <%- include("../../partials/teach-weeks", {
+              weeks: weeks, weekChoices: weekChoices, only: chosen.id,
+              show: show, base: "/teach/attendance",
+            }) %>
+          <% } %>
+        </span>
+      </div>
+
+      <% if (!pane.rows.length) { %>
+        <p class="sp-empty">
+          <%= pane.none %>
+          <% if (show === "today") { %>
+            <a href="<%= here({ show: "next" }) %>">See what is coming</a>.
+          <% } else if (show === "next") { %>
+            Widen the window above, or see the whole timetable on
+            <a href="/teach/schedule?batch=<%= chosen.id %>">your schedule</a>.
+          <% } %>
+        </p>
+      <% } else { %>
+        <div class="table-scroll">
+          <table class="sp-table sp-table-narrow att-table">
+            <thead>
+              <%# Three columns and not six.
+
+                  "Here" and "Missing" were columns of their own. They
+                  wrapped their headings, and a teacher scanning for
+                  undone dates reads the Register column. They are under
+                  the date now, where they read as a sentence. %>
+              <tr>
+                <th style="width:2.4rem"></th>
+                <th>Date</th>
+                <th>Register</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% pane.rows.forEach(function (l) { %>
+                <%
+                  const say = SAY[l.state] || SAY.upcoming;
+                  const shut = l.state === "cancelled";
+                  const settled = l.state === "done" || l.state === "marked";
+                  // The class about to be taught and the one just
+                  // taught are the two rows somebody opens this page
+                  // for, and in a column of a dozen dates they look
+                  // like all the others.
+                  const lead = l === nextUp || l === lastUp;
+                %>
+                <%# The unescaped output tag, not the escaping one. An
+                    attribute written through the escaping tag arrives
+                    as class=&#34;…&#34; — present in the HTML, matched by
+                    a test looking for the class name, and styling
+                    nothing at all. EJS will not take the tag markers
+                    themselves inside a comment, hence the words. %>
+                <tr<%- lead ? ' class="att-lead"' : "" %>>
+                  <td>
+                    <%# The tick box, which is what makes this a term to
+                        work through rather than a report. Drawn rather
+                        than a real checkbox: nothing here is submitted,
+                        and a checkbox that does not tick when pressed
+                        is worse than a picture of one. %>
+                    <span class="att-box<%= settled ? " is-done" : shut ? " is-off" : "" %>" aria-hidden="true">
+                      <% if (settled) { %>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+                      <% } else if (shut) { %>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg>
+                      <% } %>
+                    </span>
+                  </td>
+                  <td>
+                    <strong><%= day(l.starts_at, l.timezone) %></strong>
+                    <%# Said on the row rather than only drawn, so it
+                        reaches somebody reading this out loud and
+                        somebody who cannot see the marker. %>
+                    <% if (lead) { %>
+                      <span class="att-lead-tag"><%=
+                        isToday(l) ? "today" : l === nextUp ? "next" : "latest"
+                      %></span>
+                    <% } %>
+                    <div class="muted" style="font-size:.8rem">
+                      <%= clock(l.starts_at, l.timezone) %>
+                      <% if (l.title) { %> · <%= l.title %><% } %>
+                      <% if (settled) { %>
+                        <br><%= l.attended %> here<% if (Number(l.absent)) { %>,
+                        <strong><%= l.absent %> missing</strong><% } %>
+                      <% } %>
+                    </div>
+                  </td>
+                  <td><span class="pill<%= say.tone %>"><%= say.label %></span></td>
+                  <td style="text-align:right;white-space:nowrap">
+                    <%# A called-off class has nobody to mark, and one
+                        that has not happened yet cannot be marked in
+                        advance without inviting somebody to guess. %>
+                    <% if (!shut && l.state !== "upcoming") { %>
+                      <a class="btn btn-sm<%= settled ? " btn-ghost" : "" %>"
+                         href="/teach/batch/<%= chosen.id %>/register?date=<%= iso(l.day) %>">
+                        <%= settled ? "Open" : "Take it" %>
+                      </a>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+
+        <% if (pane.note) { %>
+          <p class="muted" style="font-size:.85rem;margin-bottom:0"><%= pane.note %></p>
+        <% } else { %>
+          <p class="muted" style="font-size:.85rem;margin-bottom:0">
+            A date counts as done once a person has taken the register.
+            <strong>Marks only</strong> means somebody joined the room and nobody
+            wrote it down — the people who did not turn up are not recorded,
+            which is the one thing a register is for.
+          </p>
+        <% } %>
+      <% } %>
+    </div>
+
+    <%# ── Who is drifting ──────────────────────────────────────────
+        The register is the input; this is what it is for. %>
+    <% if (summary.length) { %>
+      <div class="sp-card sp-wide">
+        <div class="sp-card-head">
+          <h2>How the class is attending</h2>
+          <a href="/teach/batch/<%= chosen.id %>">The class list</a>
+        </div>
+        <ul class="sp-list att-list">
+          <% summary.slice(0, 20).forEach(function (r) { %>
+            <%
+              const seen = Number(r.present || 0) + Number(r.late || 0);
+              const of = seen + Number(r.absent || 0);
+              const pct = of ? Math.round((seen / of) * 100) : null;
+            %>
+            <li>
+              <div>
+                <strong><%= r.name %></strong>
+                <div class="muted" style="font-size:.8rem"><%= r.student_ref || "—" %></div>
+              </div>
+              <div class="sp-list-end">
+                <% if (pct === null) { %>
+                  <span class="muted" style="font-size:.82rem">no register yet</span>
+                <% } else { %>
+                  <span class="hw-badge<%= pct >= 80 ? " is-good" : pct >= 60 ? " is-ok" : " is-poor" %>">
+                    <%= pct %>%
+                  </span>
+                  <span class="muted" style="font-size:.76rem"><%= seen %> of <%= of %></span>
+                <% } %>
+              </div>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <% if (soon.length) { %>
+      <p class="muted" style="font-size:.85rem">
+        Next class: <%= day(soon[0].starts_at, soon[0].timezone) %>
+        at <%= clock(soon[0].starts_at, soon[0].timezone) %>.
+        A register can be taken once it has started.
+      </p>
+    <% } %>
+  <% } %>
+<% } %>
+
+<%- include("../../partials/teach-shell-foot") %>

@@ -1,0 +1,28 @@
+<%
+ const started=all.filter(i=>i.mark).length,finished=all.filter(i=>i.mark==='done').length;
+ const totalQuestions=all.reduce((n,i)=>n+Number(i.total||0),0),completedQuestions=all.reduce((n,i)=>n+Number(i.completed||0),0);
+ const groups=new Map();items.forEach(i=>{const key=i.batch_code||'—';if(!groups.has(key))groups.set(key,{code:i.batch_code,title:i.batch_code?(i.batch_code+(i.course_title?' — '+i.course_title:'')):'Für dich freigeschaltet',items:[]});groups.get(key).items.push(i);});
+ const href=i=>'/portal/lesen/'+i.id+'?'+new URLSearchParams(filters).toString();
+%>
+<%- include('../../partials/portal-shell-head',{pageTitle:'Lesetraining',pageLead:started+' von '+all.length+' begonnen'}) %>
+<link rel="stylesheet" href="/css/reading.css?v=<%= site.assetVersion %>">
+<div class="reading-library" lang="de">
+<section class="sp-card sp-wide hw-rank" aria-label="Dein Lesefortschritt"><div class="hw-rank-row">
+ <div class="hw-rank-left"><p class="hw-rank-label">Deine Lesetexte</p><div class="hw-rank-who"><span class="reading-summary-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15"/></svg></span><div><strong><%= finished %> von <%= all.length %></strong><p class="hw-rank-note">Lesetexte abgeschlossen</p></div></div></div>
+ <div class="hw-rank-box"><p class="hw-rank-label">Dein Fortschritt</p><div class="hw-rank-bar" role="progressbar" aria-label="Abgeschlossene Leseaufgaben" aria-valuemin="0" aria-valuemax="<%= totalQuestions %>" aria-valuenow="<%= completedQuestions %>"><span style="width:<%= totalQuestions?Math.min(100,Math.round(completedQuestions/totalQuestions*100)):0 %>%"></span></div><p class="hw-rank-note"><strong><%= completedQuestions %></strong> von <%= totalQuestions %> Aufgaben abgeschlossen</p></div>
+</div></section>
+<form method="get" class="sp-card sp-wide hw-filter reading-library-filter">
+ <label class="field hw-filter-course"><span>Course</span><select name="course"><option value="">All my courses</option><% [...new Set(all.map(i=>i.batch_code||'—'))].forEach(c=>{ %><option value="<%= c %>" <%= filters.course===c?'selected':'' %>><%= c==='—'?'Set for you':c %></option><% }) %></select></label>
+ <div class="hw-filter-row"><label class="field"><span>Level</span><select name="level"><option value="">All levels</option><% ['A1','A2','B1','B2','C1','C2'].forEach(l=>{ %><option <%= filters.level===l?'selected':'' %>><%= l %></option><% }) %></select></label></div>
+ <div class="hw-filter-go"><button class="btn" type="submit">Filter</button><a class="btn btn-ghost" href="/portal/lesen">Zurücksetzen</a><span class="hw-filter-sum"><%= items.length %> <%= items.length===1?'Lesetext':'Lesetexte' %></span></div>
+</form>
+<% if(!items.length){ %><div class="sp-card"><p class="sp-empty"><%= all.length?'Keine Lesetexte für diese Auswahl. Setze die Filter zurück.':'Noch keine Lesetexte. Deine freigeschalteten Texte erscheinen hier.' %></p></div><% } %>
+<% groups.forEach(group=>{ %><section class="sp-card sp-wide"><div class="sp-card-head"><h2><%= group.title %></h2><%- include('../../partials/batch-code',{code:group.code}) %></div>
+ <ul class="sp-list hw-index"><% group.items.forEach(i=>{ %><li class="reading-lesson-card">
+  <span class="hw-tick <%= i.mark?'is-'+i.mark:'' %>" aria-hidden="true"><% if(i.mark==='done'){ %><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg><% } %></span>
+  <div><strong><a href="<%= href(i) %>"><%= i.title %></a></strong><p class="reading-index-meta"><%= i.total %> Aufgaben · <%= i.level %><%= i.estimatedMinutes?' · ca. '+i.estimatedMinutes+' Min.':'' %> · <%= Number(i.is_required)?'Pflicht':'Optional' %></p><% if(i.due_on){ %><p class="reading-index-meta">Fällig: <%= new Date(i.due_on).toLocaleDateString('de-DE',{timeZone:'Europe/Berlin'}) %></p><% } %></div>
+  <div class="sp-list-end"><% if(i.mark){ %><span class="hw-badge"><%= i.completed||0 %>/<%= i.total %></span><% } %><a class="btn btn-ghost btn-sm" href="<%= href(i) %>"><%= i.mark==='done'?'Noch einmal':i.mark?'Weiterlernen':'Starten' %></a></div>
+ </li><% }) %></ul>
+</section><% }) %>
+</div>
+<%- include('../../partials/portal-shell-foot') %>

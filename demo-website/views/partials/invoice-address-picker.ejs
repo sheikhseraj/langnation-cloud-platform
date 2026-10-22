@@ -1,0 +1,23 @@
+<%
+ const d=addressDetails||{},office=!!locals.officeRequest,r=locals.officeRequest||{};
+ const defaultKind=office?r.wanted_recipient:(d.company&&d.companyAddress?'company':'student');
+ const val=locals.requestValues||{},kind=val.recipient||defaultKind;
+ const hasSaved=kind==='company'?!!(d.company&&d.companyAddress):!!d.personalAddress;
+ const source=val.address_source||(office?'requested':hasSaved?'saved':'manual');
+ const chosenAddress=source==='requested'?r.wanted_address:source==='saved'?(kind==='company'?d.companyAddress:d.personalAddress):(val.address||'');
+ const chosenCompany=source==='requested'&&r.wanted_recipient==='company'?r.wanted_name:(val.company||d.company||'');
+%>
+<fieldset data-invoice-address-picker data-company="<%= d.company||'' %>" data-wanted-recipient="<%= r.wanted_recipient||'' %>" data-wanted-name="<%= r.wanted_name||'' %>" data-wanted-address="<%= r.wanted_address||'' %>">
+ <label class="field">Wanted address on invoice<select name="recipient" data-address-kind>
+  <option value="student" data-address="<%= d.personalAddress||'' %>"<%- kind==='company'?'':' selected' %>>Personal address</option>
+  <option value="company" data-address="<%= d.companyAddress||'' %>"<%- kind==='company'?' selected':'' %>>Company address</option>
+ </select></label>
+ <label class="field">Use address<select name="address_source" data-address-source>
+  <% if(office){ %><option value="requested"<%- source==='requested'?' selected':'' %>>Address submitted by student</option><% } %>
+  <option value="saved"<%- source==='saved'?' selected':'' %>>Saved address from account</option>
+  <option value="manual"<%- source==='manual'?' selected':'' %>>Enter or correct address</option>
+ </select></label>
+ <label class="field" data-address-company>Company name<input type="text" name="company" maxlength="200" value="<%= chosenCompany %>" autocomplete="organization"></label>
+ <label class="field">Complete address<textarea name="address" rows="5" maxlength="400" required autocomplete="street-address"><%= chosenAddress||'' %></textarea></label>
+ <p class="muted" data-address-hint>Saved addresses require no typing. If an address is missing, select “Enter or correct address”.</p>
+</fieldset>

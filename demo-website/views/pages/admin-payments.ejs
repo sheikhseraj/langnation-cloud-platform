@@ -1,0 +1,172 @@
+<%
+  const money = (c, cur) => new Intl.NumberFormat("en-GB", {
+    style: "currency", currency: cur || "EUR",
+  }).format((Number(c) || 0) / 100);
+  const day = (v) => (v
+    ? new Date(`${v}T00:00:00Z`).toLocaleDateString("en-GB", {
+        day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
+    : "—");
+  const link = (opts = {}) => {
+    const p = new URLSearchParams();
+    if (opts.show && opts.show !== "all") p.set("show", opts.show);
+    if (opts.q) p.set("q", opts.q);
+    const s = p.toString();
+    return "/admin/payments" + (s ? "?" + s : "");
+  };
+  const TONE = { overdue: " pill-bad", paid: " pill-live" };
+  const DO = { none: "Set up", draft: "Finish it" };
+  const TABS = [
+    ["all", "All"], ["overdue", "Overdue"], ["drafted", "Drafted"],
+    ["part_paid", "Partly paid"], ["pending", "Pending"], ["paid", "Paid"],
+    ["unbilled", "Not billed"],
+  ];
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Payments", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "payments" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Payments",
+      adCrumbs: [{ label: "Admin", href: "/admin/dashboard" }, { label: "Payments" }],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (!dbOk) { %>
+        <p class="notice notice-bad">
+          The database is unreachable, so no money can be listed. This is not the
+          same as there being none.
+        </p>
+      <% } %>
+      <% if (done) { %><p class="notice notice-ok"><%= done %></p><% } %>
+      <% if (problem) { %><p class="notice notice-bad"><%= problem %></p><% } %>
+
+      <%#
+        The four figures the office actually asks for. Summed from the
+        same rows the table below lists, through the same function the
+        student's own page uses — so a tile can never disagree with its
+        own list, and the admin can never disagree with the student.
+      %>
+      <div class="ad-tiles">
+        <div class="ad-tile">
+          <span class="ad-tile-n"><%= money(totals.outstanding) %></span>
+          <span class="ad-tile-l">outstanding</span>
+        </div>
+        <a class="ad-tile<%= totals.overdue ? " is-live" : "" %>" href="<%= link({ show: "overdue" }) %>">
+          <span class="ad-tile-n"><%= money(totals.overdue) %></span>
+          <span class="ad-tile-l">overdue</span>
+        </a>
+        <div class="ad-tile">
+          <span class="ad-tile-n"><%= money(totals.dueSoon) %></span>
+          <span class="ad-tile-l">due within <%= 14 %> days</span>
+        </div>
+        <div class="ad-tile">
+          <span class="ad-tile-n"><%= money(totals.paidThisMonth) %></span>
+          <span class="ad-tile-l">settled this month</span>
+        </div>
+      </div>
+
+      <%# The same chips and the same search row the Students page
+          uses. Two pages in one back office that filter a list should
+          not each have their own idea of what a filter looks like. %>
+      <nav class="chips" aria-label="Payment sections" style="margin-bottom:1rem"><a class="chip" href="/admin/payments" aria-current="page">Payments</a><a class="chip" href="/admin/payments/address-requests">Invoice address requests</a></nav>
+      <div class="filters">
+        <div class="filter-group">
+          <span>Show</span>
+          <div class="chips">
+            <% TABS.forEach(function (t) { %>
+              <a class="chip" href="<%= link({ show: t[0], q: q }) %>"
+                 aria-pressed="<%= filter === t[0] ? "true" : "false" %>">
+                <%= t[1] %> (<%= counts[t[0]] %>)
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+
+      <form method="get" action="/admin/payments"
+            class="row" style="gap:.6rem;align-items:flex-end;margin-bottom:1.25rem;flex-wrap:wrap">
+        <% if (filter !== "all") { %><input type="hidden" name="show" value="<%= filter %>"><% } %>
+        <label class="field" style="flex:1 1 18rem;margin:0">
+          <span>Search</span>
+          <input type="search" name="q" value="<%= q %>"
+                 placeholder="Student, reference or course">
+        </label>
+        <button class="btn btn-sm btn-ghost" type="submit">Search</button>
+        <% if (q || filter !== "all") { %>
+          <a class="btn btn-sm btn-ghost" href="/admin/payments">Clear</a>
+        <% } %>
+      </form>
+
+      <% if (!rows.length) { %>
+        <p class="sp-empty">
+          <% if (q) { %>
+            Nobody matches “<%= q %>”.
+          <% } else if (filter !== "all") { %>
+            Nothing here. That is the good kind of empty.
+          <% } else { %>
+            No enrolments yet, so there is nothing to bill for.
+          <% } %>
+        </p>
+      <% } else { %>
+        <%# The list is capped and scrolls inside itself, with the
+            headings pinned. Eleven students fit on a screen; three
+            hundred would be a page nobody reaches the bottom of, and
+            the filters and search above have to stay in sight to be
+            any use. %>
+        <div class="ad-card">
+          <div class="table-scroll pay-scroll">
+            <table class="sp-table">
+              <thead>
+                <tr>
+                  <th>Student</th><th>Course</th>
+                  <th style="text-align:right">Fee</th>
+                  <th style="text-align:right">Paid</th>
+                  <th style="text-align:right">Remaining</th>
+                  <th>Next due</th><th>Status</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% rows.forEach(function (r) { %>
+                  <tr>
+                    <td>
+                      <strong><%= r.student %></strong>
+                      <% if (r.ref) { %><div class="muted" style="font-size:.8rem"><%= r.ref %></div><% } %>
+                    </td>
+                    <td>
+                      <%= r.label %>
+                      <% if (r.batch) { %><div class="muted" style="font-size:.8rem"><%= r.batch %></div><% } %>
+                    </td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums"><%= money(r.total, r.currency) %></td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums"><%= money(r.paid, r.currency) %></td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums"><%= money(r.owed, r.currency) %></td>
+                    <td><%= r.next ? day(r.next.due) : "—" %></td>
+                    <td><span class="pill<%= TONE[r.state] || "" %>"><%= label[r.state] %></span></td>
+                    <td style="text-align:right">
+                      <a class="btn btn-sm" href="/admin/payments/s/<%= r.studentId %>?course=<%= r.enrolmentId %>">
+                        <%= DO[r.state] || "Manage" %>
+                      </a>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% } %>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

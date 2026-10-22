@@ -1,0 +1,309 @@
+<%#
+  The invoice itself, as a document.
+
+  One partial, used by the office and by the student and by whatever
+  prints it, so there is exactly one rendering of what somebody owes.
+  Two templates showing the same invoice would eventually show
+  different numbers, and the one people believe is whichever they
+  happened to open.
+
+  Bilingual throughout, German first, because the invoice is issued in
+  Germany and the student may be neither German nor English speaking —
+  both labels together ask nobody to guess.
+
+  Expects: bill (from lib/billing.invoice), site. Optionally plan — the
+  instalment schedule this invoice belongs to.
+%>
+<%
+  /* German formatting, because it is a German invoice: 1.234,56 and
+     02.10.2026. Not a style choice -- it is what the reader and their
+     accountant expect to see. */
+  const eur = (c) => new Intl.NumberFormat("de-DE", {
+    minimumFractionDigits: 2, maximumFractionDigits: 2,
+  }).format((Number(c) || 0) / 100);
+  const de = (v) => {
+    if (!v) return "";
+    const iso = v instanceof Date
+      ? `${v.getFullYear()}-${String(v.getMonth() + 1).padStart(2, "0")}-${String(v.getDate()).padStart(2, "0")}`
+      : String(v).slice(0, 10);
+    const d = new Date(`${iso}T00:00:00Z`);
+    return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString("de-DE", {
+      day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" });
+  };
+
+  const STATUS = {
+    paid: "BEZAHLT / PAID",
+    overdue: "ÜBERFÄLLIG / OVERDUE",
+    due: "OFFEN / UNPAID",
+    upcoming: "OFFEN / UNPAID",
+    draft: "ENTWURF / DRAFT",
+    void: "STORNIERT / CANCELLED",
+    credit: "GUTSCHRIFT / CREDIT NOTE",
+  };
+  /* The instalment vocabulary, which is not the invoice's. An invoice
+     is OFFEN or BEZAHLT; a row in a schedule is pending, upcoming or
+     overdue, and calling the third of those "unpaid" says nothing
+     about whether anybody is late. */
+  const PLAN = {
+    paid: "BEZAHLT / PAID",
+    overdue: "ÜBERFÄLLIG / OVERDUE",
+    due: "OFFEN / PENDING",
+    upcoming: "ANSTEHEND / UPCOMING",
+    draft: "ENTWURF / DRAFT",
+    void: "STORNIERT / CANCELLED",
+    credit: "GUTSCHRIFT / CREDIT NOTE",
+  };
+
+  /* Partly paid and late are two different facts and an invoice can
+     be both. Saying only the first was the wrong half: "partially
+     paid" reads as reassurance, and the reader is being told nothing
+     about the one thing they have to act on. Late leads, and the
+     stamp carries late's colour. */
+  const part = bill.paidCents > 0 && bill.owedCents > 0;
+  const late = bill.state === "overdue";
+  const statusWord = part
+    ? (late ? "ÜBERFÄLLIG, TEILWEISE BEZAHLT / OVERDUE, PARTIALLY PAID"
+            : "TEILWEISE BEZAHLT / PARTIALLY PAID")
+    : (STATUS[bill.state] || STATUS.due);
+  const statusKey = part ? (late ? "overdue" : "part") : bill.state;
+
+  /* Frozen on the invoice, with the current settings only as a
+     fallback for one that was issued before any of this existed. */
+  const iss = site.invoice.issuer;
+  /* The registered entity, never the trading name: the mark above
+     already says who the school is, and this line is the one the tax
+     office reads. Blank when nobody has supplied it. */
+  const sellerName = bill.seller_name || iss.legal;
+  /* country defaults to "Germany", so joining it with whatever else
+     happens to be set produced an address reading exactly "Germany" --
+     and because that is a non-empty string the gap marker never
+     appeared. A country on its own is not an address. The street and
+     the town decide whether there is one. */
+  const where = [iss.street, [iss.postcode, iss.city].filter(Boolean).join(" ")]
+    .map((x) => String(x || "").trim()).filter(Boolean);
+  const sellerAddr = bill.seller_address
+    || (where.length ? where.concat([iss.country].filter(Boolean)).join(", ") : "");
+  const sellerTax = bill.seller_tax_id || iss.taxNumber || iss.vatId;
+  const billName = bill.billing_name || bill.student_name;
+  const billAddr = String(bill.billing_address || '').trim();
+
+  /* Cash in hand needs no bank details, and printing "please transfer"
+     under a settled invoice is the one line that makes somebody pay
+     twice. */
+  const settled = bill.owedCents <= 0;
+  const byCash = (bill.payments || []).some((p) => p.method === "cash" && !p.reversed_by);
+  const lastPaid = (bill.payments || []).filter((p) => !p.reverses_id && !p.reversed_by).pop();
+%>
+<article class="inv">
+
+  <% if (!site.invoiceReady) { %>
+    <p class="inv-muster">
+      MUSTER / SAMPLE — die gesetzlichen, steuerlichen und Bankdaten von LangNation
+      sind noch nicht hinterlegt.
+      Replace the placeholders with LangNation's actual legal, tax and banking details.
+    </p>
+  <% } %>
+
+  <% if(bill.address_revision){ %><p class="inv-version">Version <%= bill.address_revision %><% if(bill.address_revision>1){ %> · Adressberichtigung / Address correction · <%= de(bill.address_corrected_at) %><br>Diese Fassung ersetzt alle früheren Kopien dieser Rechnung. / This version supersedes all previous copies of this invoice.<% } %></p><% } %>
+  <header class="inv-top">
+    <%# The delivered lockup, as artwork rather than as a crest beside
+        live text.
+
+        The header does the opposite, and for a reason that does not
+        reach here: at the 60px it gives the mark, the artwork's
+        tagline lands at 13px and its motto at 6.9px. On A4 the lockup
+        is about 55mm wide and the tagline is roughly 7pt, which is a
+        footnote and perfectly readable on paper.
+
+        This is also the one page in the application that leaves it. A
+        web font that fails to load on screen is a different typeface;
+        on a document going to a bank or a Jobcenter it is a different
+        letter. The school's own file is what prints.
+
+        Built by tools/build-lockup.js. The light version in both
+        themes: the invoice is a white page whatever the screen around
+        it is doing, and the white-on-navy mark would print as
+        nothing. %>
+    <img class="inv-lockup"
+         src="/icons/lockup-560.webp?v=<%= site.assetVersion %>"
+         srcset="/icons/lockup-560.webp?v=<%= site.assetVersion %> 1x, /icons/lockup-1120.webp?v=<%= site.assetVersion %> 2x"
+         width="560" height="130" alt="LangNation — Sprachschule, Deutschland"
+         decoding="async">
+    <div class="inv-id">
+      <h1>RECHNUNG <span>/ INVOICE</span></h1>
+      <span class="inv-status is-<%= statusKey %>"><%= statusWord %></span>
+    </div>
+  </header>
+
+  <section class="inv-parties">
+    <div>
+      <h2>Rechnungssteller <span>/ Issuer</span></h2>
+      <%# Two different things, and a German invoice wants both: the
+          name over the door, which never changes, and the registered
+          legal entity behind it, which is the one §14 UStG asks for.
+          The first is fixed here; only the second is configured. %>
+      <p><strong>LangNation</strong></p>
+      <% if (sellerName) { %><p><%= sellerName %></p>
+      <% } else { %><p class="inv-gap">[Registrierter Name / Registered legal name]</p><% } %>
+      <% if (sellerAddr) { %><p><%= sellerAddr %></p>
+      <% } else { %><p class="inv-gap">[Straße, PLZ, Ort / Street, postcode, city]</p><% } %>
+      <% if (sellerTax) { %><p>Steuernummer / Tax no.: <%= sellerTax %></p>
+      <% } else { %><p class="inv-gap">[Steuernummer / Tax number]</p><% } %>
+      <p>E-Mail / Email: <%= site.contact.email %></p>
+      <p>Web: <%= String(site.origin || "").replace(/^https?:\/\//, "") %></p>
+    </div>
+    <div>
+      <h2>Rechnung an <span>/ Bill to</span></h2>
+      <p><strong><%= billName %></strong></p>
+      <% if (bill.student_ref) { %><p>Student ID: <%= bill.student_ref %></p><% } %>
+      <% if (billAddr) { %><p class="inv-address"><%= billAddr %></p><% }else{ %><p class="inv-gap">Adresse bei Ausstellung nicht hinterlegt / Address not recorded at issue.</p><% } %>
+    </div>
+  </section>
+
+  <section class="inv-meta">
+    <div><span>Rechnungsnummer <i>/ Invoice number</i></span><strong><%= bill.number || "—" %></strong></div>
+    <div><span>Rechnungsdatum <i>/ Invoice date</i></span><strong><%= de(bill.issued_on) || "—" %></strong></div>
+    <div><span>Fällig am <i>/ Due date</i></span><strong><%= de(bill.due_on) || "—" %></strong></div>
+    <div><span>Zahlungsdatum <i>/ Payment date</i></span><strong><%= de(bill.paid_on) || "—" %></strong></div>
+  </section>
+
+  <h2 class="inv-h">Leistungen <span>/ Services</span></h2>
+  <table class="inv-lines">
+    <thead>
+      <tr>
+        <th class="inv-pos">Pos.</th>
+        <th>Beschreibung <i>/ Description</i></th>
+        <th class="inv-num">Menge <i>/ Qty</i></th>
+        <th class="inv-num">Einzelpreis <i>/ Unit price</i></th>
+        <th class="inv-num">Betrag <i>/ Amount</i></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% const rows = bill.items.length ? bill.items : [{
+           description: (bill.course_title || "Course fee") + (bill.batch_code ? " · " + bill.batch_code : ""),
+           quantity: 1, unit_price: bill.total, unitPriceCents: bill.totalCents, amountCents: bill.totalCents,
+         }]; %>
+      <% rows.forEach(function (it, n) { %>
+        <tr>
+          <td class="inv-pos" data-label="Pos."><%= n + 1 %></td>
+          <td data-label="Beschreibung / Description" data-invoice-description><%= it.description %></td>
+          <td class="inv-num" data-label="Menge / Qty"><%= Number(it.quantity || 1) %></td>
+          <td class="inv-num" data-label="Einzelpreis / Unit price"><%= eur(it.unitPriceCents ?? (it.unit_price != null ? Math.round(Number(it.unit_price)*100) : Math.round(it.amountCents/Number(it.quantity||1)))) %></td>
+          <td class="inv-num" data-label="Betrag / Amount"><%= eur(it.amountCents) %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <table class="inv-totals">
+    <tbody>
+      <tr><td>Zwischensumme <i>/ Subtotal</i></td><td><%= eur(bill.totalCents) %></td></tr>
+      <tr>
+        <td>MwSt. <i>/ VAT</i><% if (!site.invoiceReady) { %><sup>*</sup><% } %>
+          <% if (site.invoice.taxPercent) { %> (<%= site.invoice.taxPercent %>%)<% } %></td>
+        <td><%= eur(Math.round(bill.totalCents * (site.invoice.taxPercent / 100))) %></td>
+      </tr>
+      <tr class="inv-grand"><th>Gesamtbetrag <i>/ Total</i></th><th><%= eur(bill.totalCents) %></th></tr>
+      <tr><td>Bereits bezahlt <i>/ Amount paid</i></td><td><%= eur(bill.paidCents) %></td></tr>
+      <tr class="inv-owed"><th>Offener Betrag <i>/ Balance due</i></th><th><%= eur(bill.owedCents) %></th></tr>
+    </tbody>
+  </table>
+
+  <h2 class="inv-h">Zahlungsinformation <span>/ Payment information</span></h2>
+  <% if (settled) { %>
+    <div class="inv-pay">
+      <p>
+        <span>Zahlungsart / Payment method:</span>
+        <strong><%= byCash ? "Barzahlung / Cash" : "Banküberweisung / Bank transfer" %></strong>
+      </p>
+      <% if (lastPaid) { %>
+        <p><span>Zahlungsdatum / Payment date:</span> <strong><%= de(lastPaid.received_on) %></strong></p>
+      <% } %>
+      <p><span>Status:</span> <strong>Vollständig bezahlt / Paid in full</strong></p>
+      <p class="inv-thanks">Vielen Dank für Ihre Zahlung. / Thank you for your payment.</p>
+    </div>
+  <% } else { %>
+    <div class="inv-pay">
+      <p>
+        Bitte überweisen Sie den offenen Betrag bis zum <strong><%= de(bill.due_on) || "—" %></strong>.
+        / Please transfer the outstanding amount by <strong><%= de(bill.due_on) || "—" %></strong>.
+      </p>
+      <% if (site.bankReady) { %>
+        <p><span>Bank:</span> <strong><%= site.invoice.bank.name %></strong></p>
+        <p><span>IBAN:</span> <strong><%= site.invoice.bank.iban %></strong></p>
+        <% if (site.invoice.bank.bic) { %><p><span>BIC:</span> <strong><%= site.invoice.bank.bic %></strong></p><% } %>
+      <% } else { %>
+        <p class="inv-gap">[Bank, IBAN und BIC sind noch nicht hinterlegt / bank details not yet configured]</p>
+      <% } %>
+      <%# The reference carries the invoice number, which is what lets
+          a transfer be matched to an account without anybody guessing. %>
+      <p>
+        <span>Verwendungszweck / Reference:</span>
+        <strong><%= bill.number || "—" %><% if (billName) { %> · <%= billName %><% } %></strong>
+      </p>
+    </div>
+  <% } %>
+
+  <% if (bill.tax_note) { %>
+    <p class="inv-foot"><%= bill.tax_note %></p>
+  <% } else if (!site.invoiceReady) { %>
+    <p class="inv-foot">
+      <sup>*</sup> Die Steuerangabe ist noch nicht konfiguriert. Ob der Unterricht
+      nach §4 Nr. 21 UStG befreit ist oder die Kleinunternehmerregelung nach §19
+      UStG gilt, entscheidet die Steuerberatung der Schule — hier wird nichts geraten.
+      <br>
+      VAT treatment is not configured yet; it is the school's tax adviser's call, not a default.
+    </p>
+  <% } %>
+  <% if (typeof plan !== "undefined" && plan && plan.length > 1) { %>
+    <%# The schedule this invoice belongs to, so one instalment is
+        never read as the whole fee.
+
+        Last, and on its own sheet when printed. What is owed and how
+        to pay it is the invoice; the schedule is the context around
+        it, and it was coming between the total and the bank details
+        -- which left "Zahlungsinformation" stranded as a heading at
+        the foot of page one with its IBAN overleaf. The one block on
+        the document that must never be split is the one telling
+        somebody where to send money. %>
+    <section class="inv-plan">
+      <%# Page two is a loose sheet the moment it leaves the printer,
+          so it says which invoice it belongs to. %>
+      <p class="inv-cont">
+        <%= bill.number || "" %><% if (billName) { %> · <%= billName %><% } %>
+      </p>
+      <h2 class="inv-h">Zahlungsplan <span>/ Payment plan</span></h2>
+    <table class="inv-lines">
+      <thead>
+        <tr>
+          <th class="inv-pos">Rate <i>/ No.</i></th>
+          <th class="inv-num">Betrag <i>/ Amount</i></th>
+          <th>Fällig am <i>/ Due date</i></th>
+          <th>Status</th>
+          <th>Bezahlt am <i>/ Paid on</i></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% plan.forEach(function (p) { %>
+          <%# The unescaped output tag, not the escaping one: this
+              emits an ATTRIBUTE, and escaping turns its quotes into
+              &#34; — the exact bug the view suite grew a guard for.
+              (Writing the tags themselves in this comment would close
+              it early, which is how that lesson got learnt twice.) %>
+          <tr<%- p.id === bill.id ? ' class="is-this"' : "" %>>
+            <td class="inv-pos" data-label="Rate / No."><%= p.instalment_no || "—" %></td>
+            <td class="inv-num" data-label="Betrag / Amount">
+              <%= eur(p.total) %>
+              <% if (p.partial) { %><small><%= eur(p.paid) %> bezahlt / paid</small><% } %>
+            </td>
+            <td data-label="Fällig am / Due date"><%= de(p.due) %></td>
+            <td data-label="Status"><span class="inv-mark is-<%= p.state %>"><%= PLAN[p.state] || p.state %></span></td>
+            <td data-label="Bezahlt am / Paid on"><%= de(p.paid_on) || "—" %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+      </table>
+    </section>
+  <% } %>
+
+</article>

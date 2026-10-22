@@ -1,0 +1,45 @@
+<%- include("../../partials/portal-head", { title: "Account closed" }) %>
+
+<section class="section-tight">
+  <div class="wrap" style="max-width:34rem">
+    <p class="eyebrow">Student portal</p>
+    <h1>Your account is closed</h1>
+
+    <p class="lead" style="font-size:1rem;margin-top:.75rem">
+      Your photo, phone number, address, date of birth and password have been
+      deleted, and you have been signed out everywhere.
+    </p>
+
+    <%#
+      Said here rather than only in the privacy policy. Somebody who
+      has just deleted their account should be told exactly what
+      survived it, in the moment they are thinking about it.
+    %>
+    <% if (retained.invoices || retained.certificates) { %>
+      <div class="notice" style="margin-top:1.5rem">
+        <strong>What we had to keep.</strong>
+        <% if (retained.invoices) { %>
+          <%= retained.invoices %> <%= retained.invoices === 1 ? "invoice" : "invoices" %><%= retained.certificates ? " and " : "" %>
+        <% } %>
+        <% if (retained.certificates) { %>
+          <%= retained.certificates %> <%= retained.certificates === 1 ? "certificate" : "certificates" %>
+        <% } %>
+        remain on file. German bookkeeping law requires invoices to be held
+        for ten years, and a certificate has to stay verifiable for whoever
+        you showed it to. They keep the name they were issued under and
+        nothing more.
+      </div>
+    <% } %>
+
+    <p style="margin-top:1.75rem">
+      If this was a mistake, or you would like to study with us again,
+      <a href="/contact">get in touch</a> — we would be glad to hear from you.
+    </p>
+
+    <p style="margin-top:1.5rem">
+      <a class="btn btn-ghost" href="/">Back to the site</a>
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

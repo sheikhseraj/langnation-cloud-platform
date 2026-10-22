@@ -1,0 +1,1490 @@
+{
+  "_comment": "CEFR placement test. `questions` holds single-item grammar and vocabulary; `passages` holds a reading text per level, and any question with a matching `passage` id is a comprehension question about it. `answer` is the 0-based index of the correct option — keep the correct option FIRST so the file stays easy to review; the server shuffles them before serving. This file is READ ON THE SERVER ONLY: lib/placement.js strips `answer` and `explain` before anything reaches the browser. HAVE A TEACHER REVIEW THESE before the test goes live — a wrong level costs the student money.",
+  "_threshold": 0.7,
+  "questions": [
+    {
+      "id": "a1-1",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Ich ___ Student.",
+      "options": [
+        "bin",
+        "bist",
+        "ist",
+        "sind"
+      ],
+      "answer": 0,
+      "explain": "1. Person Singular von „sein“ ist „bin“."
+    },
+    {
+      "id": "a1-2",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Das ist ___ Buch.",
+      "options": [
+        "ein",
+        "eine",
+        "einen",
+        "einem"
+      ],
+      "answer": 0,
+      "explain": "„Buch“ ist neutrum: ein Buch."
+    },
+    {
+      "id": "a1-3",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Wie ___ du?",
+      "options": [
+        "heißt",
+        "heißen",
+        "heiße",
+        "heißt du"
+      ],
+      "answer": 0,
+      "explain": "2. Person Singular: du heißt."
+    },
+    {
+      "id": "a1-4",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Ich komme ___ Deutschland.",
+      "options": [
+        "aus",
+        "von",
+        "nach",
+        "in"
+      ],
+      "answer": 0,
+      "explain": "Herkunft aus einem Land: „aus Deutschland“."
+    },
+    {
+      "id": "a1-5",
+      "level": "A1",
+      "skill": "vocab",
+      "prompt": "___ spät ist es?",
+      "options": [
+        "Wie",
+        "Was",
+        "Wann",
+        "Wo"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: „Wie spät ist es?“"
+    },
+    {
+      "id": "a1-6",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "ein Kind → zwei ___",
+      "options": [
+        "Kinder",
+        "Kindern",
+        "Kindes",
+        "Kind"
+      ],
+      "answer": 0,
+      "explain": "Plural von „Kind“ ist „Kinder“."
+    },
+    {
+      "id": "a1-7",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Ich habe ___ Hund.",
+      "options": [
+        "einen",
+        "ein",
+        "eine",
+        "einem"
+      ],
+      "answer": 0,
+      "explain": "Akkusativ maskulin: einen Hund."
+    },
+    {
+      "id": "a2-1",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Ich ___ gestern Fußball gespielt.",
+      "options": [
+        "habe",
+        "bin",
+        "war",
+        "hatte"
+      ],
+      "answer": 0,
+      "explain": "„spielen“ bildet das Perfekt mit „haben“."
+    },
+    {
+      "id": "a2-2",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Er ___ heute nicht arbeiten.",
+      "options": [
+        "muss",
+        "musst",
+        "müssen",
+        "müsste"
+      ],
+      "answer": 0,
+      "explain": "3. Person Singular: er muss."
+    },
+    {
+      "id": "a2-3",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Ich helfe ___ Mann.",
+      "options": [
+        "dem",
+        "den",
+        "der",
+        "das"
+      ],
+      "answer": 0,
+      "explain": "„helfen“ verlangt den Dativ: dem Mann."
+    },
+    {
+      "id": "a2-4",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Der Zug fährt um 8 Uhr ___.",
+      "options": [
+        "ab",
+        "auf",
+        "an",
+        "aus"
+      ],
+      "answer": 0,
+      "explain": "Trennbares Verb „abfahren“ — das Präfix steht am Satzende."
+    },
+    {
+      "id": "a2-5",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Berlin ist ___ als Bonn.",
+      "options": [
+        "größer",
+        "groß",
+        "am größten",
+        "die größte"
+      ],
+      "answer": 0,
+      "explain": "Vergleich mit „als“ braucht den Komparativ."
+    },
+    {
+      "id": "a2-6",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Ich glaube, ___ er krank ist.",
+      "options": [
+        "dass",
+        "das",
+        "ob",
+        "wie"
+      ],
+      "answer": 0,
+      "explain": "Nebensatz nach „glauben“: Konjunktion „dass“."
+    },
+    {
+      "id": "a2-7",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Wir ___ nach Berlin gefahren.",
+      "options": [
+        "sind",
+        "haben",
+        "waren",
+        "hatten"
+      ],
+      "answer": 0,
+      "explain": "Bewegungsverben bilden das Perfekt mit „sein“."
+    },
+    {
+      "id": "b1-1",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Wenn ich Zeit ___, würde ich mitkommen.",
+      "options": [
+        "hätte",
+        "habe",
+        "hatte",
+        "haben"
+      ],
+      "answer": 0,
+      "explain": "Irrealer Bedingungssatz: Konjunktiv II „hätte“."
+    },
+    {
+      "id": "b1-2",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Das ist der Mann, ___ ich gestern getroffen habe.",
+      "options": [
+        "den",
+        "der",
+        "dem",
+        "dessen"
+      ],
+      "answer": 0,
+      "explain": "„treffen“ + Akkusativ, maskulin: Relativpronomen „den“."
+    },
+    {
+      "id": "b1-3",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Das Haus ___ 1990 gebaut.",
+      "options": [
+        "wurde",
+        "wurden",
+        "war",
+        "hat"
+      ],
+      "answer": 0,
+      "explain": "Passiv Präteritum Singular: wurde gebaut."
+    },
+    {
+      "id": "b1-4",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Das ist das Auto ___ Vaters.",
+      "options": [
+        "meines",
+        "meinem",
+        "meinen",
+        "mein"
+      ],
+      "answer": 0,
+      "explain": "Genitiv maskulin: meines Vaters."
+    },
+    {
+      "id": "b1-5",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Ich habe einen ___ Wagen gekauft.",
+      "options": [
+        "neuen",
+        "neuer",
+        "neue",
+        "neues"
+      ],
+      "answer": 0,
+      "explain": "Akkusativ maskulin nach „einen“: die Endung ist -en."
+    },
+    {
+      "id": "b1-6",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Obwohl es regnete, ___ wir spazieren.",
+      "options": [
+        "gingen",
+        "ging",
+        "gegangen",
+        "zu gehen"
+      ],
+      "answer": 0,
+      "explain": "Der Hauptsatz nach dem Nebensatz: Verb an erster Stelle, 1. Person Plural."
+    },
+    {
+      "id": "b1-7",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Er fragt, ___ ich morgen Zeit habe.",
+      "options": [
+        "ob",
+        "dass",
+        "wenn",
+        "was"
+      ],
+      "answer": 0,
+      "explain": "Indirekte Ja/Nein-Frage: „ob“."
+    },
+    {
+      "id": "b2-1",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Er tut so, ___ er alles wüsste.",
+      "options": [
+        "als ob",
+        "wenn",
+        "obwohl",
+        "damit"
+      ],
+      "answer": 0,
+      "explain": "Irrealer Vergleich: „als ob“ + Konjunktiv II."
+    },
+    {
+      "id": "b2-2",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Der Vertrag ___ bereits unterschrieben worden.",
+      "options": [
+        "ist",
+        "hat",
+        "wurde",
+        "war"
+      ],
+      "answer": 0,
+      "explain": "Passiv Perfekt: sein + Partizip + „worden“."
+    },
+    {
+      "id": "b2-3",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "___ pünktlich zu sein, nahm er ein Taxi.",
+      "options": [
+        "Um",
+        "Damit",
+        "Weil",
+        "Obwohl"
+      ],
+      "answer": 0,
+      "explain": "Absicht mit gleichem Subjekt: „um … zu“."
+    },
+    {
+      "id": "b2-4",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Er stand vor der ___ Tür. (die Tür wurde geschlossen)",
+      "options": [
+        "geschlossenen",
+        "schließenden",
+        "zu schließenden",
+        "geschlossen"
+      ],
+      "answer": 0,
+      "explain": "Partizip II als Adjektiv, Dativ nach „der“: geschlossenen."
+    },
+    {
+      "id": "b2-5",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Trotz ___ Wetters gingen wir wandern.",
+      "options": [
+        "des schlechten",
+        "dem schlechten",
+        "das schlechte",
+        "der schlechte"
+      ],
+      "answer": 0,
+      "explain": "„trotz“ verlangt den Genitiv."
+    },
+    {
+      "id": "b2-6",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Er hat viel gelernt, ___ hat er die Prüfung nicht bestanden.",
+      "options": [
+        "trotzdem",
+        "obwohl",
+        "weil",
+        "damit"
+      ],
+      "answer": 0,
+      "explain": "„trotzdem“ ist ein Adverb — das Verb bleibt an zweiter Stelle."
+    },
+    {
+      "id": "b2-7",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Nach ___ des Films gingen wir nach Hause.",
+      "options": [
+        "dem Ende",
+        "das Ende",
+        "des Endes",
+        "Ende"
+      ],
+      "answer": 0,
+      "explain": "„nach“ verlangt den Dativ: dem Ende."
+    },
+    {
+      "id": "c1-1",
+      "level": "C1",
+      "skill": "grammar",
+      "prompt": "Es bleibt ___, ob das Projekt gelingt.",
+      "options": [
+        "abzuwarten",
+        "abwarten",
+        "abgewartet",
+        "warten"
+      ],
+      "answer": 0,
+      "explain": "„Es bleibt abzuwarten“ — feste Konstruktion mit zu + Infinitiv."
+    },
+    {
+      "id": "c1-2",
+      "level": "C1",
+      "skill": "grammar",
+      "prompt": "die ___ Probleme (Probleme, die gelöst werden müssen)",
+      "options": [
+        "zu lösenden",
+        "lösenden",
+        "gelösten",
+        "zu lösen"
+      ],
+      "answer": 0,
+      "explain": "Gerundivum: zu + Partizip I drückt Notwendigkeit im Passiv aus."
+    },
+    {
+      "id": "c1-3",
+      "level": "C1",
+      "skill": "vocab",
+      "prompt": "Er setzte sich ___ die Reform ein.",
+      "options": [
+        "für",
+        "auf",
+        "über",
+        "an"
+      ],
+      "answer": 0,
+      "explain": "Feste Präposition: sich einsetzen für etwas."
+    },
+    {
+      "id": "c1-4",
+      "level": "C1",
+      "skill": "grammar",
+      "prompt": "___ der Tatsache, dass er müde war, arbeitete er weiter.",
+      "options": [
+        "Ungeachtet",
+        "Trotzdem",
+        "Obwohl",
+        "Wegen"
+      ],
+      "answer": 0,
+      "explain": "„ungeachtet“ + Genitiv; die anderen passen syntaktisch nicht."
+    },
+    {
+      "id": "c1-5",
+      "level": "C1",
+      "skill": "vocab",
+      "prompt": "Die Regierung ___ eine wichtige Entscheidung.",
+      "options": [
+        "traf",
+        "machte",
+        "nahm",
+        "gab"
+      ],
+      "answer": 0,
+      "explain": "Funktionsverbgefüge: eine Entscheidung treffen."
+    },
+    {
+      "id": "c1-6",
+      "level": "C1",
+      "skill": "grammar",
+      "prompt": "Er kam, ___ ihn jemand eingeladen hätte.",
+      "options": [
+        "ohne dass",
+        "ohne zu",
+        "damit",
+        "sodass"
+      ],
+      "answer": 0,
+      "explain": "Verschiedene Subjekte, also „ohne dass“ und nicht „ohne … zu“."
+    },
+    {
+      "id": "c1-7",
+      "level": "C1",
+      "skill": "vocab",
+      "prompt": "Das Gesetz tritt am 1. Januar in ___.",
+      "options": [
+        "Kraft",
+        "Wirkung",
+        "Geltung",
+        "Gang"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: in Kraft treten."
+    },
+    {
+      "id": "c2-1",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Er nahm die Kritik ___ Kenntnis.",
+      "options": [
+        "zur",
+        "in",
+        "auf",
+        "für"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: etwas zur Kenntnis nehmen."
+    },
+    {
+      "id": "c2-2",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Diese Erklärung ist ___ Haaren herbeigezogen.",
+      "options": [
+        "an den",
+        "bei den",
+        "mit den",
+        "aus den"
+      ],
+      "answer": 0,
+      "explain": "Idiom: an den Haaren herbeigezogen."
+    },
+    {
+      "id": "c2-3",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Die Verhandlungen sind ins ___ geraten.",
+      "options": [
+        "Stocken",
+        "Stehen",
+        "Halten",
+        "Ende"
+      ],
+      "answer": 0,
+      "explain": "Idiom: ins Stocken geraten."
+    },
+    {
+      "id": "c2-4",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Es liegt ___ der Natur der Sache.",
+      "options": [
+        "in",
+        "an",
+        "bei",
+        "auf"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: in der Natur der Sache liegen."
+    },
+    {
+      "id": "c2-5",
+      "level": "C2",
+      "skill": "grammar",
+      "prompt": "___ Anschein nach hat er die Wahrheit verschwiegen.",
+      "options": [
+        "Allem",
+        "Aller",
+        "Alle",
+        "Allen"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung im Dativ: allem Anschein nach."
+    },
+    {
+      "id": "c2-6",
+      "level": "C2",
+      "skill": "grammar",
+      "prompt": "Er sagte, er ___ krank. (indirekte Rede, Konjunktiv I)",
+      "options": [
+        "sei",
+        "ist",
+        "wäre",
+        "war"
+      ],
+      "answer": 0,
+      "explain": "Konjunktiv I der indirekten Rede: er sei."
+    },
+    {
+      "id": "c2-7",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Sie stellte seine Behauptung ___ Frage.",
+      "options": [
+        "in",
+        "zur",
+        "auf",
+        "unter"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: etwas in Frage stellen."
+    },
+    {
+      "id": "a1-8",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Wo ___ du?",
+      "options": [
+        "wohnst",
+        "wohne",
+        "wohnt",
+        "wohnen"
+      ],
+      "answer": 0,
+      "explain": "2. Person Singular: du wohnst."
+    },
+    {
+      "id": "a1-9",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Das ist meine Schwester. ___ ist zwanzig Jahre alt.",
+      "options": [
+        "Sie",
+        "Er",
+        "Es",
+        "Wir"
+      ],
+      "answer": 0,
+      "explain": "„Schwester“ ist feminin, also „sie“."
+    },
+    {
+      "id": "a1-10",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Ich möchte ___ Tasse Kaffee.",
+      "options": [
+        "eine",
+        "ein",
+        "einen",
+        "einem"
+      ],
+      "answer": 0,
+      "explain": "„Tasse“ ist feminin, Akkusativ: eine Tasse."
+    },
+    {
+      "id": "a1-11",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "___ ihr aus Spanien?",
+      "options": [
+        "Kommt",
+        "Kommen",
+        "Kommst",
+        "Komme"
+      ],
+      "answer": 0,
+      "explain": "2. Person Plural: ihr kommt."
+    },
+    {
+      "id": "a1-12",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Am Montag ___ ich zur Schule.",
+      "options": [
+        "gehe",
+        "gehen",
+        "geht",
+        "gehst"
+      ],
+      "answer": 0,
+      "explain": "1. Person Singular: ich gehe."
+    },
+    {
+      "id": "a1-13",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Wie viel ___ das?",
+      "options": [
+        "kostet",
+        "kosten",
+        "gekostet",
+        "kostete"
+      ],
+      "answer": 0,
+      "explain": "3. Person Singular: das kostet."
+    },
+    {
+      "id": "a1-14",
+      "level": "A1",
+      "skill": "grammar",
+      "prompt": "Ich habe ___ Geld.",
+      "options": [
+        "kein",
+        "keine",
+        "keinen",
+        "nicht"
+      ],
+      "answer": 0,
+      "explain": "„Geld“ ist neutrum: kein Geld."
+    },
+    {
+      "id": "a2-8",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Wenn das Wetter gut ist, ___ wir ins Schwimmbad.",
+      "options": [
+        "gehen",
+        "gehe",
+        "geht",
+        "gegangen"
+      ],
+      "answer": 0,
+      "explain": "1. Person Plural im Hauptsatz: gehen wir."
+    },
+    {
+      "id": "a2-9",
+      "level": "A2",
+      "skill": "vocab",
+      "prompt": "Ich interessiere mich ___ Musik.",
+      "options": [
+        "für",
+        "an",
+        "auf",
+        "über"
+      ],
+      "answer": 0,
+      "explain": "Feste Präposition: sich interessieren für."
+    },
+    {
+      "id": "a2-10",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Er ist der ___ Schüler in der Klasse.",
+      "options": [
+        "beste",
+        "besser",
+        "gut",
+        "am besten"
+      ],
+      "answer": 0,
+      "explain": "Superlativ als Adjektiv nach „der“: der beste."
+    },
+    {
+      "id": "a2-11",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Kannst du mir ___ Buch geben?",
+      "options": [
+        "das",
+        "dem",
+        "des",
+        "den"
+      ],
+      "answer": 0,
+      "explain": "Akkusativ neutrum: das Buch."
+    },
+    {
+      "id": "a2-12",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "Ich habe ___ Freund angerufen.",
+      "options": [
+        "meinen",
+        "mein",
+        "meinem",
+        "meiner"
+      ],
+      "answer": 0,
+      "explain": "Akkusativ maskulin: meinen Freund."
+    },
+    {
+      "id": "a2-13",
+      "level": "A2",
+      "skill": "vocab",
+      "prompt": "Wir treffen uns ___ Bahnhof.",
+      "options": [
+        "am",
+        "im",
+        "aufs",
+        "den"
+      ],
+      "answer": 0,
+      "explain": "„am Bahnhof“ — an + dem."
+    },
+    {
+      "id": "a2-14",
+      "level": "A2",
+      "skill": "grammar",
+      "prompt": "___ du schon einmal in Wien gewesen?",
+      "options": [
+        "Bist",
+        "Hast",
+        "Warst",
+        "Bin"
+      ],
+      "answer": 0,
+      "explain": "„sein“ bildet das Perfekt mit „sein“: bist du gewesen."
+    },
+    {
+      "id": "b1-8",
+      "level": "B1",
+      "skill": "vocab",
+      "prompt": "Ich freue mich ___ die Reise nächste Woche.",
+      "options": [
+        "auf",
+        "für",
+        "über",
+        "an"
+      ],
+      "answer": 0,
+      "explain": "„sich freuen auf“ blickt nach vorn, „über“ zurück."
+    },
+    {
+      "id": "b1-9",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Der Film, ___ Ende mich überrascht hat, war gut.",
+      "options": [
+        "dessen",
+        "deren",
+        "den",
+        "dem"
+      ],
+      "answer": 0,
+      "explain": "Relativpronomen im Genitiv, maskulin: dessen."
+    },
+    {
+      "id": "b1-10",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Er hat mir empfohlen, das Buch ___.",
+      "options": [
+        "zu lesen",
+        "lesen",
+        "gelesen",
+        "lese"
+      ],
+      "answer": 0,
+      "explain": "Infinitiv mit „zu“ nach „empfehlen“."
+    },
+    {
+      "id": "b1-11",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Es ist wichtig, dass man Sprachen ___.",
+      "options": [
+        "lernt",
+        "lernen",
+        "gelernt",
+        "zu lernen"
+      ],
+      "answer": 0,
+      "explain": "„man“ ist 3. Person Singular: man lernt."
+    },
+    {
+      "id": "b1-12",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Während ___ Studiums arbeitete er nebenbei.",
+      "options": [
+        "seines",
+        "seinem",
+        "sein",
+        "seinen"
+      ],
+      "answer": 0,
+      "explain": "„während“ verlangt den Genitiv."
+    },
+    {
+      "id": "b1-13",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Je mehr ich lerne, ___ besser verstehe ich.",
+      "options": [
+        "desto",
+        "je",
+        "so",
+        "als"
+      ],
+      "answer": 0,
+      "explain": "Feste Struktur: je … desto."
+    },
+    {
+      "id": "b1-14",
+      "level": "B1",
+      "skill": "grammar",
+      "prompt": "Der Brief muss heute noch ___ werden.",
+      "options": [
+        "abgeschickt",
+        "abschicken",
+        "abschickt",
+        "abzuschicken"
+      ],
+      "answer": 0,
+      "explain": "Passiv mit Modalverb: Partizip II + werden."
+    },
+    {
+      "id": "b2-8",
+      "level": "B2",
+      "skill": "vocab",
+      "prompt": "Er beharrte ___ seiner Meinung.",
+      "options": [
+        "auf",
+        "an",
+        "in",
+        "bei"
+      ],
+      "answer": 0,
+      "explain": "Feste Präposition: beharren auf."
+    },
+    {
+      "id": "b2-9",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Das Problem lässt sich leicht ___.",
+      "options": [
+        "lösen",
+        "gelöst",
+        "zu lösen",
+        "löst"
+      ],
+      "answer": 0,
+      "explain": "„sich lassen“ + Infinitiv als Passiversatz."
+    },
+    {
+      "id": "b2-10",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "___ er überhaupt kommt, weiß niemand.",
+      "options": [
+        "Ob",
+        "Dass",
+        "Wenn",
+        "Wie"
+      ],
+      "answer": 0,
+      "explain": "Indirekte Ja/Nein-Frage als Subjektsatz: „ob“."
+    },
+    {
+      "id": "b2-11",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Der Bericht wurde ___ Kritik ausgesetzt.",
+      "options": [
+        "heftiger",
+        "heftige",
+        "heftigen",
+        "heftigem"
+      ],
+      "answer": 0,
+      "explain": "„aussetzen“ + Dativ, feminin ohne Artikel: heftiger Kritik."
+    },
+    {
+      "id": "b2-12",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Sie ging, ___ sich zu verabschieden.",
+      "options": [
+        "ohne",
+        "statt",
+        "um",
+        "damit"
+      ],
+      "answer": 0,
+      "explain": "„ohne … zu“ drückt aus, dass etwas nicht geschah."
+    },
+    {
+      "id": "b2-13",
+      "level": "B2",
+      "skill": "grammar",
+      "prompt": "Angesichts ___ Lage müssen wir handeln.",
+      "options": [
+        "der schwierigen",
+        "die schwierige",
+        "dem schwierigen",
+        "den schwierigen"
+      ],
+      "answer": 0,
+      "explain": "„angesichts“ verlangt den Genitiv, feminin: der schwierigen."
+    },
+    {
+      "id": "b2-14",
+      "level": "B2",
+      "skill": "vocab",
+      "prompt": "Es handelt sich ___ einen Irrtum.",
+      "options": [
+        "um",
+        "über",
+        "von",
+        "an"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: es handelt sich um."
+    },
+    {
+      "id": "c1-8",
+      "level": "C1",
+      "skill": "vocab",
+      "prompt": "Er ließ sich ___ nicht beirren.",
+      "options": [
+        "davon",
+        "darüber",
+        "dazu",
+        "dafür"
+      ],
+      "answer": 0,
+      "explain": "Pronominaladverb zu „von etwas“: davon."
+    },
+    {
+      "id": "c1-9",
+      "level": "C1",
+      "skill": "vocab",
+      "prompt": "Die Maßnahme zielt ___ eine Kostensenkung ab.",
+      "options": [
+        "auf",
+        "für",
+        "an",
+        "über"
+      ],
+      "answer": 0,
+      "explain": "abzielen auf + Akkusativ."
+    },
+    {
+      "id": "c1-10",
+      "level": "C1",
+      "skill": "vocab",
+      "prompt": "___ Erwarten verlief die Prüfung gut.",
+      "options": [
+        "Wider",
+        "Gegen",
+        "Trotz",
+        "Ohne"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: wider Erwarten."
+    },
+    {
+      "id": "c1-11",
+      "level": "C1",
+      "skill": "vocab",
+      "prompt": "Er brachte seine Bedenken zum ___.",
+      "options": [
+        "Ausdruck",
+        "Wort",
+        "Sprache",
+        "Reden"
+      ],
+      "answer": 0,
+      "explain": "Funktionsverbgefüge: zum Ausdruck bringen."
+    },
+    {
+      "id": "c1-12",
+      "level": "C1",
+      "skill": "grammar",
+      "prompt": "Die Frage ist noch nicht ___ geklärt.",
+      "options": [
+        "abschließend",
+        "abschließen",
+        "abgeschlossen",
+        "schließend"
+      ],
+      "answer": 0,
+      "explain": "Adverb: abschließend geklärt."
+    },
+    {
+      "id": "c1-13",
+      "level": "C1",
+      "skill": "vocab",
+      "prompt": "Sie nahm Abstand ___ diesem Plan.",
+      "options": [
+        "von",
+        "zu",
+        "an",
+        "auf"
+      ],
+      "answer": 0,
+      "explain": "Abstand nehmen von etwas."
+    },
+    {
+      "id": "c1-14",
+      "level": "C1",
+      "skill": "grammar",
+      "prompt": "___ dessen, dass er kaum schlief, blieb er wach.",
+      "options": [
+        "Ungeachtet",
+        "Trotzdem",
+        "Obwohl",
+        "Wegen"
+      ],
+      "answer": 0,
+      "explain": "„ungeachtet dessen, dass …“ — die anderen passen syntaktisch nicht."
+    },
+    {
+      "id": "c2-8",
+      "level": "C2",
+      "skill": "grammar",
+      "prompt": "Der Vorwurf entbehrt ___ Grundlage.",
+      "options": [
+        "jeder",
+        "jede",
+        "jeden",
+        "jedem"
+      ],
+      "answer": 0,
+      "explain": "„entbehren“ verlangt den Genitiv: jeder Grundlage."
+    },
+    {
+      "id": "c2-9",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Das Vorhaben ist zum ___ verurteilt.",
+      "options": [
+        "Scheitern",
+        "Scheitert",
+        "Gescheiterten",
+        "Scheiterns"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: zum Scheitern verurteilt."
+    },
+    {
+      "id": "c2-10",
+      "level": "C2",
+      "skill": "grammar",
+      "prompt": "Sie ließ ___ nichts anmerken.",
+      "options": [
+        "sich",
+        "ihr",
+        "ihn",
+        "es"
+      ],
+      "answer": 0,
+      "explain": "Reflexiv: sich nichts anmerken lassen."
+    },
+    {
+      "id": "c2-11",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Allen Widrigkeiten ___ Trotz hielt er durch.",
+      "options": [
+        "zum",
+        "im",
+        "am",
+        "dem"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: etwas zum Trotz."
+    },
+    {
+      "id": "c2-12",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Die Angelegenheit ist damit vom ___.",
+      "options": [
+        "Tisch",
+        "Stuhl",
+        "Brett",
+        "Punkt"
+      ],
+      "answer": 0,
+      "explain": "Idiom: vom Tisch sein — erledigt."
+    },
+    {
+      "id": "c2-13",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Er stellte den Antrag ___ Abstimmung.",
+      "options": [
+        "zur",
+        "in",
+        "auf",
+        "für"
+      ],
+      "answer": 0,
+      "explain": "Feste Wendung: zur Abstimmung stellen."
+    },
+    {
+      "id": "c2-14",
+      "level": "C2",
+      "skill": "vocab",
+      "prompt": "Das kommt mir ___ vor.",
+      "options": [
+        "spanisch",
+        "französisch",
+        "englisch",
+        "italienisch"
+      ],
+      "answer": 0,
+      "explain": "Idiom: das kommt mir spanisch vor — es wirkt seltsam."
+    },
+    {
+      "id": "r-a1-1",
+      "level": "A1",
+      "skill": "reading",
+      "passage": "p-a1",
+      "prompt": "Woher kommt Marco?",
+      "options": [
+        "Aus Italien",
+        "Aus München",
+        "Aus Österreich",
+        "Aus der Schweiz"
+      ],
+      "answer": 0,
+      "explain": "„Ich heiße Marco und komme aus Italien.“ München ist, wo er wohnt."
+    },
+    {
+      "id": "r-a1-2",
+      "level": "A1",
+      "skill": "reading",
+      "passage": "p-a1",
+      "prompt": "Wann hat Marco Deutschkurs?",
+      "options": [
+        "Am Montag und Mittwoch",
+        "Jeden Abend",
+        "Am Wochenende",
+        "Am Dienstag und Donnerstag"
+      ],
+      "answer": 0,
+      "explain": "„Der Kurs ist am Montag und am Mittwoch.“"
+    },
+    {
+      "id": "r-a1-3",
+      "level": "A1",
+      "skill": "reading",
+      "passage": "p-a1",
+      "prompt": "Was sagt Marco über die Lehrerin?",
+      "options": [
+        "Sie ist sehr freundlich",
+        "Sie ist streng",
+        "Sie kommt aus Italien",
+        "Sie spielt Fußball"
+      ],
+      "answer": 0,
+      "explain": "„… aber die Lehrerin ist sehr freundlich.“"
+    },
+    {
+      "id": "r-a2-1",
+      "level": "A2",
+      "skill": "reading",
+      "passage": "p-a2",
+      "prompt": "Warum kann Jonas am Samstag nicht kommen?",
+      "options": [
+        "Er muss arbeiten",
+        "Er ist krank",
+        "Er ist in Wien",
+        "Er hat keine Zeit für Sara"
+      ],
+      "answer": 0,
+      "explain": "„… weil ich arbeiten muss.“ Krank ist sein Chef, nicht er."
+    },
+    {
+      "id": "r-a2-2",
+      "level": "A2",
+      "skill": "reading",
+      "passage": "p-a2",
+      "prompt": "Was schlägt Jonas vor?",
+      "options": [
+        "Ein Treffen am Dienstag",
+        "Ein Treffen am Samstag",
+        "Eine Reise nach Wien",
+        "Ein Telefongespräch"
+      ],
+      "answer": 0,
+      "explain": "„Am Dienstag habe ich frei …“"
+    },
+    {
+      "id": "r-a2-3",
+      "level": "A2",
+      "skill": "reading",
+      "passage": "p-a2",
+      "prompt": "Was möchte Jonas Sara zeigen?",
+      "options": [
+        "Fotos aus Wien",
+        "Sein neues Büro",
+        "Eine Einladung",
+        "Seinen Chef"
+      ],
+      "answer": 0,
+      "explain": "„… ich würde dir gern die neuen Fotos aus Wien zeigen.“"
+    },
+    {
+      "id": "r-b1-1",
+      "level": "B1",
+      "skill": "reading",
+      "passage": "p-b1",
+      "prompt": "Was passiert am 14. März?",
+      "options": [
+        "Es gibt acht Stunden kein Wasser",
+        "Die Mieter müssen die Wohnung verlassen",
+        "Die Heizung wird abgestellt",
+        "Die Hausverwaltung besucht alle Wohnungen"
+      ],
+      "answer": 0,
+      "explain": "Von 8 bis 16 Uhr steht kein Wasser zur Verfügung — also acht Stunden."
+    },
+    {
+      "id": "r-b1-2",
+      "level": "B1",
+      "skill": "reading",
+      "passage": "p-b1",
+      "prompt": "Warum finden die Arbeiten nicht im Februar statt?",
+      "options": [
+        "Wegen des Frostes",
+        "Weil die Mieter nicht zu Hause waren",
+        "Weil das Material fehlte",
+        "Weil die Handwerker krank waren"
+      ],
+      "answer": 0,
+      "explain": "„… mussten aber wegen des Frostes verschoben werden.“"
+    },
+    {
+      "id": "r-b1-3",
+      "level": "B1",
+      "skill": "reading",
+      "passage": "p-b1",
+      "prompt": "Müssen die Mieter an diesem Tag zu Hause sein?",
+      "options": [
+        "Nein, ein Zugang zur Wohnung ist nicht nötig",
+        "Ja, sonst kommen die Handwerker nicht hinein",
+        "Ja, zwischen 8 und 16 Uhr",
+        "Nur wer im Erdgeschoss wohnt"
+      ],
+      "answer": 0,
+      "explain": "„… ein Zugang zu den Wohnungen ist nicht erforderlich.“"
+    },
+    {
+      "id": "r-b2-1",
+      "level": "B2",
+      "skill": "reading",
+      "passage": "p-b2",
+      "prompt": "Was ist die Hauptaussage des Textes?",
+      "options": [
+        "Ob Homeoffice funktioniert, hängt von der einzelnen Person ab",
+        "Homeoffice ist produktiver als Büroarbeit",
+        "Homeoffice schadet vor allem erfahrenen Beschäftigten",
+        "Betriebe sollten Homeoffice generell abschaffen"
+      ],
+      "answer": 0,
+      "explain": "„Beide Seiten haben recht — nur eben nicht für dieselben Menschen.“"
+    },
+    {
+      "id": "r-b2-2",
+      "level": "B2",
+      "skill": "reading",
+      "passage": "p-b2",
+      "prompt": "Wer verliert dem Text nach am meisten durch Homeoffice?",
+      "options": [
+        "Berufsanfänger",
+        "Menschen mit einer ruhigen Wohnung",
+        "Vorgesetzte",
+        "Beschäftigte mit klaren Aufgaben"
+      ],
+      "answer": 0,
+      "explain": "„Wer dagegen am Anfang seiner Laufbahn steht, verliert etwas …“"
+    },
+    {
+      "id": "r-b2-3",
+      "level": "B2",
+      "skill": "reading",
+      "passage": "p-b2",
+      "prompt": "Was ist mit „etwas, das sich schwer messen lässt“ gemeint?",
+      "options": [
+        "Die beiläufigen Gespräche im Betrieb",
+        "Die gesparte Fahrzeit",
+        "Die höhere Zufriedenheit",
+        "Der frühere Feierabend"
+      ],
+      "answer": 0,
+      "explain": "Der Satz danach nennt es: „die beiläufigen Gespräche …“"
+    },
+    {
+      "id": "r-c1-1",
+      "level": "C1",
+      "skill": "reading",
+      "passage": "p-c1",
+      "prompt": "Was kritisiert der Text an Sprachzertifikaten?",
+      "options": [
+        "Sie belegen eine Fähigkeit, die mit dem Ankommen nur mittelbar zu tun hat",
+        "Sie sind für Behörden zu teuer",
+        "Sie prüfen die Grammatik zu streng",
+        "Sie werden von Arbeitgebern nicht anerkannt"
+      ],
+      "answer": 0,
+      "explain": "„… bescheinigt eine Fähigkeit, die mit dem Ankommen nur mittelbar zu tun hat.“"
+    },
+    {
+      "id": "r-c1-2",
+      "level": "C1",
+      "skill": "reading",
+      "passage": "p-c1",
+      "prompt": "Woran scheitern laut Text viele Lernende trotz guter Grammatik?",
+      "options": [
+        "An Ironie, Andeutung und dem richtigen Verschweigen",
+        "An der Aussprache",
+        "An den Prüfungsgebühren",
+        "Am Wortschatz der Fachsprache"
+      ],
+      "answer": 0,
+      "explain": "„Ironie, Andeutung, das Verschweigen im richtigen Moment. Gerade daran scheitern viele …“"
+    },
+    {
+      "id": "r-c1-3",
+      "level": "C1",
+      "skill": "reading",
+      "passage": "p-c1",
+      "prompt": "Wie ist „gilt als Gemeinplatz — und wird dennoch regelmäßig unterschätzt“ zu verstehen?",
+      "options": [
+        "Alle sagen es, aber kaum jemand zieht daraus die Folgerungen",
+        "Es ist eine falsche Behauptung",
+        "Es ist eine neue wissenschaftliche Erkenntnis",
+        "Nur Fachleute stimmen dem zu"
+      ],
+      "answer": 0,
+      "explain": "Ein Gemeinplatz ist etwas allgemein Gesagtes; „dennoch unterschätzt“ heißt: nicht wirklich ernst genommen."
+    },
+    {
+      "id": "r-c2-1",
+      "level": "C2",
+      "skill": "reading",
+      "passage": "p-c2",
+      "prompt": "Was hält der Text für das zäheste Missverständnis über das Übersetzen?",
+      "options": [
+        "Dass es ein Ersetzen von Wörtern sei",
+        "Dass es keine Kunst sei",
+        "Dass es maschinell erledigt werden könne",
+        "Dass es Treue zum Original verlange"
+      ],
+      "answer": 0,
+      "explain": "„… es sei ein Ersetzen — als ließe sich ein Wort gegen ein anderes tauschen.“"
+    },
+    {
+      "id": "r-c2-2",
+      "level": "C2",
+      "skill": "reading",
+      "passage": "p-c2",
+      "prompt": "Wie wählt der geübte Übersetzer nach diesem Text?",
+      "options": [
+        "Er wählt die am wenigsten schädliche Lösung",
+        "Er wählt stets die wörtlich treueste Lösung",
+        "Er wählt die kürzeste Formulierung",
+        "Er vermeidet Entscheidungen, wo er kann"
+      ],
+      "answer": 0,
+      "explain": "„… wählt nicht die richtige, sondern die am wenigsten schädliche Lösung.“"
+    },
+    {
+      "id": "r-c2-3",
+      "level": "C2",
+      "skill": "reading",
+      "passage": "p-c2",
+      "prompt": "Was meint der Schluss, die Klage über das Unübersetzbare sei „weniger ein Befund als eine Ausrede“?",
+      "options": [
+        "Sie beschreibt kein echtes Hindernis, sondern rechtfertigt eigenes Versagen",
+        "Sie ist ein wissenschaftlich belegter Sachverhalt",
+        "Sie gilt nur für literarische Texte",
+        "Sie wird von Übersetzern selten geäußert"
+      ],
+      "answer": 0,
+      "explain": "Ein Befund stellt fest, was ist; eine Ausrede entschuldigt. Der Text hält die Klage für Letzteres."
+    }
+  ],
+  "passages": [
+    {
+      "id": "p-a1",
+      "level": "A1",
+      "title": "Eine Vorstellung",
+      "text": "Hallo! Ich heiße Marco und komme aus Italien. Ich bin 24 Jahre alt und wohne seit einem Jahr in München. Ich arbeite in einem Restaurant, aber am Abend besuche ich einen Deutschkurs. Der Kurs ist am Montag und am Mittwoch. Deutsch ist nicht leicht, aber die Lehrerin ist sehr freundlich. Am Wochenende spiele ich Fußball mit meinen Freunden."
+    },
+    {
+      "id": "p-a2",
+      "level": "A2",
+      "title": "Eine E-Mail",
+      "text": "Liebe Sara,\n\nvielen Dank für deine Einladung! Leider kann ich am Samstag nicht kommen, weil ich arbeiten muss. Mein Chef ist krank geworden, deshalb brauche ich das ganze Wochenende im Büro. Könnten wir uns nächste Woche treffen? Am Dienstag habe ich frei, und ich würde dir gern die neuen Fotos aus Wien zeigen. Schreib mir bitte, ob das für dich passt.\n\nViele Grüße\nJonas"
+    },
+    {
+      "id": "p-b1",
+      "level": "B1",
+      "title": "Mitteilung der Hausverwaltung",
+      "text": "Sehr geehrte Mieterinnen und Mieter,\n\nam Dienstag, dem 14. März, wird zwischen 8 und 16 Uhr die Wasserleitung im ganzen Haus erneuert. In dieser Zeit steht kein Wasser zur Verfügung. Wir bitten Sie, ausreichend Trinkwasser bereitzuhalten. Die Arbeiten waren ursprünglich für Februar geplant, mussten aber wegen des Frostes verschoben werden. Sollten Sie an diesem Tag nicht zu Hause sein, ist das kein Problem — ein Zugang zu den Wohnungen ist nicht erforderlich."
+    },
+    {
+      "id": "p-b2",
+      "level": "B2",
+      "title": "Homeoffice",
+      "text": "Die Diskussion über das Homeoffice wird häufig zu einfach geführt. Befürworter verweisen auf gesparte Fahrzeiten und höhere Zufriedenheit, Kritiker auf fehlenden Austausch und die Schwierigkeit, Feierabend zu machen. Beide Seiten haben recht — nur eben nicht für dieselben Menschen. Wer eine ruhige Wohnung und klare Aufgaben hat, arbeitet zu Hause oft produktiver. Wer dagegen am Anfang seiner Laufbahn steht, verliert etwas, das sich schwer messen lässt: die beiläufigen Gespräche, in denen man lernt, wie ein Betrieb tatsächlich funktioniert. Eine allgemeine Regel wird deshalb immer jemandem schaden."
+    },
+    {
+      "id": "p-c1",
+      "level": "C1",
+      "title": "Sprache und Zugehörigkeit",
+      "text": "Dass Sprache über Zugehörigkeit entscheidet, gilt als Gemeinplatz — und wird dennoch regelmäßig unterschätzt. Wer eine Sprache beherrscht, erhält nicht bloß ein Verständigungsmittel, sondern Zugang zu jenen Feinheiten, an denen sich Nähe bemisst: Ironie, Andeutung, das Verschweigen im richtigen Moment. Gerade daran scheitern viele, deren Grammatik längst tadellos ist. Die Behörden verlangen ein Zertifikat, doch das Zertifikat bescheinigt eine Fähigkeit, die mit dem Ankommen nur mittelbar zu tun hat. Nicht selten verwechseln wir daher die Prüfung mit dem, was sie zu messen vorgibt."
+    },
+    {
+      "id": "p-c2",
+      "level": "C2",
+      "title": "Über das Übersetzen",
+      "text": "Es gehört zu den zähesten Missverständnissen über das Übersetzen, es sei ein Ersetzen — als ließe sich ein Wort gegen ein anderes tauschen und der Rest bleibe unberührt. Tatsächlich verschiebt jede Entscheidung das Gefüge des ganzen Satzes; was an einer Stelle gewonnen wird, ist an einer anderen bereits eingebüßt. Der geübte Übersetzer weiß das und wählt nicht die richtige, sondern die am wenigsten schädliche Lösung. Wer hingegen auf Treue im engeren Sinne beharrt, produziert regelmäßig Texte, die zwar nichts hinzufügen, aber auch nichts mehr sagen. Die Klage über das Unübersetzbare ist insofern weniger ein Befund als eine Ausrede."
+    }
+  ]
+}

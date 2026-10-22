@@ -1,0 +1,550 @@
+<%
+  const b = batch || {};
+  const v = (x) => (x === null || x === undefined ? "" : x);
+  // A DATE comes back from mysql2 as a Date; <input type="date"> wants
+  // exactly YYYY-MM-DD and silently shows nothing for anything else.
+  const day = (x) => {
+    if (!x) return "";
+    if (x instanceof Date) return x.toISOString().slice(0, 10);
+    return String(x).slice(0, 10);
+  };
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: isNew ? "New batch" : (b.code || "Batch"), site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "batches", adArea: "content" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: isNew ? "New batch" : (b.code || "Batch"),
+      adCrumbs: [
+        { label: "Root admin", href: "/rootadmin" },
+        { label: "Batches", href: "/rootadmin/batches" },
+        { label: isNew ? "New" : (b.code || "") },
+      ],
+      adLogout: "/rootadmin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <%# A new batch is not finished when it is created: with nobody
+          on it, it appears in no student's portal. So the created
+          case says what to do next and points at the place to do it,
+          rather than reporting success and stopping there. %>
+      <% if (created) { %>
+        <div class="notice notice-ok">
+          <strong>Batch <%= b.code %> created.</strong>
+          Now add the students who are on it — until you do, this batch shows
+          in nobody's portal. <a href="#students">Add students below ↓</a>
+        </div>
+      <% } else if (saved) { %>
+        <p class="notice notice-ok">Saved.</p>
+      <% } %>
+
+      <% if (notice) { %><p class="notice notice-ok"><%= notice %></p><% } %>
+      <% if (problem) { %><p class="notice notice-bad"><%= problem %></p><% } %>
+
+      <% if (errors && errors.length) { %>
+        <div class="notice notice-bad">
+          <strong>Not saved.</strong>
+          <ul style="margin:.4rem 0 0 1.1rem;padding:0">
+            <% errors.forEach(function (e) { %><li><%= e %></li><% }); %>
+          </ul>
+        </div>
+      <% } %>
+
+      <form method="post" action="/rootadmin/batch/<%= isNew ? "new" : b.id %>">
+
+        <div class="ad-card">
+          <h2>Which course, and what it is called</h2>
+
+          <%#
+            Grouped by track, so the choice is "Regular German, then
+            which level" rather than a flat list of nine similar titles.
+            Inside a group the level alone names the row — the heading
+            has already said the rest, and repeating it made every row
+            read the same at a glance.
+          %>
+          <label class="field">
+            <span>Course</span>
+            <select name="course_id" data-enhance aria-label="Course" required>
+              <option value="">— choose a course —</option>
+              <% groups.forEach(function (g) { %>
+                <optgroup label="<%= g.label %>">
+                  <% g.courses.forEach(function (c) { %>
+                    <option value="<%= c.id %>" <%= Number(b.course_id) === Number(c.id) ? "selected" : "" %>><%= shortLabel(c, g.track) %></option>
+                  <% }); %>
+                </optgroup>
+              <% }); %>
+            </select>
+            <% if (!groups.length) { %>
+              <small class="muted">
+                No published courses to choose from yet. A course has to be
+                published before a batch can run on it.
+              </small>
+            <% } %>
+          </label>
+
+          <%#
+            The code fills itself in from the chosen course:
+            LNIKB01 is LangNation, Intensivkurs, first batch. Counted
+            per track, so LNIKB01 really is the first intensive one.
+
+            Still an editable field, not a label. It goes on invoices
+            and certificates, which means the office occasionally needs
+            to match one that was already printed — and the counter is
+            pushed past whatever is typed, so a generated code can
+            never later collide with it.
+          %>
+          <div class="form-row">
+            <label class="field">
+              <span>Code</span>
+              <%# Shown, never posted.
+
+                  It used to be an editable box filled in with a
+                  suggestion, and that is where "a batch with that code
+                  already exists" came from: asking for a suggestion
+                  reserved nothing, so two tabs — or one form left open
+                  while the course was changed — offered the same code
+                  twice and the second save hit the unique key. On a
+                  code nobody had typed.
+
+                  Now it is allocated when the row is written and it
+                  never changes. Read-only rather than hidden, because
+                  it goes on invoices and certificates and the office
+                  needs to be able to read it off this page. %>
+              <input type="text" value="<%= v(b.code) || "assigned when you save" %>"
+                     readonly tabindex="-1" aria-readonly="true" class="is-fixed">
+              <small class="muted">
+                <% if (b.code) { %>
+                  Fixed. It is on invoices and certificates, so it cannot change
+                  once the batch exists.
+                <% } else { %>
+                  Chosen for you from the course's track — the next free one, so
+                  it can never clash with a batch that already exists.
+                <% } %>
+              </small>
+            </label>
+            <label class="field">
+              <span>Title — optional, for your own reference</span>
+              <input type="text" name="title" value="<%= v(b.title) %>" maxlength="200"
+                     placeholder="Spring evening group">
+            </label>
+          </div>
+
+          <%#
+            Two fields, because they answer two different questions.
+
+            The dropdown decides who can sign into /teach and see this
+            class list — no account, no class list, and that is the whole
+            of the teacher portal's access control. The text box is the
+            name printed in the student portal when there is no account
+            behind the batch, which is the normal state of a batch
+            planned before anybody is hired.
+
+            When both are set the account's name wins in the student
+            portal, so a stale text box cannot show students one name
+            while somebody else teaches them.
+          %>
+          <div class="form-row">
+            <label class="field">
+              <span>Primary teacher — account</span>
+              <select name="teacher_id">
+                <option value="">Nobody yet</option>
+                <%# typeof, not a falsy check: EJS throws a ReferenceError
+                    on a local that was never passed, so `|| []` never
+                    gets the chance to run. %>
+                <% (typeof teacherOptions === "undefined" ? [] : teacherOptions).forEach(function (t) { %>
+                  <option value="<%= t.id %>"<%= Number(b.teacher_id) === Number(t.id) ? " selected" : "" %>>
+                    <%= t.name %><%= t.status === "invited" ? " — not signed in yet" : "" %>
+                  </option>
+                <% }); %>
+              </select>
+              <small class="muted">
+                They see this batch, its class list and its links at
+                <a href="/teach" target="_blank" rel="noopener">/teach</a>.
+                Accounts are created under <a href="/admin/teachers">Teachers</a>
+                in the back office.
+              </small>
+            </label>
+            <label class="field">
+              <span>Primary teacher's name — shown to students</span>
+              <input type="text" name="teacher_name" value="<%= v(b.teacher_name) %>" maxlength="120"
+                     placeholder="Frau Weber">
+              <small class="muted">
+                Used only when no account is chosen above.
+              </small>
+            </label>
+          </div>
+
+          <%# A second teacher used to be set here, in two more fields.
+
+              It was how cover worked: whoever was named had the
+              primary teacher's access to this batch for the whole term,
+              because a lesson could not yet be handed to anybody. Cover
+              is one class handed to one person for one day now, so the
+              fields granted nothing and only asked the office a
+              question with no consequences. Gone. %>
+        </div>
+
+        <div class="ad-card">
+          <h2>When it runs</h2>
+
+          <div class="form-row">
+            <label class="field">
+              <span>Starts</span>
+              <input type="date" name="starts_on" value="<%= day(b.starts_on) %>">
+            </label>
+            <label class="field">
+              <span>Ends</span>
+              <input type="date" name="ends_on" value="<%= day(b.ends_on) %>">
+            </label>
+            <label class="field">
+              <%# Classes are online across time zones, so a bare local
+                  time is ambiguous and gets people to class an hour late. %>
+              <span>Time zone</span>
+              <select name="timezone" data-enhance aria-label="Time zone">
+                <% ["Europe/Berlin","Asia/Kolkata","Europe/London","UTC"].forEach(function (tz) { %>
+                  <option value="<%= tz %>" <%= (b.timezone || "Europe/Berlin") === tz ? "selected" : "" %>><%= tz %></option>
+                <% }); %>
+              </select>
+            </label>
+          </div>
+
+          <%#
+            The weekly pattern.
+
+            Said once, and every lesson between the two dates above
+            follows from it — sixty rows from one sentence. Before this
+            the timetable did not exist: `lessons` rows appeared one at a
+            time, created on the day a teacher took the register, so
+            nobody could see next Tuesday until next Tuesday and the
+            student portal had nothing to show.
+
+            Start and end, because "09:00 until 11:00" is how a
+            timetable is said. The column stores the length, which is
+            what survives the class being moved to another hour.
+          %>
+          <% if (!canPattern) { %>
+            <%#
+              The column is not there yet, so anything typed here would
+              be dropped on save and the page would come back empty with
+              nothing said. That is exactly what happened before this
+              check existed.
+            %>
+            <p class="notice notice-bad">
+              The weekly timetable needs <code>MySQL/25_timetable.sql</code>, which has
+              not been run on this database — or has been run since the site last
+              restarted. Run it, restart the site, and the days and times appear here.
+              Everything else on this page saves normally.
+            </p>
+          <% } else { %>
+          <input type="hidden" name="meets_shown" value="1">
+          <div class="form-row">
+            <div class="field">
+              <span>Days it meets</span>
+              <div class="ad-days">
+                <% const meets = sched.parseDays(b.meets_days); %>
+                <% [1, 2, 3, 4, 5, 6, 7].forEach(function (d) { %>
+                  <label class="ad-day">
+                    <input type="checkbox" name="meets_days" value="<%= d %>"
+                           <%= meets.includes(d) ? "checked" : "" %>>
+                    <span><%= sched.DAY_SHORT[d] %></span>
+                  </label>
+                <% }); %>
+              </div>
+              <small class="muted">
+                <% if (meets.length) { %>
+                  <%= sched.describeDays(b.meets_days) %><%
+                    %><% if (sched.parseTime(b.meets_from)) { %>, <%= sched.parseTime(b.meets_from) %>–<%= sched.endTime(b.meets_from, b.meets_minutes || 120) %><% } %>
+                <% } else { %>
+                  Leave all unticked for a batch with no fixed timetable.
+                <% } %>
+              </small>
+            </div>
+            <label class="field">
+              <span>Starts at</span>
+              <input type="time" name="meets_from" value="<%= sched.parseTime(b.meets_from) || "" %>">
+            </label>
+            <label class="field">
+              <span>Until</span>
+              <input type="time" name="meets_until"
+                     value="<%= sched.parseTime(b.meets_from) ? sched.endTime(b.meets_from, b.meets_minutes || 120) : "" %>">
+            </label>
+          </div>
+          <% } %>
+
+          <div class="form-row">
+            <label class="field">
+              <span>Seats — empty for no limit</span>
+              <input type="number" name="seats" value="<%= v(b.seats) %>" min="0" step="1">
+            </label>
+            <label class="field">
+              <%# The database says planned/running/finished; the office
+                  says not started, running, completed. Shown in the
+                  office's words, stored in the database's. %>
+              <span>Status</span>
+              <select name="status" data-enhance aria-label="Status">
+                <% statuses.forEach(function (s) { %>
+                  <option value="<%= s %>" <%= (b.status || "planned") === s ? "selected" : "" %>><%= statusLabel[s] || s %></option>
+                <% }); %>
+              </select>
+              <small class="muted">
+                Not started → Running → Completed. Certificates come from a
+                completed batch.
+              </small>
+              <%#
+                Who owns the status.
+
+                Ticked, the batch follows its own dates: planned until the
+                start date, running from it, completed once the end date
+                has passed. That is what makes “Join the class” appear on
+                the morning the course starts instead of whenever somebody
+                remembers to change this dropdown — which is the bug this
+                came from.
+
+                Unticked, the dropdown above is the last word and nothing
+                moves it. For a batch that was cancelled, or held open
+                past its advertised end.
+              %>
+              <input type="hidden" name="status_auto_shown" value="1">
+              <label class="check" style="margin-top:.7rem">
+                <input type="checkbox" name="status_auto" value="1"
+                       <%= Number(b.status_auto) === 0 ? "" : "checked" %>>
+                <span>Follow the dates automatically</span>
+              </label>
+              <small class="muted">
+                Untick to set the status by hand and keep it there.
+              </small>
+            </label>
+          </div>
+
+          <%#
+            The three links a batch runs on. They were being pasted
+            into emails one student at a time, which means somebody
+            joining in week three never gets them and a changed link
+            has to be sent round again. Here they belong to the batch,
+            so everybody on it has the current one.
+          %>
+          <label class="field">
+            <span>Class link</span>
+            <input type="url" name="meeting_url" value="<%= v(b.meeting_url) %>" maxlength="500"
+                   placeholder="https://meet.google.com/…">
+          </label>
+
+          <div class="form-row">
+            <label class="field">
+              <span>Materials folder</span>
+              <input type="url" name="drive_url" value="<%= v(b.drive_url) %>" maxlength="500"
+                     placeholder="https://drive.google.com/…">
+            </label>
+            <label class="field">
+              <span>Group chat</span>
+              <input type="url" name="whatsapp_url" value="<%= v(b.whatsapp_url) %>" maxlength="500"
+                     placeholder="https://chat.whatsapp.com/…">
+            </label>
+            <%# Practice work — the one thing still being sent round by
+                hand, which means somebody joining in week three never
+                gets it and a changed link has to go round again.
+                Hidden until its column exists, like the rest: a field
+                the database cannot keep is a field that loses what you
+                type into it. %>
+            <% if (canExercise) { %>
+              <label class="field">
+                <span>Exercises</span>
+                <input type="url" name="exercise_url" value="<%= v(b.exercise_url) %>" maxlength="500"
+                       placeholder="Worksheets, quizzes, practice">
+              </label>
+            <% } %>
+          </div>
+
+          <p class="muted" style="font-size:.84rem;margin:.2rem 0 0">
+            Only students on this batch see these, and only in their portal.
+            Leave any of them empty and it simply does not appear.
+          </p>
+        </div>
+
+        <button class="btn" type="submit"><%= isNew ? "Create batch" : "Save batch" %></button>
+        <a class="btn btn-ghost" href="/rootadmin/batches">Cancel</a>
+      </form>
+
+      <% if (isNew) { %>
+        <p class="muted" style="font-size:.86rem;margin-top:1.25rem">
+          Students are added once the batch exists — create it first, and the
+          list appears here.
+        </p>
+      <% } %>
+
+      <%#
+        Who is on the batch. This is the join that makes the portal show
+        anything: a student sees a course in their portal because a row
+        here links them to a batch of it. Adding somebody is visible to
+        them immediately, which is why it sits on its own with its own
+        confirmation rather than inside the form above.
+      %>
+      <% if (!isNew) { %>
+        <div class="ad-card" id="students" style="margin-top:2rem">
+          <div class="row" style="justify-content:space-between;align-items:baseline">
+            <h2 style="margin:0">
+              Students · <%= roster.length %><% if (b.seats) { %> of <%= b.seats %><% } %>
+            </h2>
+            <% if (b.seats && roster.length >= b.seats) { %>
+              <span class="pill" style="color:var(--danger)">full</span>
+            <% } %>
+          </div>
+
+          <%#
+            One dropdown holding everyone who could be added, newest
+            account first — the common case is somebody who signed up
+            this morning. Already-enrolled students are absent rather
+            than greyed out: the list exists to be picked from, and an
+            entry that cannot be picked is a question.
+
+            The enhanced select brings its own filter box once the
+            list passes a dozen, so typing a name still works; the
+            sort control beside it reorders without a round trip.
+          %>
+          <form method="post" action="/rootadmin/batch/<%= b.id %>/enrol"
+                class="row" style="gap:.6rem;align-items:flex-end;margin-top:1rem;flex-wrap:wrap">
+            <label class="field" style="flex:1 1 20rem;margin:0">
+              <span>Add a student</span>
+              <select name="identifier" data-student-picker data-enhance required
+                      aria-label="Student to add"
+                      data-search-label="Type a name, email or reference…">
+                <option value="">— choose a student —</option>
+                <% candidates.forEach(function (c) { %>
+                  <option value="<%= c.student_ref || c.email %>"
+                          data-created="<%= c.created_at ? new Date(c.created_at).getTime() : 0 %>"
+                          data-name="<%= (c.name || "").toLowerCase() %>">
+                    <%= c.name %> — <%= c.student_ref || "no reference" %> — <%= c.email %>
+                  </option>
+                <% }); %>
+              </select>
+            </label>
+
+            <button class="btn btn-sm" type="submit">Enrol</button>
+          </form>
+
+          <%# Search and order, hidden until the script that drives
+              them is running. Both work on the list already on the
+              page; a <select> cannot be filtered or reordered without
+              JavaScript, and a control that silently does nothing is
+              worse than no control.
+
+              The enhanced dropdown has a filter of its own, but only
+              once a list passes a dozen entries — so with five
+              students there was no search anywhere. This one is
+              always here. %>
+          <div class="row" style="gap:.6rem;align-items:flex-end;margin-top:.9rem;flex-wrap:wrap"
+               data-student-tools hidden>
+            <label class="field" style="flex:1 1 16rem;margin:0">
+              <span>Search</span>
+              <input type="search" data-student-search autocomplete="off"
+                     placeholder="Name, email or reference">
+            </label>
+            <label class="field" style="flex:0 1 12rem;margin:0">
+              <span>Order</span>
+              <select data-student-sort data-enhance aria-label="Order the list">
+                <option value="new">Newest first</option>
+                <option value="old">Oldest first</option>
+                <option value="az">Name A–Z</option>
+                <option value="za">Name Z–A</option>
+              </select>
+            </label>
+            <p class="muted" style="margin:0 0 .55rem;font-size:.84rem" data-student-count></p>
+          </div>
+
+          <% if (!candidates.length) { %>
+            <p class="muted" style="font-size:.84rem;margin:.7rem 0 0">
+              <%= roster.length
+                    ? "Everybody with an account is already on this batch."
+                    : "No student accounts yet — a student appears here once the office has approved their request." %>
+            </p>
+          <% } else if (candidates.length >= candidateLimit) { %>
+            <p class="muted" style="font-size:.84rem;margin:.7rem 0 0">
+              Showing the <%= candidateLimit %> newest accounts. Type in the list to
+              find anybody older.
+            </p>
+          <% } %>
+
+          <% if (!roster.length) { %>
+            <p class="muted" style="margin:1.25rem 0 0">
+              Nobody is on this batch yet. Until somebody is, it shows in no
+              student's portal.
+            </p>
+          <% } else { %>
+            <div class="table-scroll" style="margin-top:1.25rem">
+              <table>
+                <thead>
+                  <tr><th>Reference</th><th>Student</th><th>Enrolled</th><th>Status</th><th></th></tr>
+                </thead>
+                <tbody>
+                  <% roster.forEach(function (r) { %>
+                    <tr>
+                      <td><strong><%= r.student_ref || "—" %></strong></td>
+                      <td>
+                        <%= r.name %>
+                        <div class="muted" style="font-size:.8rem"><%= r.email %></div>
+                      </td>
+                      <td><%= day(r.enrolled_on) || "—" %></td>
+                      <td>
+                        <span class="pill<%= r.status === "active" ? " pill-live" : "" %>"><%= r.status %></span>
+                      </td>
+                      <td>
+                        <%# Only Remove is gated. Marking somebody
+                            completed is reversible in a click; taking
+                            them off the batch is not. %>
+                        <form method="post" action="/rootadmin/batch/<%= b.id %>/enrolment/<%= r.id %>"
+                              class="row" style="gap:.35rem;justify-content:flex-end"
+                              data-confirm-delete="<%= r.name %>'s place on <%= b.code %>">
+                          <% if (r.status !== "completed") { %>
+                            <button class="btn btn-sm btn-ghost" name="status" value="completed" type="submit" data-confirm-skip>Completed</button>
+                          <% } %>
+                          <% if (r.status !== "withdrawn") { %>
+                            <button class="btn btn-sm btn-ghost" name="status" value="withdrawn" type="submit" data-confirm-skip>Withdraw</button>
+                          <% } %>
+                          <% if (r.status !== "active") { %>
+                            <button class="btn btn-sm btn-ghost" name="status" value="active" type="submit" data-confirm-skip>Active</button>
+                          <% } %>
+                          <button class="btn btn-sm btn-ghost" name="remove" value="1" type="submit"
+                                  style="color:var(--danger)">Remove</button>
+                        </form>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+
+      <% if (!isNew) { %>
+        <%# Deleting is separated from the form above so it cannot be
+            reached by pressing Enter in a text field. %>
+        <div class="ad-card" style="margin-top:2rem;border-color:var(--danger)">
+          <h2>Delete this batch</h2>
+          <p class="muted" style="font-size:.86rem;margin-top:-.4rem">
+            Only possible while nobody is enrolled. Once students are on it, set the
+            status to <strong>cancelled</strong> instead — an enrolment is something
+            somebody paid for, and deleting the batch would take it with them.
+          </p>
+          <form method="post" action="/rootadmin/batch/<%= b.id %>/delete"
+                data-confirm-delete="batch <%= b.code %>">
+            <button class="btn btn-sm btn-ghost" type="submit" style="color:var(--danger)">Delete batch</button>
+          </form>
+        </div>
+      <% } %>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

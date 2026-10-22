@@ -1,0 +1,116 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <span><a href="<%= lp('/') %>"><%= t("nav.home") %></a></span>
+      <span><a href="<%= lp('/courses') %>"><%= t("nav.courses") %></a></span>
+      <span aria-current="page" style="color:var(--ink)"><%= course.title %></span>
+    </nav>
+
+    <div class="detail-grid">
+
+      <div>
+        <div class="row" style="gap:.5rem;margin-bottom:.9rem">
+          <% if (course.level) { %><span class="pill pill-level"><%= course.level %></span><% } %>
+          <span class="pill"><%= t("courses.track." + course.track) %></span>
+          <% if (course.upcoming) { %><span class="pill pill-live"><%= t("courses.upcoming") %></span><% } %>
+        </div>
+
+        <h1><%= course.title %></h1>
+        <% if (course.summary) { %><p class="lead" style="margin-top:1rem"><%= course.summary %></p><% } %>
+
+        <% if (course.image) { %>
+          <div class="hero-art" style="margin-top:2rem;aspect-ratio:16/9">
+            <img src="<%= course.image.src %>"
+                 <% if (course.image.srcset) { %>srcset="<%= course.image.srcset %>" sizes="(min-width:960px) 720px, 92vw"<% } %>
+                 width="1280" height="720" fetchpriority="high" decoding="async" alt="<%= course.title %>">
+          </div>
+        <% } %>
+
+        <% if (!course.translated) { %>
+          <p class="notice" style="margin-top:2rem"><%= t("translated.notice") %></p>
+        <% } %>
+
+        <% if (tabs.length) { %>
+          <div style="margin-top:2.5rem">
+            <div class="tabs" role="tablist" data-tabs>
+              <% tabs.forEach(function (tab, i) { %>
+                <button class="tab" type="button" role="tab" id="tab-<%= tab.key %>"
+                        aria-controls="panel-<%= tab.key %>"
+                        aria-selected="<%= i === 0 ? 'true' : 'false' %>"><%= tab.label %></button>
+              <% }); %>
+            </div>
+
+            <% tabs.forEach(function (tab, i) { %>
+              <div class="prose tab-panel" role="tabpanel" id="panel-<%= tab.key %>"
+                   aria-labelledby="tab-<%= tab.key %>" <%= i === 0 ? "" : "hidden" %>>
+                <%- tab.html %>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <p class="notice" style="margin-top:2.5rem"><%= t("course.noContent") %></p>
+        <% } %>
+      </div>
+
+      <aside class="detail-aside">
+        <div class="facts">
+          <h3><%= t("course.facts") %></h3>
+          <dl>
+            <% if (course.levelLabel || course.level) { %>
+              <div><dt><%= t("courses.level") %></dt><dd><%= course.levelLabel || course.level %></dd></div>
+            <% } %>
+            <% if (course.duration) { %>
+              <div><dt><%= t("courses.duration") %></dt><dd><%= course.duration %></dd></div>
+            <% } %>
+            <% if (course.lectures) { %>
+              <div><dt><%= t("courses.lectures") %></dt><dd><%= course.lectures %></dd></div>
+            <% } %>
+            <% if (course.code) { %>
+              <div><dt>Code</dt><dd><%= course.code %></dd></div>
+            <% } %>
+            <%# priceNow, not priceEur: when a course is on offer the
+                price somebody pays is the discount, and lib/courses-db
+                decides which is which so that this page, the card and
+                the course list cannot disagree about what something
+                costs. %>
+            <% if (course.priceNow) { %>
+              <div><dt><%= t("courses.price") %></dt><dd>
+                <% if (course.priceWas) { %><s class="was">€<%= course.priceWas %></s> <% } %>€<%= course.priceNow %>
+              </dd></div>
+            <% } %>
+          </dl>
+          <div class="facts-cta">
+            <a class="btn btn-block" href="<%= lp('/contact?course=' + course.slug) %>"><%= t("cta.enquire") %></a>
+            <p class="muted" style="font-size:.82rem;margin-top:.75rem;text-align:center">
+              <%= t("course.enquireLead") %>
+            </p>
+          </div>
+        </div>
+
+        <% if (related.length) { %>
+          <div style="margin-top:1.75rem">
+            <h3 style="font-size:1.05rem;margin-bottom:.9rem"><%= t("course.related") %></h3>
+            <ul style="list-style:none;display:grid;gap:.5rem">
+              <% related.forEach(function (r) { %>
+                <li>
+                  <a href="<%= lp('/courses/' + r.slug) %>"
+                     style="display:flex;justify-content:space-between;gap:1rem;padding:.7rem .9rem;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);text-decoration:none;font-size:.9rem">
+                    <span><%= r.title %></span>
+                    <span class="muted"><%= r.level || "" %></span>
+                  </a>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        <% } %>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

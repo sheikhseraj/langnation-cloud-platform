@@ -1,0 +1,109 @@
+<%
+  // When it next meets, said the way somebody says it out loud, on a
+  // clock in the batch's own zone. The same sentence the dashboard and
+  // the student portal use, so all three are talking about one moment.
+  const zone = (tz) => tz || "Europe/Berlin";
+
+  const dayIn = (d, tz) => new Intl.DateTimeFormat("en-CA", {
+    timeZone: zone(tz), year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(d);
+
+  const meets = (v, tz) => {
+    if (!v) return null;
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return null;
+    const time = d.toLocaleTimeString("en-GB", {
+      hour: "2-digit", minute: "2-digit", timeZone: zone(tz),
+    });
+    const asUtc = (iso) => Date.parse(iso + "T00:00:00Z");
+    const days = Math.round((asUtc(dayIn(d, tz)) - asUtc(dayIn(new Date(), tz))) / 86400000);
+    if (days === 0) return "today at " + time;
+    if (days === 1) return "tomorrow at " + time;
+    return d.toLocaleDateString("en-GB", {
+      weekday: "short", day: "numeric", month: "short", timeZone: zone(tz),
+    }) + " at " + time;
+  };
+
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : null);
+
+  // Running first, then what has not started, then what is over. A
+  // teacher opening this wants this week, not the archive — and the
+  // archive is still here, at the bottom, where it belongs.
+  const rank = { running: 0, planned: 1, finished: 2, cancelled: 3 };
+  const sorted = [...batches].sort((a, b) =>
+    (rank[a.batch_status] ?? 9) - (rank[b.batch_status] ?? 9)
+    || new Date(b.starts_on || 0) - new Date(a.starts_on || 0));
+%>
+<%- include("../../partials/teach-shell-head", {
+  pageTitle: "My classes",
+  pageLead: batches.length
+    ? batches.length + (batches.length === 1 ? " batch" : " batches") + " assigned to you"
+    : null,
+  nav: "batches", teacher: teacher, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<% if (!batches.length) { %>
+  <div class="sp-card">
+    <p class="sp-empty">
+      No classes are assigned to you yet. When the office puts you on a batch
+      it appears here, with the class list and the links your students see.
+      <br><br>
+      If you are already teaching and this page is empty, the batch has your
+      name on it as text rather than as your account —
+      <a href="/contact">tell the office</a> and they can attach it.
+    </p>
+  </div>
+<% } else { %>
+  <% sorted.forEach(function (b) { %>
+    <div class="sp-card sp-wide">
+      <div class="sp-card-head">
+        <h2>
+          <a href="/teach/batch/<%= b.id %>"><%= b.course_title || b.batch_title || b.code %></a>
+          <%- include("../../partials/batch-code", { code: b.code, id: b.id }) %>
+        </h2>
+        <span class="pill<%= b.batch_status === "running" ? " pill-live" : "" %>"><%= b.batch_status %></span>
+      </div>
+
+      <%# When it next meets, not how full it is.
+
+          "4 students of 4" is a seat count, and a teacher opening this
+          page is asking when they next teach — the roster is a click
+          away on Class list, where somebody actually goes to read
+          names. %>
+      <p class="sp-now-meta">
+        <% if (b.level) { %><%= b.level %> · <% } %>
+        <% if (meets(b.next_lesson_at, b.timezone)) { %>
+          · <strong>meets <%= meets(b.next_lesson_at, b.timezone) %></strong>
+        <% } %>
+        <% if (day(b.starts_on)) { %> · <%= day(b.starts_on) %><% if (day(b.ends_on)) { %> to <%= day(b.ends_on) %><% } %><% } %>
+      </p>
+
+      <div class="sp-now-actions">
+        <%# The class link only while the batch is running: before that
+            it usually opens an empty room, which reads as broken rather
+            than early. %>
+        <% if (classLinks.room(b) && b.batch_status === "running") { %>
+          <a class="btn" href="<%= classLinks.room(b) %>" target="_blank" rel="noopener noreferrer"
+             data-class-action="/teach/batch/<%= b.id %>/start" data-class-csrf="<%= locals.classJoinCsrf || '' %>"
+             title="Opens in a new tab or window">Start the class<span class="sr-only"> (opens in a new tab or window)</span></a>
+        <% } %>
+        <% if (b.drive_url) { %>
+          <a class="btn btn-ghost" href="<%= b.drive_url %>" target="_blank" rel="noopener noreferrer">Course materials</a>
+        <% } %>
+        <% if (b.whatsapp_url) { %>
+          <a class="btn btn-ghost" href="<%= b.whatsapp_url %>" target="_blank" rel="noopener noreferrer">Group chat</a>
+        <% } %>
+        <%# The register, from the page a teacher actually lands on.
+            It was reachable only through the batch page, which is one
+            hop too many for the thing done after every single class. %>
+        <a class="btn btn-ghost" href="/teach/batch/<%= b.id %>/register">Attendance</a>
+        <a class="btn btn-ghost" href="/teach/batch/<%= b.id %>">Class list</a>
+      </div>
+    </div>
+  <% }); %>
+<% } %>
+
+<%- include("../../partials/teach-shell-foot") %>

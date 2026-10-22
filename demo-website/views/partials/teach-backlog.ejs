@@ -1,0 +1,57 @@
+<%#
+  Registers not yet taken.
+
+  A teacher out of time at the end of a class can take the register
+  later — this is what makes "later" mean something. Every row links
+  straight to the register for that date, because a reminder you have to
+  go and act on somewhere else is a reminder that gets dismissed.
+
+  Three tones, and they are genuinely different messages:
+
+    due        it is this week's work, nothing is wrong
+    overdue    Sunday has passed and the teacher needs to know
+    escalated  a week past that, and the office has been told — said
+               plainly rather than hinted at, because finding out later
+               that you were reported is worse than being told now
+
+  Expects: pending, pendingSummary.
+%>
+<% if (pendingSummary) { %>
+  <div class="sp-card sp-wide tl-owed tl-owed-<%= pendingSummary.tone %>">
+    <div class="sp-card-head">
+      <h2>Attendance pending</h2>
+    </div>
+    <p class="muted" style="margin:.2rem 0 .8rem"><%= pendingSummary.text %></p>
+    <ul class="sp-list">
+      <% pending.slice(0, 8).forEach(function (l) { %>
+        <li>
+          <div>
+            <strong>
+              <%= l.course_title || l.batch_code %>
+              <%- include("batch-code", { code: l.batch_code, id: l.intake_id }) %>
+            </strong>
+            <div class="muted" style="font-size:.82rem">
+              <%= l.on %>
+              · <%= l.students %> <%= l.students === 1 ? "student" : "students" %>
+              <% if (l.overdue) { %>
+                · <%= l.daysLate %> <%= l.daysLate === 1 ? "day" : "days" %> past Sunday
+              <% } else { %>
+                · due by Sunday <%= l.due %>
+              <% } %>
+            </div>
+          </div>
+          <div class="sp-list-end">
+            <a class="btn btn-sm" href="/teach/batch/<%= l.intake_id %>/register?date=<%= l.on %>">
+              Take it now
+            </a>
+          </div>
+        </li>
+      <% }); %>
+    </ul>
+    <% if (pending.length > 8) { %>
+      <p class="muted" style="font-size:.82rem;margin:.6rem 0 0">
+        and <%= pending.length - 8 %> more.
+      </p>
+    <% } %>
+  </div>
+<% } %>

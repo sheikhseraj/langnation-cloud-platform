@@ -1,0 +1,40 @@
+<a class="card" href="<%= lp('/courses/' + course.slug) %>"
+   data-level="<%= course.level || '' %>" data-track="<%= course.track %>">
+  <div class="card-media">
+    <% if (course.image) { %>
+      <img src="<%= course.image.src %>"
+           <% if (course.image.srcset) { %>srcset="<%= course.image.srcset %>"
+           sizes="(min-width: 1120px) 340px, (min-width: 700px) 45vw, 92vw"<% } %>
+           width="640" height="400" loading="lazy" decoding="async" alt="<%= course.title %>">
+    <% } %>
+    <%# Pinned to the top-left corner, and staying there: the course
+        covers are drawn with that corner left clear for it. The track
+        cards on the home page are the opposite case — their covers
+        carry a title in the same corner — so the badge moved into the
+        fact row there instead. Same component, different artwork,
+        different answer. %>
+    <% if (course.level) { %><span class="pill pill-level"><%= course.level %></span><% } %>
+  </div>
+
+  <div class="card-body">
+    <h3><%= course.title %></h3>
+    <p><%= course.summary %></p>
+
+    <div class="card-meta">
+      <% if (course.duration) { %><span class="pill"><%= course.duration %></span><% } %>
+      <% if (course.lectures) { %><span class="pill"><%= course.lectures %></span><% } %>
+      <% if (course.upcoming) { %><span class="pill pill-live"><%= t("courses.upcoming") %></span><% } %>
+    </div>
+
+    <div class="card-foot">
+      <span class="price">
+        <% if (course.priceNow) { %>
+          <% if (course.priceWas) { %><s class="was">€<%= course.priceWas %></s> <% } %>€<%= course.priceNow %>
+        <% } else { %>
+          <small><%= t("cta.enquireShort") %></small>
+        <% } %>
+      </span>
+      <span class="go"><%= t("cta.viewCourse") %> →</span>
+    </div>
+  </div>
+</a>

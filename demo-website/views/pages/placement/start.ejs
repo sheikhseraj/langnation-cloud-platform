@@ -1,0 +1,50 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap pt-shell">
+    <p class="eyebrow"><%= lang === "de" ? "Einstufungstest" : "Placement test" %></p>
+    <h1><%= lang === "de" ? "Welches Niveau haben Sie wirklich?" : "What level are you actually at?" %></h1>
+
+    <p class="lead" style="margin-top:1rem">
+      <%= lang === "de"
+        ? "Der Test passt sich Ihren Antworten an: Er wird schwieriger, wenn Sie richtig liegen, und leichter, wenn nicht. So steht Ihr Niveau nach 10 bis 25 Fragen fest — statt nach 30, von denen die meisten nichts über Sie aussagen."
+        : "The test adapts as you go: harder when you are right, easier when you are not. Your level is clear after 10 to 25 questions rather than 30, most of which would tell us nothing about you." %>
+    </p>
+
+    <dl class="keyfacts">
+      <div><dt><%= lang === "de" ? "Dauer" : "Time" %></dt><dd><%= lang === "de" ? "15–20 Minuten" : "15–20 minutes" %></dd></div>
+      <div><dt><%= lang === "de" ? "Fragen" : "Questions" %></dt><dd>10–25</dd></div>
+      <div><dt><%= lang === "de" ? "Niveaus" : "Levels" %></dt><dd>A1 – C2</dd></div>
+      <div><dt><%= lang === "de" ? "Kosten" : "Cost" %></dt><dd><%= lang === "de" ? "Kostenlos" : "Free" %></dd></div>
+    </dl>
+
+    <h2 style="font-size:1.15rem"><%= lang === "de" ? "So läuft es ab" : "How it works" %></h2>
+    <ol class="guide">
+      <li><strong><%= lang === "de" ? "Fragen" : "Questions" %></strong>
+        <p><%= lang === "de"
+          ? "Eine nach der anderen, mit sofortiger Rückmeldung und einer kurzen Erklärung. Sie lernen also schon währenddessen etwas."
+          : "One at a time, with instant feedback and a one-line explanation — so you learn something while you take it." %></p></li>
+      <li><strong><%= lang === "de" ? "Ein kurzer Text" : "A short piece of writing" %></strong>
+        <p><%= lang === "de"
+          ? "8 bis 14 Sätze zu einem Thema, das zu Ihrem Niveau passt. Eine Lehrkraft liest ihn — das unterscheidet eine Einschätzung von einem Ratespiel."
+          : "Eight to fourteen sentences on a topic matched to your level. A teacher reads it — that is what separates a judgement from a guess." %></p></li>
+      <li><strong><%= lang === "de" ? "Ihr Ergebnis" : "Your result" %></strong>
+        <p><%= lang === "de"
+          ? "Sofort auf dem Bildschirm, mit einer Kursempfehlung. Endgültig ist es nach der ersten Stunde — wie an jeder guten Sprachschule."
+          : "On screen immediately, with a course recommendation. It becomes final after your first lesson, as at any good language school." %></p></li>
+    </ol>
+
+    <a class="btn" href="<%= lp('/placement-test/rules') %>" style="margin-top:1rem">
+      <%= lang === "de" ? "Test starten" : "Start the test" %> →
+    </a>
+
+    <p class="muted" style="font-size:.85rem;margin-top:1.5rem">
+      <%= lang === "de"
+        ? "Einmal pro Tag und E-Mail-Adresse. Ein zweiter Versuch direkt danach misst vor allem Ihr Gedächtnis."
+        : "Once a day per email address. A second attempt straight after mostly measures your memory." %>
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/footer") %>

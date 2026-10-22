@@ -1,0 +1,41 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.blog") %></p>
+      <h1><%= t("blog.title") %></h1>
+      <p class="lead"><%= t("blog.lead") %></p>
+    </div>
+
+    <% if (!posts.length) { %>
+      <p class="notice"><%= t("blog.empty") %></p>
+    <% } else { %>
+      <div class="grid">
+        <% posts.forEach(function (p) { %>
+          <a class="card" href="<%= lp('/blog/' + p.slug) %>">
+            <div class="card-media">
+              <% if (p.image) { %>
+                <img src="<%= p.image.src %>"
+                     <% if (p.image.srcset) { %>srcset="<%= p.image.srcset %>" sizes="(min-width:1120px) 340px, 92vw"<% } %>
+                     width="640" height="400" loading="lazy" decoding="async" alt="">
+              <% } %>
+              <% if (p.category) { %><span class="pill"><%= p.category %></span><% } %>
+            </div>
+            <div class="card-body">
+              <h3><%= p.title %></h3>
+              <p><%= p.excerpt %></p>
+              <div class="card-foot">
+                <span class="muted" style="font-size:.82rem"><%= p.dateLabel %></span>
+                <span class="go"><%= t("cta.readMore") %> →</span>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

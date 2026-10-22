@@ -1,0 +1,208 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<%#
+  One question at a time, driven from the page.
+
+  Each answer is posted and the next question comes back. That costs a
+  round trip per question, and it is worth it: with instant feedback on
+  screen the alternative is shipping the answer key to the browser,
+  where anyone who opens the developer tools has the whole paper.
+
+  Nothing here is a form submission, so a reload mid-test loses the
+  paper. That is deliberate — a paper that survives reloads is a paper
+  that can be restarted until the questions are familiar.
+%>
+
+<section class="section-tight">
+  <div class="wrap pt-shell">
+
+    <div class="pt-bar" aria-hidden="true"><span data-pt-fill style="width:0%"></span></div>
+    <div class="pt-meta">
+      <span data-pt-count><%= lang === "de" ? "Frage" : "Question" %> 1</span>
+      <span data-pt-level></span>
+    </div>
+
+    <div data-pt-stage aria-live="polite">
+      <% if (question) { %>
+        <% if (question.passage) { %>
+          <div class="pt-passage"><%- question.passage.text %></div>
+        <% } %>
+        <p class="pt-q"><%= question.prompt %></p>
+        <ul class="pt-options">
+          <% question.options.forEach(function (o, i) { %>
+            <li>
+              <button class="pt-opt" type="button" data-pt-choice="<%= i %>">
+                <span class="pt-key"><%= String.fromCharCode(65 + i) %></span>
+                <span><%= o %></span>
+              </button>
+            </li>
+          <% }); %>
+        </ul>
+      <% } %>
+    </div>
+
+    <div class="pt-feedback" data-pt-feedback hidden></div>
+
+    <div style="margin-top:1.4rem">
+      <button class="btn" type="button" data-pt-next hidden>
+        <%= lang === "de" ? "Weiter" : "Continue" %> →
+      </button>
+    </div>
+
+    <p class="muted" style="font-size:.82rem;margin-top:2rem">
+      <%= lang === "de"
+        ? "Der Test passt sich Ihren Antworten an und endet, sobald Ihr Niveau feststeht — meist nach 10 bis 25 Fragen."
+        : "The test adapts to your answers and stops once your level is clear — usually after 10 to 25 questions." %>
+    </p>
+
+  </div>
+</section>
+
+<script>
+/* The exam runner.
+
+   Holds the signed state token, posts each answer, paints the result,
+   and moves on. Every decision about difficulty is the server's; this
+   only draws what comes back. */
+(function () {
+  var stage = document.querySelector("[data-pt-stage]");
+  var fbBox = document.querySelector("[data-pt-feedback]");
+  var nextBtn = document.querySelector("[data-pt-next]");
+  var fill = document.querySelector("[data-pt-fill]");
+  var counter = document.querySelector("[data-pt-count]");
+  var levelTag = document.querySelector("[data-pt-level]");
+  if (!stage) return;
+
+  var state = <%- JSON.stringify(stateToken) %>;
+  var candidate = <%- JSON.stringify(candidateToken) %>;
+  var answerUrl = <%- JSON.stringify(lp("/placement-test/answer")) %>;
+  var writingUrl = <%- JSON.stringify(lp("/placement-test/writing")) %>;
+  var asked = <%- JSON.stringify(asked || 0) %>;
+  var pending = null;
+  var DE = <%- JSON.stringify(lang === "de") %>;
+
+  /* The bar cannot show real progress: how many questions remain
+     depends on the answers still to come. It shows distance travelled
+     against the longest the test can run, which is honest enough and
+     still moves with every answer. */
+  var MAX = 25;
+
+  function paintProgress() {
+    fill.style.width = Math.min(100, Math.round((asked / MAX) * 100)) + "%";
+    counter.textContent = (DE ? "Frage " : "Question ") + (asked + 1);
+  }
+
+  function render(q) {
+    stage.innerHTML = "";
+    if (!q) return;
+
+    levelTag.textContent = q.level;
+
+    if (q.passage) {
+      var p = document.createElement("div");
+      p.className = "pt-passage";
+      p.innerHTML = q.passage.text;
+      stage.appendChild(p);
+    }
+
+    var prompt = document.createElement("p");
+    prompt.className = "pt-q";
+    prompt.textContent = q.prompt;
+    stage.appendChild(prompt);
+
+    var ul = document.createElement("ul");
+    ul.className = "pt-options";
+    q.options.forEach(function (text, i) {
+      var li = document.createElement("li");
+      var b = document.createElement("button");
+      b.className = "pt-opt";
+      b.type = "button";
+      b.setAttribute("data-pt-choice", String(i));
+      var key = document.createElement("span");
+      key.className = "pt-key";
+      key.textContent = String.fromCharCode(65 + i);
+      var label = document.createElement("span");
+      label.textContent = text;
+      b.appendChild(key);
+      b.appendChild(label);
+      li.appendChild(b);
+      ul.appendChild(li);
+    });
+    stage.appendChild(ul);
+    paintProgress();
+  }
+
+  function lock(chosen, correctIndex) {
+    var opts = stage.querySelectorAll(".pt-opt");
+    opts.forEach(function (b, i) {
+      b.disabled = true;
+      if (i === correctIndex) b.setAttribute("data-verdict", "right");
+      else if (i === chosen) b.setAttribute("data-verdict", "wrong");
+    });
+  }
+
+  function showFeedback(f) {
+    fbBox.hidden = false;
+    fbBox.setAttribute("data-verdict", f.correct ? "right" : "wrong");
+    fbBox.innerHTML = "";
+    var head = document.createElement("strong");
+    head.textContent = f.correct
+      ? (DE ? "Richtig" : "Correct")
+      : (DE ? "Nicht ganz" : "Not quite");
+    fbBox.appendChild(head);
+    if (f.explain) {
+      var why = document.createElement("span");
+      why.textContent = f.explain;
+      fbBox.appendChild(why);
+    }
+    nextBtn.hidden = false;
+    nextBtn.focus();
+  }
+
+  stage.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-pt-choice]");
+    if (!b || b.disabled) return;
+    var choice = Number(b.getAttribute("data-pt-choice"));
+
+    stage.querySelectorAll(".pt-opt").forEach(function (x) { x.disabled = true; });
+
+    fetch(answerUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ state: state, choice: choice }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.error) { location.href = <%- JSON.stringify(lp("/placement-test")) %>; return; }
+        state = data.state;
+        asked = data.asked;
+        lock(choice, data.feedback.correctIndex);
+        showFeedback(data.feedback);
+        pending = data;
+      })
+      .catch(function () {
+        stage.querySelectorAll(".pt-opt").forEach(function (x) { x.disabled = false; });
+      });
+  });
+
+  nextBtn.addEventListener("click", function () {
+    if (!pending) return;
+    fbBox.hidden = true;
+    nextBtn.hidden = true;
+
+    if (pending.done || !pending.question) {
+      /* Straight to the written task — the level is not final until a
+         teacher has read something the candidate produced. */
+      location.href = writingUrl + "?s=" + encodeURIComponent(state) + "&c=" + encodeURIComponent(candidate);
+      return;
+    }
+    render(pending.question);
+    pending = null;
+  });
+
+  paintProgress();
+})();
+</script>
+
+<%- include("../../partials/footer") %>

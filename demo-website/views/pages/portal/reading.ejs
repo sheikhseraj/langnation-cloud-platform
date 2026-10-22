@@ -1,0 +1,27 @@
+<%- include('../../partials/portal-head',{title:chapter.title,readingWorkspace:true}) %>
+<link rel="stylesheet" href="/css/reading.css?v=<%= site.assetVersion %>">
+<a class="skip-link" href="#reading-workspace-content">Zum Lesetext</a>
+<div class="hw-shell wrap reading-workspace" lang="de">
+  <div class="material-mobile-tools"><nav class="hw-aside hw-other reading-workspace-side" aria-label="Meine Lesetexte">
+    <details class="material-lesson-menu" data-responsive-menu data-menu-breakpoint="859" open><summary class="hw-aside-head"><span>Lesetraining</span><svg class="material-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></summary>
+    <ul class="hw-aside-list">
+    <% (locals.siblings||[{...ex,title:chapter.title}]).forEach(o=>{ const here=Number(o.id)===Number(ex.id),mark=o.mark?' is-'+o.mark:''; %>
+      <li><a class="hw-aside-one hw-chapter<%= mark %><%= here?' is-here':'' %>" href="/portal/lesen/<%= o.id %>?<%= new URLSearchParams({...(locals.course?{course:locals.course}:{})}).toString() %>"<%- here?' aria-current="page"':'' %>>
+        <span class="hw-chapter-box" aria-hidden="true"><% if(o.mark==='done'){ %><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg><% } %></span>
+        <span class="hw-chapter-t"><%= o.level?o.level+' · ':'' %><%= o.title %></span>
+      </a></li>
+    <% }) %>
+    </ul>
+    <p class="hw-aside-foot"><a href="/portal/lesen?<%= new URLSearchParams({...(locals.course?{course:locals.course}:{})}).toString() %>">Alle Lesetexte</a></p>
+  </details></nav><div class="material-mobile-back"><%- include('../../partials/study-back',{studyHref:'/portal/lesen?'+new URLSearchParams({...(locals.course?{course:locals.course}:{})}).toString(),studyLabel:"Meine Lesetexte"}) %></div></div>
+  <section id="reading-workspace-content" class="hw-sheet-col reading-workspace-content" aria-label="Lesetext und Aufgaben">
+    <%- include('../../partials/reading-lesson',{workspace:true}) %>
+  </section>
+  <nav class="hw-aside hw-onpage reading-workspace-progress" aria-label="Aufgaben auf dieser Seite">
+    <p class="hw-aside-head">Auf dieser Seite</p>
+    <div class="hw-onpage-bar" id="reading-sidebar-bar" role="progressbar" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-label="Beantwortete Aufgaben"><span id="reading-sidebar-fill" style="width:0%"></span></div>
+    <p class="hw-onpage-count" id="reading-sidebar-count">0 Aufgaben beantwortet</p>
+    <ol class="hw-aside-list" id="reading-sidebar-list"></ol>
+  </nav>
+</div>
+<%- include('../../partials/portal-foot') %>

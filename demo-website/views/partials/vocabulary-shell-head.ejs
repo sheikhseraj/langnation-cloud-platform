@@ -1,0 +1,8 @@
+<%- include('portal-head', {title:'Wortschatz'}) %>
+<a class="skip-link" href="#portal-content">Zum Wortschatz</a>
+<link rel="stylesheet" href="/css/vocabulary.css?v=<%= site.assetVersion %>">
+<% if (locals.vocabularyWorkspace) { %>
+<div class="wrap v-shell v-workspace-shell"><div class="sp-body" id="portal-content" tabindex="-1">
+<% } else { %>
+<div class="sp-shell wrap v-shell"><%- include('portal-side',{nav,student,avatarUrl,initials,hue}) %><div class="sp-body" id="portal-content" tabindex="-1">
+<% } %>

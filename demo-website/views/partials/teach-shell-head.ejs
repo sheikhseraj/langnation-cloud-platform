@@ -1,0 +1,42 @@
+<%#
+  Opens a signed-in teacher page: site chrome, sidebar, then the
+  page's own column. Pair with teach-shell-foot.
+
+  The sidebar comes before the content in the source as well as on
+  screen, so there is a skip link past it.
+
+  Expects everything teach-side needs, plus pageTitle and optionally
+  pageLead and pageAside (markup for the right of the heading).
+%>
+<%- include("teach-head", {
+  title: pageTitle, teacher: teacher, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<a class="skip-link" href="#portal-content">Skip to <%= pageTitle %></a>
+
+<div class="sp-shell wrap">
+  <%- include("teach-side", {
+    nav: nav, teacher: teacher, avatarUrl: avatarUrl,
+    initials: initials, hue: hue,
+  }) %>
+
+  <div class="sp-body" id="portal-content" tabindex="-1">
+    <header class="sp-head">
+      <div>
+        <h1><%= pageTitle %></h1>
+        <% if (typeof pageLead !== "undefined" && pageLead) { %>
+          <p class="sp-lead"><%= pageLead %></p>
+        <% } %>
+      </div>
+      <% if (typeof pageAside !== "undefined" && pageAside) { %>
+        <div class="sp-head-aside"><%- pageAside %></div>
+      <% } %>
+    </header>
+
+    <% if (typeof notice !== "undefined" && notice) { %>
+      <p class="notice notice-ok"><%= notice %></p>
+    <% } %>
+    <% if (typeof error !== "undefined" && error) { %>
+      <p class="notice notice-bad"><%= error %></p>
+    <% } %>

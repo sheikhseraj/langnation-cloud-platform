@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>"><head>
+<%- include('../partials/admin-head',{adTitle:'WhatsApp Community',site}) %></head><body>
+<div class="ad-shell"><%- include('../partials/admin-side',{adCurrent:'community-'+section}) %>
+<div class="ad-body"><%- include('../partials/admin-top',{adTitle:'WhatsApp Community',adCrumbs:[{label:'Admin',href:'/admin/dashboard'},{label:sections[section]}],adLogout:'/admin/logout'}) %>
+<main class="ad-main cm-module" data-community-admin data-public-origin="<%= site.origin %>" data-section="<%= section %>" data-csrf="<%= communityCsrf %>">
+ <div class="cm-heading"><div><p class="eyebrow">LangNation Community</p><h2><%= sections[section] %></h2><p>Manage applications, groups and moderation. Final WhatsApp actions are recorded manually.</p></div><a class="btn btn-sm btn-ghost" href="/community">View public page ↗</a></div>
+ <nav class="cm-tabs" aria-label="Community sections"><% Object.entries(sections).forEach(([key,label])=>{ %><a href="/admin/community/<%= key==='overview'?'':key %>"<% if(key===section){ %> aria-current="page"<% } %>><%= label %></a><% }); %></nav>
+ <p data-cm-notice role="status" aria-live="polite"></p><div data-cm-content aria-busy="true"><p>Loading community…</p></div>
+</main></div></div><script src="/js/app.js?v=<%= site.assetVersion %>" defer></script></body></html>

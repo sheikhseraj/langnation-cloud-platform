@@ -1,0 +1,215 @@
+[
+ {
+  "id": "mecklenburg-vorpommern-1",
+  "number": 371,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Welches Wappen gehört zum Bundesland Mecklenburg-Vorpommern?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/mecklenburg-vorpommern-1-1.webp",
+     "w": 220,
+     "h": 255
+    },
+    {
+     "src": "/img/einbuergerungstest/mecklenburg-vorpommern-1-2.webp",
+     "w": 220,
+     "h": 262
+    },
+    {
+     "src": "/img/einbuergerungstest/mecklenburg-vorpommern-1-3.webp",
+     "w": 233,
+     "h": 251
+    },
+    {
+     "src": "/img/einbuergerungstest/mecklenburg-vorpommern-1-4.webp",
+     "w": 220,
+     "h": 262
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ },
+ {
+  "id": "mecklenburg-vorpommern-2",
+  "number": 372,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Welches ist ein Landkreis in Mecklenburg-Vorpommern?",
+  "answers": [
+   "Prignitz",
+   "Mecklenburgische Seenplatte",
+   "Vogtlandkreis",
+   "Rhein-Sieg-Kreis"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ },
+ {
+  "id": "mecklenburg-vorpommern-3",
+  "number": 373,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Für wie viele Jahre wird der Landtag in Mecklenburg-Vorpommern gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ },
+ {
+  "id": "mecklenburg-vorpommern-4",
+  "number": 374,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Ab welchem Alter darf man in Mecklenburg-Vorpommern bei Kommunalwahlen wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ },
+ {
+  "id": "mecklenburg-vorpommern-5",
+  "number": 375,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Welche Farben hat die Landesflagge von Mecklenburg-Vorpommern?",
+  "answers": [
+   "schwarz-rot-gold",
+   "blau-weiß-gelb-rot",
+   "grün-weiß-rot",
+   "schwarz-gelb"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ },
+ {
+  "id": "mecklenburg-vorpommern-6",
+  "number": 376,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Wo können Sie sich in Mecklenburg-Vorpommern über politische Themen informieren?",
+  "answers": [
+   "bei der Landeszentrale für politische Bildung",
+   "bei den Kirchen",
+   "beim Ordnungsamt der Gemeinde",
+   "bei der Verbraucherzentrale"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ },
+ {
+  "id": "mecklenburg-vorpommern-7",
+  "number": 377,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Die Landeshauptstadt von Mecklenburg-Vorpommern heißt …",
+  "answers": [
+   "Greifswald.",
+   "Schwerin.",
+   "Rostock.",
+   "Wismar."
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ },
+ {
+  "id": "mecklenburg-vorpommern-8",
+  "number": 378,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Welches Bundesland ist Mecklenburg-Vorpommern?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/mecklenburg-vorpommern-8.webp",
+     "w": 722,
+     "h": 608
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ },
+ {
+  "id": "mecklenburg-vorpommern-9",
+  "number": 379,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef in Mecklenburg-Vorpommern?",
+  "answers": [
+   "Erste Ministerin/Erster Minister",
+   "Premierministerin/Premierminister",
+   "Bürgermeisterin/Bürgermeister",
+   "Ministerpräsidentin/Ministerpräsident"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ },
+ {
+  "id": "mecklenburg-vorpommern-10",
+  "number": 380,
+  "type": "state",
+  "category": "Mecklenburg-Vorpommern",
+  "question": "Welche Ministerin/welchen Minister hat Mecklenburg-Vorpommern nicht?",
+  "answers": [
+   "Justizministerin/Justizminister",
+   "Außenministerin/Außenminister",
+   "Finanzministerin/Finanzminister",
+   "Innenministerin/Innenminister"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Mecklenburg-Vorpommern"
+ }
+]

@@ -1,0 +1,118 @@
+# ============================================================
+# Dependencies
+# ============================================================
+
+node_modules/
+
+
+# ============================================================
+# Environment / Secrets
+# ============================================================
+#
+# Never commit real environment files.
+# .env.example is intentionally kept as a safe configuration
+# template and must contain placeholders only.
+# ============================================================
+
+.env
+.env.*
+!.env.example
+
+
+# ============================================================
+# Large Downloads / Exam Material
+# ============================================================
+#
+# These files are large MP3/PDF learning resources copied from
+# the original website and are not required in the Capstone
+# source repository.
+# ============================================================
+
+public/downloads/
+
+
+# ============================================================
+# Runtime Data
+# ============================================================
+#
+# Keep runtime/generated data private.
+# Only the reviewed vocabulary catalogue release is committed.
+# ============================================================
+
+data/*
+!data/vocabulary-catalogue/
+
+data/vocabulary-catalogue/*
+!data/vocabulary-catalogue/seed.json
+!data/vocabulary-catalogue/grammar-review.json
+
+
+# ============================================================
+# Migration / Scratch Files
+# ============================================================
+
+tools/_work/
+tools/_probe.js
+
+
+# ============================================================
+# Preview / Generated Development Output
+# ============================================================
+
+public/_preview/
+
+
+# ============================================================
+# Temporary Vocabulary Extraction / Test Reports
+# ============================================================
+
+tmp/curriculum.json
+tmp/*.mapping-report.json
+tmp/vocabulary-*.json
+tmp/vocabulary-*.log
+
+
+# ============================================================
+# Large Duplicate Branding Assets
+# ============================================================
+#
+# These files contain embedded raster artwork rather than
+# genuine vector SVG graphics and duplicate existing assets.
+# Originals remain available locally.
+# ============================================================
+
+brand/Logo/favicon_icon.svg
+brand/Logo/LangNation-favicon.svg
+
+
+# ============================================================
+# Logs
+# ============================================================
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# ============================================================
+# OS / Editor Files
+# ============================================================
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+
+
+# ============================================================
+# Intentionally Version Controlled
+# ============================================================
+#
+# content/*.json is intentionally committed.
+#
+# Course, page, blog, homework and other application content
+# is part of the website source of truth. Keeping it in Git
+# provides history, diffs and rollback capability.
+# ============================================================

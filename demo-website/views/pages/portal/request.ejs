@@ -1,0 +1,303 @@
+<%- include("../../partials/portal-head", { title: "Request an account" }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <p class="eyebrow">Student portal</p>
+    <h1>Request an account</h1>
+    <p class="lead">
+      The portal is for students studying with us. Tell us who you are and
+      why you would like an account, and someone from the office will look
+      at it and reply by email.
+    </p>
+
+    <% if (error) { %>
+      <div class="notice notice-bad" style="margin-top:1.25rem"><%= error %></div>
+    <% } %>
+
+    <form class="form" method="post" action="/portal/request" style="margin-top:1.5rem" data-request-form novalidate>
+      <%# Hidden from people, filled in by bots. %>
+      <div class="hp" aria-hidden="true">
+        <label for="website">Leave this empty</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+      <input type="hidden" name="started_at" value="<%= Date.now() %>">
+
+      <div class="field">
+        <label for="name">Your name <span aria-hidden="true">*</span></label>
+        <input type="text" id="name" name="name" required autocomplete="name"
+               maxlength="120" value="<%= values.name || '' %>">
+        <p class="field-error" id="err-name" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="email">Email <span aria-hidden="true">*</span></label>
+        <input type="email" id="email" name="email" required autocomplete="email"
+               maxlength="180" value="<%= values.email || '' %>"
+               inputmode="email" spellcheck="false">
+        <p class="field-error" id="err-email" hidden></p>
+        <%# Filled in by the script when the domain looks like a slip —
+            gmial.com and the like. Offered, never applied automatically:
+            some people really do have unusual domains. %>
+        <p class="field-hint" id="email-suggest" hidden></p>
+        <p class="field-hint">We reply to this address, so please use one you read.</p>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="phone_number">Phone</label>
+          <%# Code and number are separate so the number can refuse
+              anything but digits, and so the code is picked rather than
+              typed in whichever of six formats. %>
+          <div class="row" style="gap:.4rem;align-items:stretch">
+            <select id="phone_cc" name="phone_cc" data-enhance data-search-label="Filter codes…" style="flex:0 0 9.5rem" aria-label="Country code">
+              <option value="">Code</option>
+              <% countries.forEach(function (c) { %>
+                <option value="<%= c.dial %>" <%= c.code === "DE" ? "selected" : "" %>>
+                  <%= c.code %> +<%= c.dial %>
+                </option>
+              <% }); %>
+            </select>
+            <input type="tel" id="phone_number" name="phone_number" style="flex:1"
+                   inputmode="numeric" autocomplete="tel-national" maxlength="20"
+                   placeholder="176 1234567">
+          </div>
+          <p class="field-hint">Digits only. Optional.</p>
+        </div>
+
+        <div class="field">
+          <label for="country">Country</label>
+          <%# A real select rather than a datalist. A datalist looks like
+              a plain text box until you type, which read as a dropdown
+              that did nothing. A select is visibly a dropdown and has
+              type-ahead built in: open it and type "ger" to reach
+              Germany. %>
+          <select id="country" name="country" data-enhance data-search-label="Type a country…" autocomplete="country-name">
+            <option value="">Select a country…</option>
+            <% countries.forEach(function (c) { %>
+              <option value="<%= c.en %>" data-alt="<%= c.de %>" <%= values.country === c.en ? "selected" : "" %>><%= c.en %></option>
+            <% }); %>
+          </select>
+          <p class="field-hint">Open the list and start typing to jump to a country.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="purpose">Why would you like an account? <span aria-hidden="true">*</span></label>
+        <textarea id="purpose" name="purpose" required rows="5" maxlength="2000"
+                  placeholder="For example: which course you are on or hope to join, and what you need the portal for."><%= values.purpose || '' %></textarea>
+        <p class="field-error" id="err-purpose" hidden></p>
+        <p class="field-hint">
+          A sentence or two is plenty. This is what the office reads when
+          deciding, so telling us your course or your goal helps.
+        </p>
+      </div>
+
+      <%# The box cannot be ticked directly. Reading is the point: the
+          only way to tick it is to open the terms, scroll to the end and
+          press Accept. Consent that took no reading is worth little,
+          legally or otherwise.
+
+          Shared with both invitation pages. It also used to carry a
+          <button> where the link is now, which meant that without
+          JavaScript there was no way to read the terms at all. %>
+      <%- include("../../partials/terms-gate", {
+        termsTitle: termsTitle, termsPath: termsPath, termsHtml: termsHtml,
+        acceptError: null, andPrivacy: false,
+      }) %>
+
+      <button class="btn btn-block" type="submit" style="margin-top:1.25rem" data-submit>Send request</button>
+    </form>
+
+    <p class="muted" style="font-size:.88rem;margin-top:1.5rem">
+      Already have an account? <a href="/portal/login">Sign in</a>.
+    </p>
+  </div>
+</section>
+
+<%#
+  The dialog shown after submitting. A <dialog> rather than a div: the
+  browser handles focus, Escape and the backdrop, which is a lot of
+  fiddly work to get right by hand and easy to get wrong for anyone
+  using a keyboard or a screen reader.
+%>
+<dialog id="request-result" class="ln-dialog">
+  <h2 id="rr-title" style="margin:0 0 .6rem;font-size:1.3rem"></h2>
+  <p id="rr-body" style="margin:0 0 1.2rem;line-height:1.65"></p>
+  <div class="row" style="gap:.6rem;flex-wrap:wrap">
+    <button class="btn" type="button" data-close>Close</button>
+    <a class="btn btn-ghost" id="rr-link" href="/contact" hidden>Contact the office</a>
+  </div>
+</dialog>
+
+<script>
+/* The request form.
+
+   Posts through fetch so the answer can be a dialog rather than a page
+   change — and so "you have already asked" can be said clearly, which
+   is the thing that made this look broken before.
+
+   Everything here is an enhancement. Without JavaScript the form posts
+   normally and the server renders the same outcomes as pages. */
+(function () {
+  var form = document.querySelector("[data-request-form]");
+  if (!form) return;
+
+  var dialog = document.getElementById("request-result");
+  var title = document.getElementById("rr-title");
+  var body = document.getElementById("rr-body");
+  var link = document.getElementById("rr-link");
+  var submit = form.querySelector("[data-submit]");
+
+  /* ── Email typo suggestions ─────────────────────────────────────
+     Only for domains people demonstrably mistype. Suggested, never
+     applied: someone really might be at gmai.de. */
+  var COMMON = ["gmail.com","googlemail.com","yahoo.com","hotmail.com","outlook.com",
+                "outlook.de","live.com","icloud.com","web.de","gmx.de","gmx.net",
+                "t-online.de","protonmail.com","aol.com","mail.com","yandex.com"];
+
+  function distance(a, b) {
+    var m = a.length, n = b.length, prev = [], cur = [], i, j;
+    for (j = 0; j <= n; j++) prev[j] = j;
+    for (i = 1; i <= m; i++) {
+      cur[0] = i;
+      for (j = 1; j <= n; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1,
+                          prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      prev = cur.slice();
+    }
+    return prev[n];
+  }
+
+  function suggestFor(value) {
+    var at = value.lastIndexOf("@");
+    if (at < 1) return null;
+    var domain = value.slice(at + 1).toLowerCase();
+    if (!domain || COMMON.indexOf(domain) !== -1) return null;
+    for (var i = 0; i < COMMON.length; i++) {
+      /* One or two characters out is a slip; more is a different domain. */
+      if (distance(domain, COMMON[i]) <= 2) return value.slice(0, at + 1) + COMMON[i];
+    }
+    return null;
+  }
+
+  var email = document.getElementById("email");
+  var hint = document.getElementById("email-suggest");
+  email.addEventListener("blur", function () {
+    var s = suggestFor(email.value.trim());
+    if (!s) { hint.hidden = true; return; }
+    hint.innerHTML = "Did you mean <a href='#' data-fix>" + s.replace(/</g, "&lt;") + "</a>?";
+    hint.hidden = false;
+    hint.querySelector("[data-fix]").addEventListener("click", function (e) {
+      e.preventDefault();
+      email.value = s;
+      hint.hidden = true;
+    });
+  });
+
+  /* ── Phone: digits only ─────────────────────────────────────────── */
+  var phone = document.getElementById("phone_number");
+  phone.addEventListener("input", function () {
+    var cleaned = phone.value.replace(/[^0-9 ]/g, "");
+    if (cleaned !== phone.value) phone.value = cleaned;
+  });
+
+  /* ── Field errors ───────────────────────────────────────────────── */
+  function clearErrors() {
+    ["name", "email", "purpose", "accept"].forEach(function (f) {
+      var el = document.getElementById("err-" + f);
+      if (el) { el.hidden = true; el.textContent = ""; }
+    });
+  }
+
+  function showErrors(errors) {
+    clearErrors();
+    var first = null;
+    Object.keys(errors || {}).forEach(function (f) {
+      var el = document.getElementById("err-" + f);
+      if (el) { el.textContent = errors[f]; el.hidden = false; }
+      if (!first) first = document.getElementById(f) || el;
+    });
+    if (first && first.focus) first.focus();
+  }
+
+  function show(t, b, showContact) {
+    title.textContent = t;
+    body.textContent = b;
+    link.hidden = !showContact;
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else alert(t + "\n\n" + b);
+  }
+
+  dialog.querySelector("[data-close]").addEventListener("click", function () {
+    dialog.close();
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    clearErrors();
+    submit.disabled = true;
+    var original = submit.textContent;
+    submit.textContent = "Sending…";
+
+    /* URLSearchParams, not FormData. FormData posts multipart/form-data,
+       which express.urlencoded does not parse — every field arrived
+       empty and the form insisted the name was missing no matter what
+       was typed. This posts exactly what a plain form post would. */
+    fetch(form.action, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams(new FormData(form)),
+    })
+      .then(function (r) { return r.json().then(function (j) { return { status: r.status, j: j }; }); })
+      .then(function (res) {
+        var out = res.j.outcome;
+
+        if (out === "invalid") { showErrors(res.j.errors); return; }
+
+        if (out === "duplicate") {
+          show(
+            "You have already sent a request",
+            res.j.status === "approved"
+              ? "This address has already been approved. Check your email for the link to set your password — including the spam folder. If you cannot find it, contact the office and we will send a new one."
+              : "We already have a request from this address and it is waiting to be looked at. Please wait for the approval email. If it has been more than a couple of days, contact us.",
+            true
+          );
+          return;
+        }
+
+        if (out === "received") {
+          form.reset();
+          show(
+            "Your request has been sent",
+            "Thank you. Someone from the office will look at it and reply by email, usually within a working day. Please check your inbox — and your spam folder — for our answer.",
+            false
+          );
+          return;
+        }
+
+        show(
+          "That did not go through",
+          "Something went wrong at our end and your request was not saved. Please try again in a moment, or contact the office directly.",
+          true
+        );
+      })
+      .catch(function () {
+        show(
+          "That did not go through",
+          "We could not reach the server. Check your connection and try again, or contact the office directly.",
+          true
+        );
+      })
+      .finally(function () {
+        submit.disabled = false;
+        submit.textContent = original;
+      });
+  });
+})();
+</script>
+
+<%- include("../../partials/portal-foot") %>

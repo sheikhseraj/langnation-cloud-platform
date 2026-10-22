@@ -1,0 +1,1194 @@
+# Kapitel 12 — Zeitformen
+@learning
+{
+  "version": 1,
+  "key": "kapitel-12-zeitformen",
+  "title": "Kapitel 12 — Zeitformen",
+  "label": "Kapitel 12",
+  "sections": [
+    {
+      "id": "exercise-1",
+      "label": "Übung 1",
+      "title": "Übung 1 – Präsens oder Zukunft?",
+      "instruction": "Formuliere die Sätze sinnvoll. Präsens und Futur I können je nach Kontext beide korrekt sein; die UI zeigt eine bevorzugte natürliche Variante.",
+      "objective": "Präsens mit Zukunftsbedeutung und Futur I situationsgerecht verwenden.",
+      "examples": [
+        {
+          "prompt": "ich / morgen / arbeiten",
+          "answer": "Ich arbeite morgen.",
+          "explanation": "Konkreter Plan → Präsens ist sehr häufig."
+        },
+        {
+          "prompt": "er / wahrscheinlich / später / anrufen",
+          "answer": "Er wird wahrscheinlich später anrufen.",
+          "explanation": "Vermutung → Futur I passt gut."
+        }
+      ],
+      "questions": [
+        {
+          "id": "1",
+          "title": "Aufgabe 1",
+          "type": "sentence_builder_choice",
+          "prompt": "Ich / morgen / nach Hamburg fahren",
+          "accepted": [
+            "Ich fahre morgen nach Hamburg.",
+            "Morgen fahre ich nach Hamburg.",
+            "Ich werde morgen nach Hamburg fahren.",
+            "Morgen werde ich nach Hamburg fahren."
+          ],
+          "hints": [
+            "Geht es um einen konkreten Plan oder eine Prognose?",
+            "Bei einem konkreten Plan ist Präsens sehr natürlich."
+          ],
+          "feedback": "Alle vier Varianten akzeptieren; bevorzugtes Feedback: Präsens für konkrete Planung.",
+          "tiles": [
+            ".",
+            "fahre",
+            "fahren",
+            "Hamburg",
+            "ich",
+            "Ich",
+            "morgen",
+            "Morgen",
+            "nach",
+            "werde"
+          ]
+        },
+        {
+          "id": "2",
+          "title": "Aufgabe 2",
+          "type": "sentence_builder_choice",
+          "prompt": "Wir / nächste Woche / einen Test schreiben",
+          "accepted": [
+            "Wir schreiben nächste Woche einen Test.",
+            "Nächste Woche schreiben wir einen Test.",
+            "Wir werden nächste Woche einen Test schreiben.",
+            "Nächste Woche werden wir einen Test schreiben."
+          ],
+          "hints": [
+            "Ein konkreter Termin kann im Präsens stehen.",
+            "Futur I ist ebenfalls grammatisch möglich."
+          ],
+          "feedback": "Beide Zeitformen akzeptieren; Präsens als natürliche Plan-Variante hervorheben.",
+          "tiles": [
+            ".",
+            "einen",
+            "nächste",
+            "Nächste",
+            "schreiben",
+            "Test",
+            "werden",
+            "wir",
+            "Wir",
+            "Woche"
+          ]
+        },
+        {
+          "id": "3",
+          "title": "Aufgabe 3",
+          "type": "sentence_builder_choice",
+          "prompt": "Er / wahrscheinlich / später anrufen",
+          "accepted": [
+            "Er wird wahrscheinlich später anrufen.",
+            "Wahrscheinlich wird er später anrufen.",
+            "Er ruft wahrscheinlich später an.",
+            "Wahrscheinlich ruft er später an."
+          ],
+          "hints": [
+            "„wahrscheinlich“ signalisiert eine Vermutung.",
+            "Futur I kann Vermutung/Zukunft ausdrücken."
+          ],
+          "feedback": "Beide korrekt; Futur I als besonders passende Zielvariante.",
+          "tiles": [
+            ".",
+            "an",
+            "anrufen",
+            "er",
+            "Er",
+            "ruft",
+            "später",
+            "wahrscheinlich",
+            "Wahrscheinlich",
+            "wird"
+          ]
+        },
+        {
+          "id": "4",
+          "title": "Aufgabe 4",
+          "type": "sentence_builder_choice",
+          "prompt": "Heute / ich / zu Hause arbeiten",
+          "accepted": [
+            "Heute arbeite ich zu Hause.",
+            "Ich arbeite heute zu Hause.",
+            "Heute werde ich zu Hause arbeiten.",
+            "Ich werde heute zu Hause arbeiten."
+          ],
+          "hints": [
+            "Der Zeitpunkt „heute“ ist klar.",
+            "Präsens ist im Alltag sehr natürlich."
+          ],
+          "feedback": "Beide akzeptieren; Präsens bevorzugt.",
+          "tiles": [
+            ".",
+            "arbeite",
+            "arbeiten",
+            "Hause",
+            "heute",
+            "Heute",
+            "ich",
+            "Ich",
+            "werde",
+            "zu"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exercise-2",
+      "label": "Übung 2",
+      "title": "Übung 2 – Partizip II",
+      "instruction": "Bilde das Partizip II.",
+      "objective": "Partizip II regelmäßiger, unregelmäßiger, trennbarer und -ieren-Verben bilden.",
+      "examples": [
+        {
+          "prompt": "lernen",
+          "answer": "gelernt",
+          "explanation": "regelmäßig: ge- + Stamm + -t."
+        },
+        {
+          "prompt": "telefonieren",
+          "answer": "telefoniert",
+          "explanation": "Verben auf -ieren ohne ge-."
+        }
+      ],
+      "questions": [
+        {
+          "id": "5",
+          "title": "Aufgabe 5",
+          "type": "short_answer",
+          "prompt": "machen",
+          "accepted": [
+            "gemacht"
+          ],
+          "hints": [
+            "Regelmäßiges Verb.",
+            "ge + mach + t."
+          ],
+          "feedback": "Richtig: gemacht."
+        },
+        {
+          "id": "6",
+          "title": "Aufgabe 6",
+          "type": "short_answer",
+          "prompt": "fahren",
+          "accepted": [
+            "gefahren"
+          ],
+          "hints": [
+            "Unregelmäßiges Verb.",
+            "Partizip II lernen: gefahren."
+          ],
+          "feedback": "Richtig: gefahren."
+        },
+        {
+          "id": "7",
+          "title": "Aufgabe 7",
+          "type": "short_answer",
+          "prompt": "einkaufen",
+          "accepted": [
+            "eingekauft"
+          ],
+          "hints": [
+            "Trennbares Verb.",
+            "ge steht zwischen Präfix und Stamm: ein-ge-kauft."
+          ],
+          "feedback": "Richtig: eingekauft."
+        },
+        {
+          "id": "8",
+          "title": "Aufgabe 8",
+          "type": "short_answer",
+          "prompt": "besuchen",
+          "accepted": [
+            "besucht"
+          ],
+          "hints": [
+            "Untrennbares Präfix be-.",
+            "Kein ge-."
+          ],
+          "feedback": "Richtig: besucht."
+        },
+        {
+          "id": "9",
+          "title": "Aufgabe 9",
+          "type": "short_answer",
+          "prompt": "studieren",
+          "accepted": [
+            "studiert"
+          ],
+          "hints": [
+            "Verb auf -ieren.",
+            "Kein ge-."
+          ],
+          "feedback": "Richtig: studiert."
+        },
+        {
+          "id": "10",
+          "title": "Aufgabe 10",
+          "type": "short_answer",
+          "prompt": "sehen",
+          "accepted": [
+            "gesehen"
+          ],
+          "hints": [
+            "Unregelmäßig.",
+            "sehen → gesehen."
+          ],
+          "feedback": "Richtig: gesehen."
+        },
+        {
+          "id": "11",
+          "title": "Aufgabe 11",
+          "type": "short_answer",
+          "prompt": "arbeiten",
+          "accepted": [
+            "gearbeitet"
+          ],
+          "hints": [
+            "Stamm endet auf t.",
+            "-et im Partizip: gearbeitet."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "12",
+          "title": "Aufgabe 12",
+          "type": "short_answer",
+          "prompt": "anrufen",
+          "accepted": [
+            "angerufen"
+          ],
+          "hints": [
+            "Trennbares Verb.",
+            "an-ge-rufen."
+          ],
+          "feedback": "Richtig: angerufen."
+        }
+      ]
+    },
+    {
+      "id": "exercise-3",
+      "label": "Übung 3",
+      "title": "Übung 3 – haben oder sein?",
+      "instruction": "Setze die richtige Form von haben oder sein ein.",
+      "objective": "Passendes Hilfsverb im Perfekt auswählen und konjugieren.",
+      "examples": [
+        {
+          "prompt": "Ich ___ viel gelernt.",
+          "answer": "habe",
+          "explanation": "lernen → haben."
+        },
+        {
+          "prompt": "Wir ___ nach Hause gegangen.",
+          "answer": "sind",
+          "explanation": "Ortsveränderung gehen → sein."
+        }
+      ],
+      "questions": [
+        {
+          "id": "13",
+          "title": "Aufgabe 13",
+          "type": "fill_blank",
+          "prompt": "Ich ___ gestern lange gearbeitet.",
+          "accepted": [
+            "habe"
+          ],
+          "hints": [
+            "arbeiten bildet Perfekt mit haben.",
+            "Subjekt ich → habe."
+          ],
+          "feedback": "Richtig: habe."
+        },
+        {
+          "id": "14",
+          "title": "Aufgabe 14",
+          "type": "fill_blank",
+          "prompt": "Wir ___ nach Leipzig gefahren.",
+          "accepted": [
+            "sind"
+          ],
+          "hints": [
+            "fahren als Ortsveränderung → sein.",
+            "wir → sind."
+          ],
+          "feedback": "Richtig: sind."
+        },
+        {
+          "id": "15",
+          "title": "Aufgabe 15",
+          "type": "fill_blank",
+          "prompt": "Sie ___ früh aufgestanden.",
+          "accepted": [
+            "ist"
+          ],
+          "hints": [
+            "aufstehen → Zustands-/Ortswechsel → sein.",
+            "sie Singular → ist."
+          ],
+          "feedback": "Richtig: ist."
+        },
+        {
+          "id": "16",
+          "title": "Aufgabe 16",
+          "type": "fill_blank",
+          "prompt": "Er ___ einen Film gesehen.",
+          "accepted": [
+            "hat"
+          ],
+          "hints": [
+            "sehen → haben.",
+            "er → hat."
+          ],
+          "feedback": "Richtig: hat."
+        },
+        {
+          "id": "17",
+          "title": "Aufgabe 17",
+          "type": "fill_blank",
+          "prompt": "Ihr ___ viel gelernt.",
+          "accepted": [
+            "habt"
+          ],
+          "hints": [
+            "lernen → haben.",
+            "ihr → habt."
+          ],
+          "feedback": "Richtig: habt."
+        },
+        {
+          "id": "18",
+          "title": "Aufgabe 18",
+          "type": "fill_blank",
+          "prompt": "Das Kind ___ eingeschlafen.",
+          "accepted": [
+            "ist"
+          ],
+          "hints": [
+            "einschlafen = Zustandswechsel → sein.",
+            "das Kind → ist."
+          ],
+          "feedback": "Richtig: ist."
+        }
+      ]
+    },
+    {
+      "id": "exercise-4",
+      "label": "Übung 4",
+      "title": "Übung 4 – Perfekt bilden",
+      "instruction": "Setze die Sätze ins Perfekt.",
+      "objective": "Präsenssätze korrekt ins Perfekt setzen.",
+      "examples": [
+        {
+          "prompt": "Ich lerne Deutsch.",
+          "answer": "Ich habe Deutsch gelernt.",
+          "explanation": "haben + Partizip II."
+        },
+        {
+          "prompt": "Sie geht nach Hause.",
+          "answer": "Sie ist nach Hause gegangen.",
+          "explanation": "sein bei gehen."
+        }
+      ],
+      "questions": [
+        {
+          "id": "19",
+          "title": "Aufgabe 19",
+          "type": "sentence_transform",
+          "prompt": "Ich kaufe Lebensmittel.",
+          "accepted": [
+            "Ich habe Lebensmittel gekauft."
+          ],
+          "hints": [
+            "kaufen → gekauft; Hilfsverb haben.",
+            "ich → habe."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "20",
+          "title": "Aufgabe 20",
+          "type": "sentence_transform",
+          "prompt": "Sie fährt nach Berlin.",
+          "accepted": [
+            "Sie ist nach Berlin gefahren."
+          ],
+          "hints": [
+            "fahren mit Ziel → sein.",
+            "sie → ist."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "21",
+          "title": "Aufgabe 21",
+          "type": "sentence_transform",
+          "prompt": "Wir besuchen unsere Freunde.",
+          "accepted": [
+            "Wir haben unsere Freunde besucht."
+          ],
+          "hints": [
+            "besuchen → besucht; haben.",
+            "wir → haben."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "22",
+          "title": "Aufgabe 22",
+          "type": "sentence_transform",
+          "prompt": "Er ruft seine Mutter an.",
+          "accepted": [
+            "Er hat seine Mutter angerufen."
+          ],
+          "hints": [
+            "anrufen → angerufen; haben.",
+            "er → hat."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "23",
+          "title": "Aufgabe 23",
+          "type": "sentence_transform",
+          "prompt": "Ihr lernt für die Prüfung.",
+          "accepted": [
+            "Ihr habt für die Prüfung gelernt."
+          ],
+          "hints": [
+            "lernen → gelernt; haben.",
+            "ihr → habt."
+          ],
+          "feedback": "Richtig."
+        }
+      ]
+    },
+    {
+      "id": "exercise-5",
+      "label": "Übung 5",
+      "title": "Übung 5 – Präteritum",
+      "instruction": "Setze die passende Präteritumform ein.",
+      "objective": "Häufige Präteritumformen von sein, haben, Modalverben und gehen verwenden.",
+      "examples": [
+        {
+          "prompt": "Gestern ___ ich zu Hause. (sein)",
+          "answer": "war",
+          "explanation": "sein → war."
+        },
+        {
+          "prompt": "Wir ___ arbeiten. (müssen)",
+          "answer": "mussten",
+          "explanation": "müssen → mussten."
+        }
+      ],
+      "questions": [
+        {
+          "id": "24",
+          "title": "Aufgabe 24",
+          "type": "fill_blank",
+          "prompt": "Gestern ___ ich müde. (sein)",
+          "accepted": [
+            "war"
+          ],
+          "hints": [
+            "sein im Präteritum.",
+            "ich → war."
+          ],
+          "feedback": "Richtig: war."
+        },
+        {
+          "id": "25",
+          "title": "Aufgabe 25",
+          "type": "fill_blank",
+          "prompt": "Wir ___ keine Zeit. (haben)",
+          "accepted": [
+            "hatten"
+          ],
+          "hints": [
+            "haben im Präteritum.",
+            "wir → hatten."
+          ],
+          "feedback": "Richtig: hatten."
+        },
+        {
+          "id": "26",
+          "title": "Aufgabe 26",
+          "type": "fill_blank",
+          "prompt": "Er ___ nicht kommen. (können)",
+          "accepted": [
+            "konnte"
+          ],
+          "hints": [
+            "können im Präteritum.",
+            "er → konnte."
+          ],
+          "feedback": "Richtig: konnte."
+        },
+        {
+          "id": "27",
+          "title": "Aufgabe 27",
+          "type": "fill_blank",
+          "prompt": "Ich ___ früh aufstehen. (müssen)",
+          "accepted": [
+            "musste"
+          ],
+          "hints": [
+            "müssen im Präteritum.",
+            "ich → musste."
+          ],
+          "feedback": "Richtig: musste."
+        },
+        {
+          "id": "28",
+          "title": "Aufgabe 28",
+          "type": "fill_blank",
+          "prompt": "Sie ___ nach Hause. (gehen)",
+          "accepted": [
+            "ging"
+          ],
+          "hints": [
+            "gehen → ging.",
+            "Subjekt sie Singular."
+          ],
+          "feedback": "Richtig: ging."
+        }
+      ]
+    },
+    {
+      "id": "exercise-6",
+      "label": "Übung 6",
+      "title": "Übung 6 – Zeitform erkennen",
+      "instruction": "Bestimme die Zeitform.",
+      "objective": "Präsens, Perfekt, Präteritum, Futur I und Plusquamperfekt unterscheiden.",
+      "examples": [
+        {
+          "prompt": "Ich habe gearbeitet.",
+          "answer": "Perfekt",
+          "explanation": "haben + Partizip II."
+        },
+        {
+          "prompt": "Wir werden umziehen.",
+          "answer": "Futur I",
+          "explanation": "werden + Infinitiv."
+        }
+      ],
+      "questions": [
+        {
+          "id": "29",
+          "title": "Aufgabe 29",
+          "type": "choice",
+          "prompt": "Ich habe gestern gearbeitet.",
+          "accepted": [
+            "Perfekt"
+          ],
+          "hints": [
+            "Hilfsverb im Präsens + Partizip II.",
+            "habe gearbeitet = Perfekt."
+          ],
+          "feedback": "Richtig: Perfekt.",
+          "options": [
+            "Präsens",
+            "Präsens mit Zukunftsbedeutung",
+            "Perfekt",
+            "Präteritum",
+            "Plusquamperfekt",
+            "Futur I"
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        },
+        {
+          "id": "30",
+          "title": "Aufgabe 30",
+          "type": "choice",
+          "prompt": "Morgen fahre ich nach Berlin.",
+          "accepted": [
+            "Präsens mit Zukunftsbedeutung"
+          ],
+          "hints": [
+            "Verb steht im Präsens, Zeitangabe zeigt Zukunft.",
+            "Nicht jedes zukünftige Ereignis braucht Futur I."
+          ],
+          "feedback": "Richtig.",
+          "options": [
+            "Präsens",
+            "Präsens mit Zukunftsbedeutung",
+            "Perfekt",
+            "Präteritum",
+            "Plusquamperfekt",
+            "Futur I"
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        },
+        {
+          "id": "31",
+          "title": "Aufgabe 31",
+          "type": "choice",
+          "prompt": "Er war sehr müde.",
+          "accepted": [
+            "Präteritum"
+          ],
+          "hints": [
+            "war ist Präteritum von sein.",
+            "Einfaches Vergangenheitstempus."
+          ],
+          "feedback": "Richtig: Präteritum.",
+          "options": [
+            "Präsens",
+            "Präsens mit Zukunftsbedeutung",
+            "Perfekt",
+            "Präteritum",
+            "Plusquamperfekt",
+            "Futur I"
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        },
+        {
+          "id": "32",
+          "title": "Aufgabe 32",
+          "type": "choice",
+          "prompt": "Wir werden bald umziehen.",
+          "accepted": [
+            "Futur I"
+          ],
+          "hints": [
+            "werden + Infinitiv.",
+            "werden ... umziehen."
+          ],
+          "feedback": "Richtig: Futur I.",
+          "options": [
+            "Präsens",
+            "Präsens mit Zukunftsbedeutung",
+            "Perfekt",
+            "Präteritum",
+            "Plusquamperfekt",
+            "Futur I"
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        },
+        {
+          "id": "33",
+          "title": "Aufgabe 33",
+          "type": "choice",
+          "prompt": "Sie hatte schon gegessen.",
+          "accepted": [
+            "Plusquamperfekt"
+          ],
+          "hints": [
+            "hatte + Partizip II.",
+            "Vorvergangenheit."
+          ],
+          "feedback": "Richtig: Plusquamperfekt.",
+          "options": [
+            "Präsens",
+            "Präsens mit Zukunftsbedeutung",
+            "Perfekt",
+            "Präteritum",
+            "Plusquamperfekt",
+            "Futur I"
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reading",
+      "label": "Lesetext",
+      "title": "Lesetext – Ein anstrengender Montag",
+      "instruction": "Lies den Text und bearbeite die Aufgaben.",
+      "examples": [
+        {
+          "prompt": "ich / morgen / arbeiten",
+          "answer": "Ich arbeite morgen.",
+          "explanation": "Konkreter Plan → Präsens ist sehr häufig."
+        }
+      ],
+      "questions": [
+        {
+          "id": "r1",
+          "title": "Aufgabe R1",
+          "type": "highlight_categorize",
+          "prompt": "Markiere die Verbformen und ordne sie der Zeitform zu.",
+          "hints": [
+            "Suche finite Verben und mehrteilige Verbformen.",
+            "Bei Perfekt/Plusquamperfekt/Futur gehören Hilfsverb und Partizip/Infinitiv zusammen."
+          ],
+          "feedback": "11 Zielverbformen/-gruppen.",
+          "tokens": [
+            "Gestern",
+            "war",
+            "mein",
+            "Montag",
+            "besonders",
+            "lang.",
+            "Ich",
+            "bin",
+            "um",
+            "sechs",
+            "Uhr",
+            "aufgestanden",
+            "und",
+            "habe",
+            "schnell",
+            "gefrühstückt.",
+            "Danach",
+            "bin",
+            "ich",
+            "mit",
+            "dem",
+            "Zug",
+            "zur",
+            "Arbeit",
+            "gefahren.",
+            "Als",
+            "ich",
+            "im",
+            "Büro",
+            "ankam,",
+            "hatte",
+            "meine",
+            "Kollegin",
+            "die",
+            "erste",
+            "Besprechung",
+            "schon",
+            "vorbereitet.",
+            "Wir",
+            "haben",
+            "den",
+            "ganzen",
+            "Vormittag",
+            "an",
+            "einem",
+            "Projekt",
+            "gearbeitet.",
+            "Am",
+            "Nachmittag",
+            "musste",
+            "ich",
+            "noch",
+            "einen",
+            "Termin",
+            "wahrnehmen.",
+            "Heute",
+            "bin",
+            "ich",
+            "wieder",
+            "etwas",
+            "entspannter.",
+            "Morgen",
+            "arbeite",
+            "ich",
+            "von",
+            "zu",
+            "Hause,",
+            "und",
+            "am",
+            "Abend",
+            "werde",
+            "ich",
+            "endlich",
+            "meine",
+            "Freunde",
+            "treffen."
+          ],
+          "groups": [
+            {
+              "id": "group-1",
+              "label": "war",
+              "tokens": [
+                1
+              ],
+              "category": "Präteritum"
+            },
+            {
+              "id": "group-2",
+              "label": "bin ... aufgestanden",
+              "tokens": [
+                7,
+                11
+              ],
+              "category": "Perfekt"
+            },
+            {
+              "id": "group-3",
+              "label": "habe ... gefrühstückt",
+              "tokens": [
+                13,
+                15
+              ],
+              "category": "Perfekt"
+            },
+            {
+              "id": "group-4",
+              "label": "bin ... gefahren",
+              "tokens": [
+                17,
+                24
+              ],
+              "category": "Perfekt"
+            },
+            {
+              "id": "group-5",
+              "label": "ankam",
+              "tokens": [
+                29
+              ],
+              "category": "Präteritum"
+            },
+            {
+              "id": "group-6",
+              "label": "hatte ... vorbereitet",
+              "tokens": [
+                30,
+                37
+              ],
+              "category": "Plusquamperfekt"
+            },
+            {
+              "id": "group-7",
+              "label": "haben ... gearbeitet",
+              "tokens": [
+                39,
+                46
+              ],
+              "category": "Perfekt"
+            },
+            {
+              "id": "group-8",
+              "label": "musste ... wahrnehmen",
+              "tokens": [
+                49,
+                54
+              ],
+              "category": "Präteritum"
+            },
+            {
+              "id": "group-9",
+              "label": "bin",
+              "tokens": [
+                56
+              ],
+              "category": "Präsens"
+            },
+            {
+              "id": "group-10",
+              "label": "arbeite",
+              "tokens": [
+                62
+              ],
+              "category": "Präsens mit Zukunftsbedeutung"
+            },
+            {
+              "id": "group-11",
+              "label": "werde ... treffen",
+              "tokens": [
+                70,
+                75
+              ],
+              "category": "Futur I"
+            }
+          ],
+          "categories": [
+            "Präteritum",
+            "Perfekt",
+            "Plusquamperfekt",
+            "Präsens",
+            "Präsens mit Zukunftsbedeutung",
+            "Futur I"
+          ],
+          "examples": [
+            {
+              "prompt": "Ich habe gestern gelernt.",
+              "answer": "habe … gelernt → Perfekt",
+              "explanation": "Markiere habe und gelernt und wähle die Zeitform."
+            }
+          ]
+        },
+        {
+          "id": "r2",
+          "title": "Aufgabe R2",
+          "type": "short_answer",
+          "prompt": "Was ist zuerst passiert: die Vorbereitung der Besprechung oder die Ankunft im Büro?",
+          "accepted": [
+            "Die Vorbereitung der Besprechung.",
+            "Die Kollegin hatte die Besprechung vor der Ankunft vorbereitet."
+          ],
+          "hints": [
+            "„hatte vorbereitet“ steht vor einem anderen vergangenen Ereignis.",
+            "Plusquamperfekt zeigt die frühere Vergangenheit."
+          ],
+          "feedback": "Richtig: Die Vorbereitung war zuerst."
+        },
+        {
+          "id": "r3",
+          "title": "Aufgabe R3",
+          "type": "choice",
+          "prompt": "Warum steht „hatte vorbereitet“ im Plusquamperfekt?",
+          "accepted": [
+            "Weil die Vorbereitung vor einem anderen Ereignis in der Vergangenheit passiert war.",
+            "Weil die Vorbereitung schon vor der Ankunft im Büro abgeschlossen war."
+          ],
+          "hints": [
+            "Vergleiche Vorbereitung und Ankunft.",
+            "Plusquamperfekt = Vorvergangenheit."
+          ],
+          "feedback": "Inhaltlich äquivalente kontrollierte Erklärung akzeptieren.",
+          "options": [
+            "Weil die Vorbereitung erst morgen stattfinden wird.",
+            "Weil die Vorbereitung genau jetzt stattfindet.",
+            "Weil die Vorbereitung schon vor der Ankunft im Büro abgeschlossen war.",
+            "Weil die Vorbereitung vor einem anderen Ereignis in der Vergangenheit passiert war."
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        },
+        {
+          "id": "r4",
+          "title": "Aufgabe R4",
+          "type": "short_answer",
+          "prompt": "Finde das Beispiel für Zukunft im Präsens.",
+          "accepted": [
+            "Morgen arbeite ich von zu Hause.",
+            "arbeite"
+          ],
+          "hints": [
+            "Suche eine Zukunftszeitangabe ohne „werden“.",
+            "„Morgen“ + Präsens."
+          ],
+          "feedback": "Richtig: Morgen arbeite ich von zu Hause."
+        },
+        {
+          "id": "r5",
+          "title": "Aufgabe R5",
+          "type": "short_answer",
+          "prompt": "Finde das Beispiel für Futur I.",
+          "accepted": [
+            "Am Abend werde ich endlich meine Freunde treffen.",
+            "werde ... treffen"
+          ],
+          "hints": [
+            "Suche „werden + Infinitiv“.",
+            "werde ... treffen."
+          ],
+          "feedback": "Richtig."
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "label": "Test",
+      "title": "Test – Kapitel 12",
+      "instruction": "Bearbeite die Aufgaben. Bei Bedarf stehen dir zwei Hinweise zur Verfügung.",
+      "examples": [
+        {
+          "prompt": "ich / morgen / arbeiten",
+          "answer": "Ich arbeite morgen.",
+          "explanation": "Konkreter Plan → Präsens ist sehr häufig."
+        }
+      ],
+      "questions": [
+        {
+          "id": "t1",
+          "title": "Aufgabe T1",
+          "type": "short_answer",
+          "prompt": "Bilde das Partizip II von „anrufen“.",
+          "accepted": [
+            "angerufen"
+          ],
+          "hints": [
+            "Trennbares Verb.",
+            "an-ge-rufen."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t2",
+          "title": "Aufgabe T2",
+          "type": "fill_blank",
+          "prompt": "Ich ___ nach Köln gefahren. (sein/haben)",
+          "accepted": [
+            "bin"
+          ],
+          "hints": [
+            "fahren mit Ziel → sein.",
+            "ich → bin."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t3",
+          "title": "Aufgabe T3",
+          "type": "short_answer",
+          "prompt": "Setze ins Perfekt: Wir lernen viel.",
+          "accepted": [
+            "Wir haben viel gelernt."
+          ],
+          "hints": [
+            "lernen → gelernt; haben.",
+            "wir → haben."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t4",
+          "title": "Aufgabe T4",
+          "type": "short_answer",
+          "prompt": "Setze ins Präteritum: Ich bin müde.",
+          "accepted": [
+            "Ich war müde."
+          ],
+          "hints": [
+            "sein → war.",
+            "ich → war."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t5",
+          "title": "Aufgabe T5",
+          "type": "short_answer",
+          "prompt": "Setze ins Präteritum: Er muss arbeiten.",
+          "accepted": [
+            "Er musste arbeiten."
+          ],
+          "hints": [
+            "müssen → musste.",
+            "er → musste."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t6",
+          "title": "Aufgabe T6",
+          "type": "short_answer",
+          "prompt": "Bilde Futur I: Ich / morgen / anrufen.",
+          "accepted": [
+            "Ich werde morgen anrufen.",
+            "Morgen werde ich anrufen."
+          ],
+          "hints": [
+            "Futur I = werden + Infinitiv.",
+            "ich → werde; anrufen am Ende."
+          ],
+          "feedback": "Beide Wortstellungen akzeptieren."
+        },
+        {
+          "id": "t7",
+          "title": "Aufgabe T7",
+          "type": "choice",
+          "prompt": "Welche Aussage ist richtig?",
+          "accepted": [
+            "Beide sind korrekt; bei einem konkreten Plan ist „Morgen fahre ich …“ im Alltag sehr häufig."
+          ],
+          "hints": [
+            "Präsens kann mit Zukunftszeitangabe Zukunft ausdrücken.",
+            "Futur I ist nicht immer nötig."
+          ],
+          "feedback": "Richtig: beide korrekt; Präsens ist für konkrete Pläne sehr häufig.",
+          "context": "Vergleiche: „Morgen fahre ich nach Berlin.“ und „Morgen werde ich nach Berlin fahren.“",
+          "options": [
+            "Beide sind korrekt; bei einem konkreten Plan ist „Morgen fahre ich …“ im Alltag sehr häufig.",
+            "Nur Futur I ist für zukünftige Ereignisse korrekt.",
+            "Präsens kann nie etwas Zukünftiges ausdrücken."
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        },
+        {
+          "id": "t8",
+          "title": "Aufgabe T8",
+          "type": "short_answer",
+          "prompt": "Korrigiere: „Ich habe nach Berlin gefahren.“",
+          "accepted": [
+            "Ich bin nach Berlin gefahren."
+          ],
+          "hints": [
+            "fahren mit Ziel bildet Perfekt mit sein.",
+            "ich → bin."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t9a",
+          "title": "Aufgabe T9a",
+          "type": "short_answer",
+          "prompt": "Geführter Perfekt-Satz: ich / gestern / arbeiten.",
+          "accepted": [
+            "Ich habe gestern gearbeitet.",
+            "Gestern habe ich gearbeitet."
+          ],
+          "hints": [
+            "Perfekt von arbeiten.",
+            "haben + gearbeitet."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t9b",
+          "title": "Aufgabe T9b",
+          "type": "short_answer",
+          "prompt": "Geführter Futur-I-Satz: ich / morgen / arbeiten.",
+          "accepted": [
+            "Ich werde morgen arbeiten.",
+            "Morgen werde ich arbeiten."
+          ],
+          "hints": [
+            "Futur I bilden.",
+            "werden + Infinitiv."
+          ],
+          "feedback": "Richtig."
+        }
+      ]
+    }
+  ],
+  "passage": "Gestern war mein Montag besonders lang. Ich bin um sechs Uhr aufgestanden und habe schnell gefrühstückt. Danach bin ich mit dem Zug zur Arbeit gefahren. Als ich im Büro ankam, hatte meine Kollegin die erste Besprechung schon vorbereitet. Wir haben den ganzen Vormittag an einem Projekt gearbeitet. Am Nachmittag musste ich noch einen Termin wahrnehmen. Heute bin ich wieder etwas entspannter. Morgen arbeite ich von zu Hause, und am Abend werde ich endlich meine Freunde treffen."
+}

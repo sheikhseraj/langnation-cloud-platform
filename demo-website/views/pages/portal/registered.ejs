@@ -1,0 +1,36 @@
+<%- include("../../partials/portal-head", { title: "Check your email" }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow center">
+    <p class="eyebrow">Student portal</p>
+    <h1>Check your email</h1>
+    <%# Worded so it says the same thing whether the address was new, was
+        retried, or already had an account. Confirming which would turn
+        this form into a way to ask who studies here. %>
+    <p class="lead">
+      If <strong><%= values.email || "that address" %></strong> can receive mail,
+      a confirmation link is on its way. Open it to finish setting up your
+      account. The link works once and expires in seven days.
+    </p>
+
+    <% if (devLink) { %>
+      <%# Staging only, and only while SMTP is unconfigured. The route
+          refuses to render this on a production host. %>
+      <div class="notice" style="margin-top:1.5rem;text-align:left">
+        <strong>Staging, no SMTP configured.</strong>
+        The email could not be sent, so the link is below to let the flow be
+        tested. This never appears on the live site.
+        <p style="margin-top:.6rem;word-break:break-all">
+          <a href="<%= devLink %>"><%= devLink %></a>
+        </p>
+      </div>
+    <% } %>
+
+    <p class="muted" style="margin-top:1.5rem;font-size:.9rem">
+      Nothing arrived? Check the spam folder, or
+      <a href="/portal/register">try again</a>.
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

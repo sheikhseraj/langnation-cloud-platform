@@ -1,0 +1,105 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <p class="eyebrow"><%= t("nav.placement") %></p>
+    <h1><%= t("placement.resultTitle") %></h1>
+
+    <%# The headline number. Everything else on the page explains it. %>
+    <div class="level-card">
+      <span class="level-label"><%= t("placement.resultPlace") %></span>
+      <strong class="level-value"><%= result.placement %></strong>
+      <span class="level-score">
+        <%= t("placement.resultScore", { correct: result.correct, total: result.total }) %>
+        · <%= result.percent %>%
+      </span>
+      <span class="level-mastered">
+        <%= result.masteredThrough
+              ? t("placement.resultMastered", { level: result.masteredThrough })
+              : t("placement.resultNotMastered", { level: result.trackFrom }) %>
+      </span>
+    </div>
+
+    <% if (result.toppedOut && result.track === "a1-b1") { %>
+      <p class="notice">
+        <%= t("placement.resultToppedOut", { level: result.trackTo }) %>
+        <a href="<%= lp('/placement-test/b2-c2') %>" style="color:var(--accent)">
+          <%= t("placement.otherTest", { track: "B2–C2" }) %> →
+        </a>
+      </p>
+    <% } %>
+    <% if (result.bottomedOut) { %>
+      <p class="notice">
+        <%= t("placement.resultBottomedOut", { level: result.trackFrom }) %>
+        <a href="<%= lp('/placement-test/a1-b1') %>" style="color:var(--accent)">
+          <%= t("placement.otherTest", { track: "A1–B1" }) %> →
+        </a>
+      </p>
+    <% } %>
+
+    <!-- ── Per-level breakdown ─────────────────────────────────── -->
+    <h2 class="result-h2"><%= t("placement.resultBreakdown") %></h2>
+    <ul class="level-rows">
+      <% result.breakdown.forEach(function (b) { %>
+        <li>
+          <span class="pill <%= b.mastered ? "pill-live" : "" %>"><%= b.level %></span>
+          <span class="level-bar">
+            <span style="width:<%= Math.max(2, b.percent) %>%;background:<%= b.mastered ? "var(--ok)" : "var(--gold)" %>"></span>
+          </span>
+          <span class="level-num"><%= b.correct %>/<%= b.total %></span>
+          <span class="level-verdict"><%= b.mastered ? t("placement.resultMastery") : t("placement.resultNotYet") %></span>
+        </li>
+      <% }); %>
+    </ul>
+
+    <!-- ── Recommended course ──────────────────────────────────── -->
+    <h2 class="result-h2"><%= t("placement.resultCourse") %></h2>
+    <% if (recommended.length) { %>
+      <div class="grid">
+        <% recommended.forEach(function (course) { %>
+          <%- include("../partials/course-card", { course: course }) %>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <p class="notice">
+        <%= t("placement.resultNoCourse") %>
+        <a href="<%= lp('/contact') %>" style="color:var(--accent)"><%= t("cta.enquireShort") %> →</a>
+      </p>
+    <% } %>
+
+    <!-- ── What to review ─────────────────────────────────────── -->
+    <% if (review.length) { %>
+      <h2 class="result-h2"><%= t("placement.resultReview") %></h2>
+      <div class="acc">
+        <% review.forEach(function (w) { %>
+          <details>
+            <summary>
+              <span><span class="pill" style="margin-right:.5rem"><%= w.level %></span><%= w.prompt %></span>
+            </summary>
+            <div class="acc-body">
+              <p style="font-size:.92rem">
+                <strong><%= t("placement.resultCorrect") %>:</strong> <%= w.correct %>
+              </p>
+              <% if (w.explain) { %>
+                <p class="muted" style="font-size:.88rem;margin-top:.4rem"><%= w.explain %></p>
+              <% } %>
+            </div>
+          </details>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <p class="muted" style="font-size:.85rem;margin-top:2rem"><%= t("placement.howAuto") %></p>
+    <% if (emailed) { %>
+      <p class="notice notice-ok" style="margin-top:1rem"><%= t("placement.resultSaved") %></p>
+    <% } %>
+
+    <div class="row" style="margin-top:2rem">
+      <a class="btn" href="<%= lp('/contact?course=' + (recommended[0] ? recommended[0].slug : "")) %>"><%= t("cta.enquire") %></a>
+      <a class="btn btn-ghost" href="<%= lp('/placement-test/' + result.track) %>"><%= t("placement.retake") %></a>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

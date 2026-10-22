@@ -1,0 +1,1912 @@
+{
+ "general-1": {
+  "de": "Die Meinungsfreiheit erlaubt es, die eigene Meinung frei zu äußern — auch Kritik an der Regierung. Sie steht in Artikel 5 des Grundgesetzes.",
+  "en": "Freedom of expression means you may state your own opinion freely, including criticism of the government. It is set out in Article 5 of the Basic Law.",
+  "ref": "Art. 5 GG"
+ },
+ "general-2": {
+  "de": "Religionsunterricht ist ordentliches Lehrfach, aber niemand muss daran teilnehmen. Bis zum 14. Geburtstag entscheiden die Eltern, danach das Kind selbst.",
+  "en": "Religious education is a regular school subject, but nobody has to take part. Until the child turns 14 the parents decide; after that the child decides.",
+  "ref": "Art. 7 GG"
+ },
+ "general-3": {
+  "de": "Rechtsstaat heißt: das Gesetz gilt für alle — auch für den Staat selbst. Behörden, Polizei und Regierung sind an Recht und Gesetz gebunden.",
+  "en": "The rule of law means the law applies to everyone — including the state itself. Authorities, police and government are all bound by the law.",
+  "ref": "Art. 20 Abs. 3 GG"
+ },
+ "general-4": {
+  "de": "Die Grundrechte stehen in den Artikeln 1 bis 19 des Grundgesetzes. Meinungsfreiheit gehört dazu; Waffenbesitz und Selbstjustiz nicht.",
+  "en": "The basic rights are in Articles 1 to 19 of the Basic Law. Freedom of expression is one of them; owning a weapon and taking the law into your own hands are not.",
+  "ref": "Art. 5 GG"
+ },
+ "general-5": {
+  "de": "\"Frei\" bezieht sich auf die Stimmabgabe: kein Druck, keine Bestechung, keine Nachteile. Wahlpflicht gibt es in Deutschland nicht.",
+  "en": "\"Free\" refers to the act of voting: no pressure, no bribery, no disadvantage afterwards. Germany has no compulsory voting.",
+  "ref": "Art. 38 GG"
+ },
+ "general-6": {
+  "de": "Die Verfassung heißt Grundgesetz. Der Name war 1949 als Provisorium gedacht, bis ganz Deutschland sich eine Verfassung geben könnte — geblieben ist er bis heute.",
+  "en": "The constitution is called the Grundgesetz (Basic Law). The name was meant as a stopgap in 1949, until all of Germany could give itself a constitution — and it has stayed ever since."
+ },
+ "general-7": {
+  "de": "Glaubens- und Gewissensfreiheit ist ein Grundrecht. Arbeit und Wohnung sind Sozialstaatsziele, aber keine einklagbaren Grundrechte.",
+  "en": "Freedom of faith and conscience is a basic right. Work and housing are aims of the welfare state, but not basic rights you can claim in court.",
+  "ref": "Art. 4 GG"
+ },
+ "general-8": {
+  "de": "Das Grundgesetz garantiert Gleichheit vor dem Gesetz — nicht gleiches Einkommen oder gleiches Vermögen.",
+  "en": "The Basic Law guarantees equality before the law — not equal income or equal wealth.",
+  "ref": "Art. 3 GG"
+ },
+ "general-9": {
+  "de": "Die meisten Grundrechte gelten für alle Menschen. Das Asylrecht kann seiner Natur nach nur von Ausländerinnen und Ausländern in Anspruch genommen werden.",
+  "en": "Most basic rights apply to everyone. By its nature, the right to asylum can only be claimed by foreign nationals.",
+  "ref": "Art. 16a GG"
+ },
+ "general-10": {
+  "de": "Die Todesstrafe ist abgeschafft, Folter und Prügelstrafe sind verboten. Eine Geldstrafe ist eine normale gerichtliche Strafe.",
+  "en": "The death penalty is abolished, and torture and corporal punishment are forbidden. A fine is an ordinary sentence handed down by a court.",
+  "ref": "Art. 102 GG"
+ },
+ "general-11": {
+  "de": "Dieselbe Frage wie Nr. 6, nur anders formuliert: Die Verfassung der Bundesrepublik heißt Grundgesetz.",
+  "en": "The same question as no. 6, put differently: the constitution of the Federal Republic is called the Grundgesetz (Basic Law)."
+ },
+ "general-12": {
+  "de": "Die Pressefreiheit ist ein Grundrecht. Grundrechte können auch mit einer Mehrheit im Bundestag nicht abgeschafft werden.",
+  "en": "Freedom of the press is a basic right. Basic rights cannot be abolished, not even by a majority in the Bundestag.",
+  "ref": "Art. 5 GG"
+ },
+ "general-13": {
+  "de": "Opposition sind alle Abgeordneten, die nicht zur Regierung gehören. Ihre Aufgabe ist es, die Regierung zu kontrollieren und Alternativen anzubieten.",
+  "en": "The opposition is every member who is not part of the government. Its job is to scrutinise the government and offer alternatives."
+ },
+ "general-14": {
+  "de": "Die Meinung darf man überall äußern, auch im Internet. Beleidigungen und verbotene Symbole sind aber nicht von der Meinungsfreiheit gedeckt.",
+  "en": "You may state your opinion anywhere, including online. Insults and banned symbols, however, are not covered by freedom of expression.",
+  "ref": "Art. 5 GG"
+ },
+ "general-15": {
+  "de": "Zwangsarbeit ist verboten. Jede Person darf Beruf und Arbeitsplatz frei wählen.",
+  "en": "Forced labour is forbidden. Everyone may freely choose their occupation and their place of work.",
+  "ref": "Art. 12 GG"
+ },
+ "general-16": {
+  "de": "Die Meinungsfreiheit endet dort, wo die Rechte anderer verletzt werden — etwa durch Beleidigung, üble Nachrede oder falsche Tatsachenbehauptungen über Personen.",
+  "en": "Freedom of expression ends where it violates the rights of others — for example through insult, defamation, or false factual claims about individuals."
+ },
+ "general-17": {
+  "de": "Der Staat darf niemanden ohne sachlichen Grund ungleich behandeln. Meinungsfreiheit, Versammlungsfreiheit und Petitionen sind dagegen ausdrücklich erlaubt.",
+  "en": "The state may not treat anyone unequally without objective reason. Freedom of expression, freedom of assembly and petitions are expressly allowed.",
+  "ref": "Art. 3 GG"
+ },
+ "general-18": {
+  "de": "Artikel 1 ist der erste Satz des Grundgesetzes: \"Die Würde des Menschen ist unantastbar.\" Er steht bewusst vor allen anderen Rechten.",
+  "en": "Article 1 is the opening sentence of the Basic Law: \"Human dignity shall be inviolable.\" It stands deliberately before every other right.",
+  "ref": "Art. 1 GG"
+ },
+ "general-19": {
+  "de": "Freizügigkeit heißt: Man darf im ganzen Bundesgebiet frei wohnen und sich frei bewegen.",
+  "en": "Freizügigkeit means you may live and move freely anywhere in the country.",
+  "ref": "Art. 11 GG"
+ },
+ "general-20": {
+  "de": "Parteien, die die freiheitliche demokratische Grundordnung beseitigen wollen, sind verfassungswidrig. Verbieten kann sie nur das Bundesverfassungsgericht.",
+  "en": "Parties seeking to abolish the free democratic basic order are unconstitutional. Only the Federal Constitutional Court can ban one.",
+  "ref": "Art. 21 GG"
+ },
+ "general-21": {
+  "de": "Der Bundesadler: ein schwarzer, nach rechts blickender Adler auf goldenem Schild. Nicht zu verwechseln mit dem Balkenkreuz der Bundeswehr oder dem Wappen der DDR.",
+  "en": "The federal eagle: a black eagle facing right on a gold shield. Not to be confused with the Bundeswehr's bar cross or the GDR's emblem."
+ },
+ "general-22": {
+  "de": "Republik heißt: Das Staatsoberhaupt wird gewählt und erbt sein Amt nicht. Deutschland hat keinen König und keine Königin.",
+  "en": "A republic means the head of state is elected and does not inherit the office. Germany has no king or queen."
+ },
+ "general-23": {
+  "de": "Die große Mehrheit der Erwerbstätigen ist abhängig beschäftigt — bei einer Firma oder im öffentlichen Dienst. Selbstständige sind die Minderheit.",
+  "en": "The great majority of working people are employees — at a company or in the public service. Self-employed people are a minority."
+ },
+ "general-24": {
+  "de": "Seit der Wiedervereinigung 1990 hat Deutschland 16 Bundesländer: elf alte, fünf neue.",
+  "en": "Since reunification in 1990 Germany has had 16 Bundesländer: eleven old ones and five new ones."
+ },
+ "general-25": {
+  "de": "Elsass-Lothringen liegt in Frankreich. Die anderen drei sind deutsche Bundesländer.",
+  "en": "Alsace-Lorraine is in France. The other three are German Bundesländer."
+ },
+ "general-26": {
+  "de": "Das Grundgesetz nennt Deutschland ausdrücklich einen \"demokratischen und sozialen Bundesstaat\".",
+  "en": "The Basic Law expressly calls Germany a \"democratic and social federal state\".",
+  "ref": "Art. 20 Abs. 1 GG"
+ },
+ "general-27": {
+  "de": "Bundesstaat heißt: Es gibt eine Ebene für das ganze Land (den Bund) und eine für die Länder. Beide haben eigene Aufgaben.",
+  "en": "A federal state means there is one level for the whole country (the federation) and one for the states. Each has tasks of its own."
+ },
+ "general-28": {
+  "de": "Der Bundestag wird direkt vom wahlberechtigten Volk gewählt. Das ist der Kern der Volkssouveränität.",
+  "en": "The Bundestag is elected directly by the people entitled to vote. That is the heart of popular sovereignty."
+ },
+ "general-29": {
+  "de": "Das Wappentier ist der Bundesadler. Er hängt auch im Plenarsaal des Bundestages.",
+  "en": "The heraldic animal is the federal eagle (Bundesadler). It also hangs in the plenary chamber of the Bundestag."
+ },
+ "general-30": {
+  "de": "Pressezensur gehört zur Diktatur, nicht zur Demokratie. Artikel 5 sagt ausdrücklich: \"Eine Zensur findet nicht statt.\"",
+  "en": "Censorship of the press belongs to a dictatorship, not a democracy. Article 5 says expressly: \"There shall be no censorship.\"",
+  "ref": "Art. 5 GG"
+ },
+ "general-31": {
+  "de": "Reicht eine Partei allein nicht für die Mehrheit, schließen sich mehrere zu einer Koalition zusammen. In Deutschland ist das der Normalfall.",
+  "en": "When one party alone has no majority, several join together in a coalition. In Germany that is the normal case."
+ },
+ "general-32": {
+  "de": "Die drei Staatsgewalten sind Gesetzgebung, Regierung/Verwaltung und Rechtsprechung. Die Presse wird oft \"vierte Gewalt\" genannt, ist aber keine staatliche Gewalt.",
+  "en": "The three branches of state power are legislation, government/administration and the judiciary. The press is often called the \"fourth estate\", but it is not a branch of the state."
+ },
+ "general-33": {
+  "de": "In Deutschland gibt es keine Staatskirche. Staat und Religionsgemeinschaften sind getrennt, arbeiten aber in manchen Bereichen zusammen.",
+  "en": "Germany has no state church. State and religious communities are separate, though they cooperate in some areas.",
+  "ref": "Art. 140 GG"
+ },
+ "general-34": {
+  "de": "Deutschland ist Demokratie, Rechtsstaat und Sozialstaat — aber keine Monarchie. Das Staatsoberhaupt wird gewählt.",
+  "en": "Germany is a democracy, a state under the rule of law and a welfare state — but not a monarchy. The head of state is elected."
+ },
+ "general-35": {
+  "de": "Die Sozialversicherung wird aus Beiträgen finanziert, die Arbeitgeber und Arbeitnehmer zahlen — nicht aus Spenden oder Kirchensteuer.",
+  "en": "Social insurance is financed by contributions paid by employers and employees — not from donations or church tax."
+ },
+ "general-36": {
+  "de": "Die Krankenversicherung ist eine der fünf gesetzlichen Sozialversicherungen. Auto-, Gebäude- und Haftpflichtversicherung sind private Versicherungen.",
+  "en": "Health insurance is one of the five statutory social insurances. Car, building and liability insurance are private insurance."
+ },
+ "general-37": {
+  "de": "In den Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. In den Stadtstaaten heißt das Amt anders.",
+  "en": "In the larger territorial states the head of government is called Ministerpräsident. In the city-states the office has a different name."
+ },
+ "general-38": {
+  "de": "Wortgleich mit Artikel 20 des Grundgesetzes: ein \"demokratischer und sozialer Bundesstaat\".",
+  "en": "The same words as Article 20 of the Basic Law: a \"democratic and social federal state\".",
+  "ref": "Art. 20 Abs. 1 GG"
+ },
+ "general-39": {
+  "de": "Jedes Bundesland hat eine eigene Verfassung, ein eigenes Parlament und eine eigene Regierung. Außenpolitik, Währung und Armee sind dagegen Sache des Bundes.",
+  "en": "Every Bundesland has its own constitution, its own parliament and its own government. Foreign policy, the currency and the army are matters for the federation."
+ },
+ "general-40": {
+  "de": "Gesungen wird die dritte Strophe des \"Deutschlandlieds\": \"Einigkeit und Recht und Freiheit für das deutsche Vaterland.\"",
+  "en": "The anthem is the third verse of the \"Deutschlandlied\": \"Einigkeit und Recht und Freiheit für das deutsche Vaterland.\""
+ },
+ "general-41": {
+  "de": "Menschen denken unterschiedlich. Mehrere Parteien machen diese Unterschiede sichtbar und wählbar — ein Einparteiensystem gehört zur Diktatur.",
+  "en": "People think differently. Several parties make those differences visible and choosable — a one-party system belongs to a dictatorship."
+ },
+ "general-42": {
+  "de": "Gesetze beschließt das Parlament, also der Bundestag; bei vielen Gesetzen muss der Bundesrat zustimmen. Die Regierung schlägt Gesetze meist nur vor.",
+  "en": "Laws are passed by parliament, that is the Bundestag; for many laws the Bundesrat must also agree. The government usually only proposes them."
+ },
+ "general-43": {
+  "de": "Ein Parteiverbot ist nur möglich, wenn die Partei die freiheitliche demokratische Grundordnung beseitigen will — und nur durch das Bundesverfassungsgericht.",
+  "en": "A party can only be banned if it seeks to abolish the free democratic basic order — and only by the Federal Constitutional Court.",
+  "ref": "Art. 21 GG"
+ },
+ "general-44": {
+  "de": "Die Bundespräsidentin oder den Bundespräsidenten wählt die Bundesversammlung, nicht das Volk. Bundestag, Landtage und EU-Parlament werden direkt gewählt.",
+  "en": "The Federal President is elected by the Federal Convention, not by the people. The Bundestag, the state parliaments and the European Parliament are elected directly."
+ },
+ "general-45": {
+  "de": "Die Pflegeversicherung ist der fünfte Zweig der gesetzlichen Sozialversicherung, neben Kranken-, Renten-, Arbeitslosen- und Unfallversicherung.",
+  "en": "Long-term care insurance is the fifth branch of statutory social insurance, alongside health, pension, unemployment and accident insurance."
+ },
+ "general-46": {
+  "de": "Infrastruktur und Bildung sind Staatsaufgaben. Lebensmittel, Kleidung und Autos überlässt der Staat der Wirtschaft.",
+  "en": "Infrastructure and education are tasks of the state. Food, clothing and cars the state leaves to the economy."
+ },
+ "general-47": {
+  "de": "Kindergeld, Museen und Sportförderung bezahlt der Staat. Urlaubsreisen für alle gehören nicht dazu.",
+  "en": "The state pays child benefit and supports museums and athletes. Paying for everyone's holidays is not among its tasks."
+ },
+ "general-48": {
+  "de": "Verfassungsorgane sind Bundestag, Bundesrat, Bundesregierung, Bundespräsident und Bundesverfassungsgericht. Eine Bürgerversammlung ist keines.",
+  "en": "The constitutional bodies are the Bundestag, the Bundesrat, the federal government, the Federal President and the Federal Constitutional Court. A town meeting is not one of them."
+ },
+ "general-49": {
+  "de": "Bildung ist Ländersache. Deshalb unterscheiden sich Schulformen, Lehrpläne und Ferien von Bundesland zu Bundesland.",
+  "en": "Education is a matter for the Bundesländer. That is why school types, curricula and holidays differ from state to state."
+ },
+ "general-50": {
+  "de": "Soziale Marktwirtschaft heißt: Angebot und Nachfrage bestimmen den Markt, aber der Staat sorgt für sozialen Ausgleich.",
+  "en": "A social market economy means supply and demand run the market, but the state provides for social balance."
+ },
+ "general-51": {
+  "de": "Verhaften darf nur der Staat, und nur auf gesetzlicher Grundlage. Eine Privatpolizei, die ohne Grund festnimmt, wäre das Gegenteil eines Rechtsstaats.",
+  "en": "Only the state may arrest, and only on a legal basis. A private police force detaining people for no reason would be the opposite of the rule of law."
+ },
+ "general-52": {
+  "de": "Artikel 20: \"Alle Staatsgewalt geht vom Volke aus.\" Sie wird in Wahlen und durch die Staatsorgane ausgeübt.",
+  "en": "Article 20: \"All state authority is derived from the people.\" It is exercised through elections and through the organs of the state.",
+  "ref": "Art. 20 Abs. 2 GG"
+ },
+ "general-53": {
+  "de": "\"Recht\" meint hier das Gesetz, nicht die politische Richtung. Auch der Staat steht unter dem Gesetz.",
+  "en": "\"Recht\" here means the law, not a political direction. The state too is subject to the law.",
+  "ref": "Art. 20 Abs. 3 GG"
+ },
+ "general-54": {
+  "de": "Die drei Gewalten heißen Legislative, Exekutive und Judikative. Eine \"Direktive\" gibt es nicht.",
+  "en": "The three branches are the legislature, the executive and the judiciary. There is no such thing as a \"directive\"."
+ },
+ "general-55": {
+  "de": "Das Reichstagsgebäude in Berlin mit der gläsernen Kuppel von Norman Foster. Seit 1999 tagt dort der Bundestag.",
+  "en": "The Reichstag building in Berlin, with Norman Foster's glass dome. The Bundestag has sat there since 1999."
+ },
+ "general-56": {
+  "de": "Das Ordnungsamt gehört zur Gemeinde. Das Finanzamt ist Landesbehörde, das Auswärtige Amt Bundesbehörde, das Pfarramt gar keine Behörde.",
+  "en": "The Ordnungsamt is part of the municipality. The tax office is a state authority, the foreign office a federal one, and a parish office is not a public authority at all."
+ },
+ "general-57": {
+  "de": "Nach der Tradition stellt die stärkste Fraktion die Bundestagspräsidentin oder den Bundestagspräsidenten.",
+  "en": "By convention the largest parliamentary group provides the President of the Bundestag."
+ },
+ "general-58": {
+  "de": "Ernannt werden die Ministerinnen und Minister von der Bundespräsidentin oder dem Bundespräsidenten — auf Vorschlag der Kanzlerin oder des Kanzlers.",
+  "en": "Ministers are appointed by the Federal President — on the proposal of the Chancellor.",
+  "ref": "Art. 64 GG"
+ },
+ "general-59": {
+  "de": "Ein Erlass Kaiser Konstantins von 321 n. Chr. erwähnt eine jüdische Gemeinde in Köln. Das ist der älteste bekannte Beleg, also rund 1700 Jahre.",
+  "en": "A decree of Emperor Constantine from 321 AD mentions a Jewish community in Cologne. That is the oldest known record — roughly 1700 years."
+ },
+ "general-60": {
+  "de": "Bundestag und Bundesrat machen die Gesetze und gehören damit zur Legislative.",
+  "en": "The Bundestag and the Bundesrat make the laws and therefore belong to the legislature."
+ },
+ "general-61": {
+  "de": "Volkssouveränität heißt: Die Macht im Staat kommt vom Volk, nicht von einem König, einem Gericht oder einem Verband.",
+  "en": "Popular sovereignty means power in the state comes from the people — not from a king, a court or an interest group.",
+  "ref": "Art. 20 Abs. 2 GG"
+ },
+ "general-62": {
+  "de": "Landtagswahl ist die Wahl des Landesparlaments. Kommunalwahl gilt der Gemeinde, Bundestagswahl dem Bund, Europawahl der EU.",
+  "en": "A Landtagswahl elects the state parliament. A Kommunalwahl is for the municipality, a Bundestagswahl for the federation, a Europawahl for the EU."
+ },
+ "general-63": {
+  "de": "Die Exekutive führt aus: Regierung, Ministerien, Polizei, Ämter. Die Gerichte sind die Judikative und ausdrücklich unabhängig.",
+  "en": "The executive carries things out: government, ministries, police, public offices. The courts are the judiciary and are expressly independent."
+ },
+ "general-64": {
+  "de": "Drei Ebenen: der Bund, die 16 Länder und die Kommunen. Die Besatzungszonen gab es nur 1945 bis 1949.",
+  "en": "Three levels: the federation, the 16 states and the municipalities. The occupation zones existed only from 1945 to 1949."
+ },
+ "general-65": {
+  "de": "Der Bundestag wählt zwar die Kanzlerin oder den Kanzler, aber das Kabinett stellt diese selbst zusammen; ernannt wird es vom Bundespräsidenten.",
+  "en": "The Bundestag does elect the Chancellor, but the Chancellor puts the cabinet together; it is then appointed by the Federal President."
+ },
+ "general-66": {
+  "de": "Berlin und München haben die größten jüdischen Gemeinden Deutschlands. Worms und Speyer sind historisch bedeutend, heute aber klein.",
+  "en": "Berlin and Munich have Germany's largest Jewish communities. Worms and Speyer are historically important but small today."
+ },
+ "general-67": {
+  "de": "Schule und Bildung sind Ländersache; Außen-, Verteidigungs- und weitgehend die Wirtschaftspolitik macht der Bund.",
+  "en": "Schools and education are a matter for the states; foreign policy, defence and largely economic policy are for the federation."
+ },
+ "general-68": {
+  "de": "Das Grundgesetz stellt das gesamte Schulwesen unter die Aufsicht des Staates.",
+  "en": "The Basic Law places the entire school system under the supervision of the state.",
+  "ref": "Art. 7 Abs. 1 GG"
+ },
+ "general-69": {
+  "de": "Bund, Land, Gemeinde — die Gemeinde ist die unterste Stufe und die nächste am Wohnort.",
+  "en": "Federation, state, municipality — the municipality is the lowest tier and the one closest to where you live."
+ },
+ "general-70": {
+  "de": "Die Bundespräsidentin oder der Bundespräsident schlägt dem Bundestag die Kanzlerkandidatin oder den Kanzlerkandidaten vor und ernennt anschließend. Regiert wird nicht.",
+  "en": "The Federal President proposes the candidate for Chancellor to the Bundestag and then formally appoints them. The President does not govern.",
+  "ref": "Art. 63 GG"
+ },
+ "general-71": {
+  "de": "Regierungssitz ist Berlin: dort stehen Bundeskanzleramt und Bundestag.",
+  "en": "The seat of government is Berlin: the Federal Chancellery and the Bundestag are both there."
+ },
+ "general-72": {
+  "de": "Die Kanzlerin oder der Kanzler wird vom Bundestag gewählt und wechselt mit den Mehrheiten. Prüfe kurz vor der Prüfung, wer gerade im Amt ist.",
+  "en": "The Chancellor is elected by the Bundestag and changes with the majorities. Check who is in office shortly before your exam."
+ },
+ "general-73": {
+  "de": "Welche Fraktionen die größten sind, entscheidet jede Bundestagswahl neu. Prüfe den Stand kurz vor der Prüfung.",
+  "en": "Which parliamentary groups are the largest is settled afresh at every federal election. Check where things stand shortly before your exam."
+ },
+ "general-74": {
+  "de": "Der Bundestag ist das Parlament für ganz Deutschland. Die Bundesversammlung tritt nur zur Wahl des Bundespräsidenten zusammen.",
+  "en": "The Bundestag is the parliament for the whole of Germany. The Federal Convention meets only to elect the Federal President."
+ },
+ "general-75": {
+  "de": "Staatsoberhaupt ist die Bundespräsidentin oder der Bundespräsident, gewählt von der Bundesversammlung für fünf Jahre. Prüfe kurz vor der Prüfung, wer im Amt ist.",
+  "en": "The head of state is the Federal President, elected by the Federal Convention for five years. Check who is in office shortly before your exam."
+ },
+ "general-76": {
+  "de": "Christlich Demokratische Union. Sie tritt in Bayern nicht an — dort gibt es die CSU.",
+  "en": "Christlich Demokratische Union (Christian Democratic Union). It does not stand in Bayern — there the CSU does."
+ },
+ "general-77": {
+  "de": "Die Bundeswehr ist die Armee der Bundesrepublik. Sie untersteht dem Parlament: Auslandseinsätze muss der Bundestag beschließen.",
+  "en": "The Bundeswehr is the army of the Federal Republic. It answers to parliament: deployments abroad must be approved by the Bundestag."
+ },
+ "general-78": {
+  "de": "Sozialdemokratische Partei Deutschlands, gegründet 1863 und damit die älteste noch bestehende Partei Deutschlands.",
+  "en": "Sozialdemokratische Partei Deutschlands (Social Democratic Party of Germany), founded in 1863 and so the oldest party in Germany still in existence."
+ },
+ "general-79": {
+  "de": "Freie Demokratische Partei — die liberale Partei.",
+  "en": "Freie Demokratische Partei (Free Democratic Party) — the liberal party."
+ },
+ "general-80": {
+  "de": "Über die Auslegung des Grundgesetzes entscheidet allein das Bundesverfassungsgericht in Karlsruhe. Auch Bürgerinnen und Bürger können es anrufen.",
+  "en": "Only the Federal Constitutional Court in Karlsruhe rules on how the Basic Law is to be read. Individuals can bring a complaint there too."
+ },
+ "general-81": {
+  "de": "Der Bundestag wählt die Kanzlerin oder den Kanzler — nicht das Volk und nicht der Bundesrat.",
+  "en": "The Bundestag elects the Chancellor — not the people, and not the Bundesrat.",
+  "ref": "Art. 63 GG"
+ },
+ "general-82": {
+  "de": "Die Kanzlerin oder der Kanzler leitet das Kabinett und bestimmt die Richtlinien der Politik.",
+  "en": "The Chancellor leads the cabinet and sets the general guidelines of policy.",
+  "ref": "Art. 65 GG"
+ },
+ "general-83": {
+  "de": "Dieselbe Frage wie Nr. 81: Gewählt wird die Kanzlerin oder der Kanzler vom Bundestag.",
+  "en": "The same question as no. 81: the Chancellor is elected by the Bundestag.",
+  "ref": "Art. 63 GG"
+ },
+ "general-84": {
+  "de": "Das Staatsoberhaupt repräsentiert das Land nach innen und außen. Regiert wird von der Bundesregierung.",
+  "en": "The head of state represents the country at home and abroad. Governing is done by the federal government."
+ },
+ "general-85": {
+  "de": "Im Bundesrat sitzen Mitglieder der Landesregierungen, nicht gewählte Abgeordnete. So wirken die Länder an der Bundesgesetzgebung mit.",
+  "en": "The Bundesrat is made up of members of the state governments, not elected members of parliament. That is how the states take part in federal legislation.",
+  "ref": "Art. 51 GG"
+ },
+ "general-86": {
+  "de": "Die Bundesversammlung tritt nur dafür zusammen: alle Bundestagsabgeordneten plus ebenso viele Vertreterinnen und Vertreter der Länder.",
+  "en": "The Federal Convention meets only for this purpose: every member of the Bundestag plus an equal number of representatives sent by the states.",
+  "ref": "Art. 54 GG"
+ },
+ "general-87": {
+  "de": "Staatsoberhaupt ist die Bundespräsidentin oder der Bundespräsident. Regierungschefin oder Regierungschef ist die Kanzlerin oder der Kanzler.",
+  "en": "The head of state is the Federal President. The head of government is the Chancellor."
+ },
+ "general-88": {
+  "de": "Die Opposition kontrolliert die Regierung: Sie fragt nach, kritisiert öffentlich und kann Untersuchungsausschüsse verlangen.",
+  "en": "The opposition scrutinises the government: it asks questions, criticises in public, and can demand a committee of inquiry."
+ },
+ "general-89": {
+  "de": "Eine Fraktion ist der Zusammenschluss der Abgeordneten einer Partei im Parlament. Sie braucht eine Mindestgröße und bekommt dafür Rechte im Ablauf.",
+  "en": "A Fraktion is the group formed by one party's members in parliament. It needs a minimum size, and in return it gets rights in how parliament runs."
+ },
+ "general-90": {
+  "de": "Über den Bundesrat reden die Länder bei Bundesgesetzen mit. Bei vielen Gesetzen müssen sie sogar zustimmen.",
+  "en": "Through the Bundesrat the states have a say in federal laws. For many laws their consent is actually required."
+ },
+ "general-91": {
+  "de": "Die Länder schicken ihre Regierungen in den Bundesrat. Wechselt eine Landesregierung, verschiebt sich dort die Mehrheit — und zustimmungspflichtige Gesetze werden schwerer.",
+  "en": "The states send their governments to the Bundesrat. When a state government changes, the majority there shifts — and laws needing its consent become harder to pass."
+ },
+ "general-92": {
+  "de": "Christlich Soziale Union. Sie tritt nur in Bayern an und bildet im Bundestag mit der CDU eine gemeinsame Fraktion.",
+  "en": "Christlich Soziale Union (Christian Social Union). It stands only in Bayern and forms a joint parliamentary group with the CDU in the Bundestag."
+ },
+ "general-93": {
+  "de": "Die Zweitstimme gilt der Partei und entscheidet, wie viele Sitze sie im Bundestag bekommt. Die Erststimme gilt einer Person im Wahlkreis.",
+  "en": "The second vote goes to a party and decides how many seats it gets in the Bundestag. The first vote goes to a person in the constituency."
+ },
+ "general-94": {
+  "de": "Wählen darf man zur Bundestagswahl ab 18. Bei Europa- und manchen Kommunalwahlen ist es 16.",
+  "en": "You may vote in federal elections from the age of 18. For European elections, and in some states for local elections, it is 16.",
+  "ref": "Art. 38 GG"
+ },
+ "general-95": {
+  "de": "In Deutschland gilt Schulpflicht, nicht nur Bildungspflicht: Kinder müssen eine Schule besuchen, Hausunterricht ist die seltene Ausnahme.",
+  "en": "Germany has compulsory school attendance, not merely compulsory education: children must attend a school, and home schooling is a rare exception."
+ },
+ "general-96": {
+  "de": "Die Leugnung des Holocaust ist eine Straftat — Volksverhetzung, mit Freiheitsstrafe bis zu fünf Jahren oder Geldstrafe.",
+  "en": "Holocaust denial is a criminal offence — incitement to hatred, punishable by up to five years' imprisonment or a fine.",
+  "ref": "§ 130 StGB"
+ },
+ "general-97": {
+  "de": "Bei einer Festanstellung werden die Sozialversicherungsbeiträge direkt vom Lohn abgezogen. Kindergeld und Wohngeld muss man dagegen beantragen.",
+  "en": "In permanent employment, social insurance contributions are deducted straight from your wages. Child benefit and housing benefit, by contrast, have to be applied for."
+ },
+ "general-98": {
+  "de": "Abgeordnete sind nur ihrem Gewissen verpflichtet und dürfen die Fraktion wechseln. Verliert die Regierung dadurch Stimmen, verliert sie ihre Mehrheit.",
+  "en": "Members of parliament answer only to their conscience and may change group. If the government loses votes that way, it loses its majority.",
+  "ref": "Art. 38 GG"
+ },
+ "general-99": {
+  "de": "Die Beiträge teilen sich Arbeitgeber und Arbeitnehmer, in der Regel je zur Hälfte.",
+  "en": "Contributions are shared between employer and employee, as a rule half each."
+ },
+ "general-100": {
+  "de": "Die fünf gesetzlichen Zweige sind Kranken-, Renten-, Arbeitslosen-, Pflege- und Unfallversicherung. Eine Lebensversicherung schließt man privat ab.",
+  "en": "The five statutory branches are health, pension, unemployment, long-term care and accident insurance. Life insurance is something you take out privately."
+ },
+ "general-101": {
+  "de": "Gewerkschaften vertreten Arbeitnehmerinnen und Arbeitnehmer und verhandeln Tarifverträge. Die Gegenseite sind die Arbeitgeberverbände.",
+  "en": "Trade unions represent employees and negotiate collective agreements. On the other side of the table are the employers' associations."
+ },
+ "general-102": {
+  "de": "Das Bundesverdienstkreuz ist der einzige allgemeine Verdienstorden der Bundesrepublik. Der Vaterländische Verdienstorden war eine Auszeichnung der DDR.",
+  "en": "The Federal Cross of Merit is the Federal Republic's only general order of merit. The Patriotic Order of Merit was an award of the GDR."
+ },
+ "general-103": {
+  "de": "Die Farben der Parteien: Rot für die SPD, Gelb für die FDP, Grün für die Grünen — wie eine Ampel.",
+  "en": "The parties' colours: red for the SPD, yellow for the FDP, green for the Greens — like a set of traffic lights."
+ },
+ "general-104": {
+  "de": "Während Schwangerschaft und Mutterschutz gilt ein besonderer Kündigungsschutz. Eine Kündigung deswegen ist unwirksam.",
+  "en": "During pregnancy and maternity protection there is special protection against dismissal. A dismissal on that ground is void.",
+  "ref": "§ 17 MuSchG"
+ },
+ "general-105": {
+  "de": "Wahlhelferinnen und Wahlhelfer arbeiten ehrenamtlich im Wahllokal und zählen danach die Stimmen aus. Öffentlich, damit jede und jeder zusehen kann.",
+  "en": "Election helpers work as volunteers at the polling station and count the votes afterwards. In public, so that anyone can watch."
+ },
+ "general-106": {
+  "de": "Dieselbe Aufgabe wie in Nr. 105: auszählen. In die Wahlkabine darf niemand mitkommen — das wäre das Ende des Wahlgeheimnisses.",
+  "en": "The same task as in no. 105: counting. Nobody may go into the polling booth with you — that would be the end of the secret ballot."
+ },
+ "general-107": {
+  "de": "Die Wahlperiode des Bundestages dauert vier Jahre.",
+  "en": "The Bundestag's term is four years.",
+  "ref": "Art. 39 GG"
+ },
+ "general-108": {
+  "de": "Wahlberechtigt ist, wer die deutsche Staatsangehörigkeit hat und mindestens 18 Jahre alt ist. Wohnort und Aufenthaltsdauer allein reichen nicht.",
+  "en": "You may vote if you hold German citizenship and are at least 18. Where you live and how long you have lived there are not enough on their own."
+ },
+ "general-109": {
+  "de": "Alle vier Jahre — außer die Wahlperiode endet früher, etwa nach einer Vertrauensfrage.",
+  "en": "Every four years — unless the term ends sooner, for instance after a vote of confidence."
+ },
+ "general-110": {
+  "de": "Wie Nr. 107: vier Jahre.",
+  "en": "As in no. 107: four years.",
+  "ref": "Art. 39 GG"
+ },
+ "general-111": {
+  "de": "Kritik an israelischer Politik ist von der Meinungsfreiheit gedeckt. Der öffentliche Aufruf zur Vernichtung eines Staates ist es nicht — das ist strafbar.",
+  "en": "Criticism of Israeli policy is covered by freedom of expression. Publicly calling for the destruction of a state is not — that is a criminal offence."
+ },
+ "general-112": {
+  "de": "Fünf Grundsätze: allgemein, unmittelbar, frei, gleich und geheim. Niemand darf erfahren, wie man gewählt hat.",
+  "en": "Five principles: universal, direct, free, equal and secret. Nobody may find out how you voted.",
+  "ref": "Art. 38 GG"
+ },
+ "general-113": {
+  "de": "Gewählt wird über Stimmen, nicht über Gruppen. Wer die meisten Stimmen hat, hat gewonnen.",
+  "en": "Elections are decided by votes, not by groups. Whoever gets the most votes has won."
+ },
+ "general-114": {
+  "de": "Wählen ist ein Recht, keine Pflicht. Wahlpflicht gibt es in Deutschland nicht.",
+  "en": "Voting is a right, not a duty. Germany has no compulsory voting."
+ },
+ "general-115": {
+  "de": "Aktives Wahlrecht heißt wählen dürfen. Passives Wahlrecht heißt, selbst gewählt werden zu können.",
+  "en": "Aktives Wahlrecht means the right to vote. Passives Wahlrecht means the right to be elected."
+ },
+ "general-116": {
+  "de": "Wie Nr. 115: Das Recht zu wählen heißt aktives Wahlrecht.",
+  "en": "As in no. 115: the right to cast a vote is called aktives Wahlrecht."
+ },
+ "general-117": {
+  "de": "Unter 5 Prozent der Zweitstimmen bekommt eine Partei keine Sitze — außer sie gewinnt genug Wahlkreise direkt.",
+  "en": "Below 5 per cent of the second votes a party gets no seats — unless it wins enough constituencies outright."
+ },
+ "general-118": {
+  "de": "Die Makkabi-Vereine sind jüdische Sportvereine, aber für alle offen. Mitglied werden kann jede und jeder.",
+  "en": "The Makkabi clubs are Jewish sports clubs, but open to everyone. Anybody can become a member."
+ },
+ "general-119": {
+  "de": "Frei heißt ohne Zwang: niemand muss wählen, und niemand darf vorschreiben, wen man wählt.",
+  "en": "Free means without compulsion: nobody has to vote, and nobody may dictate who you vote for."
+ },
+ "general-120": {
+  "de": "Beides zugleich: Mit der Erststimme gewinnt eine Person den Wahlkreis (Mehrheit), mit der Zweitstimme verteilen sich die Sitze nach Anteilen (Verhältnis).",
+  "en": "Both at once: the first vote wins a constituency outright (majority), while the second vote shares out the seats in proportion."
+ },
+ "general-121": {
+  "de": "Der Mindestanteil heißt 5%-Hürde oder Sperrklausel.",
+  "en": "That minimum share is called the 5% threshold, or Sperrklausel."
+ },
+ "general-122": {
+  "de": "Aus den fünf Wahlrechtsgrundsätzen des Grundgesetzes: allgemein, unmittelbar, frei, gleich, geheim.",
+  "en": "From the five electoral principles in the Basic Law: universal, direct, free, equal and secret.",
+  "ref": "Art. 38 GG"
+ },
+ "general-123": {
+  "de": "Die 5%-Hürde ist der Mindestanteil an Zweitstimmen, den eine Partei für den Einzug ins Parlament braucht.",
+  "en": "The 5% threshold is the minimum share of second votes a party needs to enter parliament."
+ },
+ "general-124": {
+  "de": "Bei der Bundestagswahl wird das Parlament gewählt. Die Kanzlerin oder den Kanzler wählt danach der Bundestag.",
+  "en": "A federal election elects parliament. The Chancellor is then elected by the Bundestag."
+ },
+ "general-125": {
+  "de": "Wahlen machen einen Regierungswechsel ohne Gewalt möglich. Das ist der Unterschied zur Diktatur.",
+  "en": "Elections make it possible to change the government without violence. That is what separates a democracy from a dictatorship."
+ },
+ "general-126": {
+  "de": "Die Gemeinde schickt eine Wahlbenachrichtigung mit Wahllokal und Öffnungszeiten. Wählen kann man auch ohne sie, mit Ausweis.",
+  "en": "The municipality sends a polling card giving your polling station and its opening hours. You can still vote without it, with an identity document."
+ },
+ "general-127": {
+  "de": "Ohne Sperrklausel kämen sehr viele kleine Parteien ins Parlament, und eine Mehrheit für eine Regierung wäre kaum zu bilden. Das ist der Grund für die Hürde.",
+  "en": "Without the threshold a great many small parties would enter parliament, and assembling a majority for a government would be very hard. That is what the threshold is for."
+ },
+ "general-128": {
+  "de": "Gewählte Parlamentsmitglieder heißen Abgeordnete — im Bundestag wie im Landtag.",
+  "en": "Elected members of parliament are called Abgeordnete — in the Bundestag and in a state parliament alike."
+ },
+ "general-129": {
+  "de": "Direkt gewählt wird nur der Bundestag. Kanzler, Bundespräsident und Ministerpräsidenten werden von Parlamenten gewählt.",
+  "en": "Only the Bundestag is elected directly. The Chancellor, the Federal President and the Minister-Presidents are all elected by parliaments."
+ },
+ "general-130": {
+  "de": "Gültig ist ein Stimmzettel mit höchstens einem Kreuz je Spalte. Zwei Kreuze in derselben Spalte, Text oder ein durchgestrichener Zettel machen ihn ungültig.",
+  "en": "A ballot paper is valid with at most one cross per column. Two crosses in the same column, added text, or crossing the paper out make it invalid."
+ },
+ "general-131": {
+  "de": "Die Bürgermeisterin oder der Bürgermeister steht an der Spitze einer Gemeinde und wird meist direkt von den Einwohnerinnen und Einwohnern gewählt.",
+  "en": "The mayor heads a municipality and is usually elected directly by the residents."
+ },
+ "general-132": {
+  "de": "Ehrenamtlich heißt freiwillig und unbezahlt — in Vereinen, bei der Feuerwehr, in Verbänden. Millionen Menschen in Deutschland tun das.",
+  "en": "Voluntary work means freely given and unpaid — in clubs, the fire brigade, associations. Millions of people in Germany do it."
+ },
+ "general-133": {
+  "de": "Briefwahl ist erlaubt und braucht keinen Grund. Telefonisch oder für jemand anderen zu wählen ist dagegen nicht möglich.",
+  "en": "Postal voting is allowed and needs no reason. Voting by telephone, or on somebody else's behalf, is not possible."
+ },
+ "general-134": {
+  "de": "Eine Bürgerinitiative ist der übliche Weg, ein örtliches Anliegen an die Gemeinde zu tragen. Dafür braucht man keine Partei und keinen Verein.",
+  "en": "A citizens' initiative is the normal way to bring a local concern to the municipality. You need neither a party nor a registered association."
+ },
+ "general-135": {
+  "de": "Gewerkschaften sind die Interessenvertretung der Arbeitnehmerinnen und Arbeitnehmer.",
+  "en": "Trade unions are the bodies that represent employees' interests."
+ },
+ "general-136": {
+  "de": "Für Streit zwischen Arbeitgeber und Arbeitnehmer ist das Arbeitsgericht zuständig — auch bei einer Kündigung.",
+  "en": "Disputes between employer and employee go to the labour court — dismissals included."
+ },
+ "general-137": {
+  "de": "Das Arbeitsgericht. Für Miete gilt das Amtsgericht, für Scheidungen das Familiengericht.",
+  "en": "The labour court. Tenancy goes to the local court and divorce to the family court."
+ },
+ "general-138": {
+  "de": "Gegen eine Kündigung klagt man beim Arbeitsgericht — und zwar innerhalb von drei Wochen, sonst gilt sie als wirksam.",
+  "en": "You challenge a dismissal at the labour court — within three weeks, or it counts as valid.",
+  "ref": "§ 4 KSchG"
+ },
+ "general-139": {
+  "de": "Zu einem Strafprozess kommt es, wenn jemand einer Straftat beschuldigt und angeklagt wird. Falschparken ist eine Ordnungswidrigkeit, kein Prozessgrund.",
+  "en": "A criminal trial happens when somebody is accused of an offence and charged. Parking badly is a regulatory matter, not grounds for a trial."
+ },
+ "general-140": {
+  "de": "Schöffinnen und Schöffen sind Laien und entscheiden gemeinsam mit den Berufsrichtern über Schuld und Strafe. Ihre Stimme zählt gleich viel.",
+  "en": "Lay judges are members of the public who decide on guilt and sentence together with the professional judges. Their vote carries equal weight."
+ },
+ "general-141": {
+  "de": "Rechtsanwältinnen und Rechtsanwälte beraten und vertreten. Richterinnen und Richter entscheiden, die Staatsanwaltschaft klagt an.",
+  "en": "Lawyers advise and represent. Judges decide, and the public prosecutor brings the charge."
+ },
+ "general-142": {
+  "de": "Richterinnen und Richter sprechen Urteile und sind dabei unabhängig — nur dem Gesetz unterworfen.",
+  "en": "Judges deliver judgments and are independent while doing so — subject only to the law.",
+  "ref": "Art. 97 GG"
+ },
+ "general-143": {
+  "de": "Judikative ist die rechtsprechende Gewalt. Exekutive ist die ausführende, Legislative die gesetzgebende.",
+  "en": "The judiciary is the branch that administers justice. The executive carries out, the legislature makes law."
+ },
+ "general-144": {
+  "de": "Wie Nr. 143, nur auf Deutsch statt auf Latein: die rechtsprechende Gewalt.",
+  "en": "As in no. 143, in German rather than Latin: the branch that administers justice."
+ },
+ "general-145": {
+  "de": "Für die Judikative. Sie ist von Regierung und Parlament getrennt, damit Urteile nicht von der Politik abhängen.",
+  "en": "For the judiciary. It is separate from government and parliament so that judgments do not depend on politics."
+ },
+ "general-146": {
+  "de": "Ein gerichtliches Verfahren heißt Prozess.",
+  "en": "Proceedings before a court are called a Prozess."
+ },
+ "general-147": {
+  "de": "Recht sprechen: den Fall anhören und entscheiden. Gesetze machen dürfen Richterinnen und Richter nicht.",
+  "en": "Administering justice: hearing a case and deciding it. Judges do not make the law."
+ },
+ "general-148": {
+  "de": "Die Polizei überwacht die Einhaltung der Gesetze und schützt die Bürgerinnen und Bürger. Das Land verteidigt die Bundeswehr.",
+  "en": "The police make sure the law is obeyed and protect the public. Defending the country is the army's job."
+ },
+ "general-149": {
+  "de": "Antisemitismus ist Feindschaft gegen Juden als Juden. Die Leugnung des Holocaust gehört dazu und ist strafbar; Kritik an einer Regierung nicht.",
+  "en": "Antisemitism is hostility towards Jews as Jews. Holocaust denial is part of it and is a criminal offence; criticising a government is not."
+ },
+ "general-150": {
+  "de": "Schöffin oder Schöffe ist ein Ehrenamt. Man braucht kein Jurastudium und wird für fünf Jahre berufen.",
+  "en": "Being a lay judge is a voluntary office. You need no law degree, and you are appointed for five years."
+ },
+ "general-151": {
+  "de": "Die Mauer baute die DDR, um die Flucht der eigenen Bevölkerung nach Westen zu stoppen. Offiziell hieß sie „antifaschistischer Schutzwall“.",
+  "en": "The Wall was built by the GDR to stop its own population fleeing west. Officially it was called an \"anti-fascist protective rampart\"."
+ },
+ "general-152": {
+  "de": "Vom 30. Januar 1933, als Hitler Reichskanzler wurde, bis zur Kapitulation im Mai 1945.",
+  "en": "From 30 January 1933, when Hitler became Reich Chancellor, until the surrender in May 1945."
+ },
+ "general-153": {
+  "de": "Der 8. Mai 1945 ist der Tag der bedingungslosen Kapitulation der Wehrmacht. In Deutschland heißt er heute Tag der Befreiung.",
+  "en": "8 May 1945 is the day of the Wehrmacht's unconditional surrender. In Germany it is now called the day of liberation."
+ },
+ "general-154": {
+  "de": "In Europa am 8. Mai 1945, in Asien im September 1945.",
+  "en": "In Europe on 8 May 1945; in Asia in September 1945."
+ },
+ "general-155": {
+  "de": "Wie Nr. 152: 1933 bis 1945.",
+  "en": "As in no. 152: 1933 to 1945."
+ },
+ "general-156": {
+  "de": "Am 30. Januar 1933 ernannte Reichspräsident Hindenburg Hitler zum Reichskanzler. Innerhalb weniger Monate war aus der Republik eine Diktatur geworden.",
+  "en": "On 30 January 1933 Reich President Hindenburg appointed Hitler Chancellor. Within months the republic had become a dictatorship."
+ },
+ "general-157": {
+  "de": "Parteien wurden verboten, Gegner verhaftet, die Presse gleichgeschaltet. Das Ermächtigungsgesetz vom März 1933 schaltete das Parlament aus.",
+  "en": "Parties were banned, opponents arrested, the press brought into line. The Enabling Act of March 1933 pushed parliament aside."
+ },
+ "general-158": {
+  "de": "„Drittes Reich“ war der Name, den die Nationalsozialisten ihrem Staat gaben. Er war von Anfang an eine Diktatur.",
+  "en": "\"Third Reich\" was the name the National Socialists gave their state. It was a dictatorship from the start."
+ },
+ "general-159": {
+  "de": "Nach 1933 gab es keine freien Wahlen mehr. Zensur, willkürliche Verhaftungen und die Verfolgung der Juden gab es sehr wohl.",
+  "en": "After 1933 there were no more free elections. Censorship, arbitrary arrest and the persecution of Jews very much existed."
+ },
+ "general-160": {
+  "de": "Der Zweite Weltkrieg begann am 1. September 1939 mit dem deutschen Angriff auf Polen.",
+  "en": "The Second World War began on 1 September 1939 with the German attack on Poland."
+ },
+ "general-161": {
+  "de": "Der NS-Staat machte Rassismus zum Gesetz: die Nürnberger Gesetze, die Verfolgung und schließlich die Ermordung der europäischen Juden.",
+  "en": "The Nazi state made racism law: the Nuremberg Laws, persecution, and finally the murder of Europe's Jews."
+ },
+ "general-162": {
+  "de": "Stauffenberg legte am 20. Juli 1944 eine Bombe in Hitlers Lagebesprechung. Das Attentat misslang; er wurde noch in derselben Nacht erschossen.",
+  "en": "On 20 July 1944 Stauffenberg placed a bomb at Hitler's briefing. The attempt failed and he was shot the same night."
+ },
+ "general-163": {
+  "de": "In der Nacht vom 9. auf den 10. November 1938 — den Novemberpogromen.",
+  "en": "On the night of 9 to 10 November 1938 — the November pogroms."
+ },
+ "general-164": {
+  "de": "Die Novemberpogrome: Synagogen brannten, jüdische Geschäfte wurden zerstört, Zehntausende wurden verhaftet.",
+  "en": "The November pogroms: synagogues burned, Jewish shops were destroyed, and tens of thousands were arrested."
+ },
+ "general-165": {
+  "de": "Konrad Adenauer war von 1949 bis 1963 der erste Bundeskanzler.",
+  "en": "Konrad Adenauer was the first Federal Chancellor, from 1949 to 1963."
+ },
+ "general-166": {
+  "de": "Bei den Montagsdemonstrationen im Herbst 1989, vor allem in Leipzig. Der Ruf war an die eigene Regierung gerichtet.",
+  "en": "At the Monday demonstrations of autumn 1989, above all in Leipzig. The chant was aimed at their own government."
+ },
+ "general-167": {
+  "de": "Die vier Siegermächte: USA, Sowjetunion, Großbritannien und Frankreich. Sie teilten Deutschland in vier Besatzungszonen.",
+  "en": "The four victorious powers: the USA, the Soviet Union, Great Britain and France. They divided Germany into four occupation zones."
+ },
+ "general-168": {
+  "de": "Japan war Verbündeter des Deutschen Reichs und selbst besetzt — nicht Besatzungsmacht in Deutschland.",
+  "en": "Japan was Germany's ally and was itself occupied — it was not an occupying power in Germany."
+ },
+ "general-169": {
+  "de": "Am 23. Mai 1949 trat das Grundgesetz in Kraft. Das ist die Geburtsstunde der Bundesrepublik.",
+  "en": "The Basic Law came into force on 23 May 1949. That is the moment the Federal Republic was born."
+ },
+ "general-170": {
+  "de": "Alle Parteien außer der NSDAP wurden 1933 verboten. Pressefreiheit und Menschenwürde gab es nicht.",
+  "en": "Every party except the NSDAP was banned in 1933. Freedom of the press and human dignity did not exist."
+ },
+ "general-171": {
+  "de": "Der Markt regelt, der Staat gleicht aus — über Sozialversicherung, Kündigungsschutz und Steuern.",
+  "en": "The market regulates and the state balances — through social insurance, protection against dismissal, and taxation."
+ },
+ "general-172": {
+  "de": "Die DDR entstand aus der sowjetischen Besatzungszone, die Bundesrepublik aus den drei westlichen.",
+  "en": "The GDR grew out of the Soviet occupation zone; the Federal Republic out of the three western ones."
+ },
+ "general-173": {
+  "de": "Gründungsmitglied der EWG 1957 und der EU 1993. Der NATO trat die Bundesrepublik erst 1955 bei, den Vereinten Nationen 1973.",
+  "en": "A founding member of the EEC in 1957 and of the EU in 1993. West Germany joined NATO only in 1955 and the United Nations in 1973."
+ },
+ "general-174": {
+  "de": "Im selben Jahr wie die Bundesrepublik: 1949, einige Monate später.",
+  "en": "The same year as the Federal Republic: 1949, a few months later."
+ },
+ "general-175": {
+  "de": "Vier: eine amerikanische, eine britische, eine französische und eine sowjetische. Berlin wurde zusätzlich in vier Sektoren geteilt.",
+  "en": "Four: American, British, French and Soviet. Berlin was additionally divided into four sectors."
+ },
+ "general-176": {
+  "de": "Großbritannien im Nordwesten, die Sowjetunion im Osten, die USA im Süden, Frankreich im Südwesten.",
+  "en": "Great Britain in the north-west, the Soviet Union in the east, the USA in the south, France in the south-west."
+ },
+ "general-177": {
+  "de": "Berlin lag mitten in der sowjetischen Zone, wurde aber selbst in vier Sektoren geteilt. Daraus wurde später West- und Ost-Berlin.",
+  "en": "Berlin lay inside the Soviet zone but was itself divided into four sectors. That later became West and East Berlin."
+ },
+ "general-178": {
+  "de": "Die Sowjetunion sperrte alle Land- und Wasserwege nach West-Berlin. Fast ein Jahr lang kam alles per Flugzeug — die „Rosinenbomber“.",
+  "en": "The Soviet Union closed every road and waterway into West Berlin. For nearly a year everything came by air — the \"raisin bombers\"."
+ },
+ "general-179": {
+  "de": "Mit der bedingungslosen Kapitulation der Wehrmacht am 8. Mai 1945. Hitlers Tod eine Woche zuvor beendete den Krieg nicht.",
+  "en": "With the Wehrmacht's unconditional surrender on 8 May 1945. Hitler's death a week earlier did not end the war."
+ },
+ "general-180": {
+  "de": "Wie Nr. 165: Konrad Adenauer, 1949 bis 1963.",
+  "en": "As in no. 165: Konrad Adenauer, 1949 to 1963."
+ },
+ "general-181": {
+  "de": "Der Kniefall von Warschau 1970 war eine wortlose Bitte um Vergebung für die deutschen Verbrechen — eine Geste, die um die Welt ging.",
+  "en": "The Warsaw genuflection of 1970 was a wordless plea for forgiveness for German crimes — a gesture that went round the world."
+ },
+ "general-182": {
+  "de": "Die Synagoge. Die Moschee ist islamisch, Kirche und Basilika sind christlich.",
+  "en": "The synagogue. A mosque is Islamic; a church and a basilica are Christian."
+ },
+ "general-183": {
+  "de": "Die 50er Jahre: schneller Wiederaufbau, starkes Wachstum, Vollbeschäftigung. In diese Zeit fällt auch die Anwerbung der Gastarbeiter.",
+  "en": "The 1950s: rapid reconstruction, strong growth, full employment. The recruitment of guest workers falls into this period too."
+ },
+ "general-184": {
+  "de": "Der UN-Teilungsplan von 1947. Israel erklärte 1948 seine Unabhängigkeit.",
+  "en": "The UN partition plan of 1947. Israel declared its independence in 1948."
+ },
+ "general-185": {
+  "de": "Die Grenze zwischen dem sowjetisch beherrschten Osten und dem Westen — von der Ostsee bis zur Adria. Der Ausdruck stammt von Winston Churchill.",
+  "en": "The line between the Soviet-controlled east and the west, from the Baltic to the Adriatic. The phrase is Winston Churchill's."
+ },
+ "general-186": {
+  "de": "Der 17. Juni 1953. Er war bis 1990 in der Bundesrepublik der Nationalfeiertag; seither ist es der 3. Oktober.",
+  "en": "17 June 1953. It was West Germany's national holiday until 1990; since then it has been 3 October."
+ },
+ "general-187": {
+  "de": "Die DDR nutzte dieselben Farben wie die Bundesrepublik, aber mit Hammer, Zirkel und Ährenkranz in der Mitte.",
+  "en": "The GDR used the same colours as West Germany, but with a hammer, a pair of compasses and a wreath of grain in the middle."
+ },
+ "general-188": {
+  "de": "Am 13. August 1961 begann die DDR mit dem Bau.",
+  "en": "The GDR began building it on 13 August 1961."
+ },
+ "general-189": {
+  "de": "Wie Nr. 188: 1961.",
+  "en": "As in no. 188: 1961."
+ },
+ "general-190": {
+  "de": "Deutsche Demokratische Republik — der Name des ostdeutschen Staates von 1949 bis 1990.",
+  "en": "Deutsche Demokratische Republik — the name of the East German state from 1949 to 1990."
+ },
+ "general-191": {
+  "de": "Am Abend des 9. November 1989, nach Wochen von Demonstrationen und einer missverständlichen Pressekonferenz.",
+  "en": "On the evening of 9 November 1989, after weeks of demonstrations and a famously muddled press conference."
+ },
+ "general-192": {
+  "de": "Brandenburg ist eines der fünf neuen Länder. Bayern, Saarland und Hessen lagen im Westen.",
+  "en": "Brandenburg is one of the five new states. Bayern, Saarland and Hessen were in the west."
+ },
+ "general-193": {
+  "de": "Von 1961 bis 1989 trennte die Mauer West- und Ost-Berlin. Ein Bürgermeister und Flüge gab es weiterhin.",
+  "en": "From 1961 to 1989 the Wall separated West and East Berlin. It still had a mayor, and flights still ran."
+ },
+ "general-194": {
+  "de": "Der 3. Oktober 1990 ist der Tag, an dem die DDR der Bundesrepublik beitrat. Er ist der einzige bundesweite gesetzliche Feiertag.",
+  "en": "3 October 1990 is the day the GDR joined the Federal Republic. It is the only nationwide statutory public holiday."
+ },
+ "general-195": {
+  "de": "Sachsen-Anhalt gehört zu den fünf neuen Ländern.",
+  "en": "Sachsen-Anhalt is one of the five new states."
+ },
+ "general-196": {
+  "de": "Innerhalb eines Jahres wurde aus dem SED-Staat eine Demokratie mit freien Wahlen — und dann Teil der Bundesrepublik.",
+  "en": "Within a year the SED state became a democracy with free elections — and then part of the Federal Republic."
+ },
+ "general-197": {
+  "de": "Thüringen gehört zu den fünf neuen Ländern.",
+  "en": "Thüringen is one of the five new states."
+ },
+ "general-198": {
+  "de": "Sachsen gehört zu den fünf neuen Ländern.",
+  "en": "Sachsen is one of the five new states."
+ },
+ "general-199": {
+  "de": "Das Ministerium für Staatssicherheit war Geheimdienst und Geheimpolizei der DDR, mit einem riesigen Netz von Spitzeln.",
+  "en": "The Ministry for State Security was the GDR's secret service and secret police, with an enormous network of informers."
+ },
+ "general-200": {
+  "de": "Mecklenburg-Vorpommern gehört zu den fünf neuen Ländern.",
+  "en": "Mecklenburg-Vorpommern is one of the five new states."
+ },
+ "general-201": {
+  "de": "Die fünf neuen Länder: Mecklenburg-Vorpommern, Brandenburg, Sachsen, Sachsen-Anhalt und Thüringen. Berlin war geteilt und zählt gesondert.",
+  "en": "The five new states: Mecklenburg-Vorpommern, Brandenburg, Sachsen, Sachsen-Anhalt and Thüringen. Berlin was divided and is counted separately."
+ },
+ "general-202": {
+  "de": "Die DDR gehörte zum Ostblock und war Mitglied des Warschauer Pakts, dem Gegenstück zur NATO.",
+  "en": "The GDR belonged to the Eastern bloc and was a member of the Warsaw Pact, the counterpart to NATO."
+ },
+ "general-203": {
+  "de": "In der Planwirtschaft bestimmte der Staat, was, wie viel und zu welchem Preis produziert wurde.",
+  "en": "Under a planned economy the state decided what was produced, how much of it, and at what price."
+ },
+ "general-204": {
+  "de": "Die DDR trat nach Artikel 23 des Grundgesetzes der Bundesrepublik bei. Es war ein Beitritt, keine Neugründung.",
+  "en": "The GDR acceded to the Federal Republic under Article 23 of the Basic Law. It was an accession, not the founding of a new state."
+ },
+ "general-205": {
+  "de": "Mit dem Beitritt galt für die neuen Länder alles, was für die Bundesrepublik galt — auch die Mitgliedschaft in der Europäischen Gemeinschaft.",
+  "en": "With accession, everything that applied to the Federal Republic applied to the new states — membership of the European Community included."
+ },
+ "general-206": {
+  "de": "Stolpersteine sind kleine Messingplatten im Gehweg vor dem letzten selbst gewählten Wohnort eines Opfers des Nationalsozialismus.",
+  "en": "Stolpersteine are small brass plates set into the pavement outside the last freely chosen home of a victim of National Socialism."
+ },
+ "general-207": {
+  "de": "Im Warschauer Pakt, dem Militärbündnis des Ostblocks von 1955 bis 1991.",
+  "en": "The Warsaw Pact, the Eastern bloc's military alliance from 1955 to 1991."
+ },
+ "general-208": {
+  "de": "Wie Nr. 199: der Geheimdienst der DDR.",
+  "en": "As in no. 199: the GDR's secret service."
+ },
+ "general-209": {
+  "de": "Das DDR-Emblem: Hammer und Zirkel im Ährenkranz, auf Schwarz-Rot-Gold. Hammer für die Arbeiter, Zirkel für die Intelligenz, Ähren für die Bauern.",
+  "en": "The GDR emblem: hammer and compasses inside a wreath of grain, on black-red-gold. The hammer for workers, the compasses for the intelligentsia, the grain for farmers."
+ },
+ "general-210": {
+  "de": "Aus einem Streik der Bauarbeiter in Ost-Berlin wurde ein landesweiter Aufstand. Sowjetische Panzer schlugen ihn nieder.",
+  "en": "A building workers' strike in East Berlin turned into a nationwide uprising. Soviet tanks put it down."
+ },
+ "general-211": {
+  "de": "Willy Brandt schloss als Kanzler die Verträge mit der Sowjetunion, Polen und der DDR — „Wandel durch Annäherung“.",
+  "en": "As Chancellor, Willy Brandt concluded the treaties with the Soviet Union, Poland and the GDR — \"change through rapprochement\"."
+ },
+ "general-212": {
+  "de": "Bundesrepublik Deutschland. „Bundes-“ steht für den Bund der 16 Länder, „Republik“ für das gewählte Staatsoberhaupt.",
+  "en": "Bundesrepublik Deutschland. \"Bundes-\" for the federation of 16 states, \"Republik\" for the elected head of state."
+ },
+ "general-213": {
+  "de": "Rund 84 Millionen — das bevölkerungsreichste Land der Europäischen Union.",
+  "en": "Around 84 million — the most populous country in the European Union."
+ },
+ "general-214": {
+  "de": "Schwarz-Rot-Gold. Die Farben stehen seit der Revolution von 1848 für Einheit und Freiheit.",
+  "en": "Black, red and gold. The colours have stood for unity and freedom since the revolution of 1848.",
+  "ref": "Art. 22 GG"
+ },
+ "general-215": {
+  "de": "Helmut Kohl war Kanzler, als 1990 die Wiedervereinigung vollzogen wurde.",
+  "en": "Helmut Kohl was Chancellor when reunification was completed in 1990."
+ },
+ "general-216": {
+  "de": "Der Bundesadler hängt als großes Relief hinter dem Rednerpult. Er heißt im Volksmund „die fette Henne“.",
+  "en": "The federal eagle hangs as a large relief behind the speaker's rostrum. It is popularly known as \"the fat hen\"."
+ },
+ "general-217": {
+  "de": "Von der Gründung 1949 bis zum Beitritt zur Bundesrepublik am 3. Oktober 1990.",
+  "en": "From its founding in 1949 until it joined the Federal Republic on 3 October 1990."
+ },
+ "general-218": {
+  "de": "Fünf: Mecklenburg-Vorpommern, Brandenburg, Sachsen, Sachsen-Anhalt und Thüringen. Aus 11 Ländern wurden 16.",
+  "en": "Five: Mecklenburg-Vorpommern, Brandenburg, Sachsen, Sachsen-Anhalt and Thüringen. Eleven states became sixteen."
+ },
+ "general-219": {
+  "de": "Seit der Wiedervereinigung am 3. Oktober 1990. Im Zwei-plus-Vier-Vertrag wurden diese Grenzen endgültig anerkannt.",
+  "en": "Since reunification on 3 October 1990. The Two Plus Four Agreement recognised these borders as final."
+ },
+ "general-220": {
+  "de": "Am 27. Januar 1945 wurde Auschwitz befreit. Seit 1996 ist der Tag der bundesweite Gedenktag für die Opfer des Nationalsozialismus.",
+  "en": "Auschwitz was liberated on 27 January 1945. Since 1996 the day has been the national day of remembrance for the victims of National Socialism."
+ },
+ "general-221": {
+  "de": "Im Schengen-Raum gibt es keine festen Grenzkontrollen mehr. Ein Ausweis ist trotzdem mitzuführen.",
+  "en": "Inside the Schengen area there are no permanent border checks. You still have to carry an identity document."
+ },
+ "general-222": {
+  "de": "Deutschland hat neun Nachbarn: Dänemark, Polen, Tschechien, Österreich, Schweiz, Frankreich, Luxemburg, Belgien und die Niederlande.",
+  "en": "Germany has nine neighbours: Denmark, Poland, Czechia, Austria, Switzerland, France, Luxembourg, Belgium and the Netherlands."
+ },
+ "general-223": {
+  "de": "Polen grenzt im Osten an Deutschland, entlang von Oder und Neiße.",
+  "en": "Poland borders Germany in the east, along the Oder and the Neisse."
+ },
+ "general-224": {
+  "de": "Europäische Union — der Zusammenschluss von 27 Staaten, hervorgegangen aus der EWG von 1957.",
+  "en": "Europäische Union — the union of 27 states, grown out of the EEC of 1957."
+ },
+ "general-225": {
+  "de": "Österreich. Deutsch ist außerdem Amtssprache in der Schweiz, in Liechtenstein, Luxemburg und Belgien.",
+  "en": "Austria. German is also an official language in Switzerland, Liechtenstein, Luxembourg and Belgium."
+ },
+ "general-226": {
+  "de": "Die EU-Flagge: zwölf goldene Sterne im Kreis auf blauem Grund. Die Zwölf steht für Vollständigkeit, nicht für die Zahl der Mitgliedstaaten.",
+  "en": "The EU flag: twelve gold stars in a circle on blue. The twelve stands for completeness, not for the number of member states."
+ },
+ "general-227": {
+  "de": "Dänemark ist der einzige nördliche Nachbar, an Schleswig-Holstein.",
+  "en": "Denmark is the only neighbour to the north, bordering Schleswig-Holstein."
+ },
+ "general-228": {
+  "de": "Wiedervereinigung: Zwei deutsche Staaten wurden am 3. Oktober 1990 wieder einer.",
+  "en": "Reunification: two German states became one again on 3 October 1990."
+ },
+ "general-229": {
+  "de": "Luxemburg grenzt im Westen an Rheinland-Pfalz und das Saarland.",
+  "en": "Luxembourg borders Rheinland-Pfalz and Saarland in the west."
+ },
+ "general-230": {
+  "de": "Alle fünf Jahre. Wählen dürfen alle EU-Bürgerinnen und -Bürger, in Deutschland ab 16.",
+  "en": "Every five years. All EU citizens may vote; in Germany from the age of 16."
+ },
+ "general-231": {
+  "de": "Integration meint hier das Zusammenwachsen europäischer Staaten — von der Zollunion über den Binnenmarkt bis zur gemeinsamen Währung.",
+  "en": "Integration here means European states growing together — from a customs union to a single market to a shared currency."
+ },
+ "general-232": {
+  "de": "Gewählt werden die Abgeordneten des Europäischen Parlaments. Die Kommission wird nicht direkt gewählt.",
+  "en": "What is elected is the members of the European Parliament. The Commission is not elected directly."
+ },
+ "general-233": {
+  "de": "Tschechien grenzt an Sachsen und Bayern.",
+  "en": "Czechia borders Sachsen and Bayern."
+ },
+ "general-234": {
+  "de": "Straßburg ist der offizielle Sitz. Gearbeitet wird außerdem in Brüssel und Luxemburg.",
+  "en": "Strasbourg is the official seat. The Parliament also works in Brussels and Luxembourg."
+ },
+ "general-235": {
+  "de": "Die EU entstand als Friedensprojekt: Staaten, die wirtschaftlich verflochten sind, führen keinen Krieg mehr gegeneinander.",
+  "en": "The EU began as a peace project: states whose economies are bound together do not go to war with one another."
+ },
+ "general-236": {
+  "de": "27 seit dem Austritt des Vereinigten Königreichs im Jahr 2020.",
+  "en": "27, since the United Kingdom left in 2020."
+ },
+ "general-237": {
+  "de": "1957 gründeten sechs Staaten die Europäische Wirtschaftsgemeinschaft — der Anfang der heutigen EU.",
+  "en": "In 1957 six states founded the European Economic Community — the beginning of today's EU."
+ },
+ "general-238": {
+  "de": "Straßburg für die Plenarsitzungen, Brüssel für die Ausschüsse, Luxemburg für die Verwaltung.",
+  "en": "Strasbourg for the plenary sittings, Brussels for the committees, Luxembourg for the administration."
+ },
+ "general-239": {
+  "de": "Die Römischen Verträge von 1957. Wie Nr. 237.",
+  "en": "The Treaties of Rome of 1957. As in no. 237."
+ },
+ "general-240": {
+  "de": "Als Bargeld seit dem 1. Januar 2002. Als Buchgeld gab es den Euro schon seit 1999.",
+  "en": "As cash since 1 January 2002. As book money the euro already existed from 1999."
+ },
+ "general-241": {
+  "de": "Elterngeld kommt nicht automatisch — es muss bei der Elterngeldstelle beantragt werden, rückwirkend höchstens für drei Monate.",
+  "en": "Parental allowance does not arrive automatically — you must apply to the parental allowance office, and backdating is limited to three months."
+ },
+ "general-242": {
+  "de": "Der Kindergarten ist freiwillig; die Eltern entscheiden. Ab drei Jahren besteht aber ein Anspruch auf einen Platz.",
+  "en": "Nursery is voluntary and the parents decide. From the age of three, though, there is an entitlement to a place."
+ },
+ "general-243": {
+  "de": "Versammlungen unter freiem Himmel müssen 48 Stunden vorher angemeldet werden. Angemeldet, nicht genehmigt — das Recht zu demonstrieren steht im Grundgesetz.",
+  "en": "Open-air assemblies must be registered 48 hours in advance. Registered, not approved — the right to demonstrate is in the Basic Law.",
+  "ref": "Art. 8 GG"
+ },
+ "general-244": {
+  "de": "Das Abitur, die allgemeine Hochschulreife. Mit Fachhochschulreife oder Berufserfahrung gibt es weitere Wege.",
+  "en": "The Abitur, the general university entrance qualification. There are other routes via a Fachhochschulreife or work experience."
+ },
+ "general-245": {
+  "de": "Anne ist 13. Sexuelle Handlungen mit Kindern unter 14 sind strafbar, unabhängig vom Einverständnis.",
+  "en": "Anne is 13. Sexual acts with children under 14 are a criminal offence, regardless of consent."
+ },
+ "general-246": {
+  "de": "Mit 18 ist man volljährig: voll geschäftsfähig, wahlberechtigt und selbst verantwortlich.",
+  "en": "You come of age at 18: fully able to make contracts, entitled to vote, and responsible for yourself."
+ },
+ "general-247": {
+  "de": "Der Mutterschutz gilt sechs Wochen vor und acht Wochen nach der Geburt. In dieser Zeit besteht ein Beschäftigungsverbot und besonderer Kündigungsschutz.",
+  "en": "Maternity protection runs six weeks before and eight weeks after the birth. During that time there is a ban on working and special protection against dismissal."
+ },
+ "general-248": {
+  "de": "Pflege und Erziehung der Kinder sind das Recht und die Pflicht der Eltern. Der Staat wacht nur darüber.",
+  "en": "The care and upbringing of children are the right and the duty of the parents. The state only watches over it.",
+  "ref": "Art. 6 GG"
+ },
+ "general-249": {
+  "de": "Wie Nr. 248: die Eltern.",
+  "en": "As in no. 248: the parents.",
+  "ref": "Art. 6 GG"
+ },
+ "general-250": {
+  "de": "Über Einkommen entscheidet in Deutschland vor allem die Qualifikation — nicht Religion, Geschlecht oder Parteibuch.",
+  "en": "In Germany, income depends above all on qualifications — not on religion, gender or party membership."
+ },
+ "general-251": {
+  "de": "Kinder haben ein Recht auf gewaltfreie Erziehung. Körperliche Bestrafung ist verboten und kann strafbar sein.",
+  "en": "Children have a right to be brought up without violence. Physical punishment is forbidden and can be a criminal offence.",
+  "ref": "§ 1631 BGB"
+ },
+ "general-252": {
+  "de": "Mehrehe ist in Deutschland verboten und strafbar. Wer erneut heiraten will, muss zuvor geschieden oder verwitwet sein.",
+  "en": "Bigamy is forbidden in Germany and is a criminal offence. To marry again you must first be divorced or widowed."
+ },
+ "general-253": {
+  "de": "Nach einem Umzug muss man sich innerhalb von zwei Wochen beim Einwohnermeldeamt anmelden.",
+  "en": "After moving you must register with the residents' registration office within two weeks."
+ },
+ "general-254": {
+  "de": "Erst nach einem Jahr getrennten Lebens gilt die Ehe als gescheitert. Dann kann geschieden werden.",
+  "en": "Only after a year of living apart is a marriage treated as having broken down. Then it can be dissolved."
+ },
+ "general-255": {
+  "de": "Das Jugendamt berät bei Erziehungsfragen — kostenlos und auf Wunsch vertraulich.",
+  "en": "The youth welfare office advises on questions of bringing up children — free of charge, and confidentially if you ask."
+ },
+ "general-256": {
+  "de": "Wer Alkohol ausschenkt, braucht eine Gaststättenerlaubnis von der Gemeinde oder dem Ordnungsamt.",
+  "en": "Anyone serving alcohol needs a restaurant licence from the municipality or the public order office."
+ },
+ "general-257": {
+  "de": "Am Abendgymnasium holen Erwachsene das Abitur neben dem Beruf nach.",
+  "en": "At an Abendgymnasium adults take the Abitur alongside their job."
+ },
+ "general-258": {
+  "de": "Bei Gefahr für das Kindeswohl kann das Jugendamt ein Kind in Obhut nehmen. Über den dauerhaften Entzug entscheidet das Familiengericht.",
+  "en": "Where a child is at risk, the youth welfare office can take it into care. A permanent removal is decided by the family court."
+ },
+ "general-259": {
+  "de": "Das BIZ informiert über Berufe und hilft bei der Suche nach einer Ausbildungsstelle — kostenlos und ohne Anmeldung.",
+  "en": "The BIZ gives information about occupations and helps you find an apprenticeship — free, and with no appointment needed."
+ },
+ "general-260": {
+  "de": "Schulpflicht heißt Anwesenheitspflicht: Fehlen ohne Grund kann für die Eltern ein Bußgeld bedeuten.",
+  "en": "Compulsory schooling means compulsory attendance: unexcused absence can mean a fine for the parents."
+ },
+ "general-261": {
+  "de": "Wie Nr. 257: am Abendgymnasium. Alter spielt dabei keine Rolle.",
+  "en": "As in no. 257: at an Abendgymnasium. Age is no obstacle."
+ },
+ "general-262": {
+  "de": "Niemand darf wegen Herkunft, Geschlecht, Religion, Behinderung, Alter oder sexueller Identität benachteiligt werden.",
+  "en": "Nobody may be disadvantaged because of origin, gender, religion, disability, age or sexual identity.",
+  "ref": "Art. 3 GG · AGG"
+ },
+ "general-263": {
+  "de": "Ab 14 gilt das Jugendstrafrecht: es erzieht mehr, als es straft — aber bestraft wird.",
+  "en": "From 14 the juvenile criminal law applies: it aims more at correction than punishment — but there is a penalty."
+ },
+ "general-264": {
+  "de": "Karneval, Fasching oder Fastnacht. Rosenmontag ist der Höhepunkt, vor allem am Rhein.",
+  "en": "Carnival — Karneval, Fasching or Fastnacht. Rose Monday is the high point, above all along the Rhine."
+ },
+ "general-265": {
+  "de": "Rechtsgültig ist in Deutschland nur die Eheschließung vor dem Standesamt. Eine kirchliche Trauung kann folgen, ersetzt sie aber nicht.",
+  "en": "In Germany only a marriage before the registry office is legally valid. A church wedding may follow but does not replace it."
+ },
+ "general-266": {
+  "de": "Von 22 bis 6 Uhr gilt Nachtruhe: keine Musik, kein Bohren, kein Staubsaugen.",
+  "en": "Quiet hours run from 10 p.m. to 6 a.m.: no music, no drilling, no vacuuming."
+ },
+ "general-267": {
+  "de": "Mit 18 ist sie volljährig und entscheidet selbst, wo und mit wem sie lebt.",
+  "en": "At 18 she is an adult and decides for herself where and with whom she lives."
+ },
+ "general-268": {
+  "de": "Die theoretische Führerscheinprüfung gibt es in mehreren Fremdsprachen. Die praktische Prüfung findet auf Deutsch statt.",
+  "en": "The theory part of the driving test is available in several languages. The practical test is in German."
+ },
+ "general-269": {
+  "de": "Seit 2013 hat jedes Kind ab dem ersten Geburtstag einen Rechtsanspruch auf einen Betreuungsplatz.",
+  "en": "Since 2013 every child has had a legal entitlement to a childcare place from its first birthday."
+ },
+ "general-270": {
+  "de": "Volkshochschulen bieten günstige Kurse für Erwachsene — Sprachen, Computer, Integrationskurse. Trotz des Namens sind es keine Hochschulen.",
+  "en": "Volkshochschulen offer inexpensive adult courses — languages, computing, integration courses. Despite the name they are not universities."
+ },
+ "general-271": {
+  "de": "Der geschmückte Tannenbaum gehört zu Weihnachten. Eier gehören zu Ostern, Kostüme zum Karneval.",
+  "en": "The decorated fir tree belongs to Christmas. Eggs belong to Easter and costumes to carnival."
+ },
+ "general-272": {
+  "de": "Verboten ist nur die Mehrehe. Alle anderen genannten Lebensformen sind erlaubt.",
+  "en": "Only bigamy is forbidden. Every other way of living listed here is allowed."
+ },
+ "general-273": {
+  "de": "Wie Nr. 255: zum Jugendamt.",
+  "en": "As in no. 255: to the youth welfare office."
+ },
+ "general-274": {
+  "de": "Das Briefgeheimnis schützt fremde Post. Sie zu öffnen ist strafbar.",
+  "en": "The privacy of correspondence protects other people's post. Opening it is a criminal offence.",
+  "ref": "Art. 10 GG · § 202 StGB"
+ },
+ "general-275": {
+  "de": "Eine Scheidung geht nur über das Familiengericht, und dort herrscht Anwaltszwang — mindestens eine Seite braucht eine Anwältin oder einen Anwalt.",
+  "en": "A divorce goes through the family court, and there you must be legally represented — at least one side needs a lawyer."
+ },
+ "general-276": {
+  "de": "Behörden sind zu sachlicher Behandlung verpflichtet. Eine Beschwerde bei der Leitung ist der vorgesehene Weg — Dienstaufsichtsbeschwerde.",
+  "en": "Public authorities must treat you properly. A complaint to the head of the office is the route provided for it."
+ },
+ "general-277": {
+  "de": "Mutterschaft ist kein zulässiger Grund für eine Absage. Das Allgemeine Gleichbehandlungsgesetz verbietet Benachteiligung wegen des Geschlechts.",
+  "en": "Being a mother is not a permissible reason to reject someone. The Equal Treatment Act forbids disadvantage on grounds of sex.",
+  "ref": "AGG"
+ },
+ "general-278": {
+  "de": "Fehlende Erfahrung wäre ein sachlicher Grund — eine Behinderung nicht. Das ist Diskriminierung.",
+  "en": "Lack of experience would be an objective reason — a disability is not. That is discrimination.",
+  "ref": "AGG"
+ },
+ "general-279": {
+  "de": "Die Hausordnung regelt das Zusammenleben im Haus: Ruhezeiten, Treppenreinigung, Müll. Sie ist meist Teil des Mietvertrags.",
+  "en": "House rules govern living together in a building: quiet hours, cleaning the stairs, rubbish. They are usually part of the tenancy agreement."
+ },
+ "general-280": {
+  "de": "Gegen einen Steuerbescheid legt man innerhalb eines Monats Einspruch beim Finanzamt ein.",
+  "en": "You object to a tax assessment at the tax office within one month."
+ },
+ "general-281": {
+  "de": "Eine Abweisung wegen der Hautfarbe verletzt das Recht auf Gleichbehandlung und ist nach dem AGG verboten.",
+  "en": "Turning someone away because of their skin colour violates the right to equal treatment and is forbidden under the Equal Treatment Act.",
+  "ref": "Art. 3 GG · AGG"
+ },
+ "general-282": {
+  "de": "Das Amt der Wahlhelferin oder des Wahlhelfers ist eine Bürgerpflicht: Wer berufen wird, muss es übernehmen.",
+  "en": "Serving as an election helper is a civic duty: if you are called up, you must do it."
+ },
+ "general-283": {
+  "de": "Gegen einen Bescheid einer Behörde legt man Widerspruch ein — schriftlich und in der Regel innerhalb eines Monats.",
+  "en": "You lodge an objection against an authority's decision — in writing, and as a rule within one month."
+ },
+ "general-284": {
+  "de": "Lebenslanges Lernen: Berufe ändern sich, und Weiterbildung gehört zum Arbeitsleben dazu.",
+  "en": "Lifelong learning: jobs change, and further training is simply part of working life."
+ },
+ "general-285": {
+  "de": "Die Umsatzsteuer zahlt man beim Einkaufen, nicht vom Gehalt. Vom Lohn gehen Lohnsteuer und Sozialabgaben ab.",
+  "en": "VAT is paid when you buy things, not out of your salary. What comes off your wages is income tax and social insurance."
+ },
+ "general-286": {
+  "de": "Der Betriebsrat wird von der Belegschaft gewählt und vertritt sie gegenüber der Geschäftsführung.",
+  "en": "The works council is elected by the workforce and represents it to the management."
+ },
+ "general-287": {
+  "de": "Auch wer selbst kündigt, muss die Kündigungsfrist einhalten — sie steht im Arbeitsvertrag oder im Gesetz.",
+  "en": "Even when you resign you must observe the notice period — it is in your contract or in the law."
+ },
+ "general-288": {
+  "de": "Die Verantwortung folgt aus dem Holocaust: der Ermordung von sechs Millionen Juden durch Deutschland.",
+  "en": "That responsibility follows from the Holocaust: the murder of six million Jews by Germany."
+ },
+ "general-289": {
+  "de": "Die Hautfarbe ist kein zulässiges Kriterium. Deutschkenntnisse oder Erfahrung wären sachliche Gründe.",
+  "en": "Skin colour is not a permissible criterion. Language skills or experience would be objective reasons.",
+  "ref": "AGG"
+ },
+ "general-290": {
+  "de": "Bei einem Mangel hat man zwei Jahre Gewährleistung: zuerst Reparatur oder Austausch, danach Minderung oder Rückgabe.",
+  "en": "A faulty item carries a two-year warranty: first repair or replacement, then a price reduction or return."
+ },
+ "general-291": {
+  "de": "Die Kirchensteuer zieht das Finanzamt zusammen mit der Lohnsteuer ein. Wer keiner Kirche angehört, zahlt sie nicht.",
+  "en": "Church tax is collected by the tax office along with income tax. If you belong to no church, you do not pay it."
+ },
+ "general-292": {
+  "de": "Religionsfreiheit heißt: glauben, nicht glauben, oder den Glauben wechseln. Der Staat mischt sich nicht ein.",
+  "en": "Freedom of religion means believing, not believing, or changing belief. The state does not interfere.",
+  "ref": "Art. 4 GG"
+ },
+ "general-293": {
+  "de": "Bemalte Eier und der Osterhase gehören zu Ostern, dem christlichen Fest der Auferstehung.",
+  "en": "Painted eggs and the Easter bunny belong to Easter, the Christian feast of the resurrection."
+ },
+ "general-294": {
+  "de": "Pfingsten wird 50 Tage nach Ostern gefeiert. Pfingstmontag ist in ganz Deutschland ein gesetzlicher Feiertag.",
+  "en": "Whitsun is celebrated 50 days after Easter. Whit Monday is a public holiday throughout Germany."
+ },
+ "general-295": {
+  "de": "Das Christentum prägt Feiertage, Kalender, Kunst und Sprache — auch wenn heute viele Menschen keiner Kirche angehören.",
+  "en": "Christianity shaped the holidays, the calendar, the art and the language — even though many people today belong to no church."
+ },
+ "general-296": {
+  "de": "Die Adventszeit beginnt vier Sonntage vor Weihnachten, mit Adventskranz und Adventskalender.",
+  "en": "Advent begins four Sundays before Christmas, with an Advent wreath and an Advent calendar."
+ },
+ "general-297": {
+  "de": "Die größte Gruppe kam aus der Türkei, vor allem ab dem Anwerbeabkommen von 1961.",
+  "en": "The largest group came from Turkey, above all after the recruitment agreement of 1961."
+ },
+ "general-298": {
+  "de": "Die DDR holte Arbeitskräfte aus befreundeten sozialistischen Staaten — Vietnam, Polen, Mosambik, Kuba, Angola.",
+  "en": "The GDR brought in workers from friendly socialist states — Vietnam, Poland, Mozambique, Cuba, Angola."
+ },
+ "general-299": {
+  "de": "„Gastarbeiter“ — das Wort unterstellte, sie würden wieder gehen. Viele blieben und wurden zu deutschen Familien.",
+  "en": "\"Guest workers\" — the word assumed they would leave again. Many stayed and became German families."
+ },
+ "general-300": {
+  "de": "Italien, nach dem Anwerbeabkommen von 1955. Danach folgten Spanien, Griechenland und 1961 die Türkei.",
+  "en": "Italy, under the recruitment agreement of 1955. Spain and Greece followed, and Turkey in 1961."
+ },
+ "baden-wuerttemberg-1": {
+  "de": "Das Wappen von Baden-Württemberg: drei schwarze Löwen auf Gold.",
+  "en": "The coat of arms of Baden-Württemberg: three black lions on gold."
+ },
+ "baden-wuerttemberg-2": {
+  "de": "Neckar-Odenwald-Kreis ist ein Landkreis in Baden-Württemberg. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Neckar-Odenwald-Kreis is a district in Baden-Württemberg. The other three are in other Bundesländer."
+ },
+ "baden-wuerttemberg-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "baden-wuerttemberg-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "baden-wuerttemberg-5": {
+  "de": "Die Landesflagge von Baden-Württemberg ist schwarz-gold.",
+  "en": "The state flag of Baden-Württemberg is black and gold."
+ },
+ "baden-wuerttemberg-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "baden-wuerttemberg-7": {
+  "de": "Landeshauptstadt von Baden-Württemberg ist Stuttgart. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Baden-Württemberg is Stuttgart. The state parliament and government sit there."
+ },
+ "baden-wuerttemberg-8": {
+  "de": "Baden-Württemberg liegt im Südwesten, an Frankreich und die Schweiz grenzend.",
+  "en": "Baden-Württemberg is in the south-west, bordering France and Switzerland."
+ },
+ "baden-wuerttemberg-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "baden-wuerttemberg-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "bayern-1": {
+  "de": "Das Wappen von Bayern: weiß-blaue Rauten.",
+  "en": "The coat of arms of Bayern: white and blue lozenges."
+ },
+ "bayern-2": {
+  "de": "Altötting ist ein Landkreis in Bayern. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Altötting is a district in Bayern. The other three are in other Bundesländer."
+ },
+ "bayern-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "bayern-4": {
+  "de": "Ab 18. Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen sind die fünf Länder, die bei 18 geblieben sind — in den anderen elf darf man ab 16 wählen.",
+  "en": "From 18. Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen are the five states that kept 18 — in the other eleven you may vote from 16."
+ },
+ "bayern-5": {
+  "de": "Die Landesflagge von Bayern ist weiß-blau.",
+  "en": "The state flag of Bayern is white and blue."
+ },
+ "bayern-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "bayern-7": {
+  "de": "Landeshauptstadt von Bayern ist München. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Bayern is München. The state parliament and government sit there."
+ },
+ "bayern-8": {
+  "de": "Bayern liegt im Südosten — das flächengrößte Bundesland.",
+  "en": "Bayern is in the south-east — the largest Bundesland by area."
+ },
+ "bayern-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "bayern-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "berlin-1": {
+  "de": "Das Wappen von Berlin: der schwarze Bär.",
+  "en": "The coat of arms of Berlin: the black bear."
+ },
+ "berlin-2": {
+  "de": "Pankow ist ein Bezirk in Berlin. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Pankow is a borough in Berlin. The other three are in other Bundesländer."
+ },
+ "berlin-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "berlin-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "berlin-5": {
+  "de": "Die Landesflagge von Berlin ist blau-weiß-rot.",
+  "en": "The state flag of Berlin is blue, white and red."
+ },
+ "berlin-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "berlin-7": {
+  "de": "Berlin, Hamburg und Bremen sind die drei Stadtstaaten: Stadt und Bundesland in einem. Die übrigen dreizehn sind Flächenländer.",
+  "en": "Berlin, Hamburg and Bremen are the three city-states: a city and a Bundesland at once. The other thirteen are territorial states."
+ },
+ "berlin-8": {
+  "de": "Berlin liegt mitten in Brandenburg, als Stadtstaat und Hauptstadt.",
+  "en": "Berlin is in the middle of Brandenburg, a city-state and the capital."
+ },
+ "berlin-9": {
+  "de": "Jeder Stadtstaat hat seinen eigenen Titel: Berlin den Regierenden Bürgermeister, Hamburg den Ersten Bürgermeister, Bremen die Präsidentin oder den Präsidenten des Senats.",
+  "en": "Each city-state has its own title: Berlin the Regierender Bürgermeister, Hamburg the Erster Bürgermeister, Bremen the President of the Senate."
+ },
+ "berlin-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat auch Berlin keine Senatorin und keinen Senator für Außenbeziehungen — für Finanzen, Inneres und Justiz aber schon.",
+  "en": "Foreign policy is a matter for the federation. So Berlin has no senator for foreign relations either — but it does have senators for finance, the interior and justice.",
+  "ref": "Art. 32 GG"
+ },
+ "brandenburg-1": {
+  "de": "Das Wappen von Brandenburg: der rote Adler.",
+  "en": "The coat of arms of Brandenburg: the red eagle."
+ },
+ "brandenburg-2": {
+  "de": "Prignitz ist ein Landkreis in Brandenburg. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Prignitz is a district in Brandenburg. The other three are in other Bundesländer."
+ },
+ "brandenburg-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "brandenburg-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "brandenburg-5": {
+  "de": "Die Landesflagge von Brandenburg ist rot-weiß.",
+  "en": "The state flag of Brandenburg is red and white."
+ },
+ "brandenburg-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "brandenburg-7": {
+  "de": "Landeshauptstadt von Brandenburg ist Potsdam. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Brandenburg is Potsdam. The state parliament and government sit there."
+ },
+ "brandenburg-8": {
+  "de": "Brandenburg liegt im Osten, rund um Berlin.",
+  "en": "Brandenburg is in the east, surrounding Berlin."
+ },
+ "brandenburg-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "brandenburg-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "bremen-1": {
+  "de": "Das Wappen von Bremen: der silberne Schlüssel auf Rot.",
+  "en": "The coat of arms of Bremen: the silver key on red."
+ },
+ "bremen-2": {
+  "de": "Hemelingen ist ein Stadtteil in Bremen. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Hemelingen is a city district in Bremen. The other three are in other Bundesländer."
+ },
+ "bremen-3": {
+  "de": "Vier Jahre. Bremen ist das einzige Bundesland, dessen Parlament nicht fünf Jahre gewählt wird.",
+  "en": "Four years. Bremen is the only Bundesland whose parliament is not elected for five."
+ },
+ "bremen-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "bremen-5": {
+  "de": "Die Landesflagge von Bremen ist rot-weiß.",
+  "en": "The state flag of Bremen is red and white."
+ },
+ "bremen-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "bremen-7": {
+  "de": "Berlin, Hamburg und Bremen sind die drei Stadtstaaten: Stadt und Bundesland in einem. Die übrigen dreizehn sind Flächenländer.",
+  "en": "Berlin, Hamburg and Bremen are the three city-states: a city and a Bundesland at once. The other thirteen are territorial states."
+ },
+ "bremen-8": {
+  "de": "Bremen liegt im Nordwesten, als zwei Städte mitten in Niedersachsen.",
+  "en": "Bremen is in the north-west, two cities inside Niedersachsen."
+ },
+ "bremen-9": {
+  "de": "Jeder Stadtstaat hat seinen eigenen Titel: Berlin den Regierenden Bürgermeister, Hamburg den Ersten Bürgermeister, Bremen die Präsidentin oder den Präsidenten des Senats.",
+  "en": "Each city-state has its own title: Berlin the Regierender Bürgermeister, Hamburg the Erster Bürgermeister, Bremen the President of the Senate."
+ },
+ "bremen-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat auch Bremen keine Senatorin und keinen Senator für Außenbeziehungen — für Finanzen, Inneres und Justiz aber schon.",
+  "en": "Foreign policy is a matter for the federation. So Bremen has no senator for foreign relations either — but it does have senators for finance, the interior and justice.",
+  "ref": "Art. 32 GG"
+ },
+ "hamburg-1": {
+  "de": "Das Wappen von Hamburg: die weiße Burg auf Rot.",
+  "en": "The coat of arms of Hamburg: the white castle on red."
+ },
+ "hamburg-2": {
+  "de": "Altona ist ein Bezirk in Hamburg. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Altona is a borough in Hamburg. The other three are in other Bundesländer."
+ },
+ "hamburg-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "hamburg-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "hamburg-5": {
+  "de": "Die Landesflagge von Hamburg ist blau-weiß-rot.",
+  "en": "The state flag of Hamburg is blue, white and red."
+ },
+ "hamburg-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "hamburg-7": {
+  "de": "Berlin, Hamburg und Bremen sind die drei Stadtstaaten: Stadt und Bundesland in einem. Die übrigen dreizehn sind Flächenländer.",
+  "en": "Berlin, Hamburg and Bremen are the three city-states: a city and a Bundesland at once. The other thirteen are territorial states."
+ },
+ "hamburg-8": {
+  "de": "Hamburg liegt im Norden an der Elbe.",
+  "en": "Hamburg is in the north, on the Elbe."
+ },
+ "hamburg-9": {
+  "de": "Jeder Stadtstaat hat seinen eigenen Titel: Berlin den Regierenden Bürgermeister, Hamburg den Ersten Bürgermeister, Bremen die Präsidentin oder den Präsidenten des Senats.",
+  "en": "Each city-state has its own title: Berlin the Regierender Bürgermeister, Hamburg the Erster Bürgermeister, Bremen the President of the Senate."
+ },
+ "hamburg-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat auch Hamburg keine Senatorin und keinen Senator für Außenbeziehungen — für Finanzen, Inneres und Justiz aber schon.",
+  "en": "Foreign policy is a matter for the federation. So Hamburg has no senator for foreign relations either — but it does have senators for finance, the interior and justice.",
+  "ref": "Art. 32 GG"
+ },
+ "hessen-1": {
+  "de": "Das Wappen von Hessen: der rot-weiß gestreifte Löwe auf Blau.",
+  "en": "The coat of arms of Hessen: the red and white striped lion on blue."
+ },
+ "hessen-2": {
+  "de": "Main-Taunus-Kreis ist ein Landkreis in Hessen. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Main-Taunus-Kreis is a district in Hessen. The other three are in other Bundesländer."
+ },
+ "hessen-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "hessen-4": {
+  "de": "Ab 18. Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen sind die fünf Länder, die bei 18 geblieben sind — in den anderen elf darf man ab 16 wählen.",
+  "en": "From 18. Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen are the five states that kept 18 — in the other eleven you may vote from 16."
+ },
+ "hessen-5": {
+  "de": "Die Landesflagge von Hessen ist rot-weiß.",
+  "en": "The state flag of Hessen is red and white."
+ },
+ "hessen-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "hessen-7": {
+  "de": "Landeshauptstadt von Hessen ist Wiesbaden. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Hessen is Wiesbaden. The state parliament and government sit there."
+ },
+ "hessen-8": {
+  "de": "Hessen liegt in der Mitte Deutschlands.",
+  "en": "Hessen is in the centre of Germany."
+ },
+ "hessen-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "hessen-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "mecklenburg-vorpommern-1": {
+  "de": "Das Wappen von Mecklenburg-Vorpommern: Stierkopf und Greif nebeneinander.",
+  "en": "The coat of arms of Mecklenburg-Vorpommern: a bull's head beside a griffin."
+ },
+ "mecklenburg-vorpommern-2": {
+  "de": "Mecklenburgische Seenplatte ist ein Landkreis in Mecklenburg-Vorpommern. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Mecklenburgische Seenplatte is a district in Mecklenburg-Vorpommern. The other three are in other Bundesländer."
+ },
+ "mecklenburg-vorpommern-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "mecklenburg-vorpommern-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "mecklenburg-vorpommern-5": {
+  "de": "Die Landesflagge von Mecklenburg-Vorpommern ist blau-weiß-gelb-rot.",
+  "en": "The state flag of Mecklenburg-Vorpommern is blue, white, yellow and red."
+ },
+ "mecklenburg-vorpommern-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "mecklenburg-vorpommern-7": {
+  "de": "Landeshauptstadt von Mecklenburg-Vorpommern ist Schwerin. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Mecklenburg-Vorpommern is Schwerin. The state parliament and government sit there."
+ },
+ "mecklenburg-vorpommern-8": {
+  "de": "Mecklenburg-Vorpommern liegt im Nordosten an der Ostsee.",
+  "en": "Mecklenburg-Vorpommern is in the north-east, on the Baltic."
+ },
+ "mecklenburg-vorpommern-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "mecklenburg-vorpommern-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "niedersachsen-1": {
+  "de": "Das Wappen von Niedersachsen: das weiße Ross auf Rot.",
+  "en": "The coat of arms of Niedersachsen: the white horse on red."
+ },
+ "niedersachsen-2": {
+  "de": "Ammerland ist ein Landkreis in Niedersachsen. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Ammerland is a district in Niedersachsen. The other three are in other Bundesländer."
+ },
+ "niedersachsen-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "niedersachsen-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "niedersachsen-5": {
+  "de": "Die Landesflagge von Niedersachsen ist schwarz-rot-gold.",
+  "en": "The state flag of Niedersachsen is black, red and gold."
+ },
+ "niedersachsen-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "niedersachsen-7": {
+  "de": "Landeshauptstadt von Niedersachsen ist Hannover. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Niedersachsen is Hannover. The state parliament and government sit there."
+ },
+ "niedersachsen-8": {
+  "de": "Niedersachsen liegt im Nordwesten — das zweitgrößte Bundesland.",
+  "en": "Niedersachsen is in the north-west — the second largest Bundesland."
+ },
+ "niedersachsen-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "niedersachsen-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "nordrhein-westfalen-1": {
+  "de": "Das Wappen von Nordrhein-Westfalen: Rhein, Ross und Rose.",
+  "en": "The coat of arms of Nordrhein-Westfalen: a river, a horse and a rose."
+ },
+ "nordrhein-westfalen-2": {
+  "de": "Rhein-Sieg-Kreis ist ein Landkreis in Nordrhein-Westfalen. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Rhein-Sieg-Kreis is a district in Nordrhein-Westfalen. The other three are in other Bundesländer."
+ },
+ "nordrhein-westfalen-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "nordrhein-westfalen-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "nordrhein-westfalen-5": {
+  "de": "Die Landesflagge von Nordrhein-Westfalen ist grün-weiß-rot.",
+  "en": "The state flag of Nordrhein-Westfalen is green, white and red."
+ },
+ "nordrhein-westfalen-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "nordrhein-westfalen-7": {
+  "de": "Landeshauptstadt von Nordrhein-Westfalen ist Düsseldorf. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Nordrhein-Westfalen is Düsseldorf. The state parliament and government sit there."
+ },
+ "nordrhein-westfalen-8": {
+  "de": "Nordrhein-Westfalen liegt im Westen — das bevölkerungsreichste Bundesland.",
+  "en": "Nordrhein-Westfalen is in the west — the most populous Bundesland."
+ },
+ "nordrhein-westfalen-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "nordrhein-westfalen-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "rheinland-pfalz-1": {
+  "de": "Das Wappen von Rheinland-Pfalz: Kreuz, Rad und Löwe.",
+  "en": "The coat of arms of Rheinland-Pfalz: a cross, a wheel and a lion."
+ },
+ "rheinland-pfalz-2": {
+  "de": "Westerwaldkreis ist ein Landkreis in Rheinland-Pfalz. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Westerwaldkreis is a district in Rheinland-Pfalz. The other three are in other Bundesländer."
+ },
+ "rheinland-pfalz-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "rheinland-pfalz-4": {
+  "de": "Ab 18. Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen sind die fünf Länder, die bei 18 geblieben sind — in den anderen elf darf man ab 16 wählen.",
+  "en": "From 18. Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen are the five states that kept 18 — in the other eleven you may vote from 16."
+ },
+ "rheinland-pfalz-5": {
+  "de": "Die Landesflagge von Rheinland-Pfalz ist schwarz-rot-gold.",
+  "en": "The state flag of Rheinland-Pfalz is black, red and gold."
+ },
+ "rheinland-pfalz-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "rheinland-pfalz-7": {
+  "de": "Landeshauptstadt von Rheinland-Pfalz ist Mainz. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Rheinland-Pfalz is Mainz. The state parliament and government sit there."
+ },
+ "rheinland-pfalz-8": {
+  "de": "Rheinland-Pfalz liegt im Westen, an Frankreich, Luxemburg und Belgien grenzend.",
+  "en": "Rheinland-Pfalz is in the west, bordering France, Luxembourg and Belgium."
+ },
+ "rheinland-pfalz-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "rheinland-pfalz-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "saarland-1": {
+  "de": "Das Wappen vom Saarland: ein geviertelter Schild.",
+  "en": "The coat of arms of Saarland: a shield quartered into four."
+ },
+ "saarland-2": {
+  "de": "Neunkirchen ist ein Landkreis im Saarland. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Neunkirchen is a district in Saarland. The other three are in other Bundesländer."
+ },
+ "saarland-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "saarland-4": {
+  "de": "Ab 18. Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen sind die fünf Länder, die bei 18 geblieben sind — in den anderen elf darf man ab 16 wählen.",
+  "en": "From 18. Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen are the five states that kept 18 — in the other eleven you may vote from 16."
+ },
+ "saarland-5": {
+  "de": "Die Landesflagge vom Saarland ist schwarz-rot-gold.",
+  "en": "The state flag of Saarland is black, red and gold."
+ },
+ "saarland-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "saarland-7": {
+  "de": "Landeshauptstadt vom Saarland ist Saarbrücken. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Saarland is Saarbrücken. The state parliament and government sit there."
+ },
+ "saarland-8": {
+  "de": "Das Saarland liegt im Südwesten — das kleinste Flächenland.",
+  "en": "Saarland is in the south-west — the smallest state that is not a city."
+ },
+ "saarland-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "saarland-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "sachsen-1": {
+  "de": "Das Wappen von Sachsen: schwarz-goldene Balken unter der grünen Rautenkrone.",
+  "en": "The coat of arms of Sachsen: black and gold bars beneath the green rue crown."
+ },
+ "sachsen-2": {
+  "de": "Vogtlandkreis ist ein Landkreis in Sachsen. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Vogtlandkreis is a district in Sachsen. The other three are in other Bundesländer."
+ },
+ "sachsen-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "sachsen-4": {
+  "de": "Ab 18. Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen sind die fünf Länder, die bei 18 geblieben sind — in den anderen elf darf man ab 16 wählen.",
+  "en": "From 18. Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen are the five states that kept 18 — in the other eleven you may vote from 16."
+ },
+ "sachsen-5": {
+  "de": "Die Landesflagge von Sachsen ist weiß-grün.",
+  "en": "The state flag of Sachsen is white and green."
+ },
+ "sachsen-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "sachsen-7": {
+  "de": "Landeshauptstadt von Sachsen ist Dresden. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Sachsen is Dresden. The state parliament and government sit there."
+ },
+ "sachsen-8": {
+  "de": "Sachsen liegt im Osten, an Polen und Tschechien grenzend.",
+  "en": "Sachsen is in the east, bordering Poland and Czechia."
+ },
+ "sachsen-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "sachsen-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "sachsen-anhalt-1": {
+  "de": "Das Wappen von Sachsen-Anhalt: der Bär auf der Mauer neben dem schwarzen Adler.",
+  "en": "The coat of arms of Sachsen-Anhalt: a bear on a wall beside the black eagle."
+ },
+ "sachsen-anhalt-2": {
+  "de": "Börde ist ein Landkreis in Sachsen-Anhalt. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Börde is a district in Sachsen-Anhalt. The other three are in other Bundesländer."
+ },
+ "sachsen-anhalt-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "sachsen-anhalt-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "sachsen-anhalt-5": {
+  "de": "Die Landesflagge von Sachsen-Anhalt ist gelb-schwarz.",
+  "en": "The state flag of Sachsen-Anhalt is yellow and black."
+ },
+ "sachsen-anhalt-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "sachsen-anhalt-7": {
+  "de": "Landeshauptstadt von Sachsen-Anhalt ist Magdeburg. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Sachsen-Anhalt is Magdeburg. The state parliament and government sit there."
+ },
+ "sachsen-anhalt-8": {
+  "de": "Sachsen-Anhalt liegt in der Mitte, östlich des Harzes.",
+  "en": "Sachsen-Anhalt is in the centre, east of the Harz."
+ },
+ "sachsen-anhalt-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "sachsen-anhalt-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "schleswig-holstein-1": {
+  "de": "Das Wappen von Schleswig-Holstein: zwei blaue Löwen neben dem roten Nesselblatt.",
+  "en": "The coat of arms of Schleswig-Holstein: two blue lions beside the red nettle leaf."
+ },
+ "schleswig-holstein-2": {
+  "de": "Nordfriesland ist ein Landkreis in Schleswig-Holstein. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Nordfriesland is a district in Schleswig-Holstein. The other three are in other Bundesländer."
+ },
+ "schleswig-holstein-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "schleswig-holstein-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "schleswig-holstein-5": {
+  "de": "Die Landesflagge von Schleswig-Holstein ist blau-weiß-rot.",
+  "en": "The state flag of Schleswig-Holstein is blue, white and red."
+ },
+ "schleswig-holstein-6": {
+  "de": "Die Landesbeauftragte für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landesbeauftragte für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "schleswig-holstein-7": {
+  "de": "Landeshauptstadt von Schleswig-Holstein ist Kiel. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Schleswig-Holstein is Kiel. The state parliament and government sit there."
+ },
+ "schleswig-holstein-8": {
+  "de": "Schleswig-Holstein liegt ganz im Norden, zwischen Nord- und Ostsee.",
+  "en": "Schleswig-Holstein is at the very top, between the North Sea and the Baltic."
+ },
+ "schleswig-holstein-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "schleswig-holstein-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ },
+ "thueringen-1": {
+  "de": "Das Wappen von Thüringen: der Löwe mit acht Sternen auf Blau.",
+  "en": "The coat of arms of Thüringen: a lion with eight stars on blue."
+ },
+ "thueringen-2": {
+  "de": "Wartburgkreis ist ein Landkreis in Thüringen. Die anderen drei liegen in anderen Bundesländern.",
+  "en": "Wartburgkreis is a district in Thüringen. The other three are in other Bundesländer."
+ },
+ "thueringen-3": {
+  "de": "Fünf Jahre — wie in fast allen Bundesländern. Nur Bremen wählt für vier.",
+  "en": "Five years — as in almost every Bundesland. Only Bremen elects for four."
+ },
+ "thueringen-4": {
+  "de": "Ab 16. Elf Bundesländer haben das Kommunalwahlalter gesenkt; Bayern, Hessen, Rheinland-Pfalz, das Saarland und Sachsen halten an 18 fest.",
+  "en": "From 16. Eleven Bundesländer have lowered the local voting age; Bayern, Hessen, Rheinland-Pfalz, Saarland and Sachsen have kept 18."
+ },
+ "thueringen-5": {
+  "de": "Die Landesflagge von Thüringen ist blau-weiß-rot.",
+  "en": "The state flag of Thüringen is blue, white and red."
+ },
+ "thueringen-6": {
+  "de": "Die Landeszentrale für politische Bildung ist die Einrichtung des Landes für politische Information — kostenlos, parteiunabhängig und für alle offen.",
+  "en": "The Landeszentrale für politische Bildung is the state's own body for civic information — free, independent of any party, and open to everyone."
+ },
+ "thueringen-7": {
+  "de": "Landeshauptstadt von Thüringen ist Erfurt. Dort sitzen Landtag und Landesregierung.",
+  "en": "The capital of Thüringen is Erfurt. The state parliament and government sit there."
+ },
+ "thueringen-8": {
+  "de": "Thüringen liegt in der Mitte, südlich des Harzes.",
+  "en": "Thüringen is in the centre, south of the Harz."
+ },
+ "thueringen-9": {
+  "de": "In den dreizehn Flächenländern heißt die Regierungschefin oder der Regierungschef Ministerpräsidentin bzw. Ministerpräsident. Nur die drei Stadtstaaten haben eigene Titel.",
+  "en": "In the thirteen territorial states the head of government is called Ministerpräsident. Only the three city-states have titles of their own."
+ },
+ "thueringen-10": {
+  "de": "Außenpolitik ist Sache des Bundes. Deshalb hat kein Bundesland ein Außenministerium — Finanzen, Inneres und Justiz dagegen hat jedes.",
+  "en": "Foreign policy is a matter for the federation. That is why no Bundesland has a foreign ministry — finance, the interior and justice every one of them has.",
+  "ref": "Art. 32 GG"
+ }
+}

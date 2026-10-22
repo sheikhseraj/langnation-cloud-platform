@@ -1,0 +1,102 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <span><a href="<%= lp('/') %>"><%= t("nav.home") %></a></span>
+      <span><a href="<%= lp('/placement-test') %>"><%= t("nav.placement") %></a></span>
+    </nav>
+
+    <p class="eyebrow">A1 – C2</p>
+    <h1><%= t("placement.termsTitle") %></h1>
+
+    <%- include("../../partials/placement-steps", { step: 1 }) %>
+
+    <p class="lead" style="margin-bottom:1.5rem"><%= t("placement.termsLead") %></p>
+
+    <% if (error) { %>
+      <p class="notice notice-bad"><%= t("placement.termsRequired") %></p>
+    <% } %>
+
+    <%# The terms are scrollable rather than a link, so accepting them means
+        having had them in front of you. %>
+    <div class="terms-box prose" tabindex="0" role="region" data-rules-scroll
+         aria-label="<%= terms ? terms.title : t("placement.termsTitle") %>">
+      <% if (terms) { %>
+        <%- terms.body %>
+      <% } else { %>
+        <p><%= t("placement.termsLead") %></p>
+      <% } %>
+    </div>
+
+    <%# Filled in by the script while the panel is being read, and
+        hidden again at the end. Starts hidden so a browser without
+        JavaScript never shows an instruction it cannot satisfy. %>
+    <p class="muted" style="font-size:.85rem;margin:.6rem 0 0" data-rules-progress hidden>
+      <%= lang === "de" ? "Bitte bis zum Ende lesen" : "Please read to the end" %>
+    </p>
+
+    <form class="form" method="post" action="<%= lp('/placement-test/rules') %>" style="margin-top:1.25rem">
+      <label class="check" for="accept">
+        <%# Enabled by script once the panel above has been scrolled to
+            the end. Somebody about to promise they will not use a
+            dictionary should at least have had the sentence in front of
+            them. Without JavaScript it starts enabled, because a form
+            that cannot be enhanced still has to work. %>
+        <input type="checkbox" id="accept" name="accept" value="1" required data-rules-accept>
+        <span><%= t("placement.termsAccept") %></span>
+      </label>
+      <div class="row" style="gap:.6rem;flex-wrap:wrap">
+        <button class="btn" type="submit" data-rules-submit><%= t("placement.termsContinue") %></button>
+        <a class="btn btn-ghost" href="<%= lp('/placement-test') %>">
+          <%= lang === "de" ? "Ablehnen" : "Decline" %>
+        </a>
+      </div>
+      <p class="muted" style="font-size:.82rem">
+        <a href="<%= lp('/student-terms-and-conditions') %>" target="_blank" rel="noopener">
+          <%= lang === "de" ? "Allgemeine Geschäftsbedingungen" : "Terms and Conditions" %> →
+        </a>
+      </p>
+    </form>
+  </div>
+</section>
+
+<script>
+/* Gate the acceptance on having reached the end of the rules.
+
+   Everything starts enabled in the markup, so a browser without
+   JavaScript can still complete the step; this disables it and then
+   gives it back once the panel has been scrolled. A rule nobody can
+   have read is not worth agreeing to.
+
+   A panel too short to scroll counts as read immediately — otherwise a
+   large screen would lock the form permanently. */
+(function () {
+  var pane = document.querySelector("[data-rules-scroll]");
+  var box = document.querySelector("[data-rules-accept]");
+  var note = document.querySelector("[data-rules-progress]");
+  if (!pane || !box || !note) return;
+
+  if (pane.scrollHeight <= pane.clientHeight + 24) return;
+
+  box.disabled = true;
+  note.hidden = false;
+
+  /* Kept whole rather than rebuilt from the element's own text, which
+     appended a percentage to a percentage on every scroll event. */
+  var baseNote = note.textContent.trim();
+
+  pane.addEventListener("scroll", function () {
+    if (pane.scrollTop + pane.clientHeight < pane.scrollHeight - 24) {
+      var pct = Math.round(((pane.scrollTop + pane.clientHeight) / pane.scrollHeight) * 100);
+      note.textContent = baseNote + " — " + Math.min(pct, 99) + "%";
+      return;
+    }
+    box.disabled = false;
+    note.hidden = true;
+  });
+})();
+</script>
+
+<%- include("../../partials/footer") %>

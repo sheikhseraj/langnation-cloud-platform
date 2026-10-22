@@ -1,0 +1,50 @@
+<%- include("../../partials/teach-head", { title: "Sign in", teacher: null }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <%- include("../../partials/login-switch", { current: "teacher" }) %>
+    <h1>Sign in</h1>
+    <p class="sp-lead">
+      Your classes, your class lists and the register.
+    </p>
+
+    <% if (error) { %>
+      <div class="notice notice-bad" style="margin-top:1.25rem"><%= error %></div>
+    <% } %>
+    <% if (notice) { %>
+      <div class="notice" style="margin-top:1.25rem"><%= notice %></div>
+    <% } %>
+
+    <form class="form" method="post" action="/teach/login" style="margin-top:1.5rem">
+      <%# Carried through the sign-in so somebody following a deep link
+          lands where they were going. The server only honours paths
+          under /teach/ — anything else would be an open redirect. %>
+      <input type="hidden" name="next" value="<%= values.next || '' %>">
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" required autocomplete="email"
+               maxlength="180" value="<%= values.email || '' %>">
+      </div>
+
+      <%- include("../../partials/password-field", {
+        id: "password", name: "password", label: "Password",
+      }) %>
+
+      <p class="muted" style="margin:-.4rem 0 1rem;font-size:.86rem">
+        <a href="/teach/forgot">Forgotten your password?</a>
+      </p>
+
+      <button class="btn btn-block" type="submit">Sign in</button>
+    </form>
+
+    <%# No "create an account" link, and that is the point rather than
+        an omission: teacher accounts are created by the office. %>
+    <p class="muted" style="margin-top:1.5rem;font-size:.9rem">
+      Teacher accounts are set up by the office. If you have not been sent
+      an invitation, <a href="/contact">ask us</a> and we will send one.
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

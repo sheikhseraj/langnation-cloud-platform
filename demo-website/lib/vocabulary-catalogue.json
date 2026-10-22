@@ -1,0 +1,166 @@
+{
+  "levels": [
+    "A1",
+    "A2",
+    "B1",
+    "B2",
+    "C1",
+    "C2"
+  ],
+  "themes": {
+    "T01": "Persönliche Angaben",
+    "T02": "Familie & Beziehungen",
+    "T03": "Alltag & Tagesablauf",
+    "T04": "Gefühle & Persönlichkeit",
+    "T05": "Soziale Kontakte",
+    "T06": "Feste & besondere Anlässe",
+    "T07": "Wohnen & Haushalt",
+    "T08": "Essen & Trinken",
+    "T09": "Einkaufen",
+    "T10": "Kleidung & Mode",
+    "T11": "Dienstleistungen",
+    "T12": "Schule & Lernen",
+    "T13": "Studium & Ausbildung",
+    "T14": "Deutsch & Sprachen",
+    "T15": "Prüfungen & Qualifikationen",
+    "T16": "Arbeit & Beruf",
+    "T17": "Bewerbung & Karriere",
+    "T18": "Arbeitsplatz & Kommunikation",
+    "T19": "Geld & Finanzen",
+    "T20": "Wirtschaft",
+    "T21": "Reisen & Urlaub",
+    "T22": "Verkehr & Mobilität",
+    "T23": "Stadt & Orientierung",
+    "T24": "Länder & Nationalitäten",
+    "T25": "Unterkunft & Hotel",
+    "T26": "Körper",
+    "T27": "Gesundheit & Krankheit",
+    "T28": "Arzt & Apotheke",
+    "T29": "Ernährung & Fitness",
+    "T30": "Zeit & Datum",
+    "T31": "Zahlen & Mengen",
+    "T32": "Wetter",
+    "T33": "Natur & Tiere",
+    "T34": "Umwelt & Klima",
+    "T35": "Kommunikation",
+    "T36": "Telefon & E-Mail",
+    "T37": "Medien & Nachrichten",
+    "T38": "Internet & soziale Medien",
+    "T39": "Technik & Digitalisierung",
+    "T40": "Behörden & Dokumente",
+    "T41": "Migration & Integration",
+    "T42": "Gesellschaft",
+    "T43": "Politik",
+    "T44": "Recht",
+    "T45": "Kultur & Kunst",
+    "T46": "Religion & Tradition",
+    "T47": "Wissenschaft & Forschung",
+    "T48": "Bildung",
+    "T49": "Geschichte",
+    "T50": "Globalisierung"
+  },
+  "grammar": {
+    "G01": "Nominativ",
+    "G02": "Akkusativ",
+    "G03": "Dativ",
+    "G04": "Genitiv",
+    "G05": "Akkusativ-Verben",
+    "G06": "Dativ-Verben",
+    "G07": "Genitiv-Verben",
+    "G08": "Verben mit zwei Objekten",
+    "G09": "Verben mit Präpositionen",
+    "G10": "Präpositionen mit Akkusativ",
+    "G11": "Präpositionen mit Dativ",
+    "G12": "Wechselpräpositionen",
+    "G13": "Präpositionen mit Genitiv",
+    "G14": "Regelmäßige Verben",
+    "G15": "Unregelmäßige Verben",
+    "G16": "Trennbare Verben",
+    "G17": "Untrennbare Verben",
+    "G18": "Reflexive Verben",
+    "G19": "Modalverben",
+    "G20": "Hilfsverben",
+    "G21": "Perfekt mit haben",
+    "G22": "Perfekt mit sein",
+    "G23": "Präteritum – wichtige Formen",
+    "G24": "Partizip II",
+    "G25": "Nebenordnende Konjunktionen",
+    "G26": "Unterordnende Konjunktionen",
+    "G27": "Konjunktionaladverbien",
+    "G28": "Satzverknüpfungen",
+    "G29": "Temporale Ausdrücke",
+    "G30": "Lokale Ausdrücke",
+    "G31": "Kausale Ausdrücke",
+    "G32": "Modale Ausdrücke",
+    "G33": "Meinungen ausdrücken",
+    "G34": "Zustimmung & Ablehnung",
+    "G35": "Vergleichen",
+    "G36": "Begründen",
+    "G37": "Vermuten",
+    "G38": "Vorschläge & Empfehlungen"
+  },
+  "types": {
+    "W01": "Nomen",
+    "W02": "Verb",
+    "W03": "Adjektiv",
+    "W04": "Adverb",
+    "W05": "Präposition",
+    "W06": "Konjunktion",
+    "W07": "Pronomen",
+    "W08": "Artikel",
+    "W09": "Numerale",
+    "W10": "Partikel",
+    "W11": "Interjektion",
+    "W12": "Redewendung / Phrase"
+  },
+  "pos": {
+    "W01": [
+      "noun",
+      "nomen"
+    ],
+    "W02": [
+      "verb"
+    ],
+    "W03": [
+      "adjective",
+      "adjektiv"
+    ],
+    "W04": [
+      "adverb"
+    ],
+    "W05": [
+      "preposition",
+      "präposition"
+    ],
+    "W06": [
+      "conjunction",
+      "konjunktion"
+    ],
+    "W07": [
+      "pronoun",
+      "pronomen"
+    ],
+    "W08": [
+      "article",
+      "artikel"
+    ],
+    "W09": [
+      "numeral",
+      "numerale",
+      "number"
+    ],
+    "W10": [
+      "particle",
+      "partikel"
+    ],
+    "W11": [
+      "interjection",
+      "interjektion"
+    ],
+    "W12": [
+      "phrase",
+      "idiom",
+      "redewendung"
+    ]
+  }
+}

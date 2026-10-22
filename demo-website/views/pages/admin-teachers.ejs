@@ -1,0 +1,262 @@
+<%
+  const stamp = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : "—");
+
+  const STATUS_LABEL = {
+    invited: "Invited — not set up yet",
+    active: "Active",
+    suspended: "Suspended",
+  };
+  const TONE = { active: " pill-live", suspended: " pill-bad" };
+
+  const waiting = rows.filter((r) => r.status === "invited").length;
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Teachers", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "teachers" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Teachers",
+      adCrumbs: [{ label: "Admin", href: "/admin/dashboard" }, { label: "Teachers" }],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (!dbOk) { %>
+        <p class="notice notice-bad">
+          The database is unreachable, so no accounts can be listed or created.
+          This is not the same as there being none.
+        </p>
+      <% } %>
+      <% if (notice) { %><p class="notice notice-ok"><%= notice %></p><% } %>
+      <% if (error) { %><p class="notice notice-bad"><%= error %></p><% } %>
+
+      <%#
+        The invitation link, shown only because the email did not go.
+
+        The account exists and the link is valid, but the token is
+        hashed the moment it is stored — so it exists in one place only,
+        which is this page. Reload it and it is gone for good, and the
+        invitation has to be resent to produce a new one. That is what
+        the warning is about.
+
+        Never shown when the email sent. This is a fallback, not a
+        convenience.
+      %>
+      <% if (typeof handoff !== "undefined" && handoff) { %>
+        <div class="ad-card" style="border-left:3px solid var(--danger)">
+          <h2 style="margin-top:0;font-size:1.05rem">
+            Send this link to <%= handoff.name %> yourself
+          </h2>
+          <p class="muted" style="font-size:.88rem;margin-top:-.2rem">
+            The account is created and the link works, but it could not be
+            emailed. Send it to <strong><%= handoff.email %></strong> by a
+            means only they can read — it sets their password, so treat it
+            like one.
+            <% if (handoff.expires) { %>
+              It stops working on <%= stamp(handoff.expires) %>.
+            <% } %>
+          </p>
+
+          <div class="row" style="gap:.5rem;align-items:center;flex-wrap:wrap">
+            <%# Selectable rather than a link: clicking it here would
+                claim the account for whoever is at the office desk. %>
+            <code style="word-break:break-all;font-size:.85rem;padding:.45rem .6rem;background:var(--soft);border-radius:var(--r-sm)"><%= handoff.url %></code>
+            <button type="button" class="ad-copy" data-copy="<%= handoff.url %>"
+                    aria-label="Copy the invitation link" title="Copy the link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                   aria-hidden="true">
+                <rect x="9" y="9" width="11" height="11" rx="2"/>
+                <path d="M5 15V5a2 2 0 0 1 2-2h10"/>
+              </svg>
+            </button>
+          </div>
+
+          <p class="muted" style="font-size:.82rem;margin:.8rem 0 0">
+            <strong>Copy it now.</strong> It is not stored anywhere in
+            readable form, so leaving this page loses it — you would have to
+            press Resend, which issues a different link.
+          </p>
+        </div>
+        <p class="sr-only" role="status" aria-live="polite" data-copy-live></p>
+      <% } %>
+
+      <%#
+        Adding somebody.
+
+        No password field, and that is the point rather than an
+        oversight: the office creates the account, the teacher chooses
+        the password from a link only they receive. A password typed
+        here would be a password two people know, which is not a
+        password — and it would arrive by email in plain text.
+      %>
+      <div class="ad-card">
+        <h2 style="margin-top:0;font-size:1.05rem">Add a teacher</h2>
+        <p class="muted" style="font-size:.88rem;margin-top:-.2rem">
+          They get an email with a link to choose their own password. Nobody
+          here ever sets somebody else's.
+        </p>
+
+        <form method="post" action="/admin/teachers" style="display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));align-items:end">
+          <label class="field" style="margin:0">
+            <span>Name</span>
+            <input type="text" name="name" required maxlength="120" autocomplete="off"
+                   placeholder="Frau Weber">
+          </label>
+          <label class="field" style="margin:0">
+            <span>Email</span>
+            <input type="email" name="email" required maxlength="180" autocomplete="off"
+                   placeholder="weber@example.com">
+          </label>
+          <label class="field" style="margin:0">
+            <span>Phone <span class="muted">(optional)</span></span>
+            <input type="tel" name="phone" maxlength="40" autocomplete="off">
+          </label>
+          <label class="field" style="margin:0">
+            <span>Role</span>
+            <select name="role">
+              <% roles.forEach(function (r) { %>
+                <option value="<%= r %>"<%= r === "teacher" ? " selected" : "" %>><%= roleLabel[r] || r %></option>
+              <% }); %>
+            </select>
+          </label>
+          <div>
+            <button class="btn" type="submit">Send the invitation</button>
+          </div>
+        </form>
+      </div>
+
+      <%#
+        Everybody with a staff login, invited-but-not-claimed first —
+        that is the row somebody is waiting on, and it is the row that
+        gets forgotten.
+      %>
+      <% if (waiting) { %>
+        <p class="muted" style="font-size:.88rem">
+          <%= waiting %> <%= waiting === 1 ? "person has" : "people have" %> been invited but
+          <%= waiting === 1 ? "has" : "have" %> not chosen a password yet.
+        </p>
+      <% } %>
+
+      <div class="ad-card">
+        <% if (!rows.length) { %>
+          <p class="muted" style="margin:0">
+            No staff accounts yet. Until there is one, a batch can only carry a
+            teacher's name as text and nobody can sign in at
+            <a href="/teach" target="_blank" rel="noopener">/teach</a>.
+          </p>
+        <% } else { %>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Role</th>
+                  <th scope="col">Classes</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Last signed in</th>
+                  <th scope="col"><span class="sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% rows.forEach(function (r) { %>
+                  <tr>
+                    <td>
+                      <strong><%= r.name %></strong>
+                      <div class="muted" style="font-size:.82rem">
+                        <% if (r.teacher_ref) { %><%= r.teacher_ref %> · <% } %>
+                        <a href="mailto:<%= r.email %>"><%= r.email %></a>
+                        <% if (r.phone) { %> · <%= r.phone %><% } %>
+                      </div>
+                    </td>
+                    <td><%= r.role %></td>
+                    <td>
+                      <% if (Number(r.batches)) { %>
+                        <a href="/rootadmin/batches"><%= r.batches %></a>
+                      <% } else { %>
+                        <span class="muted">none</span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <span class="pill<%= TONE[r.status] || "" %>"><%= STATUS_LABEL[r.status] || r.status %></span>
+                      <% if (r.status === "invited" && r.invite_expires_at) { %>
+                        <div class="muted" style="font-size:.8rem">
+                          link valid to <%= stamp(r.invite_expires_at) %>
+                        </div>
+                      <% } %>
+                      <%# The record behind the clauses about who owns the
+                          course materials. An account that somehow got
+                          set up without one is worth seeing. %>
+                      <% if (r.terms_accepted_at) { %>
+                        <div class="muted" style="font-size:.8rem">
+                          terms <%= r.terms_version || "" %> accepted <%= stamp(r.terms_accepted_at) %>
+                        </div>
+                      <% } else if (r.status === "active") { %>
+                        <div class="muted" style="font-size:.8rem;color:var(--danger)">
+                          no terms on record
+                        </div>
+                      <% } %>
+                    </td>
+                    <td><%= stamp(r.last_login_at) %></td>
+                    <td>
+                      <div class="row" style="gap:.35rem;flex-wrap:wrap;justify-content:flex-end">
+                        <% if (r.status === "invited") { %>
+                          <%# Resending replaces the old link rather than
+                              adding a second one, so there are never two
+                              live invitations to the same account. %>
+                          <form method="post" action="/admin/teachers/act">
+                            <input type="hidden" name="id" value="<%= r.id %>">
+                            <input type="hidden" name="action" value="resend">
+                            <button class="btn btn-ghost btn-sm" type="submit">Resend</button>
+                          </form>
+                        <% } %>
+                        <% if (r.status === "suspended") { %>
+                          <form method="post" action="/admin/teachers/act">
+                            <input type="hidden" name="id" value="<%= r.id %>">
+                            <input type="hidden" name="action" value="restore">
+                            <button class="btn btn-ghost btn-sm" type="submit">Restore</button>
+                          </form>
+                        <% } else { %>
+                          <%# Takes effect on their next click, not when
+                              their cookie expires: it bumps the token
+                              version every session carries. %>
+                          <form method="post" action="/admin/teachers/act"
+                                data-confirm-delete="<%= r.name %>’s access">
+                            <input type="hidden" name="id" value="<%= r.id %>">
+                            <input type="hidden" name="action" value="suspend">
+                            <button class="btn btn-ghost btn-sm" type="submit">Suspend</button>
+                          </form>
+                        <% } %>
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+      <p class="muted" style="font-size:.88rem">
+        Putting a teacher on a class happens in the
+        <a href="/rootadmin/batches">site editor</a>, on the batch itself. A
+        batch with no teacher assigned shows nobody a class list.
+      </p>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

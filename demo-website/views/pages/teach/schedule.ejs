@@ -1,0 +1,559 @@
+<%
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : null);
+
+  // starts_at is UTC in the column — the pool is configured with
+  // timezone "Z" — and the batch's own zone is what it is printed in.
+  // Formatting in the server's zone would tell a teacher in Bengaluru
+  // when the class starts in Frankfurt, which is the exact mistake the
+  // column was made UTC to avoid.
+  const at = (v, tz) => new Date(v).toLocaleString("en-GB", {
+    weekday: "short", day: "numeric", month: "short",
+    hour: "2-digit", minute: "2-digit",
+    timeZone: tz || "Europe/Berlin",
+  });
+
+  // The date and time boxes are prefilled with where the lesson is
+  // NOW, in the batch's own zone, so moving it by an hour is a
+  // one-field edit rather than retyping the whole thing. Both have to
+  // be read in that zone: prefilling from the server's would offer a
+  // teacher in Bengaluru a German class at half past twelve.
+  const isoIn = (v, tz) => new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz || "Europe/Berlin",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date(v));
+
+  const hhmmIn = (v, tz) => new Intl.DateTimeFormat("en-GB", {
+    timeZone: tz || "Europe/Berlin",
+    hour: "2-digit", minute: "2-digit", hour12: false,
+  }).format(new Date(v));
+
+  // The calendar day a lesson falls on, and how that day reads, both
+  // on a clock in the batch's own zone.
+  const dayOf = (v, tz) => new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz || "Europe/Berlin",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date(v));
+
+  const heading = (v, tz) => new Date(v).toLocaleDateString("en-GB", {
+    weekday: "long", day: "numeric", month: "long",
+    timeZone: tz || "Europe/Berlin",
+  });
+
+  const clockOf = (v, tz) => new Date(v).toLocaleTimeString("en-GB", {
+    hour: "2-digit", minute: "2-digit", timeZone: tz || "Europe/Berlin",
+  });
+
+  // Every control on this page keeps the other two settings. Changing
+  // how far to look must not quietly widen the batch filter, and hiding
+  // half the page must not reset either.
+  const here = (over = {}) => {
+    const q = Object.assign({ batch: only, weeks, show }, over);
+    const parts = [];
+    if (q.weeks && q.weeks !== 2) parts.push("weeks=" + q.weeks);
+    if (q.show && q.show !== "both") parts.push("show=" + q.show);
+    if (q.batch) parts.push("batch=" + q.batch);
+    return "/teach/schedule" + (parts.length ? "?" + parts.join("&") : "");
+  };
+
+  const running = batches.filter((b) => b.batch_status === "running");
+  const planned = batches.filter((b) => b.batch_status === "planned");
+  const term = [...running, ...planned];
+%>
+<%- include("../../partials/teach-shell-head", {
+  pageTitle: "Schedule",
+  pageLead: lessons.length
+    ? lessons.length + (lessons.length === 1 ? " lesson" : " lessons") + " in the next six weeks"
+    : null,
+  nav: "schedule", teacher: teacher, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<% if (error) { %><p class="notice notice-bad"><%= error %></p><% } %>
+<% if (notice) { %><p class="notice"><%= notice %></p><% } %>
+
+<%- include("../../partials/teach-backlog", { pending: pending, pendingSummary: pendingSummary }) %>
+
+<%#
+  The classes themselves, and the filter.
+
+  This was at the foot of the page, under fifty-four lessons — the one
+  card that says what you teach, reachable only by scrolling past
+  everything that depends on it. It leads now.
+
+  Each row is also the filter. A teacher with three batches was reading
+  every lesson of all three in one date-ordered list, where "when is my
+  next A2 class" meant scanning for a code among other batches' rows.
+  Plain links, so it works with no JavaScript and each view has its own
+  address to return to.
+%>
+<div class="sp-card sp-wide">
+  <div class="sp-card-head">
+    <h2>My classes</h2>
+    <% if (only) { %><a href="/teach/schedule">Show all</a><% } %>
+  </div>
+  <ul class="sp-list">
+    <% term.forEach(function (b) { %>
+      <li class="<%= only === b.id ? "tl-picked" : "" %>">
+        <div>
+          <strong>
+            <a href="/teach/schedule?batch=<%= b.id %>"><%= b.course_title || b.code %></a>
+            <%- include("../../partials/batch-code", { code: b.code, id: b.id }) %>
+          </strong>
+          <div class="muted" style="font-size:.82rem">
+            <% if (day(b.starts_on)) { %>
+              · <%= day(b.starts_on) %><% if (day(b.ends_on)) { %> to <%= day(b.ends_on) %><% } %>
+            <% } else { %>
+              · no dates set
+            <% } %>
+            <% if (b.meets_days && b.meets_from) { %>
+              · <%= sched.describeDays(b.meets_days, { short: true }) %>,
+              <%= sched.parseTime(b.meets_from) %>–<%= sched.endTime(b.meets_from, b.meets_minutes || 120) %>
+            <% } else { %>
+              · no weekly pattern
+            <% } %>
+            · <%= b.timezone || "Europe/Berlin" %>
+          </div>
+        </div>
+        <div class="sp-list-end">
+          <% if (b.level) { %><span class="pill pill-level"><%= b.level %></span><% } %>
+          <span class="pill<%= b.batch_status === "running" ? " pill-live" : "" %>"><%= b.batch_status %></span>
+          <% if (only === b.id) { %>
+            <span class="pill pill-live">showing</span>
+          <% } else { %>
+            <a class="btn btn-ghost btn-sm" href="/teach/schedule?batch=<%= b.id %>">Only this</a>
+          <% } %>
+        </div>
+      </li>
+    <% }); %>
+    <% if (!term.length) { %>
+      <li><span class="sp-empty">Nothing running or planned.</span></li>
+    <% } %>
+  </ul>
+</div>
+
+
+<%#
+  What is coming and what is behind, side by side.
+
+  They are the same question asked in two directions — what am I
+  teaching, and what have I not written down yet — and stacking them put
+  a fortnight of scrolling between the two halves of one answer. One
+  column on a narrow screen, where side by side would mean neither is
+  readable.
+%>
+<%# Hidden halves are said out loud and undone in one click. A page
+    that quietly shows less than it has is a page somebody will think is
+    broken. %>
+<% if (show !== "both") { %>
+  <p class="tl-showing">
+    Showing <strong><%= show === "next" ? "what is coming" : "what is behind" %></strong> only.
+    <a href="<%= here({ show: "both" }) %>">Show both</a>
+  </p>
+<% } %>
+
+<div class="tl-two<%= show === "both" ? "" : " tl-two-one" %>">
+<% if (show !== "past") { %>
+<% if (lessons.length) { %>
+  <div class="sp-card sp-wide">
+    <div class="sp-card-head">
+      <h2>Next <%= weeks %> weeks</h2>
+      <span class="tl-head-tools">
+        <%- include("../../partials/teach-weeks", {
+          weeks: weeks, weekChoices: weekChoices, only: only, show: show,
+        }) %>
+        <a class="tl-hide" href="<%= here({ show: "past" }) %>"
+           title="Hide this and show only what is behind">hide</a>
+      </span>
+    </div>
+    <%# Broken by day rather than run together.
+
+        Fifty-four lessons in one column is a list nobody reads; the
+        same rows under "Wednesday 23 September" is a week somebody can
+        plan. The heading carries the date so each row does not have to,
+        which leaves the row saying the only things that differ: the
+        time, the batch and how long it runs.
+
+        The day is worked out in the BATCH's zone, so an evening class
+        is not filed under tomorrow for half the year. %>
+    <ul class="sp-list tl-lessons">
+      <% let lastDay = null; %>
+      <% lessons.forEach(function (l) { %>
+        <% const onDay = dayOf(l.starts_at, l.timezone); %>
+        <% if (onDay !== lastDay) { lastDay = onDay; %>
+          <li class="tl-day"><%= heading(l.starts_at, l.timezone) %></li>
+        <% } %>
+        <li>
+          <div style="flex:1">
+            <strong>
+              <%= l.title %>
+              <%- include("../../partials/batch-code", { code: l.batch_code, id: l.intake_id }) %>
+            </strong>
+            <div class="muted" style="font-size:.82rem">
+              <%= clockOf(l.starts_at, l.timezone) %> · <%= l.minutes %> min<% if (l.level) { %> · <%= l.level %><% } %>
+            </div>
+            <% if (l.moved_from) { %>
+              <div class="sp-lesson-note">Moved from <%= at(l.moved_from, l.timezone) %></div>
+            <% } %>
+            <% if (l.change_note) { %>
+              <div class="sp-lesson-note"><%= l.change_note %></div>
+            <% } %>
+            <%# Either you handed this one away, or you were handed it.
+                Both need saying: the first so you do not turn up, the
+                second so you do. %>
+            <% if (l.stand_in_name) { %>
+              <div class="sp-lesson-note">
+                <% if (Number(l.standing_in)) { %>
+                  You are standing in<% if (l.handover_note) { %> — <%= l.handover_note %><% } %>
+                <% } else { %>
+                  Handed to <strong><%= l.stand_in_name %></strong><%
+                    if (l.handover_note) { %> — <%= l.handover_note %><% } %>
+                <% } %>
+              </div>
+            <% } %>
+
+            <%#
+              Moving and calling off, folded away until wanted.
+
+              Shipped OPEN and closed by app.js would be wrong here: this
+              is a form per lesson on a page that can hold forty of them,
+              and forty open forms is not a schedule. It ships closed,
+              which <details> does natively — the earlier bug was CSS
+              trying to force a CLOSED one open, which cannot work.
+            %>
+            <% if (canChange) { %>
+              <%#
+                Three separate controls, each named for what it does.
+
+                It was one fold called "Change this class" with all the
+                forms stacked inside it, so the one somebody wanted sat
+                behind the ones they did not — and the name said nothing
+                about what the choices were. Hand-over was invisible
+                unless you opened it and scrolled past a date picker.
+
+                Separate rather than nested: the summary IS the choice,
+                so the three options are readable without opening
+                anything, and reaching the one you want is one click
+                instead of two.
+              %>
+              <div class="tl-actions">
+
+                <details class="tl-change">
+                  <summary>Postpone the class</summary>
+                <form method="post" action="/teach/lesson/<%= l.id %>/move" class="tl-form">
+                  <div class="tl-row">
+                    <label class="field">
+                      <span>New date</span>
+                      <input type="date" name="date" value="<%= isoIn(l.starts_at, l.timezone) %>" required>
+                    </label>
+                    <label class="field">
+                      <span>New time (<%= l.timezone || "Europe/Berlin" %>)</span>
+                      <input type="time" name="time" value="<%= hhmmIn(l.starts_at, l.timezone) %>" required>
+                    </label>
+                    <label class="field">
+                      <span>Minutes</span>
+                      <input type="number" name="minutes" value="<%= l.minutes %>" min="10" max="600" step="5">
+                    </label>
+                  </div>
+                  <label class="field">
+                    <span>Why it has moved — students see this</span>
+                    <input type="text" name="note" maxlength="<%= noteMax %>" required
+                           placeholder="Public holiday">
+                  </label>
+                  <%- include("../../partials/teach-notify", { canEmail: canEmail, verb: "the new time" }) %>
+                  <button class="btn btn-sm" type="submit">Move the class</button>
+                </form>
+                </details>
+
+                <%# Somebody else takes it, at the same time. Beside
+                    Move and Cancel because it answers the same question
+                    — "I cannot do Thursday" — with the third of the
+                    three possible answers. %>
+                <% if (canHandOver && l.status !== "cancelled" && !l.stand_in_id) { %>
+                  <details class="tl-change">
+                  <summary>Hand over the class</summary>
+                  <form method="post" action="/teach/lesson/<%= l.id %>/handover" class="tl-form">
+                    <input type="hidden" name="back" value="/teach/schedule">
+                    <p class="muted" style="margin:0;font-size:.84rem">
+                      Same time, same link. They see this one class and
+                      take this register, nothing else on the batch.
+                      The office is told.
+                    </p>
+                    <label class="field">
+                      <span>Who is taking it</span>
+                      <select name="teacher_id" required>
+                        <option value="">Choose a teacher…</option>
+                        <% teacherOptions.forEach(function (t) { %>
+                          <option value="<%= t.id %>"><%= t.name %></option>
+                        <% }); %>
+                      </select>
+                    </label>
+                    <label class="field">
+                      <span>Why — students see this</span>
+                      <input type="text" name="note" maxlength="<%= noteMax %>" required
+                             placeholder="Away that day">
+                    </label>
+                    <%- include("../../partials/teach-notify", { canEmail: canEmail, verb: "the change of teacher" }) %>
+                    <button class="btn btn-sm" type="submit">Hand over this class</button>
+                  </form>
+                  </details>
+                <% } %>
+
+                <% if (canHandOver && l.stand_in_id && !Number(l.standing_in)) { %>
+                  <details class="tl-change">
+                  <summary>Take the class back</summary>
+                  <form method="post" action="/teach/lesson/<%= l.id %>/takeback" class="tl-form tl-form-off">
+                    <input type="hidden" name="back" value="/teach/schedule">
+                    <p class="muted" style="margin:0;font-size:.84rem">
+                      <strong><%= l.stand_in_name %></strong> is taking this one.
+                    </p>
+                    <button class="btn btn-sm btn-ghost" type="submit">Take it back</button>
+                  </form>
+                  </details>
+                <% } %>
+
+                <% if (l.status === "cancelled") { %>
+                  <details class="tl-change">
+                  <summary>Put the class back on</summary>
+                  <form method="post" action="/teach/lesson/<%= l.id %>/restore" class="tl-form tl-form-off">
+                    <label class="field">
+                      <span>Putting it back on — note for the students</span>
+                      <input type="text" name="note" maxlength="<%= noteMax %>"
+                             placeholder="Back on as normal">
+                    </label>
+                    <%- include("../../partials/teach-notify", { canEmail: canEmail, verb: "that it is back on" }) %>
+                    <button class="btn btn-sm btn-ghost" type="submit">Put it back on</button>
+                  </form>
+                  </details>
+                <% } else { %>
+                  <details class="tl-change">
+                  <summary>Cancel the class</summary>
+                  <form method="post" action="/teach/lesson/<%= l.id %>/cancel" class="tl-form tl-form-off">
+                    <%- include("../../partials/cancel-reason", { cancelReasons: cancelReasons }) %>
+                    <%# No longer required on its own: a reason above is
+                        enough, and this adds to it. Somebody who picks
+                        nothing and writes nothing is still refused. %>
+                    <label class="field">
+                      <span>Anything to add</span>
+                      <input type="text" name="note" maxlength="<%= noteMax %>"
+                             placeholder="Back on Thursday as normal">
+                    </label>
+                    <%- include("../../partials/teach-notify", { canEmail: canEmail, verb: "the cancellation" }) %>
+                    <button class="btn btn-sm btn-ghost" type="submit">Cancel this class</button>
+                  </form>
+                  </details>
+                <% } %>
+              </div>
+            <% } %>
+          </div>
+          <div class="sp-list-end">
+            <% if (l.status !== "scheduled") { %><span class="pill pill-off"><%= l.status %></span><% } %>
+            <% if (l.status !== "cancelled" && classLinks.room(l)) { %>
+              <a class="btn btn-ghost btn-sm" href="<%= classLinks.room(l) %>" target="_blank" rel="noopener noreferrer">Join</a>
+            <% } %>
+          </div>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+<% } else { %>
+  <%#
+    Why it is empty, which is not the same question as whether you have
+    classes.
+
+    This page used to say the timetable did not exist, because it did
+    not: nothing wrote to `lessons` except a register being taken. Now a
+    batch carries a weekly pattern and the lessons follow from it, so an
+    empty page means one of two things — no batch has a pattern yet, or
+    there genuinely is nothing in the next six weeks. Those want
+    different sentences, because only one of them is somebody's to fix.
+  %>
+  <% const unset = term.filter((b) => !b.meets_days); %>
+  <div class="sp-card sp-wide">
+    <div class="sp-card-head">
+      <h2>Lesson timetable</h2>
+    </div>
+    <% if (!term.length) { %>
+      <p class="sp-empty">
+        Nothing running or planned, so there is nothing to timetable yet.
+      </p>
+    <% } else if (unset.length) { %>
+      <p class="sp-empty">
+        <%= unset.length === 1
+              ? (unset[0].course_title || unset[0].code) + " has no weekly pattern set"
+              : unset.length + " of your batches have no weekly pattern set" %>,
+        so there are no lessons to list. The office sets the days and times
+        on the batch, and the timetable builds itself from there. Your term
+        dates are below and the class links are on
+        <a href="/teach/batches">My classes</a>.
+      </p>
+    <% } else { %>
+      <p class="sp-empty">
+        No classes in the next six weeks. Your term dates are below.
+      </p>
+    <% } %>
+  </div>
+<% } %>
+<% } %>
+
+<% if (show !== "next") { %>
+<%#
+  Every class already taught, and whether its register was taken.
+
+  The list above is what is coming. This is the other half of the same
+  question -- "which dates have I done and which are still open" -- and
+  until now it only existed per batch, on the batch page, capped at
+  eight. A teacher with three courses had to visit three pages and add
+  them up.
+
+  Three states, and the middle one is the one worth having:
+
+    taken       a person marked the register
+    joined only students marked THEMSELVES present by clicking the class
+                link and nobody confirmed it. The class plainly happened;
+                nobody wrote down who was in it. This is the case that
+                showed five students as two.
+    not taken   nothing at all
+
+  A date is a link straight to its own register, because a list of
+  what you owe that you cannot act on from is a list you read twice.
+%>
+<% if (typeof history !== "undefined" && history.length) { %>
+  <div class="sp-card sp-wide">
+    <div class="sp-card-head">
+      <%# "Classes already taught" said what they were and not when.
+          The window is the useful part: a teacher is looking for the
+          register they have not done, and that is always recent. %>
+      <h2>Last <%= weeks %> weeks</h2>
+      <span class="tl-head-tools">
+        <%# A cancelled class is not a register anybody owes, so it is not
+            counted as one. Kept on one line: a sentence split across two
+            lines of template is not a sentence in the HTML. %>
+        <span class="muted" style="font-size:.85rem"><%= history.filter(function (r) { return r.status !== "cancelled" && !Number(r.by_teacher); }).length %> still to mark</span>
+        <%# Last, as on the other card. The two headings read as a pair
+            and the control that does the same thing on both should be
+            in the same place on both. %>
+        <a class="tl-hide" href="<%= here({ show: "next" }) %>"
+           title="Hide this and show only what is coming">hide</a>
+      </span>
+    </div>
+    <ul class="sp-list">
+      <% history.forEach(function (r) { %>
+        <%
+          const done = Number(r.by_teacher) > 0;
+          const selfOnly = !done && Number(r.marked) > 0;
+          const off = r.status === "cancelled";
+        %>
+        <li class="<%= off ? "sp-lesson-off" : "" %>">
+          <div>
+            <strong>
+              <% if (off) { %>
+                <%= at(r.starts_at, r.timezone) %>
+              <% } else { %>
+                <a href="/teach/batch/<%= r.intake_id %>/register?date=<%= String(r.day).slice(0, 10) %>">
+                  <%= at(r.starts_at, r.timezone) %>
+                </a>
+              <% } %>
+              <%- include("../../partials/batch-code", { code: r.batch_code, id: r.intake_id }) %>
+            </strong>
+            <div class="muted" style="font-size:.82rem">
+              <%= r.course_title || r.batch_code %>
+              <% if (off) { %>
+                · cancelled
+              <% } else if (done) { %>
+                · <%= r.attended %> of <%= r.marked %> here<% if (Number(r.absent)) { %>, <%= r.absent %> missing<% } %>
+              <% } else if (selfOnly) { %>
+                · <%= r.marked %> of <%= r.students %> joined by link — not confirmed
+              <% } else { %>
+                · <%= r.students %> <%= r.students === 1 ? "student" : "students" %>, nothing marked
+              <% } %>
+            </div>
+
+            <%# A class that is behind and was never marked.
+
+                Until now the only thing offered here was "Take it",
+                which assumes the class happened. Sometimes it did not
+                — nobody came, the teacher was ill and nobody was told,
+                the power went — and there was no way to say so: the
+                cancel control lives on the other card, which only ever
+                lists what is coming. The row sat in "still to mark"
+                for ever, because the only honest register for a class
+                that did not happen is no register at all.
+
+                Nothing new is permitted by this. lib/lessons.js has
+                always allowed cancelling anything that is not held;
+                only the page withheld it. A class with a register
+                against it is held and is not offered this, which is
+                the rule that actually matters.
+
+                No notify box, unlike the form on the other card. Email
+                about a class that is coming is a warning; email about
+                one that is three days gone is a puzzle. The students
+                see the reason on their own timetable either way. %>
+            <%# Not on a cancelled one: it is already off, and a class
+                cannot be called off twice. Not on a taken one either:
+                a register against it is a person saying it happened,
+                and that is the line lib/lessons.js draws too.
+
+                It IS offered on a joined-only class, and withholding
+                it there was wrong. Clicking a join link is not
+                evidence that a class took place -- students join, the
+                teacher never arrives, and the room empties. The row
+                then had "Confirm" as its only offer, which asks the
+                teacher to write a register for a class that did not
+                run, and no way at all to say so. Reported from a live
+                schedule: "this class was not conducted, how can I
+                cancel it?" There was no answer. %>
+            <% if (!off && !done) { %>
+              <div class="tl-changes">
+                <details class="tl-change">
+                  <summary>It did not happen</summary>
+                  <form method="post" action="/teach/lesson/<%= r.id %>/cancel" class="tl-form tl-form-off">
+                    <% if (selfOnly) { %>
+                      <%# Said before they commit, not after. Those marks
+                          are the only trace of the people who turned up
+                          to nothing, and a teacher should know they are
+                          being set aside rather than discover it. %>
+                      <p class="muted" style="font-size:.82rem;margin:0 0 .5rem">
+                        <%= r.marked %> <%= r.marked === 1 ? "student" : "students" %>
+                        marked <%= r.marked === 1 ? "themselves" : "themselves" %> here by
+                        clicking the link. Calling the class off sets that aside — it is
+                        not a register, and nobody is marked absent.
+                      </p>
+                    <% } %>
+                    <%- include("../../partials/cancel-reason", { cancelReasons: cancelReasons }) %>
+                    <label class="field">
+                      <span>Anything to add</span>
+                      <input type="text" name="note" maxlength="<%= noteMax %>"
+                             placeholder="Nobody came, no notice given">
+                    </label>
+                    <button class="btn btn-sm btn-ghost" type="submit">Call this class off</button>
+                  </form>
+                </details>
+              </div>
+            <% } %>
+          </div>
+          <div class="sp-list-end">
+            <% if (off) { %>
+              <span class="pill pill-off">cancelled</span>
+            <% } else if (done) { %>
+              <span class="pill pill-live">taken</span>
+            <% } else if (selfOnly) { %>
+              <span class="pill">joined only</span>
+              <a class="btn btn-sm" href="/teach/batch/<%= r.intake_id %>/register?date=<%= String(r.day).slice(0, 10) %>">Confirm</a>
+            <% } else { %>
+              <span class="pill">not taken</span>
+              <a class="btn btn-sm" href="/teach/batch/<%= r.intake_id %>/register?date=<%= String(r.day).slice(0, 10) %>">Take it</a>
+            <% } %>
+          </div>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+<% } %>
+<% } %>
+
+</div>
+
+<%- include("../../partials/teach-shell-foot") %>

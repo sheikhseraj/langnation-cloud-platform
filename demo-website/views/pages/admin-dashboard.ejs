@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Dashboard", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "dashboard" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Dashboard",
+      adCrumbs: [{ label: "Admin" }, { label: "Dashboard" }],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (!dbOk) { %>
+        <p class="notice notice-bad">
+          The database is unreachable, so these figures are from the disk fallback and may be incomplete.
+        </p>
+      <% } %>
+
+      <%#
+        What needs doing, first and largest. The admin used to open on a
+        list of enquiries, which said nothing about account requests
+        waiting or placements needing a level — so those were seen only
+        by somebody who thought to look for them.
+      %>
+      <div class="ad-tiles">
+        <a class="ad-tile<%= newEnquiries ? " is-live" : "" %>" href="/admin?status=new">
+          <span class="ad-tile-n"><%= newEnquiries %></span>
+          <span class="ad-tile-l">new <%= newEnquiries === 1 ? "enquiry" : "enquiries" %></span>
+        </a>
+        <a class="ad-tile<%= requestCounts.pending ? " is-live" : "" %>" href="/admin/requests?status=pending">
+          <span class="ad-tile-n"><%= requestCounts.pending %></span>
+          <span class="ad-tile-l">account <%= requestCounts.pending === 1 ? "request" : "requests" %></span>
+        </a>
+        <a class="ad-tile<%= placementsWaiting ? " is-live" : "" %>" href="/admin/placement">
+          <span class="ad-tile-n"><%= placementsWaiting %></span>
+          <span class="ad-tile-l">placements to confirm</span>
+        </a>
+        <%# Students who can actually sign in, not the row count of the
+            table: a refused request and a closed account are both rows
+            and neither is a student. %>
+        <a class="ad-tile" href="/admin/students">
+          <span class="ad-tile-n"><%= peopleCounts.students %></span>
+          <span class="ad-tile-l">student <%= peopleCounts.students === 1 ? "account" : "accounts" %></span>
+        </a>
+      </div>
+
+      <div class="ad-cols">
+        <section>
+          <div class="ad-card">
+            <h2>Latest enquiries</h2>
+            <% if (!enquiries.length) { %>
+              <p class="muted" style="margin:0">Nothing yet.</p>
+            <% } else { %>
+              <div class="table-scroll">
+                <table>
+                  <tbody>
+                    <% enquiries.forEach(function (r) { %>
+                      <tr>
+                        <td>
+                          <strong><%= r.name %></strong>
+                          <div class="muted" style="font-size:.8rem"><%= r.email %></div>
+                        </td>
+                        <td style="max-width:16rem">
+                          <div class="muted" style="font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                            <%= String(r.message || "").slice(0, 90) %>
+                          </div>
+                        </td>
+                        <td><span class="pill<%= r.status === "new" ? " pill-live" : "" %>"><%= r.status %></span></td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+              <p style="margin:1rem 0 0"><a href="/admin">All <%= enquiryTotal %> enquiries →</a></p>
+            <% } %>
+          </div>
+
+          <div class="ad-card">
+            <h2>Latest placement tests</h2>
+            <% if (!recentPlacements.length) { %>
+              <p class="muted" style="margin:0">Nobody has taken it yet.</p>
+            <% } else { %>
+              <div class="table-scroll">
+                <table>
+                  <tbody>
+                    <% recentPlacements.forEach(function (p) { %>
+                      <tr>
+                        <td>
+                          <a href="/admin/placement/<%= p.id %>"><strong><%= p.name || p.email %></strong></a>
+                          <%# Only when it adds something. Repeating the address
+                              under itself, for the people who gave no name,
+                              is noise dressed as detail. %>
+                          <% if (p.name) { %>
+                            <div class="muted" style="font-size:.8rem"><%= p.email %></div>
+                          <% } %>
+                        </td>
+                        <td>
+                          <% if (p.confirmed_at) { %>
+                            <span class="pill pill-level"><%= p.final_level || p.placement %></span>
+                          <% } else if (p.placement) { %>
+                            <span class="pill"><%= p.placement %></span>
+                          <% } else { %>
+                            <span class="muted" style="font-size:.82rem">not finished</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <% if (p.placement && !p.confirmed_at) { %>
+                            <span class="pill pill-live">to confirm</span>
+                          <% } else if (p.confirmed_at) { %>
+                            <span class="muted" style="font-size:.82rem">confirmed</span>
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+              <p style="margin:1rem 0 0"><a href="/admin/placement">All placement tests →</a></p>
+            <% } %>
+          </div>
+        </section>
+
+        <aside>
+          <%# The whole path from asking to signing up, in one panel.
+              The three used to be countable only by opening two
+              different screens and knowing which held what. %>
+          <div class="ad-card">
+            <%# Enquiries, as a whole rather than as a queue.
+
+                The tiles above say how many are waiting and the list
+                says which ones; neither says how many came in, or where
+                the answered ones went. "Are we getting more or fewer
+                than last month" was a question that could only be
+                answered by scrolling.
+
+                Spam is counted apart and not added into the arrivals.
+                It arrived, but folding it in makes the figure a measure
+                of how much rubbish got through, and a spam wave would
+                read as a good week. %>
+            <h2>Enquiries</h2>
+            <dl class="ad-stat">
+              <div><dt>Arrived this week</dt><dd><%= enquiryArrivals.week %></dd></div>
+              <div><dt>Arrived in 30 days</dt><dd><%= enquiryArrivals.month %></dd></div>
+              <div><dt>Waiting in the inbox</dt><dd><%= folderCounts.new %></dd></div>
+              <div><dt>Replied</dt><dd><%= folderCounts.replied %></dd></div>
+              <div><dt>Closed</dt><dd><%= folderCounts.closed %></dd></div>
+              <% if (folderCounts.spam) { %>
+                <%# Worth saying plainly: these senders are refused from
+                    now on, which is not obvious from the word "spam". %>
+                <div><dt>Spam — senders blocked</dt><dd><%= folderCounts.spam %></dd></div>
+              <% } %>
+            </dl>
+            <p class="ad-note">
+              <a href="/admin?status=new">Open the inbox →</a>
+              <% if (folderCounts.spam) { %>
+                · <a href="/admin?status=spam">See what is blocked →</a>
+              <% } %>
+            </p>
+          </div>
+
+          <div class="ad-card">
+            <h2>People</h2>
+            <dl class="ad-stat">
+              <div><dt>Asked for an account</dt><dd><%= peopleCounts.requested %></dd></div>
+              <div><dt>Approved, not signed up</dt><dd><%= peopleCounts.approved %></dd></div>
+              <div><dt>Accounts created</dt><dd><%= peopleCounts.active %></dd></div>
+              <% if (peopleCounts.refused) { %>
+                <div><dt>Refused</dt><dd><%= peopleCounts.refused %></dd></div>
+              <% } %>
+              <div><dt><strong>Everybody</strong></dt><dd><strong><%= peopleCounts.total %></strong></dd></div>
+            </dl>
+            <p style="margin:.9rem 0 0">
+              <a href="/admin/students">The full list →</a>
+              <% if (requestCounts.pending) { %>
+                · <a href="/admin/requests?status=pending">Decide <%= requestCounts.pending %> waiting →</a>
+              <% } %>
+            </p>
+          </div>
+
+          <div class="ad-card">
+            <h2>Most-read pages · 30 days</h2>
+            <% if (!views.length) { %>
+              <p class="muted" style="margin:0">No page views recorded yet.</p>
+            <% } else { %>
+              <dl class="ad-stat">
+                <% views.forEach(function (v) { %>
+                  <div>
+                    <dt style="overflow:hidden;text-overflow:ellipsis"><%= v.path %></dt>
+                    <dd><%= Number(v.views).toLocaleString() %></dd>
+                  </div>
+                <% }); %>
+              </dl>
+            <% } %>
+            <p class="muted" style="font-size:.8rem;margin:.9rem 0 0">
+              Counted on this server. No cookies, no visitor tracking.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

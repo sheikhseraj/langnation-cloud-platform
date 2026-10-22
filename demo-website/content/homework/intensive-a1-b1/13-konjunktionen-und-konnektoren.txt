@@ -1,0 +1,982 @@
+# Kapitel 13 — Konjunktionen und Konnektoren
+@learning
+{
+  "version": 1,
+  "key": "kapitel-13-konjunktionen-und-konnektoren",
+  "title": "Kapitel 13 — Konjunktionen und Konnektoren",
+  "label": "Kapitel 13",
+  "sections": [
+    {
+      "id": "exercise-1",
+      "label": "Übung 1",
+      "title": "Übung 1 – und, aber, oder, denn, sondern",
+      "instruction": "Verbinde die Sätze mit dem passenden Konnektor.",
+      "objective": "Nebenordnende Konnektoren nach Bedeutung unterscheiden.",
+      "examples": [
+        {
+          "prompt": "Ich bin müde. Ich arbeite weiter.",
+          "answer": "Ich bin müde, aber ich arbeite weiter.",
+          "explanation": "Gegensatz → aber."
+        },
+        {
+          "prompt": "Möchtest du Wasser? Möchtest du Saft?",
+          "answer": "Möchtest du Wasser oder Saft?",
+          "explanation": "Alternative → oder."
+        }
+      ],
+      "questions": [
+        {
+          "id": "1",
+          "title": "Aufgabe 1",
+          "type": "sentence_connector",
+          "prompt": "Ich bin müde. Ich lerne weiter.",
+          "accepted": [
+            "Ich bin müde, aber ich lerne weiter."
+          ],
+          "hints": [
+            "Gegensatz zwischen müde und weiterlernen.",
+            "Gegensatz → aber."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "2",
+          "title": "Aufgabe 2",
+          "type": "sentence_connector",
+          "prompt": "Möchtest du Tee? Möchtest du Kaffee?",
+          "accepted": [
+            "Möchtest du Tee oder Kaffee?"
+          ],
+          "hints": [
+            "Alternative/Auswahl.",
+            "oder verbindet Alternativen."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "3",
+          "title": "Aufgabe 3",
+          "type": "sentence_connector",
+          "prompt": "Ich bleibe zu Hause. Ich bin krank.",
+          "accepted": [
+            "Ich bleibe zu Hause, denn ich bin krank."
+          ],
+          "hints": [
+            "Zweiter Satz nennt den Grund.",
+            "denn = Begründung mit Hauptsatzwortstellung."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "4",
+          "title": "Aufgabe 4",
+          "type": "sentence_connector",
+          "prompt": "Er fährt nicht mit dem Auto. Er fährt mit dem Zug.",
+          "accepted": [
+            "Er fährt nicht mit dem Auto, sondern mit dem Zug."
+          ],
+          "hints": [
+            "Korrektur nach Negation.",
+            "nicht ..., sondern ..."
+          ],
+          "feedback": "Richtig."
+        }
+      ]
+    },
+    {
+      "id": "exercise-2",
+      "label": "Übung 2",
+      "title": "Übung 2 – Nebensatz bilden",
+      "instruction": "Verbinde mit dem angegebenen Konnektor.",
+      "objective": "Nebensätze mit weil, dass, als, obwohl und falls bilden; Verb ans Ende setzen.",
+      "examples": [
+        {
+          "prompt": "Ich bleibe zu Hause. Ich bin krank. (weil)",
+          "answer": "Ich bleibe zu Hause, weil ich krank bin.",
+          "explanation": "weil → Verb am Ende."
+        },
+        {
+          "prompt": "Es regnet. Wir gehen raus. (obwohl)",
+          "answer": "Obwohl es regnet, gehen wir raus.",
+          "explanation": "obwohl = Gegensatz; Nebensatzverb am Ende."
+        }
+      ],
+      "questions": [
+        {
+          "id": "5",
+          "title": "Aufgabe 5",
+          "type": "sentence_transform",
+          "prompt": "Ich lerne Deutsch. Ich möchte in Deutschland arbeiten. (weil)",
+          "accepted": [
+            "Ich lerne Deutsch, weil ich in Deutschland arbeiten möchte.",
+            "Weil ich in Deutschland arbeiten möchte, lerne ich Deutsch."
+          ],
+          "hints": [
+            "Der zweite Gedanke ist der Grund.",
+            "weil-Nebensatz: Verb am Ende."
+          ],
+          "feedback": "Beide Satzreihenfolgen akzeptieren."
+        },
+        {
+          "id": "6",
+          "title": "Aufgabe 6",
+          "type": "sentence_transform",
+          "prompt": "Ich weiß. Der Kurs beginnt um neun Uhr. (dass)",
+          "accepted": [
+            "Ich weiß, dass der Kurs um neun Uhr beginnt."
+          ],
+          "hints": [
+            "dass leitet den Inhalt von „ich weiß“ ein.",
+            "Im dass-Satz steht das finite Verb am Ende."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "7",
+          "title": "Aufgabe 7",
+          "type": "sentence_transform",
+          "prompt": "Ich war zehn Jahre alt. Wir zogen um. (als)",
+          "accepted": [
+            "Als ich zehn Jahre alt war, zogen wir um.",
+            "Wir zogen um, als ich zehn Jahre alt war."
+          ],
+          "hints": [
+            "Einmaliges Ereignis in der Vergangenheit.",
+            "als-Nebensatz: Verb am Ende."
+          ],
+          "feedback": "Beide Satzreihenfolgen akzeptieren."
+        },
+        {
+          "id": "8",
+          "title": "Aufgabe 8",
+          "type": "sentence_transform",
+          "prompt": "Es regnet. Wir gehen spazieren. (obwohl)",
+          "accepted": [
+            "Obwohl es regnet, gehen wir spazieren.",
+            "Wir gehen spazieren, obwohl es regnet."
+          ],
+          "hints": [
+            "Es gibt einen Gegensatz.",
+            "obwohl-Nebensatz: Verb am Ende."
+          ],
+          "feedback": "Beide akzeptieren."
+        },
+        {
+          "id": "9",
+          "title": "Aufgabe 9",
+          "type": "sentence_transform",
+          "prompt": "Ruf mich an. Du brauchst Hilfe. (falls)",
+          "accepted": [
+            "Ruf mich an, falls du Hilfe brauchst.",
+            "Falls du Hilfe brauchst, ruf mich an."
+          ],
+          "hints": [
+            "falls = Bedingung.",
+            "Im Nebensatz: du Hilfe brauchst."
+          ],
+          "feedback": "Beide akzeptieren."
+        }
+      ]
+    },
+    {
+      "id": "exercise-3",
+      "label": "Übung 3",
+      "title": "Übung 3 – Satzstellung",
+      "instruction": "Ordne die Wörter.",
+      "objective": "Verbposition in Nebensatz und Hauptsatz nach Konnektor korrekt ordnen.",
+      "examples": [
+        {
+          "prompt": "weil / ich / heute / arbeiten / muss",
+          "answer": "weil ich heute arbeiten muss",
+          "explanation": "Nebensatz: Verbkomplex am Ende."
+        },
+        {
+          "prompt": "deshalb / bleibe / ich / zu Hause",
+          "answer": "Deshalb bleibe ich zu Hause.",
+          "explanation": "Konnektor auf Position 1 → Verb direkt danach."
+        }
+      ],
+      "questions": [
+        {
+          "id": "10",
+          "title": "Aufgabe 10",
+          "type": "word_order",
+          "prompt": "weil / morgen / ich / arbeiten / muss",
+          "accepted": [
+            "weil ich morgen arbeiten muss"
+          ],
+          "hints": [
+            "weil leitet Nebensatz ein.",
+            "Subjekt + Mittelfeld + Verbkomplex am Ende."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            "arbeiten",
+            "ich",
+            "morgen",
+            "muss",
+            "weil"
+          ]
+        },
+        {
+          "id": "11",
+          "title": "Aufgabe 11",
+          "type": "word_order",
+          "prompt": "deshalb / heute / bleibe / ich / zu Hause",
+          "accepted": [
+            "Deshalb bleibe ich heute zu Hause."
+          ],
+          "hints": [
+            "deshalb kann Position 1 besetzen.",
+            "Danach kommt das finite Verb."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            ".",
+            "bleibe",
+            "Deshalb",
+            "Hause",
+            "heute",
+            "ich",
+            "zu"
+          ]
+        },
+        {
+          "id": "12",
+          "title": "Aufgabe 12",
+          "type": "word_order",
+          "prompt": "obwohl / müde / ist / sie / weiter / arbeitet / sie",
+          "accepted": [
+            "Obwohl sie müde ist, arbeitet sie weiter."
+          ],
+          "hints": [
+            "obwohl-Nebensatz zuerst.",
+            "Verb am Ende des Nebensatzes; danach Hauptsatz Verb auf Position 1 nach Komma."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            ",",
+            ".",
+            "arbeitet",
+            "ist",
+            "müde",
+            "Obwohl",
+            "sie",
+            "weiter"
+          ]
+        },
+        {
+          "id": "13",
+          "title": "Aufgabe 13",
+          "type": "word_order",
+          "prompt": "wenn / Zeit / habe / ich / komme / ich",
+          "accepted": [
+            "Wenn ich Zeit habe, komme ich."
+          ],
+          "hints": [
+            "wenn-Nebensatz zuerst.",
+            "habe am Ende des Nebensatzes; komme direkt nach Komma."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            ",",
+            ".",
+            "habe",
+            "ich",
+            "komme",
+            "Wenn",
+            "Zeit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exercise-4",
+      "label": "Übung 4",
+      "title": "Übung 4 – wenn oder als?",
+      "instruction": "Setze wenn oder als ein.",
+      "objective": "wenn für Wiederholung/Gegenwart/Zukunft und als für einmalige Vergangenheit unterscheiden.",
+      "examples": [
+        {
+          "prompt": "___ ich gestern nach Hause kam, regnete es.",
+          "answer": "Als",
+          "explanation": "einmalige Vergangenheit → als."
+        },
+        {
+          "prompt": "Immer ___ ich Urlaub habe, reise ich.",
+          "answer": "wenn",
+          "explanation": "wiederholt → wenn."
+        }
+      ],
+      "questions": [
+        {
+          "id": "14",
+          "title": "Aufgabe 14",
+          "type": "fill_blank",
+          "prompt": "___ ich gestern nach Hause kam, war niemand da.",
+          "accepted": [
+            "Als"
+          ],
+          "hints": [
+            "Einmalige Vergangenheit.",
+            "als."
+          ],
+          "feedback": "Richtig: Als."
+        },
+        {
+          "id": "15",
+          "title": "Aufgabe 15",
+          "type": "fill_blank",
+          "prompt": "___ ich Zeit habe, lese ich.",
+          "accepted": [
+            "Wenn"
+          ],
+          "hints": [
+            "Allgemein/wiederholt.",
+            "wenn."
+          ],
+          "feedback": "Richtig: Wenn."
+        },
+        {
+          "id": "16",
+          "title": "Aufgabe 16",
+          "type": "fill_blank",
+          "prompt": "Immer ___ wir Ferien hatten, besuchten wir unsere Großeltern.",
+          "accepted": [
+            "wenn"
+          ],
+          "hints": [
+            "„Immer“ signalisiert Wiederholung.",
+            "Wiederholte Vergangenheit → wenn."
+          ],
+          "feedback": "Richtig: wenn."
+        },
+        {
+          "id": "17",
+          "title": "Aufgabe 17",
+          "type": "fill_blank",
+          "prompt": "___ er 18 war, machte er den Führerschein.",
+          "accepted": [
+            "Als"
+          ],
+          "hints": [
+            "Ein einmaliger Lebenszeitpunkt.",
+            "Einmalige Vergangenheit → als."
+          ],
+          "feedback": "Richtig: Als."
+        }
+      ]
+    },
+    {
+      "id": "exercise-5",
+      "label": "Übung 5",
+      "title": "Übung 5 – Ursache und Folge",
+      "instruction": "Formuliere zu jedem Paar zwei Varianten: eine mit weil, eine mit deshalb.",
+      "objective": "Ursache/Folge einmal mit weil-Nebensatz und einmal mit deshalb-Hauptsatz ausdrücken.",
+      "examples": [
+        {
+          "prompt": "Ich bin müde. Ich gehe früh schlafen.",
+          "answer": "weil: Ich gehe früh schlafen, weil ich müde bin. | deshalb: Ich bin müde. Deshalb gehe ich früh schlafen.",
+          "explanation": "weil nennt Ursache im Nebensatz; deshalb leitet die Folge ein."
+        }
+      ],
+      "questions": [
+        {
+          "id": "18",
+          "title": "Aufgabe 18",
+          "type": "paired_sentence_transform",
+          "prompt": "Ich bin krank. Ich bleibe zu Hause.",
+          "accepted": [
+            [
+              "Ich bleibe zu Hause, weil ich krank bin.",
+              "Ich bin krank. Deshalb bleibe ich zu Hause."
+            ],
+            [
+              "Weil ich krank bin, bleibe ich zu Hause.",
+              "Ich bin krank. Deshalb bleibe ich zu Hause."
+            ]
+          ],
+          "hints": [
+            "Welche Aussage ist Ursache?",
+            "krank = Ursache; zu Hause bleiben = Folge."
+          ],
+          "feedback": "Beide Felder müssen korrekt sein.",
+          "fields": [
+            "Mit weil",
+            "Mit deshalb"
+          ]
+        },
+        {
+          "id": "19",
+          "title": "Aufgabe 19",
+          "type": "paired_sentence_transform",
+          "prompt": "Der Zug hat Verspätung. Wir kommen später.",
+          "accepted": [
+            [
+              "Wir kommen später, weil der Zug Verspätung hat.",
+              "Der Zug hat Verspätung. Deshalb kommen wir später."
+            ],
+            [
+              "Weil der Zug Verspätung hat, kommen wir später.",
+              "Der Zug hat Verspätung. Deshalb kommen wir später."
+            ]
+          ],
+          "hints": [
+            "Verspätung ist die Ursache.",
+            "weil → Verb am Ende; deshalb → Verb direkt danach."
+          ],
+          "feedback": "Beide Varianten prüfen.",
+          "fields": [
+            "Mit weil",
+            "Mit deshalb"
+          ]
+        },
+        {
+          "id": "20",
+          "title": "Aufgabe 20",
+          "type": "paired_sentence_transform",
+          "prompt": "Ich möchte die Prüfung bestehen. Ich lerne jeden Tag.",
+          "accepted": [
+            [
+              "Ich lerne jeden Tag, weil ich die Prüfung bestehen möchte.",
+              "Ich möchte die Prüfung bestehen. Deshalb lerne ich jeden Tag."
+            ],
+            [
+              "Weil ich die Prüfung bestehen möchte, lerne ich jeden Tag.",
+              "Ich möchte die Prüfung bestehen. Deshalb lerne ich jeden Tag."
+            ]
+          ],
+          "hints": [
+            "Warum lerne ich jeden Tag?",
+            "Ziel/Wunsch ist der Grund."
+          ],
+          "feedback": "Beide Varianten korrekt.",
+          "fields": [
+            "Mit weil",
+            "Mit deshalb"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exercise-6",
+      "label": "Übung 6",
+      "title": "Übung 6 – Doppelkonnektoren",
+      "instruction": "Ergänze beide Teile.",
+      "objective": "Doppelkonnektoren als feste Paare erkennen und korrekt einsetzen.",
+      "examples": [
+        {
+          "prompt": "Ich trinke ___ Tee ___ Kaffee.",
+          "answer": "sowohl | als auch",
+          "explanation": "sowohl ... als auch."
+        },
+        {
+          "prompt": "Wir fahren ___ mit dem Bus ___ mit der Bahn.",
+          "answer": "entweder | oder",
+          "explanation": "Alternative."
+        }
+      ],
+      "questions": [
+        {
+          "id": "21",
+          "title": "Aufgabe 21",
+          "type": "phrase_fill",
+          "prompt": "Ich spreche ___ Deutsch ___ Englisch.",
+          "accepted": [
+            [
+              "sowohl",
+              "als auch"
+            ]
+          ],
+          "hints": [
+            "Beide Sprachen werden eingeschlossen.",
+            "sowohl ... als auch."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "22",
+          "title": "Aufgabe 22",
+          "type": "phrase_fill",
+          "prompt": "Wir fahren ___ mit dem Zug ___ mit dem Auto.",
+          "accepted": [
+            [
+              "entweder",
+              "oder"
+            ]
+          ],
+          "hints": [
+            "Zwei Alternativen.",
+            "entweder ... oder."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "23",
+          "title": "Aufgabe 23",
+          "type": "phrase_fill",
+          "prompt": "Der Job ist ___ interessant, ___ anstrengend.",
+          "accepted": [
+            [
+              "zwar",
+              "aber"
+            ]
+          ],
+          "hints": [
+            "Zugeständnis + Gegensatz.",
+            "zwar ... aber."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "24",
+          "title": "Aufgabe 24",
+          "type": "phrase_fill",
+          "prompt": "Er ist ___ freundlich, ___ hilfsbereit.",
+          "accepted": [
+            [
+              "nicht nur",
+              "sondern auch"
+            ]
+          ],
+          "hints": [
+            "Zweite Eigenschaft kommt zusätzlich dazu.",
+            "nicht nur ... sondern auch."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "25",
+          "title": "Aufgabe 25",
+          "type": "phrase_fill",
+          "prompt": "___ mehr ich übe, ___ besser spreche ich.",
+          "accepted": [
+            [
+              "Je",
+              "desto"
+            ]
+          ],
+          "hints": [
+            "Proportionale Entwicklung.",
+            "je ... desto."
+          ],
+          "feedback": "Richtig."
+        }
+      ]
+    },
+    {
+      "id": "reading",
+      "label": "Lesetext",
+      "title": "Lesetext – Lernen neben der Arbeit",
+      "instruction": "Lies den Text und bearbeite die Aufgaben.",
+      "examples": [
+        {
+          "prompt": "Ich bin müde. Ich arbeite weiter.",
+          "answer": "Ich bin müde, aber ich arbeite weiter.",
+          "explanation": "Gegensatz → aber."
+        }
+      ],
+      "questions": [
+        {
+          "id": "r1",
+          "title": "Aufgabe R1",
+          "type": "text_highlight",
+          "prompt": "Markiere alle Konnektoren/Konnektorpaare im Text.",
+          "hints": [
+            "Suche Wörter, die Sätze/Teile verbinden oder Beziehungen ausdrücken.",
+            "Achte auf mehrteilige Paare."
+          ],
+          "feedback": "Positionsbasierte Markierung; Doppelkonnektoren als Gruppe behandeln.",
+          "tokens": [
+            "Nora",
+            "arbeitet",
+            "Vollzeit,",
+            "aber",
+            "sie",
+            "besucht",
+            "zusätzlich",
+            "einen",
+            "Deutschkurs.",
+            "Sie",
+            "lernt",
+            "jeden",
+            "Abend,",
+            "weil",
+            "sie",
+            "die",
+            "B1-Prüfung",
+            "bestehen",
+            "möchte.",
+            "Obwohl",
+            "sie",
+            "oft",
+            "müde",
+            "ist,",
+            "macht",
+            "sie",
+            "ihre",
+            "Übungen",
+            "regelmäßig.",
+            "Wenn",
+            "sie",
+            "eine",
+            "neue",
+            "Grammatikregel",
+            "nicht",
+            "versteht,",
+            "fragt",
+            "sie",
+            "ihre",
+            "Lehrerin.",
+            "Der",
+            "Kurs",
+            "ist",
+            "zwar",
+            "anstrengend,",
+            "aber",
+            "Nora",
+            "findet",
+            "ihn",
+            "sehr",
+            "hilfreich.",
+            "Sie",
+            "übt",
+            "nicht",
+            "nur",
+            "Grammatik,",
+            "sondern",
+            "auch",
+            "Sprechen",
+            "und",
+            "Schreiben.",
+            "Je",
+            "mehr",
+            "sie",
+            "Deutsch",
+            "benutzt,",
+            "desto",
+            "sicherer",
+            "wird",
+            "sie.",
+            "Am",
+            "Wochenende",
+            "wiederholt",
+            "sie",
+            "den",
+            "Stoff;",
+            "danach",
+            "trifft",
+            "sie",
+            "meistens",
+            "ihre",
+            "Freunde."
+          ],
+          "groups": [
+            {
+              "id": "group-1",
+              "label": "aber",
+              "tokens": [
+                3
+              ]
+            },
+            {
+              "id": "group-2",
+              "label": "weil",
+              "tokens": [
+                13
+              ]
+            },
+            {
+              "id": "group-3",
+              "label": "Obwohl",
+              "tokens": [
+                19
+              ]
+            },
+            {
+              "id": "group-4",
+              "label": "Wenn",
+              "tokens": [
+                29
+              ]
+            },
+            {
+              "id": "group-5",
+              "label": "zwar ... aber",
+              "tokens": [
+                43,
+                45
+              ]
+            },
+            {
+              "id": "group-6",
+              "label": "nicht nur ... sondern auch",
+              "tokens": [
+                53,
+                54,
+                56,
+                57
+              ]
+            },
+            {
+              "id": "group-7",
+              "label": "Je ... desto",
+              "tokens": [
+                61,
+                66
+              ]
+            },
+            {
+              "id": "group-8",
+              "label": "danach",
+              "tokens": [
+                76
+              ]
+            }
+          ],
+          "examples": [
+            {
+              "prompt": "Ich lese, weil ich Zeit habe.",
+              "answer": "weil",
+              "explanation": "Klicke jedes gesuchte Wort an. Bei getrennten Teilen bleiben die Wörter dazwischen frei."
+            }
+          ]
+        },
+        {
+          "id": "r2",
+          "title": "Aufgabe R2",
+          "type": "multi_select",
+          "prompt": "Welche Konnektoren im Text leiten einen Nebensatz ein?",
+          "hints": [
+            "Bei welchen steht das Verb im eingeleiteten Satz am Ende?",
+            "weil / obwohl / wenn."
+          ],
+          "feedback": "Richtig.",
+          "correctChoices": [
+            "weil",
+            "obwohl",
+            "wenn"
+          ],
+          "selectCount": 3,
+          "options": [
+            "aber",
+            "danach",
+            "obwohl",
+            "sondern",
+            "weil",
+            "wenn"
+          ],
+          "examples": [
+            {
+              "prompt": "Wähle zwei Verschmelzungen: beim, ohne, vom.",
+              "answer": "beim · vom",
+              "explanation": "Wähle unterschiedliche Formen; die Reihenfolge ist egal."
+            }
+          ]
+        },
+        {
+          "id": "r3",
+          "title": "Aufgabe R3",
+          "type": "short_answer",
+          "prompt": "Finde einen Doppelkonnektor.",
+          "accepted": [
+            "zwar ... aber",
+            "nicht nur ... sondern auch",
+            "je ... desto"
+          ],
+          "hints": [
+            "Ein Doppelkonnektor besteht aus zwei zusammengehörigen Teilen.",
+            "Im Text stehen sogar drei verschiedene."
+          ],
+          "feedback": "Jede der drei Antworten akzeptieren."
+        },
+        {
+          "id": "r4",
+          "title": "Aufgabe R4",
+          "type": "short_answer",
+          "prompt": "Formuliere den weil-Satz mit deshalb um.",
+          "accepted": [
+            "Sie möchte die B1-Prüfung bestehen. Deshalb lernt sie jeden Abend.",
+            "Sie möchte die B1-Prüfung bestehen; deshalb lernt sie jeden Abend."
+          ],
+          "hints": [
+            "Zuerst Ursache, dann Folge.",
+            "deshalb steht im zweiten Hauptsatz und wird vom Verb gefolgt."
+          ],
+          "feedback": "Richtig."
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "label": "Mini-Test",
+      "title": "Mini-Test – Kapitel 13",
+      "instruction": "Bearbeite die Aufgaben. Bei Bedarf stehen dir zwei Hinweise zur Verfügung.",
+      "examples": [
+        {
+          "prompt": "Ich bin müde. Ich arbeite weiter.",
+          "answer": "Ich bin müde, aber ich arbeite weiter.",
+          "explanation": "Gegensatz → aber."
+        }
+      ],
+      "questions": [
+        {
+          "id": "t1",
+          "title": "Aufgabe T1",
+          "type": "short_answer",
+          "prompt": "Verbinde mit weil: Ich bleibe zu Hause. Ich bin krank.",
+          "accepted": [
+            "Ich bleibe zu Hause, weil ich krank bin.",
+            "Weil ich krank bin, bleibe ich zu Hause."
+          ],
+          "hints": [
+            "krank = Ursache.",
+            "weil-Nebensatz Verb am Ende."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t2",
+          "title": "Aufgabe T2",
+          "type": "short_answer",
+          "prompt": "Verbinde mit deshalb: Ich bin krank. Ich bleibe zu Hause.",
+          "accepted": [
+            "Ich bin krank. Deshalb bleibe ich zu Hause.",
+            "Ich bin krank; deshalb bleibe ich zu Hause."
+          ],
+          "hints": [
+            "Zuerst Ursache, dann Folge.",
+            "Nach deshalb steht das Verb direkt."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t3",
+          "title": "Aufgabe T3",
+          "type": "fill_blank",
+          "prompt": "Ich weiß nicht, ___ er heute kommt.",
+          "accepted": [
+            "ob"
+          ],
+          "hints": [
+            "Indirekte Ja/Nein-Frage.",
+            "ob."
+          ],
+          "feedback": "Richtig: ob."
+        },
+        {
+          "id": "t4",
+          "title": "Aufgabe T4",
+          "type": "fill_blank",
+          "prompt": "___ ich klein war, wohnte ich in Berlin.",
+          "accepted": [
+            "Als"
+          ],
+          "hints": [
+            "Einmaliger Zeitraum in der Vergangenheit.",
+            "als."
+          ],
+          "feedback": "Richtig: Als."
+        },
+        {
+          "id": "t5",
+          "title": "Aufgabe T5",
+          "type": "short_answer",
+          "prompt": "Korrigiere: „Obwohl ich müde bin, aber ich lerne.“",
+          "accepted": [
+            "Obwohl ich müde bin, lerne ich."
+          ],
+          "hints": [
+            "obwohl reicht als Gegensatzkonnektor.",
+            "Kein zusätzliches aber im Hauptsatz."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t6",
+          "title": "Aufgabe T6",
+          "type": "fill_blank",
+          "prompt": "entweder … ___",
+          "accepted": [
+            "oder"
+          ],
+          "hints": [
+            "Festes Paar.",
+            "entweder ... oder."
+          ],
+          "feedback": "Richtig: oder."
+        },
+        {
+          "id": "t7",
+          "title": "Aufgabe T7",
+          "type": "fill_blank",
+          "prompt": "nicht nur … ___ auch",
+          "accepted": [
+            "sondern"
+          ],
+          "hints": [
+            "Festes Paar.",
+            "nicht nur ... sondern auch."
+          ],
+          "feedback": "Richtig: sondern."
+        },
+        {
+          "id": "t8",
+          "title": "Aufgabe T8",
+          "type": "short_answer",
+          "prompt": "Geführter Satz mit „trotzdem“: Es regnet. Ich gehe spazieren.",
+          "accepted": [
+            "Es regnet. Trotzdem gehe ich spazieren.",
+            "Es regnet; trotzdem gehe ich spazieren."
+          ],
+          "hints": [
+            "trotzdem leitet eine gegensätzliche Folge ein.",
+            "Nach trotzdem steht das Verb direkt."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t9",
+          "title": "Aufgabe T9",
+          "type": "short_answer",
+          "prompt": "Geführter Satz mit „je … desto“: Ich übe mehr. Ich spreche besser.",
+          "accepted": [
+            "Je mehr ich übe, desto besser spreche ich."
+          ],
+          "hints": [
+            "Je-Teil zuerst, desto-Teil danach.",
+            "Verbposition wie im Muster."
+          ],
+          "feedback": "Richtig."
+        },
+        {
+          "id": "t10",
+          "title": "Aufgabe T10",
+          "type": "choice",
+          "prompt": "Wähle die richtige Erklärung zu denn und weil.",
+          "accepted": [
+            "denn + Hauptsatzwortstellung; weil + Nebensatz mit Verb am Ende."
+          ],
+          "hints": [
+            "Beide können einen Grund ausdrücken.",
+            "Der Unterschied liegt besonders in der Wortstellung."
+          ],
+          "feedback": "Richtig.",
+          "options": [
+            "denn + Hauptsatzwortstellung; weil + Nebensatz mit Verb am Ende.",
+            "denn + Verb am Ende; weil + Hauptsatzwortstellung.",
+            "denn und weil verlangen immer dieselbe Wortstellung."
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passage": "Nora arbeitet Vollzeit, aber sie besucht zusätzlich einen Deutschkurs. Sie lernt jeden Abend, weil sie die B1-Prüfung bestehen möchte. Obwohl sie oft müde ist, macht sie ihre Übungen regelmäßig. Wenn sie eine neue Grammatikregel nicht versteht, fragt sie ihre Lehrerin. Der Kurs ist zwar anstrengend, aber Nora findet ihn sehr hilfreich. Sie übt nicht nur Grammatik, sondern auch Sprechen und Schreiben. Je mehr sie Deutsch benutzt, desto sicherer wird sie. Am Wochenende wiederholt sie den Stoff; danach trifft sie meistens ihre Freunde."
+}

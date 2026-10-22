@@ -1,0 +1,181 @@
+<%#
+  How the class is getting on.
+
+  ── Why this one has names on it ────────────────────────────────────
+
+  The student's own card shows their position and nobody else's score,
+  because a class leaderboard with names on it is a weekly public
+  ranking of the slowest learner in the room.
+
+  This is the other side of the same data and the question is
+  different: the point here is to find the student who has stopped.
+  That is the job, and it cannot be done from anonymous rows. It is
+  never rendered on a page a student can reach, and the route checks
+  the class belongs to the teacher asking before it goes near the
+  numbers.
+
+  ── What is worth seeing at a glance ────────────────────────────────
+
+  Not the ranking. The ranking is what motivates the student; what
+  helps the teacher is the bottom of it — who has done nothing, and who
+  is handing work in and getting it wrong. So "not started" is said in
+  words rather than left as a zero to notice, and accuracy sits beside
+  the count because eight chapters at 40% is a different conversation
+  from two at 95%.
+%>
+<%
+  const place = (n) => {
+    const a = n % 10, b = n % 100;
+    if (a === 1 && b !== 11) return n + "st";
+    if (a === 2 && b !== 12) return n + "nd";
+    if (a === 3 && b !== 13) return n + "rd";
+    return n + "th";
+  };
+
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", {
+        day: "numeric", month: "short", timeZone: "Europe/Berlin",
+      })
+    : null);
+
+  // Out of what this class has actually been given, never out of the
+  // whole workbook: a column of "3 of 41" for a class that was given
+  // four chapters reads as failure at something nobody was asked to do.
+  const outOf = (r) => Math.max(setCount, r.passed);
+
+  const started = board.filter((r) => r.done > 0).length;
+%>
+<%- include("../../partials/teach-shell-head", {
+  pageTitle: "Class progress",
+  pageLead: chosen
+    ? chosen.code + (chosen.course_title ? " · " + chosen.course_title : "")
+    : "Pick a class.",
+  nav: "progress", teacher: teacher, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<% if (!batches.length) { %>
+  <div class="sp-card sp-wide">
+    <p class="sp-empty">
+      No classes are assigned to you yet.
+    </p>
+  </div>
+<% } else { %>
+
+  <form class="sp-card sp-wide" method="get" action="/teach/progress">
+    <label class="field">
+      <span>Class</span>
+      <select name="batch" onchange="this.form.submit()">
+        <% batches.forEach(function (b) { %>
+          <option value="<%= b.id %>"<%= chosen && Number(b.id) === Number(chosen.id) ? " selected" : "" %>>
+            <%= b.code %><%= b.course_title ? " — " + b.course_title : "" %>
+          </option>
+        <% }); %>
+      </select>
+    </label>
+    <p style="margin:.7rem 0 0"><button class="btn btn-sm btn-ghost" type="submit">Show this class</button></p>
+  </form>
+
+  <% if (!chosen) { %>
+    <div class="sp-card sp-wide"><p class="sp-empty">Pick a class above.</p></div>
+  <% } else if (!board.length) { %>
+    <div class="sp-card sp-wide">
+      <p class="sp-empty">
+        Nobody is actively enrolled on <%= chosen.code %> yet.
+      </p>
+    </div>
+  <% } else { %>
+
+    <div class="sp-card sp-wide">
+      <div class="sp-card-head">
+        <h2><%= board.length %> <%= board.length === 1 ? "student" : "students" %></h2>
+        <span class="muted">
+          <%= started %> of <%= board.length %> have started ·
+          <%= setCount %> <%= setCount === 1 ? "chapter" : "chapters" %> set
+        </span>
+      </div>
+
+      <% if (!setCount) { %>
+        <p class="sp-empty">
+          This class has not been given any homework yet, so there is nothing to
+          be getting on with. <a href="/teach/homework?batch=<%= chosen.id %>">Set some</a>.
+        </p>
+      <% } else { %>
+        <div class="table-scroll">
+          <table class="sp-table sp-table-narrow">
+            <thead>
+              <tr>
+                <th style="width:2.6rem"></th>
+                <th>Student</th>
+                <th style="text-align:right">Passed</th>
+                <th style="text-align:right">Right</th>
+                <th>Last handed in</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% board.forEach(function (r) { %>
+                <%
+                  const pct = outOf(r) ? Math.min(100, Math.round((r.passed / outOf(r)) * 100)) : 0;
+                  const none = r.done === 0;
+                %>
+                <%# The unescaped output tag, or the attribute is
+                    escaped into nothing. See the note on the
+                    attendance page. %>
+                <tr<%- none ? ' class="is-quiet"' : "" %>>
+                  <td>
+                    <%# The place, in the same disc the student sees on
+                        their own card, so the two agree about who is
+                        where. Only the first three are gold. %>
+                    <span class="hw-rank-also-n"><%= r.rank %></span>
+                  </td>
+                  <td>
+                    <strong><%= r.name %></strong>
+                    <div class="muted" style="font-size:.8rem">
+                      <%= r.ref || "—" %>
+                      <% if (!none) { %> · <%= place(r.rank) %> in the class<% } %>
+                    </div>
+                  </td>
+                  <td style="text-align:right;font-variant-numeric:tabular-nums">
+                    <% if (none) { %>
+                      <span class="muted">not started</span>
+                    <% } else { %>
+                      <strong><%= r.passed %></strong><span class="muted"> / <%= outOf(r) %></span>
+                      <div class="hw-rank-bar" style="margin-top:.3rem;max-width:7rem;margin-left:auto">
+                        <span style="width:<%= pct %>%"></span>
+                      </div>
+                    <% } %>
+                  </td>
+                  <td style="text-align:right;font-variant-numeric:tabular-nums">
+                    <%# Accuracy beside the count, because eight
+                        chapters at 40% is a different conversation
+                        from two at 95%. %>
+                    <% if (r.accuracy === null) { %>
+                      <span class="muted">—</span>
+                    <% } else { %>
+                      <span class="hw-badge<%= r.accuracy >= 80 ? " is-good" : r.accuracy >= 60 ? " is-ok" : " is-poor" %>">
+                        <%= r.accuracy %>%
+                      </span>
+                    <% } %>
+                  </td>
+                  <td class="muted" style="font-size:.82rem"><%= day(r.lastAt) || "—" %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="muted" style="font-size:.85rem;margin-bottom:0">
+          Passed means 80% or better on a chapter, counting the best attempt —
+          the same bar the tick in a student's own list uses. Practice is
+          unlimited, so a second go can only ever help.
+        </p>
+      <% } %>
+    </div>
+
+    <p class="muted" style="font-size:.85rem">
+      <a href="/teach/homework?batch=<%= chosen.id %>">Set or take back homework for this class</a>
+    </p>
+  <% } %>
+<% } %>
+
+<%- include("../../partials/teach-shell-foot") %>

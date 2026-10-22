@@ -1,0 +1,17 @@
+<%- include("../../partials/teach-shell-head", {
+  pageTitle: "Not one of your classes",
+  nav: nav, teacher: teacher, avatarUrl: avatarUrl, initials: initials, hue: hue,
+}) %>
+
+<div class="sp-card">
+  <%# Deliberately the same page for a batch that does not exist and a
+      batch that belongs to another teacher. Telling the two apart is
+      how somebody maps the batch table by typing numbers into the
+      address bar. %>
+  <p class="sp-empty">
+    That batch either does not exist or is not one you teach.
+    <a href="/teach/batches">Back to my classes</a>.
+  </p>
+</div>
+
+<%- include("../../partials/teach-shell-foot") %>

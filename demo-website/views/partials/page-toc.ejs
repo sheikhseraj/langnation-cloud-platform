@@ -1,0 +1,29 @@
+<%#
+  "On this page" — the sections of the article being read.
+
+  A different thing from the panel on the left, which lists the other
+  pages in the set, and that is why they sit on opposite sides. Left is
+  where you can go; right is where you are. Putting both on one side
+  would make a reader work out which list is which every time.
+
+  Drawn only past three sections. Two is not a structure worth a panel,
+  and a contents list shorter than the thing it indexes is furniture.
+
+  Nested by heading level so an h4 reads as belonging to the h3 above it
+  rather than as its equal.
+%>
+<% if (typeof toc !== "undefined" && toc && toc.length >= 3) { %>
+  <nav class="page-toc-wrap" aria-label="<%= t("toc.title") %>">
+    <details class="page-nav page-toc" open data-label="<%= t("toc.title") %>">
+      <summary class="page-nav-head"><%= t("toc.title") %></summary>
+      <ul>
+        <% const top = Math.min.apply(null, toc.map(function (i) { return i.level; })); %>
+        <% toc.forEach(function (i) { %>
+          <li<%- i.level > top ? ' class="is-sub"' : "" %>>
+            <a href="#<%= i.id %>"><%= i.text %></a>
+          </li>
+        <% }); %>
+      </ul>
+    </details>
+  </nav>
+<% } %>

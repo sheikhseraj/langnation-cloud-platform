@@ -1,0 +1,391 @@
+<% const hwBase = typeof locals.hwBase === "string" ? locals.hwBase : "/rootadmin"; const hwLabel = locals.hwLabel || "Aufgaben"; const readingAdmin = !!locals.readingAdmin; const csrfToken = locals.csrfToken || ""; %>
+<%#
+  Give out homework.
+
+  One screen, three questions, one button — who, what, and by when.
+
+  ── Why the filters do not reload the page ──────────────────────────
+
+  They used to. Choosing a level submitted a GET form and the page came
+  back with the chapters narrowed — and every person you had already
+  ticked unticked, because the page was new. That is exactly what
+  happened the first time somebody used it: tick a student, pick A1,
+  and the student is gone.
+
+  So nothing is filtered on the server. Every person and every chapter
+  is on the page once, and the two dropdowns only hide rows.
+
+  And they never hide a TICKED row. "Nothing you have ticked is lost"
+  used to be true and useless: a tick could sit behind a filter, which
+  is how forty-one chapters went out to somebody who had narrowed the
+  list to eleven — tick everything, then pick A1, and the thirty that
+  no longer match are still ticked and still submitted. A ticked row
+  now stays on screen whatever the filter says, marked as kept from
+  another one. Nothing lost, and nothing ticked where you cannot see
+  it; only the second of those can be checked by looking.
+
+  With no JavaScript the dropdowns do nothing and every row is listed,
+  which is longer and still correct.
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Give out " + hwLabel, site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: readingAdmin ? "lesen" : "give", adArea: "content" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Give out " + hwLabel,
+      adCrumbs: [
+        { label: "Root admin", href: "/rootadmin" },
+        { label: hwLabel, href: (hwBase + "/exercises") },
+        { label: "Give out" },
+      ],
+      adLogout: "/rootadmin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (done) { %><p class="notice notice-ok"><%= done %></p><% } %>
+      <% if (problem) { %><p class="notice notice-bad"><%= problem %></p><% } %>
+
+      <form method="post" action="<%= hwBase %>/give" data-give data-mode="give">
+        <% if(readingAdmin){ %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+
+        <%# Which of the two things this screen is doing.
+
+            Both buttons used to sit at the bottom, under two long
+            lists, which is the same mistake the course field made:
+            the decision is taken first and was offered last. Choosing
+            here changes what the rest of the screen shows — taking
+            homework back has no course and no due date, and the only
+            chapters worth listing are the ones the ticked people
+            actually have.
+
+            With no JavaScript this does nothing and both submit
+            buttons are at the foot of the form, which is longer and
+            still correct. %>
+        <div class="ad-card ad-narrow ad-mode-card" data-give-mode hidden>
+          <div class="ad-mode">
+            <button class="ad-mode-btn" type="button" data-mode-set="give" aria-pressed="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0"/>
+              </svg>
+              Unlock — give it out
+            </button>
+            <button class="ad-mode-btn" type="button" data-mode-set="lock" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+              </svg>
+              Lock — take it back
+            </button>
+            <button class="ad-mode-btn" type="button" data-mode-set="access" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 5h16M4 12h16M4 19h10"/>
+              </svg>
+              Who has what
+            </button>
+          </div>
+          <p class="muted" style="font-size:.82rem;margin:.6rem 0 0" data-mode-note></p>
+        </div>
+
+        <div class="ad-card ad-narrow"><% if(readingAdmin){ %><div class="form-row">
+   <label class="field"><span>Available from (UTC)</span><input type="datetime-local" name="available_from" value="<%= typeof ex!=='undefined' && ex.available_from ? String(ex.available_from).replace(' ','T').slice(0,16) : '' %>"></label>
+   <label class="field"><span>Available until (UTC)</span><input type="datetime-local" name="available_until" value="<%= typeof ex!=='undefined' && ex.available_until ? String(ex.available_until).replace(' ','T').slice(0,16) : '' %>"></label>
+   <label class="field"><span>Assignment</span><select name="is_required"><option value="1">Required</option><option value="0" <%= typeof ex!=='undefined' && Number(ex.is_required)===0?'selected':'' %>>Optional</option></select></label>
+  </div><% } %>
+          <div class="form-row">
+            <%# One dropdown, two jobs, and they are the same job.
+
+                There were two of these. One narrowed the list of
+                people; the other was saved on the homework as the
+                course it belongs to. They listed the same batches, so
+                the screen asked the same question twice and could be
+                given two different answers — which is how a class's
+                homework went out with no course on it.
+
+                Picking a class now does both: it shows that class, and
+                it puts that class's name on what they are given. The
+                two "no course" answers are the ones where there is
+                genuinely no class to name. %>
+            <label class="field">
+              <span>Course</span>
+              <select name="for_intake" data-filter-scope>
+                <%# "Every course" is for READING and for TAKING BACK,
+                    not for giving out: homework has to belong to one
+                    course or to none, and "all of them" is not an
+                    answer to which. The script hides it while Unlock
+                    is the chosen mode.
+
+                    It exists because without it there was no single
+                    place that could answer "what can this person open",
+                    and somebody taking every chapter off LNIKB02 went
+                    to a student's portal expecting nothing and found
+                    fifty-two still there under LNIKB01. %>
+                <option value="all" data-not-give>Every course — everything they can open</option>
+                <option value="">Everybody studying — no course on it</option>
+                <option value="everyone">Everyone with an account — no course on it</option>
+                <% batches.forEach(function (b) { %>
+                  <option value="<%= b.id %>">
+                    <%= b.code %><%= b.course_title ? " — " + b.course_title : "" %>
+                  </option>
+                <% }); %>
+              </select>
+            </label>
+
+            <%# The book first, because it is the coarser cut and the
+                one that matches how the school is organised: a student
+                is given the A2 book, not "the A2 chapters of whatever
+                is on disk". Level still narrows within it, which is
+                what you want inside a book that spans three.
+
+                Grouped by programme, so this list reads the way the
+                Courses page reads: Regular with its levels, then
+                Intensive. Each book names a course in its
+                workbook.json and takes its title from the catalogue,
+                so a book cannot come to be called something the
+                course page does not call it. %>
+            <label class="field">
+              <span>Book</span>
+              <select data-filter-book>
+                <option value="">All books</option>
+                <%
+                  const byTrack = new Map();
+                  books.forEach(function (b) {
+                    const k = b.track || "Not yet grouped";
+                    if (!byTrack.has(k)) byTrack.set(k, []);
+                    byTrack.get(k).push(b);
+                  });
+                %>
+                <% byTrack.forEach(function (list, track) { %>
+                  <optgroup label="<%= track %>">
+                    <% list.forEach(function (b) { %>
+                      <%# The level only when the course's own name does
+                          not already carry it. "Fast Track A1–B1 A1–B1"
+                          is what happens otherwise, and it happened. %>
+                      <option value="<%= b.slug %>">
+                        <%= b.title %><%= b.level && b.title.indexOf(b.level) === -1 ? " " + b.level : "" %> (<%= b.chapters %>)
+                      </option>
+                    <% }); %>
+                  </optgroup>
+                <% }); %>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Level</span>
+              <select data-filter-level>
+                <option value="">All levels</option>
+                <% levels.forEach(function (l) { %>
+                  <option value="<%= l %>"><%= l %></option>
+                <% }); %>
+              </select>
+            </label>
+
+            <%# Saved, like the course, and only meaningful when giving
+                something out — a date on a chapter being taken back
+                is a date on nothing. %>
+            <label class="field" data-give-only>
+              <span>Due <span class="muted">(optional)</span></span>
+              <input type="date" name="due_on" value="<%= due || "" %>">
+            </label>
+          </div>
+
+          <%# Replaced by the script with a sentence about whichever
+              course and mode is chosen. What is written here is what a
+              page with no script shows, where nothing narrows and the
+              course is simply saved. %>
+          <p class="muted ad-narrow-note" style="font-size:.82rem;margin:.2rem 0 0"
+             data-scope-note>
+            Choosing a class shows its people below and saves its name on the
+            <%= readingAdmin?"Lesen":"homework" %>, so students see which course it belongs to.
+          </p>
+        </div>
+
+        <div class="sp-cols sp-cols-even" data-pick-only>
+
+          <%# ── Who ──────────────────────────────────────────────── %>
+          <div class="ad-card">
+            <div class="ad-card-head">
+              <h2>Who gets it</h2>
+              <span class="muted" data-count-who><%= people.length %> shown</span>
+            </div>
+
+            <% if (!people.length) { %>
+              <p class="sp-empty">
+                No student accounts yet — somebody appears here once the office has
+                approved their request.
+              </p>
+            <% } else { %>
+              <label class="ad-tick ad-tick-all">
+                <input type="checkbox" data-tick-all="who">
+                <span><strong>Select all</strong></span>
+              </label>
+
+              <ul class="ad-ticks" data-list="who">
+                <% people.forEach(function (s) { %>
+                  <%# Which batches this person is actively on, so the
+                      scope dropdown can hide them without asking the
+                      server. Comma-wrapped, so "1" cannot match "12". %>
+                  <li data-batches=",<%= (s.batches || []).join(",") %>,"
+                      data-enrolled="<%= (s.batches || []).length ? "1" : "0" %>"
+                      data-has="<%= s.has || "" %>">
+                    <label class="ad-tick">
+                      <input type="checkbox" name="who" value="<%= s.email %>" data-tick="who">
+                      <span>
+                        <span class="ad-tick-name"><%= s.name %></span>
+                        <span class="muted"><%= s.student_ref || s.email %></span>
+                        <%# What they already have. The question this
+                            screen is opened to answer is "has this
+                            person got it yet", and it was the one
+                            thing the screen could not say. %>
+                        <%# Filled in per batch by the script. What is
+                            printed is the total across every batch,
+                            which is what a page with no script can
+                            honestly say. %>
+                        <% if (s.hasAny) { %>
+                          <span class="pill pill-has" data-already><%= s.hasAny %> already</span>
+                        <% } else { %>
+                          <span class="pill pill-has" data-already hidden></span>
+                        <% } %>
+                      </span>
+                    </label>
+                  </li>
+                <% }); %>
+              </ul>
+              <p class="sp-empty" data-empty="who" hidden>
+                Nobody on that batch yet.
+              </p>
+            <% } %>
+          </div>
+
+          <%# ── What ─────────────────────────────────────────────── %>
+          <div class="ad-card">
+            <div class="ad-card-head">
+              <h2>Which chapters</h2>
+              <span class="muted" data-count-what><%= chapters.length %> shown</span>
+            </div>
+
+            <% if (!chapters.length) { %>
+              <p class="sp-empty">
+                No chapters yet. Add a workbook to <code>content/<%= readingAdmin?"reading":"homework" %></code>.
+              </p>
+            <% } else { %>
+              <label class="ad-tick ad-tick-all">
+                <input type="checkbox" data-tick-all="what">
+                <span><strong>Select all</strong></span>
+              </label>
+
+              <ul class="ad-ticks" data-list="what">
+                <% chapters.forEach(function (c, i) { %>
+                  <li data-level="<%= c.level || "" %>" data-ix="<%= i %>"
+                      data-book="<%= c.book %>"
+                      data-outs="<%= c.outs || "" %>">
+                    <label class="ad-tick">
+                      <input type="checkbox" name="what" value="<%= c.id %>" data-tick="what">
+                      <span>
+                        <span class="ad-tick-name"><%= c.title %></span>
+                        <%# Which book it came out of. A row that a
+                            filter would hide stays on screen while it
+                            is ticked, and without this there is no way
+                            to tell one of those from the rest. %>
+                        <span class="muted"><%= c.track ? c.track + " · " : "" %><%= c.bookTitle || c.book %></span>
+                        <span class="muted"><%= c.questions %> questions</span>
+                        <%# Before anybody is ticked, how many people
+                            have it at all. Once people are ticked the
+                            script replaces this with how many of THEM
+                            have it, which is the useful number. %>
+                        <span class="pill pill-has" data-out<%= c.out ? "" : " hidden" %>>
+                          <%= c.out %> <%= Number(c.out) === 1 ? "person" : "people" %>
+                        </span>
+                      </span>
+                    </label>
+                  </li>
+                <% }); %>
+              </ul>
+              <p class="sp-empty" data-empty="what" hidden>
+                No chapters at that level.
+              </p>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="ad-card" data-pick-only>
+          <%# What is actually ticked, counted across everything —
+              including rows the dropdowns are currently hiding. A tick
+              you cannot see is the thing this page has to not have. %>
+          <p class="ad-give-sum" data-give-sum>
+            Nothing ticked yet.
+          </p>
+
+          <p class="muted" style="font-size:.85rem">
+            <strong>Unlock</strong> gives every ticked chapter to every ticked person, and
+            they see it straight away. One chapter stays one piece of <%= readingAdmin?"Lesen":"homework" %>, so a
+            student works through them in order and you can see which one caught them out.
+          </p>
+          <p class="muted" style="font-size:.85rem">
+            <strong>Lock</strong> is the exact opposite: it takes the ticked chapters back
+            off the ticked people, and nobody else is affected. Work they have already
+            done is kept — a score is a record of what somebody knew, and taking a
+            chapter back is not a reason to rewrite it. A chapter nobody is left on
+            closes itself rather than falling open to the whole school.
+          </p>
+
+          <div class="hw-do">
+            <button class="btn" type="submit" data-give-only>Unlock</button>
+            <%# Its own name, so the server knows which button was
+                pressed; the confirm is because this is the one that
+                takes something away. Shown at the foot whatever the
+                mode when the script has not run, so the page is never
+                a form with no way to submit it. %>
+            <button class="btn" type="submit" name="lock" value="1" data-lock-only
+                    data-confirm-simple="Take the ticked chapters back off the ticked people?">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:14px;height:14px">
+                <rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+              </svg>
+              Lock
+            </button>
+            <a class="btn btn-ghost" href="<%= hwBase %>/exercises">What has been given out</a>
+          </div>
+        </div>
+
+        <%# ── Who has what ─────────────────────────────────────────
+
+            The two lists above answer "who should get this". This
+            answers "who has got what", which is the question you ask
+            when somebody says they cannot see their homework — and it
+            was a question this screen could only answer by counting
+            pills.
+
+            Built by the script from what is already on the page: each
+            person's row carries the indices of the chapters they hold
+            and each chapter's row carries its index, so nothing here
+            needs a second query or a second screen.
+
+            Taking one back submits THIS form, with exactly one person
+            and one chapter ticked, through the same Lock the button
+            above uses. One way of doing it, one place it can be wrong.
+        %>
+        <div class="ad-card" data-access hidden>
+          <div class="ad-card-head">
+            <h2>Who has what</h2>
+            <span class="muted" data-access-count></span>
+          </div>
+          <div data-access-body></div>
+          <p class="sp-empty" data-access-empty hidden>
+            Nobody on show has any <%= readingAdmin?"Lesen":"homework" %> yet. Give some out and it appears here.
+          </p>
+        </div>
+      </form>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

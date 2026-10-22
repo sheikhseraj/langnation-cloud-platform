@@ -1,0 +1,16 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section">
+  <div class="wrap wrap-narrow center">
+    <p class="eyebrow"><%= status %></p>
+    <h1><%= t("error." + status + ".title") %></h1>
+    <p class="lead" style="margin-top:1rem"><%= t("error." + status + ".lead") %></p>
+    <div class="hero-actions" style="justify-content:center">
+      <a class="btn" href="<%= lp('/courses') %>"><%= t("cta.viewCourses") %></a>
+      <a class="btn btn-ghost" href="<%= lp('/') %>"><%= t("nav.home") %></a>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

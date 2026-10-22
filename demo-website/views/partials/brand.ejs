@@ -1,0 +1,59 @@
+<%#
+  The mark: the crest as artwork, everything else as text.
+
+  Locals (all optional):
+    href    where it links          default "/"
+    label   the accessible name     default "LangNation"
+    sub     the line under the name  default t("site.tagline"); pass false
+                                     for none, or a string for a context
+                                     label like "Enquiries"
+    footer  true on the navy footer band, which is dark in both themes
+
+  Why the name is not part of the picture any more. The delivered artwork
+  stacks the name, "Language Institute" and the motto beside the crest, and
+  at the 60px the header gives it the motto renders 6.9px tall and the
+  tagline 13px — measured off the artwork's alpha, not guessed. 6.9px is
+  not small type, it is no type at all.
+
+  As text it is selectable and searchable, it scales with the reader's own
+  font size, it says Sprachinstitut on the German site where the picture
+  said "Language Institute", and a correction is a string rather than a
+  rebuild of five image files. Set in Fraunces, which the site already
+  loads for its headings, so the mark and the page are one typeface and
+  this costs no extra bytes.
+%>
+<%
+  const brandHref = typeof href !== "undefined" && href ? href : "/";
+  const brandLabel = typeof label !== "undefined" && label ? label : "LangNation";
+  const isFooter = typeof footer !== "undefined" && footer;
+  // `false` means "no second line"; undefined means "use the tagline".
+  const brandSub =
+    typeof sub === "undefined"
+      ? (typeof t === "function" ? t("site.tagline") : "Language School Germany")
+      : sub;
+  const box = isFooter ? site.brand.footer : site.brand.logo;
+%>
+<a class="brand<%= isFooter ? " brand-footer" : "" %>" href="<%= brandHref %>"
+   aria-label="<%= brandLabel %>">
+  <%#
+    Both crests are in the markup and CSS picks one, so the right mark is
+    painted on the very first frame — swapping `src` from JavaScript would
+    show the wrong one until the script ran. Decorative in every case: the
+    link's aria-label already names the school, and the name itself is now
+    real text right beside it.
+  %>
+  <% const v = "?v=" + site.assetVersion; %>
+  <img class="brand-crest logo-light" src="/icons/logo-96.webp<%= v %>"
+       srcset="/icons/logo-96.webp<%= v %> 1x, /icons/logo-144.webp<%= v %> 2x"
+       width="<%= box.w %>" height="<%= box.h %>" alt="" aria-hidden="true"
+       <%- isFooter ? "" : 'fetchpriority="high"' %>>
+  <img class="brand-crest logo-dark" src="/icons/logo-white-96.webp<%= v %>"
+       srcset="/icons/logo-white-96.webp<%= v %> 1x, /icons/logo-white-144.webp<%= v %> 2x"
+       width="<%= box.w %>" height="<%= box.h %>" alt="" aria-hidden="true">
+  <span class="brand-word">
+    <span class="brand-name">LangNation<sup class="brand-reg">&#174;</sup></span>
+    <% if (brandSub) { %>
+      <span class="brand-sub"><%= brandSub %></span>
+    <% } %>
+  </span>
+</a>

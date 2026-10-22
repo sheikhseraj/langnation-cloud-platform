@@ -1,0 +1,34 @@
+{
+  "hero": {
+    "src": "/img/site/hero-1400.webp",
+    "srcset": "/img/site/hero-560.webp 560w, /img/site/hero-900.webp 900w, /img/site/hero-1400.webp 1400w"
+  },
+  "germany": {
+    "src": "/img/site/germany-1400.webp",
+    "srcset": "/img/site/germany-560.webp 560w, /img/site/germany-900.webp 900w, /img/site/germany-1400.webp 1400w"
+  },
+  "classroom": {
+    "src": "/img/site/classroom-1400.webp",
+    "srcset": "/img/site/classroom-560.webp 560w, /img/site/classroom-900.webp 900w, /img/site/classroom-1400.webp 1400w"
+  },
+  "track-intensive": {
+    "src": "/img/site/track-intensive-1400.webp",
+    "srcset": "/img/site/track-intensive-400.webp 400w, /img/site/track-intensive-800.webp 800w, /img/site/track-intensive-1400.webp 1400w"
+  },
+  "track-individual": {
+    "src": "/img/site/track-individual-1400.webp",
+    "srcset": "/img/site/track-individual-400.webp 400w, /img/site/track-individual-800.webp 800w, /img/site/track-individual-1400.webp 1400w"
+  },
+  "track-regular": {
+    "src": "/img/site/track-regular-1400.webp",
+    "srcset": "/img/site/track-regular-400.webp 400w, /img/site/track-regular-800.webp 800w, /img/site/track-regular-1400.webp 1400w"
+  },
+  "dictionary": {
+    "src": "/img/site/dictionary-1400.webp",
+    "srcset": "/img/site/dictionary-560.webp 560w, /img/site/dictionary-900.webp 900w, /img/site/dictionary-1400.webp 1400w"
+  },
+  "einbuergerungstest": {
+    "src": "/img/site/einbuergerungstest-1400.webp",
+    "srcset": "/img/site/einbuergerungstest-560.webp 560w, /img/site/einbuergerungstest-900.webp 900w, /img/site/einbuergerungstest-1400.webp 1400w"
+  }
+}

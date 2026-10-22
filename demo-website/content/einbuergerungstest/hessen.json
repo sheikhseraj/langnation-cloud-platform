@@ -1,0 +1,215 @@
+[
+ {
+  "id": "hessen-1",
+  "number": 361,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Welches Wappen gehört zum Bundesland Hessen?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 0,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/hessen-1-1.webp",
+     "w": 220,
+     "h": 264
+    },
+    {
+     "src": "/img/einbuergerungstest/hessen-1-2.webp",
+     "w": 195,
+     "h": 316
+    },
+    {
+     "src": "/img/einbuergerungstest/hessen-1-3.webp",
+     "w": 220,
+     "h": 252
+    },
+    {
+     "src": "/img/einbuergerungstest/hessen-1-4.webp",
+     "w": 220,
+     "h": 246
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hessen"
+ },
+ {
+  "id": "hessen-2",
+  "number": 362,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Welches ist ein Landkreis in Hessen?",
+  "answers": [
+   "Ammerland",
+   "Altötting",
+   "Prignitz",
+   "Main-Taunus-Kreis"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hessen"
+ },
+ {
+  "id": "hessen-3",
+  "number": 363,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Für wie viele Jahre wird der Landtag in Hessen gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hessen"
+ },
+ {
+  "id": "hessen-4",
+  "number": 364,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Ab welchem Alter darf man in Hessen bei Kommunalwahlen wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-12",
+  "state": "Hessen"
+ },
+ {
+  "id": "hessen-5",
+  "number": 365,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Welche Farben hat die Landesflagge von Hessen?",
+  "answers": [
+   "blau-weiß-rot",
+   "rot-weiß",
+   "schwarz-gold",
+   "grün-weiß-rot"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hessen"
+ },
+ {
+  "id": "hessen-6",
+  "number": 366,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Wo können Sie sich in Hessen über politische Themen informieren?",
+  "answers": [
+   "bei der Landeszentrale für politische Bildung",
+   "bei der Verbraucherzentrale",
+   "beim Ordnungsamt der Gemeinde",
+   "bei den Kirchen"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hessen"
+ },
+ {
+  "id": "hessen-7",
+  "number": 367,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Die Landeshauptstadt von Hessen heißt …",
+  "answers": [
+   "Kassel.",
+   "Darmstadt.",
+   "Frankfurt.",
+   "Wiesbaden."
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hessen"
+ },
+ {
+  "id": "hessen-8",
+  "number": 368,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Welches Bundesland ist Hessen?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/hessen-8.webp",
+     "w": 723,
+     "h": 607
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hessen"
+ },
+ {
+  "id": "hessen-9",
+  "number": 369,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef in Hessen?",
+  "answers": [
+   "Erste Ministerin/Erster Minister",
+   "Premierministerin/Premierminister",
+   "Bürgermeisterin/Bürgermeister",
+   "Ministerpräsidentin/Ministerpräsident"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hessen"
+ },
+ {
+  "id": "hessen-10",
+  "number": 370,
+  "type": "state",
+  "category": "Hessen",
+  "question": "Welche Ministerin/welchen Minister hat Hessen nicht?",
+  "answers": [
+   "Justizministerin/Justizminister",
+   "Außenministerin/Außenminister",
+   "Finanzministerin/Finanzminister",
+   "Innenministerin/Innenminister"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hessen"
+ }
+]

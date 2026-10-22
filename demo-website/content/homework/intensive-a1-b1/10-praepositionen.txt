@@ -1,0 +1,1624 @@
+# Kapitel 10 — Präpositionen
+@learning
+{
+  "version": 1,
+  "key": "kapitel-10-praepositionen",
+  "title": "Kapitel 10 — Präpositionen",
+  "label": "Kapitel 10",
+  "sections": [
+    {
+      "id": "exercise-1",
+      "label": "Übung 1",
+      "title": "Übung 1 – Akkusativ oder Dativ?",
+      "instruction": "Ergänze Artikel bzw. Verschmelzung.",
+      "objective": "Kasus und Artikel nach Präposition korrekt bilden.",
+      "examples": [
+        {
+          "prompt": "für ___ Vater (mein)",
+          "answer": "meinen",
+          "explanation": "für + Akkusativ; maskulin → meinen."
+        },
+        {
+          "prompt": "mit ___ Bus (der)",
+          "answer": "dem",
+          "explanation": "mit + Dativ; maskulin → dem."
+        }
+      ],
+      "questions": [
+        {
+          "id": "1",
+          "title": "Aufgabe 1",
+          "type": "fill_blank",
+          "prompt": "für ___ Bruder (mein)",
+          "accepted": [
+            "meinen"
+          ],
+          "hints": [
+            "für verlangt Akkusativ.",
+            "mein + Akkusativ maskulin → meinen."
+          ],
+          "feedback": "Richtig: für meinen Bruder."
+        },
+        {
+          "id": "2",
+          "title": "Aufgabe 2",
+          "type": "fill_blank",
+          "prompt": "mit ___ Auto (das)",
+          "accepted": [
+            "dem"
+          ],
+          "hints": [
+            "mit verlangt Dativ.",
+            "das Auto → dem Auto."
+          ],
+          "feedback": "Richtig: mit dem Auto."
+        },
+        {
+          "id": "3",
+          "title": "Aufgabe 3",
+          "type": "fill_blank",
+          "prompt": "durch ___ Park (der)",
+          "accepted": [
+            "den"
+          ],
+          "hints": [
+            "durch verlangt Akkusativ.",
+            "der Park → den Park."
+          ],
+          "feedback": "Richtig: durch den Park."
+        },
+        {
+          "id": "4",
+          "title": "Aufgabe 4",
+          "type": "fill_blank",
+          "prompt": "bei ___ Freundin (meine)",
+          "accepted": [
+            "meiner"
+          ],
+          "hints": [
+            "bei verlangt Dativ.",
+            "meine Freundin → meiner Freundin."
+          ],
+          "feedback": "Richtig: bei meiner Freundin."
+        },
+        {
+          "id": "5",
+          "title": "Aufgabe 5",
+          "type": "fill_blank",
+          "prompt": "ohne ___ Termin (ein)",
+          "accepted": [
+            "einen"
+          ],
+          "hints": [
+            "ohne verlangt Akkusativ.",
+            "ein Termin → einen Termin."
+          ],
+          "feedback": "Richtig: ohne einen Termin."
+        },
+        {
+          "id": "6",
+          "title": "Aufgabe 6",
+          "type": "fill_blank",
+          "prompt": "Ich komme ___ Bahnhof. (von + der)",
+          "accepted": [
+            "vom",
+            "von dem"
+          ],
+          "hints": [
+            "von verlangt Dativ.",
+            "von dem kann zu vom verschmelzen."
+          ],
+          "feedback": "Bevorzugt: vom Bahnhof; akzeptiert: von dem Bahnhof."
+        },
+        {
+          "id": "7",
+          "title": "Aufgabe 7",
+          "type": "fill_blank",
+          "prompt": "gegen ___ Wand (die)",
+          "accepted": [
+            "die"
+          ],
+          "hints": [
+            "gegen verlangt Akkusativ.",
+            "Feminin Akkusativ bleibt die."
+          ],
+          "feedback": "Richtig: gegen die Wand."
+        },
+        {
+          "id": "8",
+          "title": "Aufgabe 8",
+          "type": "fill_blank",
+          "prompt": "Ich gehe ___ Arzt. (zu + der)",
+          "accepted": [
+            "zum",
+            "zu dem"
+          ],
+          "hints": [
+            "zu verlangt Dativ.",
+            "zu dem kann zu zum verschmelzen."
+          ],
+          "feedback": "Bevorzugt: zum Arzt; akzeptiert: zu dem Arzt."
+        }
+      ]
+    },
+    {
+      "id": "exercise-2",
+      "label": "Übung 2",
+      "title": "Übung 2 – Wechselpräpositionen",
+      "instruction": "Ergänze die richtige Form.",
+      "objective": "Wo? = Dativ und Wohin? = Akkusativ bei Wechselpräpositionen unterscheiden.",
+      "examples": [
+        {
+          "prompt": "Das Handy liegt auf ___ Tisch. (der)",
+          "answer": "dem",
+          "explanation": "Wo? → Dativ."
+        },
+        {
+          "prompt": "Ich lege das Handy auf ___ Tisch. (der)",
+          "answer": "den",
+          "explanation": "Wohin? → Akkusativ."
+        }
+      ],
+      "questions": [
+        {
+          "id": "9",
+          "title": "Aufgabe 9",
+          "type": "fill_blank",
+          "prompt": "Das Buch liegt auf ___ Tisch. (der)",
+          "accepted": [
+            "dem"
+          ],
+          "hints": [
+            "Frage: Wo liegt es?",
+            "Wo? → Dativ: dem Tisch."
+          ],
+          "feedback": "Richtig: dem."
+        },
+        {
+          "id": "10",
+          "title": "Aufgabe 10",
+          "type": "fill_blank",
+          "prompt": "Ich lege das Buch auf ___ Tisch. (der)",
+          "accepted": [
+            "den"
+          ],
+          "hints": [
+            "Frage: Wohin lege ich es?",
+            "Wohin? → Akkusativ: den Tisch."
+          ],
+          "feedback": "Richtig: den."
+        },
+        {
+          "id": "11",
+          "title": "Aufgabe 11",
+          "type": "fill_blank",
+          "prompt": "Wir sind in ___ Küche. (die)",
+          "accepted": [
+            "der"
+          ],
+          "hints": [
+            "Wo sind wir?",
+            "Wo? → Dativ feminin: der."
+          ],
+          "feedback": "Richtig: der."
+        },
+        {
+          "id": "12",
+          "title": "Aufgabe 12",
+          "type": "fill_blank",
+          "prompt": "Wir gehen in ___ Küche. (die)",
+          "accepted": [
+            "die"
+          ],
+          "hints": [
+            "Wohin gehen wir?",
+            "Wohin? → Akkusativ feminin: die."
+          ],
+          "feedback": "Richtig: die."
+        },
+        {
+          "id": "13",
+          "title": "Aufgabe 13",
+          "type": "fill_blank",
+          "prompt": "Das Bild hängt an ___ Wand. (die)",
+          "accepted": [
+            "der"
+          ],
+          "hints": [
+            "Wo hängt das Bild?",
+            "Wo? → Dativ feminin: der."
+          ],
+          "feedback": "Richtig: der."
+        },
+        {
+          "id": "14",
+          "title": "Aufgabe 14",
+          "type": "fill_blank",
+          "prompt": "Ich hänge das Bild an ___ Wand. (die)",
+          "accepted": [
+            "die"
+          ],
+          "hints": [
+            "Wohin hänge ich es?",
+            "Wohin? → Akkusativ feminin: die."
+          ],
+          "feedback": "Richtig: die."
+        }
+      ]
+    },
+    {
+      "id": "exercise-3",
+      "label": "Übung 3",
+      "title": "Übung 3 – Wo oder Wohin?",
+      "instruction": "Ordne die Wörter und wähle Dativ oder Akkusativ passend zu Wo?/Wohin?.",
+      "objective": "Aus Wortbausteinen korrekte Sätze mit Wechselpräpositionen bilden.",
+      "examples": [
+        {
+          "prompt": "ich / sein / in / das Zimmer",
+          "answer": "Ich bin im Zimmer.",
+          "explanation": "sein → Ort/Wo? → Dativ."
+        },
+        {
+          "prompt": "ich / gehen / in / das Zimmer",
+          "answer": "Ich gehe ins Zimmer.",
+          "explanation": "gehen → Richtung/Wohin? → Akkusativ."
+        }
+      ],
+      "questions": [
+        {
+          "id": "15",
+          "title": "Aufgabe 15",
+          "type": "sentence_builder",
+          "prompt": "Ich / sein / in / das Büro.",
+          "accepted": [
+            "Ich bin im Büro.",
+            "Ich bin in dem Büro."
+          ],
+          "hints": [
+            "„sein“ beschreibt einen Ort.",
+            "Wo? → Dativ; in dem = im."
+          ],
+          "feedback": "Richtig: Ich bin im Büro.",
+          "tiles": [
+            ".",
+            "bin",
+            "Büro",
+            "dem",
+            "Ich",
+            "im",
+            "in"
+          ]
+        },
+        {
+          "id": "16",
+          "title": "Aufgabe 16",
+          "type": "sentence_builder",
+          "prompt": "Ich / gehen / in / das Büro.",
+          "accepted": [
+            "Ich gehe ins Büro.",
+            "Ich gehe in das Büro."
+          ],
+          "hints": [
+            "„gehen“ beschreibt eine Richtung.",
+            "Wohin? → Akkusativ; in das = ins."
+          ],
+          "feedback": "Richtig: Ich gehe ins Büro.",
+          "tiles": [
+            ".",
+            "Büro",
+            "das",
+            "gehe",
+            "Ich",
+            "in",
+            "ins"
+          ]
+        },
+        {
+          "id": "17",
+          "title": "Aufgabe 17",
+          "type": "sentence_builder",
+          "prompt": "Der Stuhl / stehen / neben / das Fenster.",
+          "accepted": [
+            "Der Stuhl steht neben dem Fenster."
+          ],
+          "hints": [
+            "stehen = Position.",
+            "Wo? → Dativ Neutrum: dem Fenster."
+          ],
+          "feedback": "Richtig: ... neben dem Fenster.",
+          "tiles": [
+            ".",
+            "dem",
+            "Der",
+            "Fenster",
+            "neben",
+            "steht",
+            "Stuhl"
+          ]
+        },
+        {
+          "id": "18",
+          "title": "Aufgabe 18",
+          "type": "sentence_builder",
+          "prompt": "Ich / stellen / der Stuhl / neben / das Fenster.",
+          "accepted": [
+            "Ich stelle den Stuhl neben das Fenster."
+          ],
+          "hints": [
+            "stellen = Bewegung/Ziel.",
+            "Wohin? → Akkusativ: den Stuhl / das Fenster."
+          ],
+          "feedback": "Richtig: Ich stelle den Stuhl neben das Fenster.",
+          "tiles": [
+            ".",
+            "das",
+            "den",
+            "Fenster",
+            "Ich",
+            "neben",
+            "stelle",
+            "Stuhl"
+          ]
+        },
+        {
+          "id": "19",
+          "title": "Aufgabe 19",
+          "type": "sentence_builder",
+          "prompt": "Die Kinder / spielen / auf / der Spielplatz.",
+          "accepted": [
+            "Die Kinder spielen auf dem Spielplatz."
+          ],
+          "hints": [
+            "spielen findet an einem Ort statt.",
+            "Wo? → Dativ: auf dem Spielplatz."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            ".",
+            "auf",
+            "dem",
+            "Die",
+            "Kinder",
+            "spielen",
+            "Spielplatz"
+          ]
+        },
+        {
+          "id": "20",
+          "title": "Aufgabe 20",
+          "type": "sentence_builder",
+          "prompt": "Die Kinder / laufen / auf / der Spielplatz.",
+          "accepted": [
+            "Die Kinder laufen auf den Spielplatz."
+          ],
+          "hints": [
+            "Hier ist das Ziel gemeint.",
+            "Wohin? → Akkusativ: auf den Spielplatz."
+          ],
+          "feedback": "Richtig.",
+          "tiles": [
+            ".",
+            "auf",
+            "den",
+            "Die",
+            "Kinder",
+            "laufen",
+            "Spielplatz"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exercise-4",
+      "label": "Übung 4",
+      "title": "Übung 4 – nach, in oder zu?",
+      "instruction": "Ergänze die passende Präposition + Artikel, falls nötig.",
+      "objective": "Zielpräpositionen nach Ortsart korrekt auswählen und nötige Artikel/Verschmelzungen bilden.",
+      "examples": [
+        {
+          "prompt": "Ich fahre ___ München.",
+          "answer": "nach",
+          "explanation": "Stadt ohne Artikel → nach."
+        },
+        {
+          "prompt": "Wir fahren ___ Türkei.",
+          "answer": "in die",
+          "explanation": "Land mit Artikel → in + Akkusativ."
+        }
+      ],
+      "questions": [
+        {
+          "id": "21",
+          "title": "Aufgabe 21",
+          "type": "fill_blank",
+          "prompt": "Ich fahre ___ Berlin.",
+          "accepted": [
+            "nach"
+          ],
+          "hints": [
+            "Stadtname ohne Artikel.",
+            "Städte/Länder ohne Artikel → nach."
+          ],
+          "feedback": "Richtig: nach Berlin."
+        },
+        {
+          "id": "22",
+          "title": "Aufgabe 22",
+          "type": "fill_blank",
+          "prompt": "Wir fliegen ___ Schweiz.",
+          "accepted": [
+            "in die"
+          ],
+          "hints": [
+            "Die Schweiz hat einen Artikel.",
+            "Wohin? → in die Schweiz."
+          ],
+          "feedback": "Richtig: in die Schweiz."
+        },
+        {
+          "id": "23",
+          "title": "Aufgabe 23",
+          "type": "fill_blank",
+          "prompt": "Sie geht ___ Arzt.",
+          "accepted": [
+            "zum",
+            "zu dem"
+          ],
+          "hints": [
+            "Person/Berufsziel → zu.",
+            "zu dem → zum."
+          ],
+          "feedback": "Richtig: zum Arzt."
+        },
+        {
+          "id": "24",
+          "title": "Aufgabe 24",
+          "type": "fill_blank",
+          "prompt": "Er fährt ___ Arbeit.",
+          "accepted": [
+            "zur",
+            "zu der"
+          ],
+          "hints": [
+            "Zur Arbeit = feste Zielangabe.",
+            "zu der → zur."
+          ],
+          "feedback": "Richtig: zur Arbeit."
+        },
+        {
+          "id": "25",
+          "title": "Aufgabe 25",
+          "type": "fill_blank",
+          "prompt": "Ich gehe ___ Kino.",
+          "accepted": [
+            "ins",
+            "in das"
+          ],
+          "hints": [
+            "Gebäude/Ziel → in + Akkusativ.",
+            "in das → ins."
+          ],
+          "feedback": "Richtig: ins Kino."
+        },
+        {
+          "id": "26",
+          "title": "Aufgabe 26",
+          "type": "fill_blank",
+          "prompt": "Wir reisen ___ Deutschland.",
+          "accepted": [
+            "nach"
+          ],
+          "hints": [
+            "Land ohne Artikel.",
+            "nach Deutschland."
+          ],
+          "feedback": "Richtig: nach Deutschland."
+        },
+        {
+          "id": "27",
+          "title": "Aufgabe 27",
+          "type": "fill_blank",
+          "prompt": "Sie fährt ___ USA.",
+          "accepted": [
+            "in die"
+          ],
+          "hints": [
+            "USA wird hier mit Artikel im Plural verwendet.",
+            "Wohin? → in die USA."
+          ],
+          "feedback": "Richtig: in die USA."
+        },
+        {
+          "id": "28",
+          "title": "Aufgabe 28",
+          "type": "fill_blank",
+          "prompt": "Ich gehe ___ Anna.",
+          "accepted": [
+            "zu"
+          ],
+          "hints": [
+            "Zu einer Person.",
+            "Kein Artikel nötig."
+          ],
+          "feedback": "Richtig: zu Anna."
+        }
+      ]
+    },
+    {
+      "id": "exercise-5",
+      "label": "Übung 5",
+      "title": "Übung 5 – aus oder von?",
+      "instruction": "Ergänze die passende Form.",
+      "objective": "Herkunft/Quelle mit aus bzw. von/vom unterscheiden.",
+      "examples": [
+        {
+          "prompt": "Ich komme ___ dem Haus.",
+          "answer": "aus",
+          "explanation": "aus einem Innenraum."
+        },
+        {
+          "prompt": "Ich komme gerade ___ der Ärztin.",
+          "answer": "von",
+          "explanation": "von einer Person/Termin."
+        }
+      ],
+      "questions": [
+        {
+          "id": "29",
+          "title": "Aufgabe 29",
+          "type": "fill_blank",
+          "prompt": "Ich komme ___ dem Büro.",
+          "accepted": [
+            "aus"
+          ],
+          "hints": [
+            "Innenraum/Gebäude.",
+            "aus + Dativ."
+          ],
+          "feedback": "Richtig: aus dem Büro."
+        },
+        {
+          "id": "30",
+          "title": "Aufgabe 30",
+          "type": "fill_blank",
+          "prompt": "Der Zug kommt ___ Berlin. (Herkunft aus einer Stadt)",
+          "accepted": [
+            "aus"
+          ],
+          "hints": [
+            "Herkunft aus Stadt.",
+            "aus Berlin."
+          ],
+          "feedback": "Richtig: aus."
+        },
+        {
+          "id": "31",
+          "title": "Aufgabe 31",
+          "type": "fill_blank",
+          "prompt": "Ich komme gerade ___ meinem Arzt.",
+          "accepted": [
+            "von"
+          ],
+          "hints": [
+            "Von einer Person/einem Termin.",
+            "von + Dativ."
+          ],
+          "feedback": "Richtig: von."
+        },
+        {
+          "id": "32",
+          "title": "Aufgabe 32",
+          "type": "fill_blank",
+          "prompt": "Das Geschenk ist ___ meiner Schwester.",
+          "accepted": [
+            "von"
+          ],
+          "hints": [
+            "Urheber/Quelle = Person.",
+            "von meiner Schwester."
+          ],
+          "feedback": "Richtig: von."
+        },
+        {
+          "id": "33",
+          "title": "Aufgabe 33",
+          "type": "fill_blank",
+          "prompt": "Sie kommt ___ Indien.",
+          "accepted": [
+            "aus"
+          ],
+          "hints": [
+            "Herkunft aus Land.",
+            "aus Indien."
+          ],
+          "feedback": "Richtig: aus."
+        },
+        {
+          "id": "34",
+          "title": "Aufgabe 34",
+          "type": "fill_blank",
+          "prompt": "Wir gehen ___ Bahnhof nach Hause.",
+          "accepted": [
+            "vom",
+            "von dem"
+          ],
+          "hints": [
+            "Ausgangspunkt/Ort → von.",
+            "von dem → vom."
+          ],
+          "feedback": "Richtig: vom Bahnhof."
+        }
+      ]
+    },
+    {
+      "id": "exercise-6",
+      "label": "Übung 6",
+      "title": "Übung 6 – Temporale Präpositionen",
+      "instruction": "Ergänze um, am, im, seit, vor, nach, ab, in oder für.",
+      "objective": "Temporale Präpositionen nach Uhrzeit, Tag, Zeitraum und zeitlichem Bezug unterscheiden.",
+      "examples": [
+        {
+          "prompt": "___ 7 Uhr beginnt der Kurs.",
+          "answer": "Um",
+          "explanation": "Uhrzeit → um."
+        },
+        {
+          "prompt": "___ Freitag habe ich frei.",
+          "answer": "Am",
+          "explanation": "Wochentag → am."
+        }
+      ],
+      "questions": [
+        {
+          "id": "35",
+          "title": "Aufgabe 35",
+          "type": "fill_blank",
+          "prompt": "___ 8 Uhr beginnt der Kurs.",
+          "accepted": [
+            "Um"
+          ],
+          "hints": [
+            "Exakte Uhrzeit.",
+            "Uhrzeit → um."
+          ],
+          "feedback": "Richtig: um."
+        },
+        {
+          "id": "36",
+          "title": "Aufgabe 36",
+          "type": "fill_blank",
+          "prompt": "___ Montag habe ich frei.",
+          "accepted": [
+            "Am"
+          ],
+          "hints": [
+            "Wochentag.",
+            "an + dem → am."
+          ],
+          "feedback": "Richtig: am."
+        },
+        {
+          "id": "37",
+          "title": "Aufgabe 37",
+          "type": "fill_blank",
+          "prompt": "___ Sommer fahren wir ans Meer.",
+          "accepted": [
+            "Im"
+          ],
+          "hints": [
+            "Jahreszeit.",
+            "in + dem → im."
+          ],
+          "feedback": "Richtig: im."
+        },
+        {
+          "id": "38",
+          "title": "Aufgabe 38",
+          "type": "fill_blank",
+          "prompt": "Ich wohne ___ drei Jahren hier.",
+          "accepted": [
+            "seit"
+          ],
+          "hints": [
+            "Beginn in der Vergangenheit, dauert bis jetzt.",
+            "seit + Dativ."
+          ],
+          "feedback": "Richtig: seit."
+        },
+        {
+          "id": "39",
+          "title": "Aufgabe 39",
+          "type": "fill_blank",
+          "prompt": "___ einer Woche war ich krank.",
+          "accepted": [
+            "Vor"
+          ],
+          "hints": [
+            "Zeitpunkt liegt eine Woche zurück.",
+            "vor + Dativ."
+          ],
+          "feedback": "Richtig: vor."
+        },
+        {
+          "id": "40",
+          "title": "Aufgabe 40",
+          "type": "fill_blank",
+          "prompt": "___ dem Kurs gehe ich nach Hause.",
+          "accepted": [
+            "Nach"
+          ],
+          "hints": [
+            "Später als ein Ereignis.",
+            "nach + Dativ."
+          ],
+          "feedback": "Richtig: nach."
+        },
+        {
+          "id": "41",
+          "title": "Aufgabe 41",
+          "type": "fill_blank",
+          "prompt": "___ nächster Woche arbeite ich wieder.",
+          "accepted": [
+            "Ab"
+          ],
+          "hints": [
+            "Startpunkt ab einem zukünftigen Zeitpunkt.",
+            "ab + Dativ."
+          ],
+          "feedback": "Richtig: ab."
+        },
+        {
+          "id": "42",
+          "title": "Aufgabe 42",
+          "type": "fill_blank",
+          "prompt": "___ zwei Tagen kommt meine Mutter.",
+          "accepted": [
+            "In"
+          ],
+          "hints": [
+            "Zeitspanne bis in die Zukunft.",
+            "in zwei Tagen."
+          ],
+          "feedback": "Richtig: in."
+        },
+        {
+          "id": "43",
+          "title": "Aufgabe 43",
+          "type": "fill_blank",
+          "prompt": "Ich fahre ___ zwei Wochen nach Indien.",
+          "accepted": [
+            "für"
+          ],
+          "hints": [
+            "Dauer des Aufenthalts.",
+            "für + Akkusativ."
+          ],
+          "feedback": "Richtig: für."
+        }
+      ]
+    },
+    {
+      "id": "exercise-7",
+      "label": "Übung 7",
+      "title": "Übung 7 – Verschmelzungen",
+      "instruction": "Schreibe die Kurzform.",
+      "objective": "Häufige Präposition-Artikel-Verschmelzungen erkennen und bilden.",
+      "examples": [
+        {
+          "prompt": "in dem Zimmer",
+          "answer": "im Zimmer",
+          "explanation": "in + dem = im."
+        },
+        {
+          "prompt": "zu der Schule",
+          "answer": "zur Schule",
+          "explanation": "zu + der = zur."
+        }
+      ],
+      "questions": [
+        {
+          "id": "44",
+          "title": "Aufgabe 44",
+          "type": "short_answer",
+          "prompt": "an dem Montag",
+          "accepted": [
+            "am Montag"
+          ],
+          "hints": [
+            "an + dem.",
+            "Verschmelzung: am."
+          ],
+          "feedback": "Richtig: am Montag."
+        },
+        {
+          "id": "45",
+          "title": "Aufgabe 45",
+          "type": "short_answer",
+          "prompt": "in dem Büro",
+          "accepted": [
+            "im Büro"
+          ],
+          "hints": [
+            "in + dem.",
+            "Verschmelzung: im."
+          ],
+          "feedback": "Richtig: im Büro."
+        },
+        {
+          "id": "46",
+          "title": "Aufgabe 46",
+          "type": "short_answer",
+          "prompt": "zu dem Arzt",
+          "accepted": [
+            "zum Arzt"
+          ],
+          "hints": [
+            "zu + dem.",
+            "Verschmelzung: zum."
+          ],
+          "feedback": "Richtig: zum Arzt."
+        },
+        {
+          "id": "47",
+          "title": "Aufgabe 47",
+          "type": "short_answer",
+          "prompt": "zu der Bank",
+          "accepted": [
+            "zur Bank"
+          ],
+          "hints": [
+            "zu + der.",
+            "Verschmelzung: zur."
+          ],
+          "feedback": "Richtig: zur Bank."
+        },
+        {
+          "id": "48",
+          "title": "Aufgabe 48",
+          "type": "short_answer",
+          "prompt": "von dem Bahnhof",
+          "accepted": [
+            "vom Bahnhof"
+          ],
+          "hints": [
+            "von + dem.",
+            "Verschmelzung: vom."
+          ],
+          "feedback": "Richtig: vom Bahnhof."
+        },
+        {
+          "id": "49",
+          "title": "Aufgabe 49",
+          "type": "short_answer",
+          "prompt": "in das Kino",
+          "accepted": [
+            "ins Kino"
+          ],
+          "hints": [
+            "in + das.",
+            "Verschmelzung: ins."
+          ],
+          "feedback": "Richtig: ins Kino."
+        },
+        {
+          "id": "50",
+          "title": "Aufgabe 50",
+          "type": "short_answer",
+          "prompt": "an das Fenster",
+          "accepted": [
+            "ans Fenster"
+          ],
+          "hints": [
+            "an + das.",
+            "Verschmelzung: ans."
+          ],
+          "feedback": "Richtig: ans Fenster."
+        }
+      ]
+    },
+    {
+      "id": "reading",
+      "label": "Lesetext",
+      "title": "Lesetext – Ein Tag in der Stadt",
+      "instruction": "Lies den Text und bearbeite die Aufgaben.",
+      "examples": [
+        {
+          "prompt": "für ___ Vater (mein)",
+          "answer": "meinen",
+          "explanation": "für + Akkusativ; maskulin → meinen."
+        }
+      ],
+      "questions": [
+        {
+          "id": "r1",
+          "title": "Aufgabe R1",
+          "type": "text_highlight",
+          "prompt": "Markiere alle Präpositionsausdrücke im Text.",
+          "hints": [
+            "Suche Wörter wie an/um/mit/in/zu/durch/auf/für/gegen/vor/über/wegen/nach.",
+            "Achte auch auf Verschmelzungen: am, zur, zum, im, ins."
+          ],
+          "feedback": "Positionsbasierte Markierung; 20 Zielausdrücke.",
+          "tokens": [
+            "Am",
+            "Samstag",
+            "fährt",
+            "Nora",
+            "um",
+            "neun",
+            "Uhr",
+            "mit",
+            "dem",
+            "Bus",
+            "in",
+            "die",
+            "Innenstadt.",
+            "Zuerst",
+            "geht",
+            "sie",
+            "zur",
+            "Bank.",
+            "Danach",
+            "läuft",
+            "sie",
+            "durch",
+            "den",
+            "Park",
+            "zum",
+            "Markt.",
+            "Auf",
+            "dem",
+            "Markt",
+            "kauft",
+            "sie",
+            "Obst",
+            "für",
+            "ihre",
+            "Familie.",
+            "Gegen",
+            "Mittag",
+            "trifft",
+            "sie",
+            "eine",
+            "Freundin",
+            "vor",
+            "einem",
+            "Café.",
+            "Sie",
+            "sitzen",
+            "eine",
+            "Stunde",
+            "im",
+            "Café",
+            "und",
+            "sprechen",
+            "über",
+            "ihre",
+            "Pläne.",
+            "Danach",
+            "gehen",
+            "sie",
+            "ins",
+            "Museum.",
+            "Wegen",
+            "des",
+            "Regens",
+            "fahren",
+            "sie",
+            "später",
+            "nicht",
+            "mit",
+            "dem",
+            "Fahrrad,",
+            "sondern",
+            "mit",
+            "der",
+            "Straßenbahn",
+            "nach",
+            "Hause.",
+            "Nora",
+            "ist",
+            "um",
+            "sechs",
+            "Uhr",
+            "wieder",
+            "zu",
+            "Hause."
+          ],
+          "groups": [
+            {
+              "id": "group-1",
+              "label": "Am Samstag",
+              "tokens": [
+                0,
+                1
+              ]
+            },
+            {
+              "id": "group-2",
+              "label": "um neun Uhr",
+              "tokens": [
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "id": "group-3",
+              "label": "mit dem Bus",
+              "tokens": [
+                7,
+                8,
+                9
+              ]
+            },
+            {
+              "id": "group-4",
+              "label": "in die Innenstadt",
+              "tokens": [
+                10,
+                11,
+                12
+              ]
+            },
+            {
+              "id": "group-5",
+              "label": "zur Bank",
+              "tokens": [
+                16,
+                17
+              ]
+            },
+            {
+              "id": "group-6",
+              "label": "durch den Park",
+              "tokens": [
+                21,
+                22,
+                23
+              ]
+            },
+            {
+              "id": "group-7",
+              "label": "zum Markt",
+              "tokens": [
+                24,
+                25
+              ]
+            },
+            {
+              "id": "group-8",
+              "label": "Auf dem Markt",
+              "tokens": [
+                26,
+                27,
+                28
+              ]
+            },
+            {
+              "id": "group-9",
+              "label": "für ihre Familie",
+              "tokens": [
+                32,
+                33,
+                34
+              ]
+            },
+            {
+              "id": "group-10",
+              "label": "Gegen Mittag",
+              "tokens": [
+                35,
+                36
+              ]
+            },
+            {
+              "id": "group-11",
+              "label": "vor einem Café",
+              "tokens": [
+                41,
+                42,
+                43
+              ]
+            },
+            {
+              "id": "group-12",
+              "label": "im Café",
+              "tokens": [
+                48,
+                49
+              ]
+            },
+            {
+              "id": "group-13",
+              "label": "über ihre Pläne",
+              "tokens": [
+                52,
+                53,
+                54
+              ]
+            },
+            {
+              "id": "group-14",
+              "label": "ins Museum",
+              "tokens": [
+                58,
+                59
+              ]
+            },
+            {
+              "id": "group-15",
+              "label": "Wegen des Regens",
+              "tokens": [
+                60,
+                61,
+                62
+              ]
+            },
+            {
+              "id": "group-16",
+              "label": "mit dem Fahrrad",
+              "tokens": [
+                67,
+                68,
+                69
+              ]
+            },
+            {
+              "id": "group-17",
+              "label": "mit der Straßenbahn",
+              "tokens": [
+                71,
+                72,
+                73
+              ]
+            },
+            {
+              "id": "group-18",
+              "label": "nach Hause",
+              "tokens": [
+                74,
+                75
+              ]
+            },
+            {
+              "id": "group-19",
+              "label": "um sechs Uhr",
+              "tokens": [
+                78,
+                79,
+                80
+              ]
+            },
+            {
+              "id": "group-20",
+              "label": "zu Hause",
+              "tokens": [
+                82,
+                83
+              ]
+            }
+          ],
+          "examples": [
+            {
+              "prompt": "Ich fahre mit dem Bus.",
+              "answer": "mit dem Bus",
+              "explanation": "Klicke jedes gesuchte Wort an. Bei getrennten Teilen bleiben die Wörter dazwischen frei."
+            }
+          ]
+        },
+        {
+          "id": "r2",
+          "title": "Aufgabe R2",
+          "type": "categorize",
+          "prompt": "Ordne ausgewählte Ausdrücke nach Grammatiktyp.",
+          "hints": [
+            "Bestimme zuerst, welche Präposition vorliegt.",
+            "Bei Wechselpräpositionen entscheidet Wo/Wohin über den Kasus."
+          ],
+          "feedback": "Diese kontrollierte Auswahl ersetzt die gemischte Originalklassifikation.",
+          "items": [
+            {
+              "id": "item-1",
+              "label": "um neun Uhr",
+              "category": "Akkusativpräposition"
+            },
+            {
+              "id": "item-2",
+              "label": "mit dem Bus",
+              "category": "Dativpräposition"
+            },
+            {
+              "id": "item-3",
+              "label": "in die Innenstadt",
+              "category": "Wechselpräposition+Akkusativ"
+            },
+            {
+              "id": "item-4",
+              "label": "Auf dem Markt",
+              "category": "Wechselpräposition+Dativ"
+            },
+            {
+              "id": "item-5",
+              "label": "Wegen des Regens",
+              "category": "Genitivpräposition"
+            }
+          ],
+          "categories": [
+            "Akkusativpräposition",
+            "Dativpräposition",
+            "Wechselpräposition+Akkusativ",
+            "Wechselpräposition+Dativ",
+            "Genitivpräposition"
+          ],
+          "examples": [
+            {
+              "prompt": "bei der Schule / am Dienstag",
+              "answer": "Dativpräposition / temporal",
+              "explanation": "Grammatiktyp und Bedeutung werden getrennt bestimmt."
+            }
+          ]
+        },
+        {
+          "id": "r3",
+          "title": "Aufgabe R3",
+          "type": "categorize",
+          "prompt": "Ordne ausgewählte Ausdrücke nach Bedeutung.",
+          "hints": [
+            "Frage: Wann? Wo/Wohin? Womit?",
+            "Nicht jeder Präpositionsausdruck ist temporal oder lokal."
+          ],
+          "feedback": "Die digitale Fassung ergänzt „modal/Verkehrsmittel“, damit die Kategorien vollständig sind.",
+          "items": [
+            {
+              "id": "item-1",
+              "label": "Am Samstag",
+              "category": "temporal"
+            },
+            {
+              "id": "item-2",
+              "label": "um neun Uhr",
+              "category": "temporal"
+            },
+            {
+              "id": "item-3",
+              "label": "in die Innenstadt",
+              "category": "lokal"
+            },
+            {
+              "id": "item-4",
+              "label": "zur Bank",
+              "category": "lokal"
+            },
+            {
+              "id": "item-5",
+              "label": "mit dem Bus",
+              "category": "modal/Verkehrsmittel"
+            }
+          ],
+          "categories": [
+            "temporal",
+            "lokal",
+            "modal/Verkehrsmittel"
+          ],
+          "examples": [
+            {
+              "prompt": "bei der Schule / am Dienstag",
+              "answer": "Dativpräposition / temporal",
+              "explanation": "Grammatiktyp und Bedeutung werden getrennt bestimmt."
+            }
+          ]
+        },
+        {
+          "id": "r4",
+          "title": "Aufgabe R4",
+          "type": "multi_select",
+          "prompt": "Finde zwei Verschmelzungen im Text.",
+          "hints": [
+            "Suche Kombinationen aus Präposition + Artikel.",
+            "Mehrere sind möglich; zwei richtige reichen."
+          ],
+          "feedback": "Akzeptiere jede Auswahl von zwei unterschiedlichen Formen aus am/zur/zum/im/ins.",
+          "correctChoices": [
+            "am",
+            "zur",
+            "zum",
+            "im",
+            "ins"
+          ],
+          "selectCount": 2,
+          "options": [
+            "am",
+            "durch",
+            "im",
+            "ins",
+            "mit",
+            "wegen",
+            "zum",
+            "zur"
+          ],
+          "examples": [
+            {
+              "prompt": "Wähle zwei Verschmelzungen: beim, ohne, vom.",
+              "answer": "beim · vom",
+              "explanation": "Wähle unterschiedliche Formen; die Reihenfolge ist egal."
+            }
+          ]
+        },
+        {
+          "id": "r5",
+          "title": "Aufgabe R5",
+          "type": "choice",
+          "prompt": "Warum steht in „im Café“ Dativ?",
+          "accepted": [
+            "Weil es um einen Ort (Wo?) geht.",
+            "Weil „in“ hier auf die Frage Wo? antwortet und deshalb Dativ verlangt."
+          ],
+          "hints": [
+            "Frage: Wo sitzen sie?",
+            "Bei Wechselpräpositionen: Wo? → Dativ."
+          ],
+          "feedback": "Inhaltlich richtige kontrollierte Erklärung.",
+          "options": [
+            "Weil „in“ hier auf die Frage Wo? antwortet und deshalb Dativ verlangt.",
+            "Weil es um einen Ort (Wo?) geht.",
+            "Weil in immer mit Dativ steht.",
+            "Weil jede Bewegung immer Dativ verlangt."
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        },
+        {
+          "id": "r6",
+          "title": "Aufgabe R6",
+          "type": "short_answer",
+          "prompt": "Forme um: „Sie sitzen im Café.“ → Wohin-Satz mit „gehen“.",
+          "accepted": [
+            "Sie gehen ins Café.",
+            "Sie gehen in das Café."
+          ],
+          "hints": [
+            "Aus Wo? soll Wohin? werden.",
+            "in + Akkusativ; in das = ins."
+          ],
+          "feedback": "Richtig: Sie gehen ins Café."
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "label": "Test",
+      "title": "Test",
+      "instruction": "Bearbeite die Aufgaben. Bei Bedarf stehen dir zwei Hinweise zur Verfügung.",
+      "examples": [
+        {
+          "prompt": "für ___ Vater (mein)",
+          "answer": "meinen",
+          "explanation": "für + Akkusativ; maskulin → meinen."
+        }
+      ],
+      "questions": [
+        {
+          "id": "t1",
+          "title": "Aufgabe T1",
+          "type": "fill_blank",
+          "prompt": "mit ___ Auto",
+          "accepted": [
+            "dem"
+          ],
+          "hints": [
+            "mit + Dativ.",
+            "das Auto → dem."
+          ],
+          "feedback": "Richtig: dem."
+        },
+        {
+          "id": "t2",
+          "title": "Aufgabe T2",
+          "type": "fill_blank",
+          "prompt": "für ___ Bruder",
+          "accepted": [
+            "meinen"
+          ],
+          "hints": [
+            "für + Akkusativ.",
+            "mein Bruder → meinen Bruder."
+          ],
+          "feedback": "Richtig: meinen."
+        },
+        {
+          "id": "t3",
+          "title": "Aufgabe T3",
+          "type": "fill_blank",
+          "prompt": "Wo? Das Buch liegt auf ___ Tisch.",
+          "accepted": [
+            "dem"
+          ],
+          "hints": [
+            "Wo? → Dativ.",
+            "der Tisch → dem Tisch."
+          ],
+          "feedback": "Richtig: dem."
+        },
+        {
+          "id": "t4",
+          "title": "Aufgabe T4",
+          "type": "fill_blank",
+          "prompt": "Wohin? Ich lege das Buch auf ___ Tisch.",
+          "accepted": [
+            "den"
+          ],
+          "hints": [
+            "Wohin? → Akkusativ.",
+            "der Tisch → den Tisch."
+          ],
+          "feedback": "Richtig: den."
+        },
+        {
+          "id": "t5",
+          "title": "Aufgabe T5",
+          "type": "fill_blank",
+          "prompt": "Ich fahre ___ Berlin.",
+          "accepted": [
+            "nach"
+          ],
+          "hints": [
+            "Stadt ohne Artikel.",
+            "nach Berlin."
+          ],
+          "feedback": "Richtig: nach."
+        },
+        {
+          "id": "t6",
+          "title": "Aufgabe T6",
+          "type": "fill_blank",
+          "prompt": "Wir fahren ___ Schweiz.",
+          "accepted": [
+            "in die"
+          ],
+          "hints": [
+            "Land mit Artikel.",
+            "Wohin? → in die Schweiz."
+          ],
+          "feedback": "Richtig: in die."
+        },
+        {
+          "id": "t7",
+          "title": "Aufgabe T7",
+          "type": "fill_blank",
+          "prompt": "Ich gehe ___ Arzt.",
+          "accepted": [
+            "zum",
+            "zu dem"
+          ],
+          "hints": [
+            "zu + Dativ.",
+            "zu dem → zum."
+          ],
+          "feedback": "Richtig: zum."
+        },
+        {
+          "id": "t8",
+          "title": "Aufgabe T8",
+          "type": "fill_blank",
+          "prompt": "Ich bin ___ Hause.",
+          "accepted": [
+            "zu"
+          ],
+          "hints": [
+            "Feste Verbindung.",
+            "zu Hause = Ort."
+          ],
+          "feedback": "Richtig: zu."
+        },
+        {
+          "id": "t9",
+          "title": "Aufgabe T9",
+          "type": "fill_blank",
+          "prompt": "Ich gehe ___ Hause.",
+          "accepted": [
+            "nach"
+          ],
+          "hints": [
+            "Feste Verbindung.",
+            "nach Hause = Richtung."
+          ],
+          "feedback": "Richtig: nach."
+        },
+        {
+          "id": "t10",
+          "title": "Aufgabe T10",
+          "type": "fill_blank",
+          "prompt": "___ Montag.",
+          "accepted": [
+            "am"
+          ],
+          "hints": [
+            "Wochentag.",
+            "an dem → am."
+          ],
+          "feedback": "Richtig: am."
+        },
+        {
+          "id": "t11",
+          "title": "Aufgabe T11",
+          "type": "fill_blank",
+          "prompt": "___ 8 Uhr.",
+          "accepted": [
+            "um"
+          ],
+          "hints": [
+            "Uhrzeit.",
+            "um 8 Uhr."
+          ],
+          "feedback": "Richtig: um."
+        },
+        {
+          "id": "t12",
+          "title": "Aufgabe T12",
+          "type": "fill_blank",
+          "prompt": "Ich wohne ___ drei Jahren hier.",
+          "accepted": [
+            "seit"
+          ],
+          "hints": [
+            "Dauer bis heute.",
+            "seit drei Jahren."
+          ],
+          "feedback": "Richtig: seit."
+        },
+        {
+          "id": "t13",
+          "title": "Aufgabe T13",
+          "type": "fill_blank",
+          "prompt": "wegen ___ Wetters.",
+          "accepted": [
+            "des"
+          ],
+          "hints": [
+            "wegen + Genitiv.",
+            "das Wetter → des Wetters."
+          ],
+          "feedback": "Richtig: des."
+        },
+        {
+          "id": "t14",
+          "title": "Aufgabe T14",
+          "type": "short_answer",
+          "prompt": "Bilde die Kurzform: in dem Büro.",
+          "accepted": [
+            "im Büro"
+          ],
+          "hints": [
+            "in + dem = im.",
+            "Schreibe die ganze Kurzform."
+          ],
+          "feedback": "Richtig: im Büro."
+        },
+        {
+          "id": "t15",
+          "title": "Aufgabe T15",
+          "type": "phrase_fill",
+          "prompt": "Geführte Wo/Wohin-Paaraufgabe: 1) Der Schlüssel liegt ___ Tasche. 2) Ich lege den Schlüssel ___ Tasche.",
+          "accepted": [
+            [
+              "in der",
+              "in die"
+            ]
+          ],
+          "hints": [
+            "Erster Satz: Wo? Zweiter: Wohin?",
+            "Wo → Dativ; Wohin → Akkusativ."
+          ],
+          "feedback": "Richtig: in der Tasche / in die Tasche."
+        }
+      ]
+    }
+  ],
+  "passage": "Am Samstag fährt Nora um neun Uhr mit dem Bus in die Innenstadt. Zuerst geht sie zur Bank. Danach läuft sie durch den Park zum Markt. Auf dem Markt kauft sie Obst für ihre Familie. Gegen Mittag trifft sie eine Freundin vor einem Café. Sie sitzen eine Stunde im Café und sprechen über ihre Pläne. Danach gehen sie ins Museum. Wegen des Regens fahren sie später nicht mit dem Fahrrad, sondern mit der Straßenbahn nach Hause. Nora ist um sechs Uhr wieder zu Hause."
+}

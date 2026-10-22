@@ -1,0 +1,48 @@
+<%
+  /*
+    One invoice, for the student it was issued to.
+
+    It renders views/partials/invoice-doc — the same partial the office
+    opens — rather than a student-friendly version of the same figures.
+    Two templates showing one invoice eventually disagree, and the
+    number people believe is whichever page they happened to open.
+
+    So this file is a frame: the portal shell around it, a way back,
+    and a print button. The document itself is not this page's to
+    decide.
+  */
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "Invoice " + (bill.number || ""),
+  pageLead: null,
+  nav: "payments", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<p class="row invoice-screen-only" style="gap:.6rem;margin-bottom:1rem;flex-wrap:wrap">
+  <a class="btn btn-sm btn-ghost" href="/portal/payments">Back to payments</a>
+  <a class="btn btn-sm btn-ghost" href="/portal/settings#invoice-address">Saved addresses</a>
+  <a class="btn btn-sm btn-ghost" href="#invoice-address-request">Change address on invoice</a>
+  <%# The browser's own print dialogue saves a PDF, and the print
+      stylesheet already strips the sidebar and everything else that is
+      screen furniture. Nothing to install on the server for it. %>
+  <button class="btn btn-sm btn-ghost" type="button" data-print>Print or save as PDF</button>
+</p>
+
+<% if(locals.addressDetails && (addressDetails.address !== bill.billing_address || (addressDetails.recipient==='company' && addressDetails.company !== bill.billing_name))){ %>
+<p class="notice notice-bad invoice-screen-only">Your saved account address differs from this issued invoice. Downloading it again keeps the recorded invoice address. To change it, <a href="#invoice-address-request">submit a request to the office</a>.</p>
+<% } %>
+<%- include("../../partials/invoice-doc", { bill: bill, site: site, plan: plan }) %>
+
+<p class="muted invoice-screen-only" style="font-size:.85rem;margin-top:1.25rem">
+  <%# Said once, plainly. A student who thinks a figure is wrong needs
+      to know who can change it -- and that it is not them, and not
+      this page. %>
+  This invoice is the school's record of what was billed. If anything on
+  it looks wrong, <a href="/contact">tell the office</a> — it cannot be
+  changed from here.
+</p>
+
+<%- include("../../partials/invoice-address-request") %>
+
+<%- include("../../partials/portal-shell-foot") %>

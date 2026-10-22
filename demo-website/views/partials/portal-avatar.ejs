@@ -1,0 +1,21 @@
+<%#
+  One avatar, in one of three sizes.
+
+  A real photo when there is one, otherwise the person's initials on a
+  colour derived from their student reference — so it is the same
+  colour every time and on every page, which is what makes it read as
+  identity rather than decoration.
+
+  The colour is built from one hue in HSL, so the ink is guaranteed
+  readable on its own background without a palette to maintain.
+
+  Expects: avatarUrl (or null), initials, hue, name; size = sm|md|lg.
+%>
+<% const _size = typeof size === "undefined" ? "md" : size; %>
+<% if (avatarUrl) { %>
+  <img class="sp-avatar sp-avatar-<%= _size %>" src="<%= avatarUrl %>"
+       alt="<%= name %>" width="96" height="96" decoding="async">
+<% } else { %>
+  <span class="sp-avatar sp-avatar-<%= _size %> sp-avatar-initials" aria-hidden="true"
+        style="--av-h:<%= hue %>"><%= initials %></span>
+<% } %>

@@ -1,0 +1,110 @@
+<%
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : "—");
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "My certificates",
+  pageLead: certificates.length
+    ? "Every certificate the school has issued you, with its verification code."
+    : null,
+  nav: "certificates", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<%
+  // What to say to somebody with no certificate depends entirely on
+  // whether they are on a course. Telling an enrolled student "no
+  // certificates" reads as a refusal; telling somebody who has never
+  // enrolled "yours is coming" is a promise the school cannot keep.
+  const running = enrolments.filter((e) => e.status === "active");
+  const done = enrolments.filter((e) => e.status === "completed");
+%>
+
+<% if (!certificates.length) { %>
+  <div class="sp-card">
+    <% if (done.length) { %>
+      <h2>Your course is finished</h2>
+      <p class="sp-empty" style="margin:0">
+        You have completed
+        <strong><%= done.map((e) => e.course_title).join(", ") %></strong>,
+        so your certificate is due. It is prepared by hand rather than
+        generated, so please <a href="/contact">contact the office</a> and
+        we will issue it — quote your reference
+        <% if (student.student_ref) { %><strong><%= student.student_ref %></strong><% } else { %>and your name<% } %>.
+        Once issued it appears here to download.
+      </p>
+    <% } else if (running.length) { %>
+      <h2>Not yet — your course is still running</h2>
+      <p class="sp-empty" style="margin:0">
+        You are on
+        <strong><%= running.map((e) => e.course_title + " (" + e.code + ")").join(", ") %></strong>.
+        A certificate is issued once the batch is completed. When it is,
+        <a href="/contact">contact the office</a> and we will prepare yours —
+        it will then be here to download.
+      </p>
+    <% } else { %>
+      <h2>Nothing to certify yet</h2>
+      <p class="sp-empty" style="margin:0">
+        A certificate comes from finishing a course, and you are not enrolled
+        on one at the moment — so there is nothing to issue.
+        <a href="/courses">Browse the courses</a>, or
+        <a href="/contact">ask us</a> which one fits where you are.
+      </p>
+    <% } %>
+  </div>
+<% } else { %>
+  <%#
+    One card per certificate rather than a table. The old portal used a
+    table and every row read "001 · German Regular C2" with a broken
+    image where the preview should have been — three identical rows,
+    because the id was hard-coded. A card per certificate makes each
+    one's own detail the thing you see.
+  %>
+  <div class="sp-certs">
+    <% certificates.forEach(function (c) { %>
+      <article class="sp-card sp-cert<%= c.revoked_at ? " is-revoked" : "" %>">
+        <%# The seal, not the wordmark: the wordmark is a horizontal
+            lockup and is illegible in a 56px square. %>
+        <div class="sp-cert-seal" aria-hidden="true">
+          <img src="/icons/crest.png?v=<%= site.assetVersion %>" alt="" width="56" height="56" loading="lazy">
+        </div>
+
+        <div class="sp-cert-body">
+          <h2><%= c.course_title %></h2>
+          <p class="sp-cert-code">
+            <%= c.code %>
+            <% if (c.level) { %> · <span class="pill pill-level"><%= c.level %></span><% } %>
+          </p>
+
+          <dl class="sp-facts">
+            <div><dt>Issued</dt><dd><%= day(c.issued_on) %></dd></div>
+            <% if (c.grade) { %><div><dt>Grade</dt><dd><%= c.grade %></dd></div><% } %>
+            <% if (c.hours) { %><div><dt>Hours</dt><dd><%= c.hours %></dd></div><% } %>
+          </dl>
+
+          <% if (c.revoked_at) { %>
+            <%# Shown, not hidden. Somebody may be holding a printout of
+                this and believing it still counts. %>
+            <p class="notice notice-bad" style="margin:.9rem 0 0">
+              <strong>Withdrawn on <%= day(c.revoked_at) %>.</strong>
+              <%= c.revoked_reason ? c.revoked_reason : "This certificate is no longer valid." %>
+              Please <a href="/contact">contact the office</a> if this is unexpected.
+            </p>
+          <% } %>
+        </div>
+      </article>
+    <% }); %>
+  </div>
+
+  <%# The old site had a public "certificate verification" page and this
+      is where it would be linked. It has not been rebuilt yet, so the
+      code is shown and the office named instead of linking to a 404. %>
+  <p class="muted" style="font-size:.85rem;margin-top:1.25rem">
+    An employer or university checking one of these should quote the code to
+    <a href="mailto:<%= site.contact.email %>"><%= site.contact.email %></a>.
+    Need a printed copy? <a href="/contact">Ask the office</a>.
+  </p>
+<% } %>
+
+<%- include("../../partials/portal-shell-foot") %>

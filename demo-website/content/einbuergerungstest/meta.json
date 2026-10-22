@@ -1,0 +1,176 @@
+{
+ "catalogue": "BAMF Gesamtfragenkatalog zum Test „Leben in Deutschland“ und zum „Einbürgerungstest“",
+ "catalogueDate": "2025-05-07",
+ "builtOn": "2026-09-11",
+ "states": [
+  "Baden-Württemberg",
+  "Bayern",
+  "Berlin",
+  "Brandenburg",
+  "Bremen",
+  "Hamburg",
+  "Hessen",
+  "Mecklenburg-Vorpommern",
+  "Niedersachsen",
+  "Nordrhein-Westfalen",
+  "Rheinland-Pfalz",
+  "Saarland",
+  "Sachsen",
+  "Sachsen-Anhalt",
+  "Schleswig-Holstein",
+  "Thüringen"
+ ],
+ "counts": {
+  "general": 300,
+  "state": 160,
+  "total": 460,
+  "withImages": 43
+ },
+ "dropped": [],
+ "manuallyDecided": [
+  {
+   "id": "general-14",
+   "index": 1,
+   "why": "Catalogue reworded this option from 'in Leserbriefen' to 'im Internet'; the reference names the same option and the other three are plainly wrong.",
+   "option": "meine Meinung im Internet äußern kann."
+  },
+  {
+   "id": "general-21",
+   "index": 1,
+   "why": "Bundesadler on the gold shield is Bild 2 (Bild 1 Bundeswehr cross, 3 Chi-Rho, 4 DDR).",
+   "option": "Bild 2"
+  },
+  {
+   "id": "general-70",
+   "index": 3,
+   "why": "Identical wording apart from pronoun order ('Er/Sie' vs 'Sie/Er').",
+   "option": "Sie/Er schlägt die Kanzlerin/den Kanzler zur Wahl vor."
+  },
+  {
+   "id": "general-72",
+   "index": 3,
+   "why": "Chancellor since 6 May 2025 is Friedrich Merz; the reference answer (Olaf Scholz) is not one of the four official options.",
+   "option": "Friedrich Merz"
+  },
+  {
+   "id": "general-73",
+   "index": 0,
+   "why": "21st Bundestag: CDU/CSU 208 and AfD 152 are the two largest Fraktionen (SPD 120, bundestag.de). The reference answer is not one of the four official options.",
+   "option": "CDU/CSU und AfD."
+  },
+  {
+   "id": "general-136",
+   "index": 1,
+   "why": "Reference misspells the official option ('ungerechtigter' for 'ungerechtfertigter'); it matches option 2 exactly otherwise.",
+   "option": "ungerechtfertigter Kündigung durch Ihre Chefin/Ihren Chef."
+  },
+  {
+   "id": "general-209",
+   "index": 3,
+   "why": "The DDR emblem — hammer, compasses, wheat — is Bild 4.",
+   "option": "Bild 4"
+  },
+  {
+   "id": "general-226",
+   "index": 2,
+   "why": "The EU flag, twelve gold stars on blue, is Bild 3 (1 USA, 2 a decoy emblem, 4 UN).",
+   "option": "Bild 3"
+  },
+  {
+   "id": "baden-wuerttemberg-1",
+   "index": 1,
+   "why": "Three black lions on gold is Bild 2.",
+   "option": "Bild 2"
+  },
+  {
+   "id": "bayern-1",
+   "index": 1,
+   "why": "Blue and white lozenges is Bild 2.",
+   "option": "Bild 2"
+  },
+  {
+   "id": "berlin-1",
+   "index": 3,
+   "why": "The black bear is Bild 4.",
+   "option": "Bild 4"
+  },
+  {
+   "id": "brandenburg-1",
+   "index": 2,
+   "why": "The red eagle is Bild 3.",
+   "option": "Bild 3"
+  },
+  {
+   "id": "bremen-1",
+   "index": 2,
+   "why": "The silver key on red is Bild 3.",
+   "option": "Bild 3"
+  },
+  {
+   "id": "hamburg-1",
+   "index": 2,
+   "why": "The white castle on red is Bild 3.",
+   "option": "Bild 3"
+  },
+  {
+   "id": "hessen-1",
+   "index": 0,
+   "why": "The red and white striped lion on blue is Bild 1.",
+   "option": "Bild 1"
+  },
+  {
+   "id": "mecklenburg-vorpommern-1",
+   "index": 2,
+   "why": "Bull's head beside the griffin is Bild 3.",
+   "option": "Bild 3"
+  },
+  {
+   "id": "niedersachsen-1",
+   "index": 2,
+   "why": "The white horse on red is Bild 3.",
+   "option": "Bild 3"
+  },
+  {
+   "id": "nordrhein-westfalen-1",
+   "index": 1,
+   "why": "River, horse and rose is Bild 2.",
+   "option": "Bild 2"
+  },
+  {
+   "id": "rheinland-pfalz-1",
+   "index": 0,
+   "why": "Cross, wheel and lion is Bild 1.",
+   "option": "Bild 1"
+  },
+  {
+   "id": "saarland-1",
+   "index": 1,
+   "why": "The quartered shield is Bild 2.",
+   "option": "Bild 2"
+  },
+  {
+   "id": "sachsen-1",
+   "index": 3,
+   "why": "Black and gold bars under the green rue crown is Bild 4.",
+   "option": "Bild 4"
+  },
+  {
+   "id": "sachsen-anhalt-1",
+   "index": 2,
+   "why": "Bear on the wall with the black eagle is Bild 3.",
+   "option": "Bild 3"
+  },
+  {
+   "id": "schleswig-holstein-1",
+   "index": 3,
+   "why": "Two blue lions beside the red nettle leaf is Bild 4.",
+   "option": "Bild 4"
+  },
+  {
+   "id": "thueringen-1",
+   "index": 2,
+   "why": "The lion with eight stars on blue is Bild 3.",
+   "option": "Bild 3"
+  }
+ ]
+}

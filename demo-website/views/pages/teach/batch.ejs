@@ -1,0 +1,237 @@
+<%
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : null);
+  const size = (n) => {
+    const b = Number(n || 0);
+    if (!b) return "";
+    return b < 1024 * 1024 ? Math.round(b / 1024) + " KB" : (b / 1048576).toFixed(1) + " MB";
+  };
+  const active = roster.filter((s) => s.status === "active");
+%>
+<%- include("../../partials/teach-shell-head", {
+  pageTitle: batch.course_title || batch.batch_title || batch.code,
+  pageLead: "Batch " + batch.code
+    + (batch.level ? " · " + batch.level : "")
+    + (day(batch.starts_on) ? " · from " + day(batch.starts_on) : ""),
+  nav: "batches", teacher: teacher, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<div class="sp-card sp-now sp-wide">
+  <p class="sp-eyebrow"><%= batch.batch_status === "running" ? "Happening now" : batch.batch_status %></p>
+  <p class="sp-now-meta">
+    <%= active.length %> <%= active.length === 1 ? "student" : "students" %><% if (batch.seats) { %> of <%= batch.seats %> seats<% } %>
+    <% if (roster.length !== active.length) { %> · <%= roster.length - active.length %> no longer active<% } %>
+  </p>
+
+  <div class="sp-now-actions">
+    <% if (classLinks.room(batch) && batch.batch_status === "running") { %>
+      <a class="btn" href="<%= classLinks.room(batch) %>" target="_blank" rel="noopener noreferrer"
+             data-class-action="/teach/batch/<%= batch.id %>/start" data-class-csrf="<%= locals.classJoinCsrf || '' %>"
+             title="Opens in a new tab or window">Start the class<span class="sr-only"> (opens in a new tab or window)</span></a>
+    <% } %>
+    <% if (batch.drive_url) { %>
+      <a class="btn btn-ghost" href="<%= batch.drive_url %>" target="_blank" rel="noopener noreferrer">Course materials</a>
+    <% } %>
+    <% if (batch.whatsapp_url) { %>
+      <a class="btn btn-ghost" href="<%= batch.whatsapp_url %>" target="_blank" rel="noopener noreferrer">Group chat</a>
+    <% } %>
+    <%# The register for today. Two minutes after the class is when it
+        gets taken, if it gets taken at all, so it is one click from
+        the page the teacher is already on. %>
+    <a class="btn btn-ghost" href="/teach/batch/<%= batch.id %>/register">Attendance</a>
+  </div>
+
+  <p class="muted sp-now-note">
+    Times are <%= batch.timezone || "Europe/Berlin" %>.
+    <% if (day(batch.ends_on)) { %> Ends <%= day(batch.ends_on) %>.<% } %>
+  </p>
+</div>
+
+<%#
+  The class list.
+
+  Email and phone are here because the first thing a teacher does about
+  an empty seat is send a message about it — and the alternative is
+  asking the office to look it up, which means it does not happen.
+  Addresses are not: a teacher never needs one, and a page that shows
+  data nobody uses is a page that leaks data nobody noticed.
+%>
+<div class="sp-card sp-wide">
+  <div class="sp-card-head">
+    <h2>Class list</h2>
+    <span class="muted" style="font-size:.85rem"><%= roster.length %> enrolled</span>
+  </div>
+
+  <% if (!roster.length) { %>
+    <p class="sp-empty">
+      Nobody is enrolled on this batch yet. The office adds students as they
+      enrol, and they appear here straight away.
+    </p>
+  <% } else { %>
+    <div style="overflow-x:auto">
+      <table class="sp-table">
+        <thead>
+          <tr>
+            <th scope="col">Student</th>
+            <th scope="col">Contact</th>
+            <th scope="col">Since</th>
+            <th scope="col">Attendance</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% roster.forEach(function (s) { %>
+            <tr>
+              <td>
+                <div class="sp-person">
+                  <%- include("../../partials/portal-avatar", {
+                    avatarUrl: s.photo, initials: s.initials, hue: s.hue,
+                    size: "sm", name: s.name,
+                  }) %>
+                  <div>
+                    <strong><%= s.name %></strong>
+                    <% if (s.student_ref) { %>
+                      <div class="muted" style="font-size:.8rem"><%= s.student_ref %></div>
+                    <% } %>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <a href="mailto:<%= s.email %>"><%= s.email %></a>
+                <% if (s.phone) { %>
+                  <div class="muted" style="font-size:.8rem">
+                    <a href="tel:<%= s.phone.replace(/[^0-9+]/g, "") %>"><%= s.phone %></a>
+                  </div>
+                <% } %>
+              </td>
+              <td><%= day(s.enrolled_on) || "—" %></td>
+              <%#
+                A dash, not 0%, when there is nothing to judge. "No
+                classes registered yet" and "missed every one" must not
+                look the same — one is a student to ring and the other
+                is a teacher who has not started taking the register.
+              %>
+              <td>
+                <% if (s.attendance && s.attendance.rate !== null) { %>
+                  <span class="sp-rate sp-rate-<%= s.attendance.band %>">
+                    <%= s.attendance.rate %>%
+                  </span>
+                  <div class="muted" style="font-size:.78rem">
+                    <%= s.attendance.present + s.attendance.late %> of
+                    <%= s.attendance.present + s.attendance.late + s.attendance.absent %>
+                    <% if (s.attendance.excused) { %> · <%= s.attendance.excused %> excused<% } %>
+                  </div>
+                <% } else { %>
+                  <span class="muted">—</span>
+                <% } %>
+              </td>
+              <td>
+                <span class="pill<%= s.status === "active" ? " pill-live" : "" %>"><%= s.status %></span>
+                <% if (s.final_grade !== null && s.final_grade !== undefined) { %>
+                  <div class="muted" style="font-size:.8rem"><%= Number(s.final_grade).toFixed(0) %>%</div>
+                <% } %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%#
+  What the office has attached to this batch. Read-only: there is no
+  upload route yet, and a page that pretends otherwise is worse than one
+  that says where the button will be.
+%>
+<div class="sp-card sp-wide">
+  <div class="sp-card-head">
+    <h2>Materials</h2>
+    <% if (batch.drive_url) { %>
+      <a href="<%= batch.drive_url %>" target="_blank" rel="noopener noreferrer">Open the folder</a>
+    <% } %>
+  </div>
+
+  <% if (!materials.length) { %>
+    <p class="sp-empty">
+      Nothing has been attached to this batch in the portal.
+      <% if (batch.drive_url) { %>
+        The class uses the shared folder above.
+      <% } else { %>
+        Your students see this same empty list —
+        <a href="/contact">ask the office to add a materials folder</a>.
+      <% } %>
+    </p>
+  <% } else { %>
+    <ul class="sp-list">
+      <% materials.forEach(function (m) { %>
+        <li>
+          <div>
+            <strong><%= m.title %></strong>
+            <% if (m.description) { %>
+              <div class="muted" style="font-size:.82rem"><%= m.description %></div>
+            <% } %>
+          </div>
+          <div class="sp-list-end">
+            <span class="pill"><%= m.kind %></span>
+            <% if (size(m.bytes)) { %><span class="muted" style="font-size:.8rem"><%= size(m.bytes) %></span><% } %>
+            <%# A hidden file is the state that otherwise gets discovered
+                mid-lesson, when a student says they cannot see it. %>
+            <% if (!m.visible) { %><span class="pill">hidden from students</span><% } %>
+          </div>
+        </li>
+      <% }); %>
+    </ul>
+  <% } %>
+</div>
+
+<%#
+  Which days are done — and, more usefully, which are not. A teacher
+  who cannot see the gap does not fill it.
+%>
+<div class="sp-card sp-wide">
+  <div class="sp-card-head">
+    <h2>Registers</h2>
+    <a href="/teach/batch/<%= batch.id %>/register">Take today's</a>
+  </div>
+
+  <% if (!registers.length) { %>
+    <p class="sp-empty">
+      No register has been taken on this batch yet.
+      <a href="/teach/batch/<%= batch.id %>/register">Take today's</a> — it is one
+      tap per student, and everybody starts marked as here.
+    </p>
+  <% } else { %>
+    <ul class="sp-list">
+      <% registers.forEach(function (r) { %>
+        <li>
+          <div>
+            <strong>
+              <a href="/teach/batch/<%= batch.id %>/register?date=<%= String(r.day).slice(0, 10) %>">
+                <%= day(r.starts_at) %>
+              </a>
+            </strong>
+            <div class="muted" style="font-size:.82rem">
+              <% if (Number(r.marked)) { %>
+                <%= r.attended %> of <%= r.marked %> here<% if (Number(r.absent)) { %> · <%= r.absent %> missing<% } %>
+              <% } else { %>
+                scheduled, not marked
+              <% } %>
+            </div>
+          </div>
+          <div class="sp-list-end">
+            <% if (!Number(r.marked)) { %><span class="pill">not taken</span><% } %>
+          </div>
+        </li>
+      <% }); %>
+    </ul>
+  <% } %>
+</div>
+
+<p class="muted" style="font-size:.85rem">
+  <a href="/teach/batches">← All my classes</a>
+</p>
+
+<%- include("../../partials/teach-shell-foot") %>

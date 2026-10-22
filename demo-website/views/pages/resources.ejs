@@ -1,0 +1,46 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.resources") %></p>
+      <h1><%= t("resources.title") %></h1>
+      <p class="lead"><%= t("resources.lead") %></p>
+    </div>
+
+    <div class="grid grid-2">
+      <% groups.forEach(function (g) { %>
+        <section class="card" style="padding:1.4rem 1.5rem 1.6rem">
+          <h2 style="font-size:1.2rem;margin-bottom:.9rem"><%= g.title %></h2>
+          <% g.sections.forEach(function (s) { %>
+            <% if (s.publisher) { %><h3 class="publisher"><%= s.publisher %></h3><% } %>
+            <ul class="papers">
+              <% s.papers.forEach(function (p) { %>
+                <li>
+                  <span class="paper-name"><%= p.name %></span>
+                  <span class="paper-links">
+                    <% p.files.forEach(function (f) { %>
+                      <a class="btn btn-sm btn-ghost" href="<%= f.href %>"
+                         <%= f.external ? 'rel="noopener nofollow" target="_blank"' : "download" %>>
+                        <%= f.external ? t("cta.readMore") : f.label %>
+                      </a>
+                    <% }); %>
+                  </span>
+                </li>
+              <% }); %>
+            </ul>
+          <% }); %>
+        </section>
+      <% }); %>
+    </div>
+
+    <div class="band" style="margin-top:3rem">
+      <h2 style="font-size:clamp(1.4rem,3vw,1.9rem)"><%= t("home.ctaTitle") %></h2>
+      <p><%= t("home.ctaLead") %></p>
+      <a class="btn" href="<%= lp('/contact') %>"><%= t("cta.enquire") %></a>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

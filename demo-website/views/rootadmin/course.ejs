@@ -1,0 +1,318 @@
+<%#
+  One course, one language at a time.
+
+  English and German are separate rows, so they are edited as two tabs
+  rather than one long form. Each tab posts only its own language, which
+  keeps a save small and means a mistake in one cannot damage the other.
+
+  The German tab opens pre-filled from the English when no German row
+  exists yet — a half-empty German page is worse than an English one —
+  and carries a Translate button when DeepL is configured.
+%>
+<%
+  const lang = (typeof current !== "undefined" && current === "de") ? "de" : "en";
+  const c = pair[lang] || pair.en || pair.de || {};
+  const exists = !!pair[lang];
+  const body = c.body || {};
+  const seo = c.seo || {};
+  const v = (x) => (x === null || x === undefined ? "" : x);
+  const showTranslate = lang === "de" && canTranslate && pair.en;
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: (c.title || slug), site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "content", adArea: "content" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: c.title || slug,
+      adCrumbs: [
+        { label: "Root admin", href: "/rootadmin" },
+        { label: "Courses", href: "/rootadmin" },
+        { label: lang === "de" ? "German" : "English" },
+      ],
+      adLogout: "/rootadmin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (saved) { %>
+        <p class="notice notice-ok">Saved. The live site is already showing this.</p>
+      <% } %>
+
+      <% if (errors && errors.length) { %>
+        <div class="notice notice-bad">
+          <div>
+            <strong>Not saved.</strong>
+            <ul style="margin:.4rem 0 0 1.1rem;padding:0">
+              <% errors.forEach(function (e) { %><li><%= e %></li><% }); %>
+            </ul>
+          </div>
+        </div>
+      <% } %>
+
+      <div class="chips" style="margin-bottom:1.25rem">
+        <a class="chip" href="?lang=en" aria-pressed="<%= lang === "en" ? "true" : "false" %>">English</a>
+        <a class="chip" href="?lang=de" aria-pressed="<%= lang === "de" ? "true" : "false" %>">German<%= pair.de ? "" : " (new)" %></a>
+        <a class="chip" href="/courses/<%= encodeURIComponent(slug) %>" target="_blank" rel="noopener">View live ↗</a>
+      </div>
+
+      <% if (lang === "de" && !exists) { %>
+        <p class="notice">
+          There is no German version of this course yet. The fields below are
+          filled from the English one — translate what you need and save, and
+          the German row will be created.
+        </p>
+      <% } else if (lang === "de" && !c.translated) { %>
+        <p class="notice">
+          This German row still holds the English text, so the page tells
+          visitors it is shown in English. Translate it and save to change that.
+        </p>
+      <% } %>
+
+      <form method="post" action="/rootadmin/course/<%= encodeURIComponent(slug) %>" data-course-form>
+        <input type="hidden" name="lang" value="<%= lang %>">
+
+        <% if (showTranslate) { %>
+          <div class="ad-card" data-translate-box>
+            <h2>Translate from English</h2>
+            <p class="muted" style="font-size:.85rem;margin-top:-.5rem">
+              Fills every field below from the English version. Nothing is saved
+              until you press Save, so you can read it through and change
+              anything that reads oddly.
+            </p>
+            <button class="btn btn-sm" type="button"
+                    data-translate="/rootadmin/translate/<%= encodeURIComponent(slug) %>">
+              Translate into German
+            </button>
+            <span class="muted" style="margin-left:.7rem;font-size:.85rem" data-translate-status></span>
+          </div>
+        <% } %>
+
+        <div class="ad-card">
+          <h2>Basics</h2>
+
+          <label class="field">
+            <span>Title</span>
+            <input type="text" name="title" value="<%= v(c.title) %>" maxlength="200" required>
+          </label>
+
+          <label class="field">
+            <span>Summary — the line shown on course cards</span>
+            <input type="text" name="summary" value="<%= v(c.summary) %>" maxlength="400">
+          </label>
+
+          <div class="form-row">
+            <label class="field">
+              <span>Level</span>
+              <input type="text" name="level" value="<%= v(c.level) %>" maxlength="4" placeholder="B1">
+            </label>
+            <label class="field">
+              <span>Level label</span>
+              <input type="text" name="level_label" value="<%= v(c.levelLabel) %>" maxlength="80">
+            </label>
+            <label class="field">
+              <span>Track</span>
+              <select name="track" data-enhance aria-label="Track">
+                <% ["Regular","Weekend","Speaking","Individual","Intensive"].forEach(function (t) { %>
+                  <option value="<%= t %>" <%= c.track === t ? "selected" : "" %>><%= t %></option>
+                <% }); %>
+              </select>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label class="field">
+              <span>Course code</span>
+              <input type="text" name="code" value="<%= v(c.code) %>" maxlength="40">
+            </label>
+            <label class="field">
+              <span>Category</span>
+              <input type="text" name="category" value="<%= v(c.category) %>" maxlength="120">
+            </label>
+            <label class="field">
+              <span>Sticker — the badge on the card</span>
+              <input type="text" name="sticker" value="<%= v(c.sticker) %>" maxlength="60">
+            </label>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <h2>Price and places</h2>
+
+          <div class="form-row">
+            <label class="field">
+              <span>Price (€)</span>
+              <input type="number" name="price_eur" value="<%= v(c.priceEur) %>" min="0" step="1">
+            </label>
+            <label class="field">
+              <span>Discounted price (€) — empty for none</span>
+              <input type="number" name="discount_eur" value="<%= v(c.discountEur) %>" min="0" step="1">
+              <small class="muted">
+                What somebody actually pays. The page shows the price
+                struck through beside it, so this has to be lower than
+                the price. Empty for no offer.
+              </small>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label class="field">
+              <span>Duration</span>
+              <input type="text" name="duration" value="<%= v(c.duration) %>" maxlength="80">
+            </label>
+            <label class="field">
+              <span>Lectures</span>
+              <input type="text" name="lectures" value="<%= v(c.lectures) %>" maxlength="80">
+            </label>
+            <label class="field">
+              <span>Seats</span>
+              <input type="number" name="seats" value="<%= v(c.seats) %>" min="0" step="1">
+            </label>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" name="upcoming" value="1" <%= c.upcoming ? "checked" : "" %>>
+            <span>Show as upcoming rather than open for booking</span>
+          </label>
+        </div>
+
+        <div class="ad-card">
+          <h2>Page content</h2>
+          <p class="muted" style="font-size:.85rem;margin-top:-.5rem">
+            These four sections become the tabs on the course page. Write in
+            the boxes; <strong>Source</strong> opens the HTML when you need it,
+            which the hand-written tables in Curriculum sometimes do.
+          </p>
+
+          <%# data-rich turns each one into an editor, and nothing else.
+
+              The textarea is still the field that submits, and a box
+              nobody types in is submitted exactly as it arrived —
+              /js/editor.js only writes back to a field that was
+              actually edited. Without that, opening a course to fix its
+              title would round-trip all four of these through
+              contenteditable and quietly rewrite every table in them.
+
+              With JavaScript off, or if the file fails to load, these
+              stay the plain HTML boxes they have always been. %>
+          <label class="field">
+            <span>Description</span>
+            <textarea name="body_description" rows="9" data-rich><%= v(body.description) %></textarea>
+          </label>
+          <label class="field">
+            <span>Curriculum</span>
+            <textarea name="body_curriculum" rows="9" data-rich><%= v(body.curriculum) %></textarea>
+          </label>
+          <label class="field">
+            <span>Requirements</span>
+            <textarea name="body_requirements" rows="9" data-rich><%= v(body.requirements) %></textarea>
+          </label>
+          <label class="field">
+            <span>Exam pattern</span>
+            <textarea name="body_exam" rows="9" data-rich><%= v(body.examPattern) %></textarea>
+          </label>
+        </div>
+
+        <div class="ad-card">
+          <h2>Search engines</h2>
+          <p class="muted" style="font-size:.85rem;margin-top:-.5rem">
+            Leave these empty and the page falls back to the title and summary.
+          </p>
+
+          <label class="field">
+            <span>SEO title</span>
+            <input type="text" name="seo_title" value="<%= v(seo.title) %>" maxlength="255">
+          </label>
+          <label class="field">
+            <span>SEO description</span>
+            <input type="text" name="seo_description" value="<%= v(seo.description) %>" maxlength="500">
+          </label>
+          <label class="field">
+            <span>SEO keywords</span>
+            <input type="text" name="seo_keywords" value="<%= v(seo.keywords) %>" maxlength="500">
+          </label>
+        </div>
+
+        <div class="ad-card">
+          <h2>Visibility</h2>
+          <div class="form-row">
+            <label class="field">
+              <span>Status</span>
+              <select name="status" data-enhance aria-label="Status">
+                <% ["published","draft","archived"].forEach(function (s) { %>
+                  <option value="<%= s %>" <%= (c.status || "published") === s ? "selected" : "" %>><%= s %></option>
+                <% }); %>
+              </select>
+            </label>
+            <label class="field">
+              <span>Sort order — lower comes first</span>
+              <input type="number" name="sort_order" value="<%= v(c.sortOrder == null ? 0 : c.sortOrder) %>" step="1">
+            </label>
+          </div>
+          <p class="muted" style="font-size:.85rem">
+            Only <strong>published</strong> courses appear on the site. Draft
+            keeps the content without showing it.
+          </p>
+        </div>
+
+        <button class="btn" type="submit">Save <%= lang === "de" ? "German" : "English" %></button>
+        <a class="btn btn-ghost" href="/rootadmin">Cancel</a>
+      </form>
+
+    </main>
+  </div>
+</div>
+
+<% if (showTranslate) { %>
+<script>
+/* The Translate button.
+
+   Asks the server for the German, then writes it into the form. It does
+   not save — the editor reads it and presses Save — so a translation that
+   comes back wrong costs nothing but a page reload. */
+(function () {
+  var btn = document.querySelector("[data-translate]");
+  var status = document.querySelector("[data-translate-status]");
+  var form = document.querySelector("[data-course-form]");
+  if (!btn || !form) return;
+
+  btn.addEventListener("click", function () {
+    btn.disabled = true;
+    status.textContent = "Translating…";
+
+    fetch(btn.getAttribute("data-translate"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.j.error || "Translation failed.");
+        var n = 0;
+        Object.keys(res.j.fields || {}).forEach(function (name) {
+          var el = form.elements[name];
+          if (el) { el.value = res.j.fields[name]; n++; }
+        });
+        status.textContent = n + " fields translated — read them through, then Save.";
+      })
+      .catch(function (e) {
+        status.textContent = e.message;
+      })
+      .finally(function () {
+        btn.disabled = false;
+      });
+  });
+})();
+</script>
+<% } %>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+<script src="/js/editor.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

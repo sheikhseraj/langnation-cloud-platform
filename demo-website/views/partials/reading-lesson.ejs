@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="/css/reading.css?v=<%= site.assetVersion %>">
+<div class="reading" lang="de">
+  <% if(!locals.preview&&!locals.workspace){ %><%- include("reading-navigation",{activeLevel:ex.level,course:locals.course||'',readingPage:true}) %><% } %>
+  <% if(locals.workspace){ %>
+  <%- include('study-back',{studyHref:'/portal/lesen?'+new URLSearchParams({...(locals.course?{course:locals.course}:{})}).toString(),studyLabel:'Meine Lesetexte'}) %>
+  <header class="hw-intro"><p class="hw-eyebrow">Lesetraining · <%= ex.level %></p><h1><%= chapter.title %></h1><p class="hw-lead"><%= chapter.presentation.instructions %></p></header>
+  <% }else{ %>
+  <nav class="reading-breadcrumb" aria-label="Lesetraining-Navigation"><a href="/portal/lesen">Alle Lesetexte</a><span aria-hidden="true">›</span><a href="/portal/lesen?level=<%= ex.level %>"><%= ex.level %></a><span aria-hidden="true">›</span><span><%= chapter.title %></span></nav>
+  <p><%= chapter.presentation.instructions %></p>
+  <% } %>
+  <nav class="reading-lesson-nav" aria-label="Lesetext wechseln">
+    <% if(typeof previousLesson!=='undefined'&&previousLesson){ %><a class="btn btn-ghost btn-sm" href="/portal/lesen/<%= previousLesson %>?<%= new URLSearchParams({...(locals.course?{course:locals.course}:{})}).toString() %>" aria-label="Vorheriger Lesetext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg></a><% }else if(locals.workspace){ %><button class="btn btn-ghost btn-sm" disabled aria-label="Vorheriger Lesetext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg></button><% } %>
+    <span>Lesetext <%= typeof lessonPosition==='undefined'?1:lessonPosition %> / <%= typeof lessonTotal==='undefined'?1:lessonTotal %></span>
+    <% if(nextLesson){ %><a class="btn btn-ghost btn-sm" href="/portal/lesen/<%= nextLesson %>?<%= new URLSearchParams({...(locals.course?{course:locals.course}:{})}).toString() %>" aria-label="Nächster Lesetext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m10 5 7 7-7 7"/></svg></a><% }else if(locals.workspace){ %><button class="btn btn-ghost btn-sm" disabled aria-label="Nächster Lesetext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m10 5 7 7-7 7"/></svg></button><% } %>
+  </nav>
+  <% if(chapter.presentation.coverImage){ %><img class="reading-cover" src="<%= chapter.presentation.coverImage %>" alt="<%= chapter.presentation.coverImageAlt||'' %>"><% } %>
+  <article class="sp-card reading-passage" id="reading-passage" aria-label="Lesetext" tabindex="0">
+    <h2 class="reading-text-title"><% if(locals.workspace){ %><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15"/></svg>Lesetext<% }else{ %><%= chapter.title %><% } %></h2>
+    <% chapter.reading.contentBlocks.forEach(b=>{ %>
+      <% if(b.type==='heading'){ %><h2 id="block-<%= b.id %>" data-block="<%= b.id %>"><%= b.text %></h2><% }else{ %><p id="block-<%= b.id %>" data-block="<%= b.id %>"><%= b.text %></p><% } %>
+    <% }) %>
+  </article>
+  <p class="reading-keyboard-help">Wort markieren: Alt + D für Meaning, Alt + W für die Aktionsleiste.</p>
+  <%- include("dictionary-popover", {dictionaryModule:"reading"}) %>
+  <p id="reading-save" role="status" aria-live="polite"></p>
+  <div id="reading-progress" aria-live="polite"></div>
+  <section id="reading-questions" aria-label="Aufgaben"></section>
+  <section id="reading-completion" aria-live="polite"></section>
+  <noscript>Der Lesetext bleibt verfügbar. Bitte aktiviere JavaScript für Wörterbuch und Aufgaben.</noscript>
+</div>
+<script id="reading-data" type="application/json"><%- JSON.stringify({chapter,state,attempt,exercise:ex.id,csrf,nextLesson,savedCount,savedKeys:locals.savedKeys||[],preview:!!locals.preview,checkUrl:locals.checkUrl||null}).replace(/</g,'\\u003c') %></script>
+<script src="/js/study-icons.js?v=<%= site.assetVersion %>" defer></script>
+<script src="/js/reading.js?v=<%= site.assetVersion %>" defer></script>

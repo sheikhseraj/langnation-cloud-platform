@@ -1,0 +1,152 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.contact") %></p>
+      <h1><%= t("contact.title") %></h1>
+      <p class="lead"><%= t("contact.lead") %></p>
+    </div>
+
+    <div class="detail-grid">
+      <div>
+        <div class="notice notice-ok" data-form-success hidden>
+          <div>
+            <strong><%= t("contact.success") %></strong><br>
+            <%= t("contact.successLead") %>
+          </div>
+        </div>
+
+        <div class="notice notice-bad" data-form-error hidden><%= t("contact.error") %></div>
+
+        <form class="form" method="post" action="<%= lp('/contact') %>" data-enquiry-form novalidate>
+          <input type="hidden" name="lang" value="<%= lang %>">
+          <input type="hidden" name="sourcePage" value="<%= canonicalPath %>">
+
+          <!-- Bots fill this in; people never see it. -->
+          <div class="hp" aria-hidden="true">
+            <label for="website">Leave this empty</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <%# When the form was rendered. Nobody reads this page and
+              completes the form in under three seconds, so a submission
+              that fast is automated. Server-side only — the value is
+              never trusted for anything but scoring. %>
+          <input type="hidden" name="started_at" value="<%= Date.now() %>">
+
+          <div class="form-row form-row-2">
+            <div class="field">
+              <label for="name"><%= t("contact.name") %> <span class="req">*</span></label>
+              <input type="text" id="name" name="name" required autocomplete="name" maxlength="120">
+              <span class="err" hidden></span>
+            </div>
+            <div class="field">
+              <label for="email"><%= t("contact.email") %> <span class="req">*</span></label>
+              <input type="email" id="email" name="email" required autocomplete="email" maxlength="180">
+              <span class="err" hidden></span>
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="field">
+              <label for="phone_number"><%= t("contact.phone") %></label>
+              <%# The same two controls as the account request form and
+                  the placement details step. Three forms on one site
+                  asking for a phone number three different ways was
+                  just untidy. %>
+              <div class="row" style="gap:.4rem;align-items:stretch">
+                <select id="phone_cc" name="phone_cc" data-enhance
+                        data-search-label="<%= lang === "de" ? "Vorwahl suchen…" : "Filter codes…" %>"
+                        style="flex:0 0 9.5rem"
+                        aria-label="<%= lang === "de" ? "Ländervorwahl" : "Country code" %>">
+                  <option value=""><%= lang === "de" ? "Vorwahl" : "Code" %></option>
+                  <% countries.forEach(function (c) { %>
+                    <option value="<%= c.dial %>" <%= c.code === "DE" ? "selected" : "" %>><%= c.code %> +<%= c.dial %></option>
+                  <% }); %>
+                </select>
+                <input type="tel" id="phone_number" name="phone_number" style="flex:1"
+                       inputmode="numeric" autocomplete="tel-national" maxlength="20"
+                       placeholder="176 1234567">
+              </div>
+              <p class="field-hint"><%= lang === "de" ? "Nur Ziffern." : "Digits only." %></p>
+            </div>
+            <div class="field">
+              <label for="country"><%= t("contact.country") %></label>
+              <select id="country" name="country" data-enhance
+                      data-search-label="<%= lang === "de" ? "Land eingeben…" : "Type a country…" %>"
+                      autocomplete="country-name">
+                <option value=""><%= lang === "de" ? "Land wählen…" : "Select a country…" %></option>
+                <% countries.forEach(function (c) { %>
+                  <option value="<%= lang === "de" ? c.de : c.en %>" data-alt="<%= lang === "de" ? c.en : c.de %>"><%= lang === "de" ? c.de : c.en %></option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="course"><%= t("contact.course") %></label>
+            <select id="course" name="course" data-enhance data-search-label="<%= lang === "de" ? "Kurs suchen…" : "Find a course…" %>">
+              <option value=""><%= t("contact.coursePlaceholder") %></option>
+              <% courses.forEach(function (c) { %>
+                <option value="<%= c.slug %>" <%= selectedCourse === c.slug ? "selected" : "" %>><%= c.title %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="message"><%= t("contact.message") %> <span class="req">*</span></label>
+            <textarea id="message" name="message" required maxlength="4000"
+                      placeholder="<%= t('contact.messagePlaceholder') %>"></textarea>
+            <span class="err" hidden></span>
+          </div>
+
+          <%# Nested inside the label is already an implicit association; the
+              explicit for/id pair is added because some older assistive tech
+              only honours the explicit one. %>
+          <label class="check" for="consent">
+            <input type="checkbox" id="consent" name="consent" value="1" required>
+            <span>
+              <%= t("contact.consent") %>
+              <%= t("contact.privacyNote") %>
+              <a href="<%= lp('/privacy-policy') %>">Privacy Policy</a>.
+            </span>
+          </label>
+
+          <div>
+            <% if (turnstileKey) { %>
+              <%# Cloudflare Turnstile. Chosen over reCAPTCHA because this
+                  is a German business: reCAPTCHA sends visitor data to
+                  Google, which is a GDPR problem on a form that already
+                  collects a name and an email. Turnstile is usually
+                  invisible — most people never see a puzzle. %>
+              <div class="cf-turnstile" data-sitekey="<%= turnstileKey %>" data-theme="auto"></div>
+            <% } %>
+
+            <button class="btn" type="submit" data-submit><%= t("contact.submit") %></button>
+          </div>
+        </form>
+      </div>
+
+      <aside class="detail-aside">
+        <div class="facts">
+          <h3><%= t("contact.reachUs") %></h3>
+          <dl>
+            <div><dt>Email</dt><dd><a href="mailto:<%= site.contact.email %>"><%= site.contact.email %></a></dd></div>
+            <div><dt>WhatsApp</dt><dd><a href="https://wa.me/<%= site.contact.whatsapp.replace(/[^0-9]/g, '') %>" rel="noopener"><%= site.contact.whatsapp %></a></dd></div>
+            <div><dt>Germany</dt><dd><a href="tel:<%= site.contact.phoneDe.replace(/[^0-9+]/g, '') %>"><%= site.contact.phoneDe %></a></dd></div>
+          </dl>
+          <div class="facts-cta">
+            <p class="muted" style="font-size:.85rem"><%= site.contact.address %></p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<% if (turnstileKey) { %>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<% } %>
+<%- include("../partials/footer") %>

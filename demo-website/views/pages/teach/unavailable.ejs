@@ -1,0 +1,18 @@
+<%- include("../../partials/teach-head", { title: "Portal unavailable", teacher: null }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow center">
+    <p class="eyebrow">Teacher portal</p>
+    <h1>Not available yet</h1>
+    <%# Shown instead of a 500 when DB_* is unset. The portals are the
+        only parts of the site that cannot fall back to the JSON content
+        files, so this says so plainly rather than failing obscurely. %>
+    <p class="lead"><%= error %></p>
+    <p class="muted" style="margin-top:1.5rem;font-size:.9rem">
+      Everything else on the site works normally.
+      <a href="/contact">Contact us</a> and we will help directly.
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

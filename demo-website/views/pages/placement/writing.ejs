@@ -1,0 +1,107 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<%#
+  The written task.
+
+  This is the part multiple choice cannot reach, and the reason the
+  level that comes out of this test is worth more than a score. The
+  prompt is chosen for the level the questions arrived at, so nobody is
+  asked to discuss epistemology at A1 or introduce themselves at C1.
+%>
+
+<section class="section-tight">
+  <div class="wrap pt-shell">
+    <p class="eyebrow"><%= lang === "de" ? "Einstufungstest" : "Placement test" %> · <%= lang === "de" ? "letzter Schritt" : "last step" %></p>
+    <h1><%= lang === "de" ? "Jetzt schreiben Sie" : "Now write something" %></h1>
+
+    <p class="lead" style="margin-top:1rem">
+      <%= lang === "de"
+        ? "Die Fragen zeigen, was Sie erkennen. Dieser Text zeigt, was Sie können — und darauf sieht eine Lehrkraft, bevor Ihr Niveau bestätigt wird."
+        : "The questions show what you recognise. This shows what you can produce — and it is what a teacher reads before your level is confirmed." %>
+    </p>
+
+    <div class="notice" style="margin-top:1.5rem">
+      <div>
+        <strong><%= lang === "de" ? "Ihre Aufgabe" : "Your task" %></strong><br>
+        <%= prompt %>
+      </div>
+    </div>
+
+    <% if (error) { %>
+      <p class="notice notice-bad" style="margin-top:1.25rem">
+        <%= lang === "de"
+          ? "Das ist zu kurz. Bitte schreiben Sie mindestens " + minWords + " Wörter — etwa 8 bis 14 Sätze."
+          : "That is too short. Please write at least " + minWords + " words — around 8 to 14 sentences." %>
+      </p>
+    <% } %>
+
+    <form class="form" method="post" action="<%= lp('/placement-test/writing') %>" style="margin-top:1.5rem" data-writing-form>
+      <input type="hidden" name="s" value="<%= stateToken %>">
+      <input type="hidden" name="c" value="<%= candidateToken %>">
+
+      <div class="field">
+        <label for="text"><%= lang === "de" ? "Ihr Text" : "Your text" %></label>
+        <textarea id="text" name="text" rows="12" maxlength="6000"
+                  data-writing-text
+                  placeholder="<%= lang === "de" ? "Schreiben Sie auf Deutsch…" : "Write in German…" %>"><%= text %></textarea>
+        <%# Counts up rather than down: a limit to reach reads as a
+            target, a limit to avoid reads as a rule. %>
+        <p class="pt-count" data-writing-count data-short>0 <%= lang === "de" ? "Wörter" : "words" %></p>
+      </div>
+
+      <button class="btn" type="submit"><%= lang === "de" ? "Abgeben und Ergebnis sehen" : "Submit and see my level" %> →</button>
+    </form>
+
+    <%# Refusing to write is allowed, but not silently: the result says
+        the level rests on multiple choice alone, and so does the email
+        the teacher gets. %>
+    <form method="post" action="<%= lp('/placement-test/skip-writing') %>" style="margin-top:1rem">
+      <input type="hidden" name="s" value="<%= stateToken %>">
+      <input type="hidden" name="c" value="<%= candidateToken %>">
+      <button class="btn btn-ghost btn-sm" type="submit">
+        <%= lang === "de" ? "Überspringen — Ergebnis ist dann vorläufiger" : "Skip — my level will be less certain" %>
+      </button>
+    </form>
+
+    <p class="muted" style="font-size:.85rem;margin-top:1.5rem">
+      <%= lang === "de"
+        ? "Kein Wörterbuch, kein Übersetzer, keine KI — daran ändert sich nichts. Ein Text, der nicht Ihrer ist, bringt Sie in einen Kurs, in dem Sie nicht mitkommen."
+        : "Still no dictionary, translator or AI. A text that is not yours puts you in a class you cannot follow." %>
+    </p>
+  </div>
+</section>
+
+<script>
+/* Word count, live.
+
+   Counts up to the minimum rather than down from a maximum: something
+   to reach reads as a target, something to avoid reads as a rule. The
+   server checks the same number, so this is encouragement rather than
+   enforcement. */
+(function () {
+  var box = document.querySelector("[data-writing-text]");
+  var out = document.querySelector("[data-writing-count]");
+  if (!box || !out) return;
+
+  var MIN = <%- JSON.stringify(minWords) %>;
+  var DE = <%- JSON.stringify(lang === "de") %>;
+
+  function count() {
+    var n = box.value.trim().split(/\s+/).filter(Boolean).length;
+    var word = DE ? "Wörter" : "words";
+    if (n < MIN) {
+      out.setAttribute("data-short", "");
+      out.textContent = n + " " + word + " — " + (DE ? "mindestens " : "at least ") + MIN;
+    } else {
+      out.removeAttribute("data-short");
+      out.textContent = n + " " + word + (DE ? " — das reicht" : " — that is enough");
+    }
+  }
+
+  box.addEventListener("input", count);
+  count();
+})();
+</script>
+
+<%- include("../../partials/footer") %>

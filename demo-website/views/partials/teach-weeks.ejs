@@ -1,0 +1,24 @@
+<%#
+  How far to look, forward and back.
+
+  Two weeks answers the ordinary question and keeps the page short; the
+  rest is a link away rather than a wall nobody reads to the end. Plain
+  links, so each view has an address, and the batch filter is carried
+  along — changing the window should not quietly widen the filter too.
+
+  Expects: weeks, weekChoices, only. Optionally show, which is
+  carried along so widening the window does not put the hidden
+  half back, and base — the page these links belong to, because the
+  attendance page needs the same control and a partial that hard-codes
+  one address is a partial with one caller.
+%>
+<% const at = typeof base !== "undefined" && base ? base : "/teach/schedule"; %>
+<span class="tl-weeks">
+  <% weekChoices.forEach(function (n) { %>
+    <% if (n === weeks) { %>
+      <span class="tl-week is-on"><%= n %>w</span>
+    <% } else { %>
+      <a class="tl-week" href="<%= at %>?weeks=<%= n %><%= (typeof show !== "undefined" && show && show !== "both") ? "&show=" + show : "" %><%= only ? "&batch=" + only : "" %>"><%= n %>w</a>
+    <% } %>
+  <% }); %>
+</span>

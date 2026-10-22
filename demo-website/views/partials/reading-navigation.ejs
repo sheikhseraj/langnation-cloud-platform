@@ -1,0 +1,7 @@
+<nav class="reading-local-nav" aria-label="Lernen">
+  <a href="/portal/homework">Aufgaben</a><a href="/portal/lesen" aria-current="page">Lesetraining</a><a href="/portal/vocabulary">Wortschatz</a>
+  <% if(locals.readingPage){ %><a href="#reading-questions">Fortschritt</a><% } %>
+</nav>
+<nav class="reading-levels" aria-label="Lesetraining Sprachniveau">
+  <% ['A1','A2','B1','B2','C1','C2'].forEach(level=>{ %><a href="/portal/lesen?<%= new URLSearchParams({level,...(locals.course?{course:locals.course}:{})}).toString() %>"<%- locals.activeLevel===level?' aria-current="page"':'' %>><%= level %></a><% }) %>
+</nav>

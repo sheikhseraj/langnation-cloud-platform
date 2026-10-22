@@ -1,0 +1,354 @@
+[
+  {
+    "from": "/German-Regular-A1",
+    "to": "/courses/german-regular-a1"
+  },
+  {
+    "from": "/German-Regular-A2",
+    "to": "/courses/german-regular-a2"
+  },
+  {
+    "from": "/German-Regular-B1",
+    "to": "/courses/german-regular-b1"
+  },
+  {
+    "from": "/German-Regular-B2",
+    "to": "/courses/german-regular-b2"
+  },
+  {
+    "from": "/German-Weekend-A1",
+    "to": "/courses/german-weekend-a1"
+  },
+  {
+    "from": "/German-Weekend-A2",
+    "to": "/courses/german-weekend-a2"
+  },
+  {
+    "from": "/German-Weekend-B1",
+    "to": "/courses/german-weekend-b1"
+  },
+  {
+    "from": "/German-Speaking-Course-A1-A2",
+    "to": "/courses/german-speaking-course-a1-a2"
+  },
+  {
+    "from": "/Individual-Training-a1",
+    "to": "/courses/individual-training-a1"
+  },
+  {
+    "from": "/German-Regular-C1",
+    "to": "/courses/german-regular-c1"
+  },
+  {
+    "from": "/German-Regular-C2",
+    "to": "/courses/german-regular-c2"
+  },
+  {
+    "from": "/Individual-Training-a2",
+    "to": "/courses/individual-training-a2"
+  },
+  {
+    "from": "/German-Speaking-Course-B1-B2",
+    "to": "/courses/german-speaking-course-b1-b2"
+  },
+  {
+    "from": "/Intensive-Courses",
+    "to": "/courses/intensive-courses"
+  },
+  {
+    "from": "/Telc-Deutsch-C2",
+    "to": "/courses"
+  },
+  {
+    "from": "/German-Evening-A1",
+    "to": "/courses"
+  },
+  {
+    "from": "/German-Evening-A2",
+    "to": "/courses"
+  },
+  {
+    "from": "/German-Evening-B1",
+    "to": "/courses"
+  },
+  {
+    "from": "/Intensive-A1-to-B1",
+    "to": "/courses"
+  },
+  {
+    "from": "/Intensive-B2-to-C1",
+    "to": "/courses"
+  },
+  {
+    "from": "/LangNation-Pro-A1-to-B2",
+    "to": "/courses"
+  },
+  {
+    "from": "/German-Combined-A1-and-A2",
+    "to": "/courses"
+  },
+  {
+    "from": "/German-Combined-A2-and-B1",
+    "to": "/courses"
+  },
+  {
+    "from": "/German-Combined-B1-and-B2",
+    "to": "/courses"
+  },
+  {
+    "from": "/From-B1",
+    "to": "/courses"
+  },
+  {
+    "from": "/Vocabulary-Session",
+    "to": "/courses"
+  },
+  {
+    "from": "/Goethe-Zertifikat-A1",
+    "to": "/courses"
+  },
+  {
+    "from": "/Goethe-Zertifikat-A2",
+    "to": "/courses"
+  },
+  {
+    "from": "/Goethe-Zertifikat-B1",
+    "to": "/courses"
+  },
+  {
+    "from": "/Goethe-Zertifikat-B2",
+    "to": "/courses"
+  },
+  {
+    "from": "/Goethe-Zertifikat-C1",
+    "to": "/courses"
+  },
+  {
+    "from": "/Telc-Deutsch-A1",
+    "to": "/courses"
+  },
+  {
+    "from": "/Telc-Deutsch-A2",
+    "to": "/courses"
+  },
+  {
+    "from": "/Telc-Deutsch-B1",
+    "to": "/courses"
+  },
+  {
+    "from": "/Telc-Deutsch-B2",
+    "to": "/courses"
+  },
+  {
+    "from": "/Telc-Deutsch-C1",
+    "to": "/courses"
+  },
+  {
+    "from": "/Exam-Prepration-For-DSH",
+    "to": "/courses"
+  },
+  {
+    "from": "/Exam-Prepration-TestDaF",
+    "to": "/courses"
+  },
+  {
+    "from": "/Intensive-A1-to-B1-and-Speaking-for-Jobs",
+    "to": "/courses"
+  },
+  {
+    "from": "/Goethe-Zertifikat-C2",
+    "to": "/courses"
+  },
+  {
+    "from": "/0",
+    "to": "/courses"
+  },
+  {
+    "from": "/about-us",
+    "to": "/about"
+  },
+  {
+    "from": "/our-team",
+    "to": "/about"
+  },
+  {
+    "from": "/contact-us",
+    "to": "/contact"
+  },
+  {
+    "from": "/event",
+    "to": "/events"
+  },
+  {
+    "from": "/site/events/event",
+    "to": "/events"
+  },
+  {
+    "from": "/site/cms/contact_us",
+    "to": "/contact"
+  },
+  {
+    "from": "/einstufungstest",
+    "to": "/placement-test"
+  },
+  {
+    "from": "/grade-calculator",
+    "to": "/grade-converter"
+  },
+  {
+    "from": "/site/cms/grade_calculator",
+    "to": "/grade-converter"
+  },
+  {
+    "from": "/ects-calculator",
+    "to": "/ects-converter"
+  },
+  {
+    "from": "/ielts-calculator",
+    "to": "/tools"
+  },
+  {
+    "from": "/toefl-calculator",
+    "to": "/tools"
+  },
+  {
+    "from": "/site/user_login/login",
+    "to": "/portal/login"
+  },
+  {
+    "from": "/site/cart/success",
+    "to": "/"
+  },
+  {
+    "from": "/verify",
+    "to": "/contact"
+  },
+  {
+    "from": "/site/course_details/german_course_multiple/14/5/10",
+    "to": "/courses"
+  },
+  {
+    "from": "/site/course_details/german_course_multiple/14/5/14",
+    "to": "/courses"
+  },
+  {
+    "from": "/site/course_details/german_course_multiple/14/5/21",
+    "to": "/courses/intensive-courses"
+  },
+  {
+    "from": "/site/course_details/german_course_multiple/14/6/17",
+    "to": "/courses"
+  },
+  {
+    "from": "/site/course_details/german_course_multiple/14/6/19",
+    "to": "/courses"
+  },
+  {
+    "from": "/site/course_details/german_course_multiple/14/7/26/certificate",
+    "to": "/exam-papers"
+  },
+  {
+    "from": "/site/cms/study?id=88",
+    "to": "/grundschule"
+  },
+  {
+    "from": "/site/cms/study?id=89",
+    "to": "/realschule"
+  },
+  {
+    "from": "/site/cms/study?id=90",
+    "to": "/gymnasium"
+  },
+  {
+    "from": "/site/cms/study?id=91",
+    "to": "/bachelor"
+  },
+  {
+    "from": "/site/cms/study?id=92",
+    "to": "/master"
+  },
+  {
+    "from": "/site/cms/study?id=93",
+    "to": "/phd"
+  },
+  {
+    "from": "/site/cms/study?id=94",
+    "to": "/ausbildung"
+  },
+  {
+    "from": "/site/cms/study?id=95",
+    "to": "/praktikum"
+  },
+  {
+    "from": "/site/cms/study?id=96",
+    "to": "/city-registration"
+  },
+  {
+    "from": "/site/cms/study?id=97",
+    "to": "/tax-id"
+  },
+  {
+    "from": "/site/cms/study?id=98",
+    "to": "/social-insurance"
+  },
+  {
+    "from": "/site/cms/study?id=99",
+    "to": "/criminal-record-certificate"
+  },
+  {
+    "from": "/site/cms/study?id=100",
+    "to": "/housing"
+  },
+  {
+    "from": "/site/cms/study?id=101",
+    "to": "/electricity"
+  },
+  {
+    "from": "/site/cms/study?id=102",
+    "to": "/heating-and-water"
+  },
+  {
+    "from": "/site/cms/study?id=103",
+    "to": "/professional-jobs"
+  },
+  {
+    "from": "/site/cms/study?id=104",
+    "to": "/student-jobs"
+  },
+  {
+    "from": "/site/cms/study?id=105",
+    "to": "/other-jobs"
+  },
+  {
+    "from": "/site/cms/study",
+    "to": "/study-material"
+  },
+  {
+    "from": "/site/cms/blog_details/2",
+    "to": "/blog"
+  },
+  {
+    "from": "/site/cms/blog_details/3",
+    "to": "/blog"
+  },
+  {
+    "from": "/site/cms/blog_details/4",
+    "to": "/blog"
+  },
+  {
+    "from": "/site/cms/blog_details/5",
+    "to": "/blog"
+  },
+  {
+    "from": "/site/cms/blog_details/10",
+    "to": "/blog"
+  },
+  {
+    "from": "/legal-disclosure",
+    "to": "/imprint"
+  },
+  {
+    "from": "/legal-discloser",
+    "to": "/imprint"
+  }
+]

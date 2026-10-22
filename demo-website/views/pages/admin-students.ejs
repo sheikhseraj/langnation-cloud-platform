@@ -1,0 +1,239 @@
+<%
+  const stamp = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : "—");
+  // Named `link`, not `q`: the search term is already called q and a
+  // helper by the same name would shadow it.
+  const link = (opts = {}) => {
+    const p = new URLSearchParams();
+    if (opts.stage) p.set("stage", opts.stage);
+    if (opts.q) p.set("q", opts.q);
+    const s = p.toString();
+    return "/admin/students" + (s ? "?" + s : "");
+  };
+
+  const SHORT = {
+    requested: "Asked", approved: "Approved", active: "Created",
+    suspended: "Suspended", refused: "Refused", closed: "Closed",
+  };
+  const TONE = {
+    active: " pill-live", suspended: " pill-bad",
+    refused: " pill-bad", closed: " pill-bad",
+  };
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Students", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "students" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Students",
+      adCrumbs: [{ label: "Admin", href: "/admin/dashboard" }, { label: "Students" }],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (!dbOk) { %>
+        <p class="notice notice-bad">
+          The database is unreachable, so nobody can be listed. This is not the
+          same as there being nobody.
+        </p>
+      <% } %>
+
+      <%#
+        Everybody, at whichever of the three steps they have reached:
+        asked for an account, approved but not signed up, or signed up.
+        Somebody who appears in both tables is shown once — the account
+        is the later and truer state, and the request behind it is
+        carried alongside rather than listed again.
+      %>
+      <div class="ad-tiles">
+        <a class="ad-tile<%= counts.requested ? " is-live" : "" %>" href="<%= link({ stage: "requested", q: q }) %>">
+          <span class="ad-tile-n"><%= counts.requested %></span>
+          <span class="ad-tile-l">asked for an account</span>
+        </a>
+        <a class="ad-tile<%= counts.approved ? " is-live" : "" %>" href="<%= link({ stage: "approved", q: q }) %>">
+          <span class="ad-tile-n"><%= counts.approved %></span>
+          <span class="ad-tile-l">approved, not signed up</span>
+        </a>
+        <a class="ad-tile" href="<%= link({ stage: "active", q: q }) %>">
+          <span class="ad-tile-n"><%= counts.active %></span>
+          <span class="ad-tile-l">accounts created</span>
+        </a>
+        <a class="ad-tile" href="/admin/students">
+          <span class="ad-tile-n"><%= counts.total %></span>
+          <span class="ad-tile-l">people in total</span>
+        </a>
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <span>Step</span>
+          <div class="chips">
+            <a class="chip" href="<%= link({ q: q }) %>" aria-pressed="<%= stage === "" ? "true" : "false" %>">
+              All (<%= counts.total %>)
+            </a>
+            <% stages.forEach(function (s) { %>
+              <% if (!counts[s.key]) return; %>
+              <a class="chip" href="<%= link({ stage: s.key, q: q }) %>"
+                 aria-pressed="<%= stage === s.key ? "true" : "false" %>">
+                <%= s.label %> (<%= counts[s.key] %>)
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+
+      <form method="get" action="/admin/students"
+            class="row" style="gap:.6rem;align-items:flex-end;margin-bottom:1.25rem;flex-wrap:wrap">
+        <% if (stage) { %><input type="hidden" name="stage" value="<%= stage %>"><% } %>
+        <label class="field" style="flex:1 1 18rem;margin:0">
+          <span>Search</span>
+          <input type="search" name="q" value="<%= q %>" placeholder="Name, email, reference or country">
+        </label>
+        <button class="btn btn-sm btn-ghost" type="submit">Search</button>
+        <% if (q || stage) { %>
+          <a class="btn btn-sm btn-ghost" href="/admin/students">Clear</a>
+        <% } %>
+      </form>
+
+      <%# Announces what was copied. A tick on the button is invisible
+          to a screen reader, and "copied" with no subject is useless. %>
+      <p class="sr-only" role="status" aria-live="polite" data-copy-live></p>
+
+      <div class="ad-card">
+        <%# Above the list and not inside it: suspending the last
+            person a filter matched leaves an empty table, and the
+            confirmation is exactly what somebody needs to read at
+            that moment. %>
+        <% if (typeof done !== "undefined" && done) { %>
+          <p class="notice notice-ok"><%= done %></p>
+        <% } %>
+        <% if (typeof problem !== "undefined" && problem) { %>
+          <p class="notice notice-bad"><%= problem %></p>
+        <% } %>
+
+        <% if (!rows.length) { %>
+          <p class="muted" style="margin:0">
+            <%= counts.total
+                  ? "Nobody matches that. Clear the filters to see everyone."
+                  : "Nobody yet. People appear here the moment they ask for an account." %>
+          </p>
+        <% } else { %>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Person</th><th>Reference</th><th>Step</th>
+                  <th>Asked</th><th>Decided</th><th>Signed up</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% rows.forEach(function (p) { %>
+                  <tr>
+                    <td>
+                      <strong><%= p.name %></strong>
+                      <div class="muted" style="font-size:.8rem">
+                        <% if (p.reachable) { %>
+                          <span class="ad-email">
+                            <a href="mailto:<%= p.email %>"><%= p.email %></a>
+                            <%# Copying an address out of a table means
+                                selecting it without catching the row
+                                either side, which on a trackpad is
+                                fiddly. One button does it exactly. %>
+                            <button type="button" class="ad-copy" data-copy="<%= p.email %>"
+                                    aria-label="Copy <%= p.email %>" title="Copy address">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                                   aria-hidden="true">
+                                <rect x="9" y="9" width="11" height="11" rx="2"/>
+                                <path d="M5 15V5a2 2 0 0 1 2-2h10"/>
+                              </svg>
+                            </button>
+                          </span>
+                        <% } else { %>
+                          <span title="This account was closed; the address was removed.">— address removed —</span>
+                        <% } %>
+                        <% if (p.country) { %> · <%= p.country %><% } %>
+                      </div>
+                    </td>
+                    <td><%= p.ref || "—" %></td>
+                    <td>
+                      <span class="pill<%= TONE[p.stage] || "" %>"><%= SHORT[p.stage] || p.stage %></span>
+                    </td>
+                    <td class="muted" style="font-size:.82rem"><%= stamp(p.requestedAt) %></td>
+                    <td class="muted" style="font-size:.82rem"><%= stamp(p.decidedAt) %></td>
+                    <td class="muted" style="font-size:.82rem">
+                      <%= p.studentId ? stamp(p.createdAt) : "—" %>
+                    </td>
+                    <td style="white-space:nowrap">
+                      <%# Straight to wherever this person is acted on:
+                          a pending request is decided, an account is
+                          enrolled on a batch. %>
+                      <% if (p.stage === "requested") { %>
+                        <a class="btn btn-sm" href="/admin/requests?status=pending">Decide</a>
+                      <% } else if (p.stage === "approved" && !p.studentId) { %>
+                        <a class="btn btn-sm btn-ghost" href="/admin/requests?status=approved">View</a>
+                      <% } %>
+
+                      <%# Suspend, and let back in.
+
+                          For fees: somebody who has not settled stops
+                          having access until they do, and gets it all
+                          back the moment they pay. Nothing is deleted,
+                          so "all back" means the same homework, the
+                          same scores and the same place in the class.
+
+                          A closed account gets neither button. Closing
+                          threw the address and the password away and
+                          cannot be undone, so offering to let one back
+                          in would be offering something that does not
+                          work. %>
+                      <% if (p.studentId && p.stage !== "closed" && p.stage !== "requested") { %>
+                        <form method="post" action="/admin/students/act" style="display:inline">
+                          <input type="hidden" name="id" value="<%= p.studentId %>">
+                          <input type="hidden" name="q" value="<%= q %>">
+                          <input type="hidden" name="stage" value="<%= stage %>">
+                          <% if (p.stage === "suspended") { %>
+                            <button class="btn btn-sm" type="submit" name="action" value="activate">
+                              Let back in
+                            </button>
+                          <% } else { %>
+                            <button class="btn btn-sm btn-ghost" type="submit" name="action" value="suspend"
+                                    data-confirm-simple="Suspend <%= p.name %>? They lose access until you let them back in. Nothing is deleted.">
+                              Suspend
+                            </button>
+                          <% } %>
+                        </form>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+      <p class="muted" style="font-size:.85rem">
+        A person asks for an account, the office approves it, and only then can
+        they create one — so the three steps are three different states and this
+        list shows which. Approving happens on
+        <a href="/admin/requests">Account requests</a>; putting somebody on a
+        course happens in the <a href="/rootadmin/batches">site editor</a>.
+      </p>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

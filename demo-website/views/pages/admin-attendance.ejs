@@ -1,0 +1,310 @@
+<%
+  const day = (v) => new Date(v + "T12:00:00Z")
+    .toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+  // last_seen is a full timestamp, not a YYYY-MM-DD, so it needs its
+  // own formatter rather than day()'s "append midday and hope".
+  const stamp = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : "—");
+
+  // Same source as the chart's legend, so the dot beside a batch in
+  // the table is the colour of its line above. Handed in by the route.
+  const colour = lineColour;
+
+  const picked = new Set(chosen.map(Number));
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Attendance", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "attendance" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Attendance",
+      adCrumbs: [{ label: "Admin", href: "/admin/dashboard" }, { label: "Attendance" }],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (!dbOk) { %>
+        <p class="notice notice-bad">
+          The database is unreachable, so nothing can be charted. That is not
+          the same as there being no attendance.
+        </p>
+      <% } %>
+
+      <%#
+        Teachers whose registers are more than a week past their Sunday.
+
+        By the time a name reaches this table it has been on that
+        teacher's own dashboard for seven days, so this is not a first
+        warning -- it is the point at which the reminder has
+        demonstrably not worked and it stops being one person's problem.
+
+        The classes are named, because "chase Frau Weber" is not
+        actionable and "three classes, oldest 14 September" is.
+
+        It sits above the charts on purpose: everything else on this page
+        is a number to read, and this is the only thing on it that needs
+        somebody to do something today. It appears only when there is
+        something to do, so on a normal week the page looks exactly as
+        it did before.
+
+        Across EVERY batch, not the ones selected below. The office
+        choosing to chart two batches is not a statement that the other
+        twenty do not matter.
+      %>
+      <% if (chase.length) { %>
+        <div class="ad-card ad-chase">
+          <h2>Registers not taken</h2>
+          <p class="muted">
+            <%= chase.length %> <%= chase.length === 1 ? "teacher has" : "teachers have" %>
+            attendance outstanding more than <%= escalateAfter %> days past its Sunday.
+            They have been told on their own dashboard since it fell due.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Teacher</th><th>Classes</th><th>Oldest</th><th>Behind by</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% chase.forEach(function (t) { %>
+                <tr>
+                  <td>
+                    <%= t.name %>
+                    <% if (t.email) { %>
+                      <div class="muted" style="font-size:.8rem"><%= t.email %></div>
+                    <% } %>
+                  </td>
+                  <td>
+                    <%= t.lessons.length %>
+                    <div class="muted" style="font-size:.8rem">
+                      <%= [...new Set(t.lessons.map(function (l) { return l.batch_code; }))].join(", ") %>
+                    </div>
+                  </td>
+                  <td><%= t.lessons[0].on %></td>
+                  <td><%= t.worstDaysLate %> days</td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+
+      <%#
+        A plain multiple select. It works with no JavaScript, it is what
+        a keyboard and a screen reader already know how to drive, and
+        holding ctrl to pick a second batch is a gesture the office
+        already uses everywhere else in the operating system.
+      %>
+      <div class="ad-card">
+        <form method="get" action="/admin/attendance"
+              style="display:grid;gap:.8rem;grid-template-columns:minmax(16rem,1fr) auto;align-items:end">
+          <label class="field" style="margin:0">
+            <span>Batches</span>
+            <select name="batch" multiple size="6">
+              <% options.forEach(function (b) { %>
+                <option value="<%= b.id %>"<%= picked.has(Number(b.id)) ? " selected" : "" %>>
+                  <%= b.code %> — <%= b.course_title || "course removed" %><%
+                    if (b.teacher_name) { %> · <%= b.teacher_name %><% }
+                  %><% if (!Number(b.marks)) { %> · no register yet<% } %>
+                </option>
+              <% }); %>
+            </select>
+            <small class="muted">
+              Hold ctrl — or cmd on a Mac — to compare several. Nothing chosen
+              shows the batches currently running.
+            </small>
+          </label>
+          <div>
+            <button class="btn" type="submit">Show</button>
+          </div>
+        </form>
+      </div>
+
+      <% if (!chart.lines.length) { %>
+        <div class="ad-card">
+          <p class="muted" style="margin:0">
+            Nothing to chart for that choice. A batch appears here once a
+            teacher has taken at least one register on it.
+            <% if (untouched) { %>
+              <br><br>
+              <strong><%= untouched %></strong>
+              <%= untouched === 1 ? "batch has" : "batches have" %> no register at all
+              — which usually means the teacher has not been shown
+              <a href="/teach" target="_blank" rel="noopener">the register</a> yet,
+              or the batch has no teacher account assigned in the
+              <a href="/rootadmin/batches">site editor</a>.
+            <% } %>
+          </p>
+        </div>
+      <% } else { %>
+
+        <div class="ad-card">
+          <%- include("../partials/attendance-chart", { chart: chart }) %>
+        </div>
+
+        <%# The same numbers as a table. A chart shows a shape; a table
+            is what somebody copies into an email. %>
+        <div class="ad-card">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Batch</th>
+                  <th scope="col">Registers</th>
+                  <th scope="col">Here</th>
+                  <th scope="col">Late</th>
+                  <th scope="col">Missed</th>
+                  <th scope="col">Excused</th>
+                  <th scope="col">Attendance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% chart.lines.forEach(function (l, i) { %>
+                  <tr>
+                    <td>
+                      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:<%= colour(i) %>;margin-right:.4rem"></span>
+                      <strong><%= l.label %></strong>
+                      <div class="muted" style="font-size:.8rem"><%= l.title || "" %></div>
+                    </td>
+                    <td><%= l.lessons %></td>
+                    <td><%= l.counts.present %></td>
+                    <td><%= l.counts.late %></td>
+                    <td><%= l.counts.absent %></td>
+                    <td><%= l.counts.excused %></td>
+                    <td>
+                      <% if (l.rate === null) { %>
+                        <span class="muted">—</span>
+                      <% } else { %>
+                        <span class="sp-rate sp-rate-<%= l.band %>"><%= l.rate %>%</span>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <p class="muted" style="font-size:.85rem;margin:.9rem 0 0">
+            Late counts as attended. Excused absences are left out of the sum
+            entirely, so they neither help nor hurt the figure — the same rule
+            the teacher's pages and the student's own page use.
+          </p>
+        </div>
+      <% } %>
+
+      <%#
+        Who to ring, and whose teacher to tell.
+
+        Worst first, which is the whole point — a list the office has to
+        sort itself is a list whose purpose has been handed back to
+        them. One row per student per batch rather than per student:
+        somebody on two courses can be fine on one and missing from the
+        other, and averaging the two hides exactly the batch that needs
+        the call.
+
+        The teacher's name is on every row because the answer to "this
+        student is at 40%" is "tell their teacher to ask why", and
+        looking that up separately is the step that does not get taken.
+      %>
+      <% if (students.length || poorCount || only) { %>
+        <div class="ad-card">
+          <div class="row" style="justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap">
+            <h2 style="margin:0;font-size:1.05rem">Students</h2>
+            <div class="chips" style="margin:0">
+              <a class="chip" href="/admin/attendance?<%= chosen.map((id) => "batch=" + id).join("&") %>"
+                 aria-pressed="<%= only ? "false" : "true" %>">Everyone</a>
+              <a class="chip" href="/admin/attendance?<%= chosen.map((id) => "batch=" + id).join("&") %>&only=poor"
+                 aria-pressed="<%= only ? "true" : "false" %>">
+                Below <%= poor %>% (<%= poorCount %>)
+              </a>
+            </div>
+          </div>
+
+          <% if (!students.length) { %>
+            <p class="muted" style="margin:.8rem 0 0">
+              <% if (only) { %>
+                Nobody on these batches is below <%= poor %>%. That is the
+                answer you wanted.
+              <% } else { %>
+                Nobody is enrolled on the batches you chose.
+              <% } %>
+            </p>
+          <% } else { %>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Student</th>
+                    <th scope="col">Batch</th>
+                    <th scope="col">Teacher</th>
+                    <th scope="col">Here</th>
+                    <th scope="col">Missed</th>
+                    <th scope="col">Last seen</th>
+                    <th scope="col">Attendance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% students.forEach(function (r) { %>
+                    <tr>
+                      <td>
+                        <strong><%= r.name %></strong>
+                        <div class="muted" style="font-size:.8rem">
+                          <% if (r.student_ref) { %><%= r.student_ref %> · <% } %>
+                          <a href="mailto:<%= r.email %>"><%= r.email %></a>
+                          <% if (r.phone) { %> · <%= r.phone %><% } %>
+                        </div>
+                      </td>
+                      <td>
+                        <%= r.batch_code %>
+                        <% if (r.enrolment_status !== "active") { %>
+                          <div class="muted" style="font-size:.8rem"><%= r.enrolment_status %></div>
+                        <% } %>
+                      </td>
+                      <td><%= r.teacher_name || "—" %></td>
+                      <td><%= r.present + r.late %></td>
+                      <td><%= r.absent %></td>
+                      <td><%= r.last_seen ? stamp(r.last_seen) : "—" %></td>
+                      <td>
+                        <%# A dash, never 0%. "No register taken on this
+                            batch" and "came to nothing" must not look
+                            the same — one is a student to ring and the
+                            other is a teacher to remind. %>
+                        <% if (r.rate === null) { %>
+                          <span class="muted">—</span>
+                        <% } else { %>
+                          <span class="sp-rate sp-rate-<%= r.band %>"><%= r.rate %>%</span>
+                          <% if (r.band === "poor") { %>
+                            <div class="muted" style="font-size:.78rem;color:var(--danger)">tell the teacher</div>
+                          <% } %>
+                        <% } %>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <p class="muted" style="font-size:.85rem;margin:.9rem 0 0">
+              <%= good %>% and above is healthy; below <%= poor %>% is where a
+              teacher should be asking what is going on. Worst first, so the
+              top of this list is the call to make.
+            </p>
+          <% } %>
+        </div>
+      <% } %>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

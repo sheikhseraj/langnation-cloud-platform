@@ -1,0 +1,57 @@
+# Version control and dependencies
+.git
+**/.git
+node_modules
+**/node_modules
+# Environment secrets; only the blank template belongs in the build context
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+# Build output, caches, runtime files and local workbenches
+.next
+dist
+build
+coverage
+*.log
+**/*.log
+**/.cache
+**/cache
+**/__pycache__
+**/*.tsbuildinfo
+.npm
+.yarn
+.pnpm-store
+.turbo
+.parcel-cache
+.vite
+tmp
+temp
+logs
+reports
+uploads
+**/uploads
+data/*.ndjson
+tools/_work
+tools/_probe.js
+public/_preview
+.idea
+.vscode
+.vs
+.claude
+.aws
+.ssh
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/*.dump
+**/*.sqlite*
+**/.DS_Store
+**/Thumbs.db
+**/desktop.ini
+# Capstone container does not package the large local exam archive.
+# These static downloads can later be served separately from S3/CloudFront.
+public/downloads/question-papper/

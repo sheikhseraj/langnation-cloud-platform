@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="de" data-theme-default data-ground="<%= site.ground %>">
+<head><%- include('../partials/admin-head',{adTitle:'Lesen Vorschau',site}) %></head>
+<body>
+<div class="ad-shell">
+  <%- include('../partials/admin-side',{adCurrent:'lesen',adArea:'content'}) %>
+  <main class="ad-body">
+    <h1><%= chapter.title %> · Vorschau</h1>
+    <p>Gespeicherter Stand. Antworten werden nur in dieser Vorschau geprüft. Kein studentischer Fortschritt wird gespeichert; Wörterbuch und Vokabelspeicherung sind deaktiviert.</p>
+    <%- include('../partials/reading-lesson') %>
+  </main>
+</div>
+</body></html>

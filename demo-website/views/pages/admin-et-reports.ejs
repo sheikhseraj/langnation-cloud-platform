@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Question reports", site: site }) %>
+</head>
+<body>
+
+<%#
+  What learners have told us is wrong with the Einbürgerungstest
+  catalogue.
+
+  The reason this screen exists: ten of the picture answers were wrong
+  for weeks, and nothing we had would ever have caught them. A person
+  reading the questions did. This is their way back to us, and it
+  is only worth having if somebody actually reads it — so the queue is
+  short, each row carries the question it is about, and acting on one
+  is two clicks.
+%>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "etreports" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Question reports",
+      adCrumbs: [{ label: "Admin" }, { label: "Question reports" }],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (notice) { %>
+        <p class="notice notice-ok"><%= notice %></p>
+      <% } %>
+
+      <%# An unreachable database looks exactly like an empty queue, and
+          the difference is whether somebody's report is sitting unread. %>
+      <% if (!dbOk) { %>
+        <p class="notice notice-bad">
+          The database is unreachable, so no reports can be shown. That is
+          not the same as there being none.
+        </p>
+      <% } %>
+
+      <div class="chips" style="margin-bottom:1.25rem">
+        <% [["open","Open"],["done","Dealt with"],["dismissed","Not a fault"]].forEach(function (pair) { %>
+          <a class="chip" href="/admin/einbuergerungstest?status=<%= pair[0] %>"
+             aria-pressed="<%= status === pair[0] ? 'true' : 'false' %>">
+            <%= pair[1] %> (<%= counts[pair[0]] || 0 %>)
+          </a>
+        <% }); %>
+      </div>
+
+      <% if (!rows.length) { %>
+        <div class="ad-card">
+          <p class="muted" style="margin:0">
+            <% if (status === "open") { %>
+              Nothing waiting. Reports arrive from the “Fehler melden” button
+              on each question at <a href="/einbuergerungstest" target="_blank" rel="noopener">/einbuergerungstest</a>.
+            <% } else { %>
+              None yet.
+            <% } %>
+          </p>
+        </div>
+      <% } %>
+
+      <% rows.forEach(function (r) { %>
+        <div class="ad-card">
+          <div class="row" style="justify-content:space-between;align-items:flex-start;gap:1rem">
+            <div style="min-width:0">
+              <h3 style="margin:0 0 .2rem;font-size:1.05rem">
+                Frage <%= r.question_no || "?" %>
+                <span class="muted" style="font-weight:400">· <%= r.question_id %></span>
+              </h3>
+              <div class="muted" style="font-size:.86rem">
+                <%= new Date(r.created_at).toISOString().slice(0,16).replace("T"," ") %>
+                · read in <%= r.lang === "de" ? "German" : "English" %>
+              </div>
+            </div>
+            <div class="row" style="gap:.4rem;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end">
+              <span class="pill<%= r.status === 'open' ? ' pill-live' : '' %>"><%= KIND_LABEL[r.kind] || r.kind %></span>
+              <%# Three people reporting one question is a far stronger
+                  signal than three people reporting three, and without
+                  this the two read identically in a list. %>
+              <% if (r.same_question > 0) { %>
+                <span class="pill" style="color:var(--danger)">
+                  <%= r.same_question %> more on this question
+                </span>
+              <% } %>
+            </div>
+          </div>
+
+          <% if (r.question) { %>
+            <div style="margin-top:.9rem;padding-top:.85rem;border-top:1px solid var(--line)">
+              <div class="muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem">
+                The question as it was when reported
+              </div>
+              <div style="font-size:.94rem;line-height:1.6"><%= r.question %></div>
+            </div>
+          <% } %>
+
+          <div style="margin-top:.9rem;padding-top:.85rem;border-top:1px solid var(--line)">
+            <div class="muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem">
+              What they said
+            </div>
+            <div style="white-space:pre-wrap;font-size:.94rem;line-height:1.6"><%= r.message %></div>
+          </div>
+
+          <div class="row" style="gap:1rem;margin-top:.9rem;flex-wrap:wrap;align-items:center">
+            <% if (r.email) { %>
+              <span class="row" style="gap:.35rem;align-items:center;font-size:.88rem">
+                <a href="mailto:<%= r.email %>?subject=<%= encodeURIComponent('Einbürgerungstest – Frage ' + (r.question_no || '')) %>"><%= r.email %></a>
+                <button type="button" class="ad-copy" data-copy="<%= r.email %>"
+                        aria-label="Copy <%= r.email %>" title="Copy address">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                       aria-hidden="true">
+                    <rect x="9" y="9" width="11" height="11" rx="2"/>
+                    <path d="M5 15V5a2 2 0 0 1 2-2h10"/>
+                  </svg>
+                </button>
+              </span>
+            <% } else { %>
+              <span class="muted" style="font-size:.88rem">No reply address given</span>
+            <% } %>
+
+            <%# Straight to the question in the reading list, with its
+                answer marked — which is where you check whether they
+                are right before changing anything. %>
+            <a class="btn btn-sm btn-ghost" target="_blank" rel="noopener"
+               href="<%= catalogueHref(r) %>">Open the question</a>
+          </div>
+
+          <% if (r.status === "open") { %>
+            <div class="row" style="gap:1.5rem;margin-top:1.1rem;align-items:flex-start;flex-wrap:wrap">
+              <form method="post" action="/admin/einbuergerungstest/act" class="row" style="gap:.45rem;flex:1;min-width:280px">
+                <input type="hidden" name="id" value="<%= r.id %>">
+                <input type="text" name="note" maxlength="1000" style="flex:1"
+                       placeholder="Optional note for us — what you changed">
+                <button class="btn btn-sm" type="submit" name="decision" value="done">Fixed</button>
+                <button class="btn btn-sm btn-ghost" type="submit" name="decision" value="dismissed">Not a fault</button>
+              </form>
+            </div>
+          <% } else { %>
+            <div class="muted" style="font-size:.84rem;margin-top:.9rem">
+              <%= r.status === "done" ? "Dealt with" : "Marked not a fault" %>
+              <% if (r.updated_at) { %>
+                on <%= new Date(r.updated_at).toISOString().slice(0,16).replace("T"," ") %>
+              <% } %>
+              <% if (r.admin_note) { %><br>Note: <%= r.admin_note %><% } %>
+              <form method="post" action="/admin/einbuergerungstest/act" style="margin-top:.6rem">
+                <input type="hidden" name="id" value="<%= r.id %>">
+                <button class="btn btn-sm btn-ghost" type="submit" name="decision" value="open">Reopen</button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      <% }); %>
+
+      <p class="muted" style="font-size:.85rem">
+        Reports come from the “Fehler melden” button under each question.
+        No account is needed to send one and the email address is optional,
+        so most reports cannot be replied to — which is the trade for
+        getting them at all.
+      </p>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<%#
+  Which portal you are signing in to.
+
+  Two links, not two tabs on one form. The realms have separate
+  endpoints, separate cookies and separate session formats, and the
+  choice has to be made before the password is typed rather than
+  after — a single form that worked out who you were from your
+  credentials would be one screen deciding what kind of person you are,
+  which is exactly the logic you do not want between a stranger and a
+  class list.
+
+  Links also mean this works with no JavaScript, and that the page you
+  land on is the page whose form posts to the right place. There is
+  nothing to get out of step.
+
+  Expects: current — "student" or "teacher".
+  Optional: step — "login" (default) or "forgot". Switching realms
+            should land on the same step: somebody on the forgotten-
+            password page who realises they wanted the other portal
+            still wants to reset a password, not to sign in.
+%>
+<%
+  const _step = typeof step === "undefined" ? "login" : step;
+  const _student = _step === "forgot" ? "/portal/forgot" : "/portal/login";
+  const _teacher = _step === "forgot" ? "/teach/forgot" : "/teach/login";
+%>
+<nav class="login-switch" aria-label="Which portal">
+  <a href="<%= _student %>"<%- current === "student" ? ' aria-current="page"' : "" %>>
+    Student
+  </a>
+  <a href="<%= _teacher %>"<%- current === "teacher" ? ' aria-current="page"' : "" %>>
+    Teacher
+  </a>
+</nav>

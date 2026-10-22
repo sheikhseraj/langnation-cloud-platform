@@ -1,0 +1,162 @@
+<%
+  const d = a.detailParsed || { blocks: [], wrong: [] };
+  const waiting = a.placement && !a.confirmed_at;
+  const stamp = (v) => (v ? new Date(v).toISOString().slice(0, 16).replace("T", " ") : "—");
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: (a.name || a.email), site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "placement" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: a.name || a.email,
+      adCrumbs: [
+        { label: "Admin", href: "/admin/dashboard" },
+        { label: "Placement", href: "/admin/placement" },
+        { label: a.placement || "unfinished" },
+      ],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (notice) { %><p class="notice notice-ok"><%= notice %></p><% } %>
+
+      <div class="ad-cols">
+        <section>
+
+          <%# The misses, in full. "3/5" cannot tell a teacher whether
+              the gaps were careless slips or a real hole in the
+              grammar, and that is the whole question when deciding
+              whether the automatic level is right. %>
+          <div class="ad-card">
+            <h2><%= d.wrong.length %> <%= d.wrong.length === 1 ? "question missed" : "questions missed" %></h2>
+            <% if (!d.wrong.length) { %>
+              <p class="muted" style="margin:0">
+                <%= a.placement ? "Everything answered correctly at the levels tested." : "The test was not finished." %>
+              </p>
+            <% } %>
+            <% d.wrong.forEach(function (w) { %>
+              <div class="pr-miss">
+                <p class="pr-miss-q"><%= w.prompt %></p>
+                <dl style="margin:0">
+                  <div class="pr-miss-row"><dt>They chose</dt><dd class="pr-gave"><%= w.gave === null ? "— no answer —" : w.gave %></dd></div>
+                  <div class="pr-miss-row"><dt>Correct</dt><dd class="pr-right"><%= w.right %></dd></div>
+                  <div class="pr-miss-row"><dt>Level</dt><dd><%= w.level %> · <%= w.skill %></dd></div>
+                  <% if (w.explain) { %>
+                    <div class="pr-miss-row"><dt>Rule</dt><dd class="muted"><%= w.explain %></dd></div>
+                  <% } %>
+                </dl>
+              </div>
+            <% }); %>
+          </div>
+
+          <div class="ad-card">
+            <h2>Written task <%= a.writing_words ? "· " + a.writing_words + " words" : "" %></h2>
+            <% if (a.writing) { %>
+              <div class="pr-writing"><%= a.writing %></div>
+              <p class="muted" style="font-size:.84rem;margin:.8rem 0 0">
+                This is what the level should really rest on. The questions show what they recognise; this shows what they can produce.
+              </p>
+            <% } else { %>
+              <p class="notice" style="margin:0">
+                Skipped. The level below rests on the multiple-choice questions alone, so it is worth
+                treating as provisional even after you confirm it.
+              </p>
+            <% } %>
+          </div>
+        </section>
+
+        <aside>
+          <div class="ad-card">
+            <h2>The candidate</h2>
+            <dl class="ad-stat">
+              <div><dt>Name</dt><dd><%= a.name || "—" %></dd></div>
+              <div><dt>Email</dt><dd><a href="mailto:<%= a.email %>"><%= a.email %></a></dd></div>
+              <div><dt>Taken</dt><dd><%= stamp(a.created_at) %></dd></div>
+              <div><dt>Score</dt><dd><%= a.score === null ? "—" : a.score + "%" %></dd></div>
+              <div><dt>Language</dt><dd><%= (a.lang || "en").toUpperCase() %></dd></div>
+            </dl>
+          </div>
+
+          <div class="ad-card">
+            <h2>How it went</h2>
+            <div class="pt-path" style="margin:0">
+              <% (d.blocks || []).forEach(function (b) {
+                   const passed = b.total && b.correct / b.total >= 0.45; %>
+                <span class="pt-step" <%= passed ? "data-passed" : "" %>><%= b.level %> · <%= b.correct %>/<%= b.total %></span>
+              <% }); %>
+            </div>
+            <p class="muted" style="font-size:.82rem;margin:.9rem 0 0">
+              The test stops once a level is handled and the one above it is not.
+            </p>
+          </div>
+
+          <%# The decision. Pre-set to what the test said, so confirming
+              an accurate result is one click, while changing it is
+              equally easy — neither is the default path. %>
+          <div class="ad-card">
+            <h2><%= a.confirmed_at ? "Already confirmed" : "Confirm the level" %></h2>
+
+            <% if (a.confirmed_at) { %>
+              <p class="notice notice-ok" style="margin:0 0 1rem">
+                Confirmed as <strong><%= a.final_level %></strong> on <%= stamp(a.confirmed_at) %>,
+                and <%= a.email %> was emailed.
+                <% if (a.final_level !== a.placement) { %><br>The test had said <%= a.placement %>.<% } %>
+              </p>
+              <% if (a.teacher_note) { %>
+                <p class="muted" style="font-size:.86rem">Note sent: <%= a.teacher_note %></p>
+              <% } %>
+            <% } %>
+
+            <% if (a.placement) { %>
+              <form method="post" action="/admin/placement/<%= a.id %>/confirm">
+                <label class="field">
+                  <%# The level alone in the options: the column is narrow and
+                      any explanatory suffix is the half that gets truncated.
+                      Which one the test picked is said underneath instead. %>
+                  <span>Level</span>
+                  <select name="level" data-enhance aria-label="Confirmed level">
+                    <% levels.forEach(function (l) { %>
+                      <option value="<%= l %>" <%= (a.final_level || a.placement) === l ? "selected" : "" %>><%= l %></option>
+                    <% }); %>
+                  </select>
+                  <small class="muted">The test said <strong><%= a.placement %></strong>.</small>
+                </label>
+
+                <label class="field">
+                  <span>Note for the student — optional, and they read it</span>
+                  <textarea name="note" rows="3" maxlength="1000"
+                            placeholder="For example: your writing is stronger than the grammar questions suggested."><%= a.teacher_note || "" %></textarea>
+                </label>
+
+                <button class="btn" type="submit">
+                  <%= a.confirmed_at ? "Update and email again" : "Confirm and email the student" %>
+                </button>
+                <p class="muted" style="font-size:.82rem;margin:.7rem 0 0">
+                  The email goes out whether or not you change the level — being told
+                  "we looked, and the test had you right" is better than silence.
+                </p>
+              </form>
+            <% } else { %>
+              <p class="muted" style="margin:0">
+                This test was never finished, so there is no level to confirm.
+              </p>
+            <% } %>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

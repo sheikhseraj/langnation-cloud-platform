@@ -1,0 +1,20 @@
+<%# Where the candidate is in the three-step flow. Purely informational —
+    the real gate is the signed token each step carries. %>
+<ol class="steps" aria-label="<%= t('placement.stepOf', { n: step }) %>">
+  <% [
+    ["placement.stepTerms", 1],
+    ["placement.stepDetails", 2],
+    ["placement.stepExam", 3],
+  ].forEach(function (s) { %>
+    <li class="<%= s[1] < step ? "done" : s[1] === step ? "now" : "" %>"
+        <%- s[1] === step ? 'aria-current="step"' : "" %>>
+      <span class="step-n">
+        <% if (s[1] < step) { %>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>
+        <% } else { %><%= s[1] %><% } %>
+      </span>
+      <span class="step-label"><%= t(s[0]) %></span>
+    </li>
+  <% }); %>
+</ol>

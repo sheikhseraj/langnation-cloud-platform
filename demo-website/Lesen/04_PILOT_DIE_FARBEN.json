@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "title": "Die Farben",
+    "cefrLevel": "A1",
+    "source": "User-provided 3_Farben.pdf",
+    "purpose": "Pilot fixture for Lesen module acceptance testing",
+    "notes": "Use this fixture to prove the architecture. Do not bulk-import other PDFs until the reusable model and admin flow are validated."
+  },
+  "lesson": {
+    "slug": "a1-die-farben",
+    "title": "Die Farben",
+    "instructions": "Lies den Text und beantworte danach die Aufgaben.",
+    "contentParagraphs": [
+      "Farben machen das Leben bunt. Der Regenbogen besteht aus vielen Farben. Obst und Gemüse ist oft sehr farbig. Und unsere Kleidung kann auch schön bunt sein. Eine starke Farbe ist rot. Viele Früchte sind rot, zum Beispiel Erdbeeren oder Himbeeren. Es gibt auch rotes Gemüse: Tomaten. Viele Blumen sind rot, zum Beispiel Rosen. Gelb wie die Sonne sind auch Bananen, Zitronen oder Mais. Blau ist der Himmel bei schönem Wetter oder auch das Meer oder ein See. Es gibt viele verschiedene Arten von blau: helles blau oder dunkles blau, türkis oder himmelblau.",
+      "Alle Farben zusammen ergeben schwarz. Schwarz ist die Nacht. Das Gegenteil von schwarz ist weiß. Es gibt weiße Blumen, die Wolken sind weiß. Oder der Schnee. Sehr viel in der Natur ist grün: Blätter, Gras und Bäume. Die Stämme der Bäume sind meistens braun. Oder auch Kaffee oder gebackenes Brot.",
+      "Es gibt noch sehr viele Farben: Grau sind zum Beispiel Tauben, orange ist der Himmel bei einem Sonnenuntergang. Eine starke Farbe ist pink: sie fällt auf. In der Natur gibt es pinke Blumen oder auch Vögel. Lila ist ähnlich, viele Blumen sind lila oder rosarot. Die edlen Farben sind golden und Silber: Wir finden sie bei Edelsteinen und Schmuck."
+    ]
+  },
+  "exercises": [
+    {
+      "type": "multiple_choice",
+      "position": 1,
+      "prompt": "Welche Dinge sind nicht rot?",
+      "options": [
+        {"id": "a", "text": "Bananen"},
+        {"id": "b", "text": "Tomaten"},
+        {"id": "c", "text": "Erdbeeren"},
+        {"id": "d", "text": "Rosen"}
+      ],
+      "correctOptionId": "a",
+      "hint": "Lies im ersten Absatz noch einmal die Beispiele für Rot und Gelb.",
+      "supportAnchorText": "Gelb wie die Sonne sind auch Bananen, Zitronen oder Mais."
+    },
+    {
+      "type": "multiple_choice",
+      "position": 2,
+      "prompt": "Was gehört nicht zu blau?",
+      "options": [
+        {"id": "a", "text": "türkis"},
+        {"id": "b", "text": "himmelblau"},
+        {"id": "c", "text": "schwarz"},
+        {"id": "d", "text": "dunkelblau"}
+      ],
+      "correctOptionId": "c",
+      "hint": "Suche die Stelle mit verschiedenen Arten von Blau.",
+      "supportAnchorText": "Es gibt viele verschiedene Arten von blau: helles blau oder dunkles blau, türkis oder himmelblau."
+    },
+    {
+      "type": "multiple_choice",
+      "position": 3,
+      "prompt": "Was ist weiß?",
+      "options": [
+        {"id": "a", "text": "Blätter und Gräser"},
+        {"id": "b", "text": "Tauben und Schmuck"},
+        {"id": "c", "text": "Schnee und Wolken"},
+        {"id": "d", "text": "Kaffee und Mais"}
+      ],
+      "correctOptionId": "c",
+      "hint": "Lies im zweiten Absatz nach dem Wort „weiß“.",
+      "supportAnchorText": "Es gibt weiße Blumen, die Wolken sind weiß. Oder der Schnee."
+    },
+    {
+      "type": "multiple_choice",
+      "position": 4,
+      "prompt": "Was ist gelb?",
+      "options": [
+        {"id": "a", "text": "See und Meer"},
+        {"id": "b", "text": "Kaffe und Brot"},
+        {"id": "c", "text": "Himmel und Erde"},
+        {"id": "d", "text": "Bananen und Zitronen"}
+      ],
+      "correctOptionId": "d",
+      "hint": "Suche im ersten Absatz nach „Gelb“.",
+      "supportAnchorText": "Gelb wie die Sonne sind auch Bananen, Zitronen oder Mais."
+    },
+    {
+      "type": "multiple_choice",
+      "position": 5,
+      "prompt": "Alle Farben zusammen ergibt welche Farbe?",
+      "options": [
+        {"id": "a", "text": "schwarz"},
+        {"id": "b", "text": "braun"},
+        {"id": "c", "text": "golden"},
+        {"id": "d", "text": "weiß"}
+      ],
+      "correctOptionId": "a",
+      "hint": "Die Antwort steht am Anfang des zweiten Absatzes.",
+      "supportAnchorText": "Alle Farben zusammen ergeben schwarz."
+    }
+  ]
+}

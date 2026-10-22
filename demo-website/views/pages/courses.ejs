@@ -1,0 +1,58 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.courses") %></p>
+      <h1><%= t("courses.title") %></h1>
+      <p class="lead"><%= t("courses.lead") %></p>
+    </div>
+
+    <div class="filters" data-course-filters>
+      <div class="filter-group">
+        <span id="f-level"><%= t("courses.filterLevel") %></span>
+        <div class="chips" role="group" aria-labelledby="f-level">
+          <button class="chip" type="button" data-filter="level" data-value="" aria-pressed="true"><%= t("courses.filterAll") %></button>
+          <% levels.forEach(function (l) { %>
+            <button class="chip" type="button" data-filter="level" data-value="<%= l %>" aria-pressed="false"><%= l %></button>
+          <% }); %>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span id="f-track"><%= t("courses.filterTrack") %></span>
+        <div class="chips" role="group" aria-labelledby="f-track">
+          <button class="chip" type="button" data-filter="track" data-value="" aria-pressed="true"><%= t("courses.filterAll") %></button>
+          <% tracks.forEach(function (tr) { %>
+            <button class="chip" type="button" data-filter="track" data-value="<%= tr %>" aria-pressed="false"><%= t("courses.track." + tr) %></button>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <p class="notice" data-empty hidden><%= t("courses.empty") %></p>
+
+    <% groups.forEach(function (g) { %>
+      <div class="stack" data-track-group="<%= g.track %>" style="margin-bottom:3.5rem">
+        <div>
+          <h2 style="font-size:clamp(1.35rem,3vw,1.8rem)"><%= t("courses.track." + g.track) %></h2>
+          <p class="lead" style="font-size:1rem"><%= t("courses.trackLead." + g.track) %></p>
+        </div>
+        <div class="grid">
+          <% g.items.forEach(function (course) { %>
+            <%- include("../partials/course-card", { course: course }) %>
+          <% }); %>
+        </div>
+      </div>
+    <% }); %>
+
+    <div class="band">
+      <h2><%= t("home.ctaTitle") %></h2>
+      <p><%= t("home.ctaLead") %></p>
+      <a class="btn" href="<%= lp('/contact') %>"><%= t("cta.enquire") %></a>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

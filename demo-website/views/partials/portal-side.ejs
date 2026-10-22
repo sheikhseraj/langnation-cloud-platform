@@ -1,0 +1,97 @@
+<%#
+  The student's own navigation, with their face at the top of it.
+
+  Courses, learning material and account pages are grouped without changing
+  their routes. Native details/summary keeps the navigation usable without JS.
+
+  The photo falls back to initials on a colour derived from the student
+  reference. That is not a placeholder for a missing feature: most
+  people never upload a photo, and a coloured monogram is a better
+  answer than a grey silhouette repeated down the page.
+
+  Expects: nav, student, avatarUrl, initials, hue.
+%>
+<%
+  const items = [
+    {key:'dashboard',url:'/portal/me',label:'Dashboard'},
+    {key:'courses',label:'My Courses',children:[['courses','/portal/courses','Enrolled Courses'],['schedule','/portal/schedule','My schedule'],['attendance','/portal/attendance','My attendance'],['certificates','/portal/certificates','My certificates']]},
+    {key:'material',icon:'lesen',label:'Lernbereich',children:[['homework','/portal/homework','Aufgaben'],['lesen','/portal/lesen','Lesetraining'],['vocabulary','/portal/vocabulary','Wortschatz']]},
+    {key:'einbuergerungstest',url:'/portal/einbuergerungstest',label:'Einbürgerungstest'},
+    {key:'payments',url:'/portal/payments',label:'Payments'},
+    {key:'settings',label:'Settings',children:[['profile','/portal/profile','My Profile'],['settings','/portal/settings','Settings']]},
+  ];
+  const icons = {
+    lesen:'<path d="M3 4h8v16H3zM13 4h8v16h-8z"/>',
+    vocabulary:'<path d="M4 4h16v16H4zM8 8h8M8 12h6M8 16h4"/>',
+    dashboard:    '<path d="M4 4h7v7H4zM13 4h7v4h-7zM13 11h7v9h-7zM4 14h7v6H4z"/>',
+    // A pencil on a page. Everything else in this list is something to
+    // read; this is the one you do.
+    homework:     '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9"/>'
+                + '<path d="M8 8h5M8 12h3"/>'
+                + '<path d="m19 12 3 3-4.5 4.5-3.2.7.7-3.2z"/>',
+    profile:      '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    courses:      '<path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+    schedule:     '<path d="M3 5h18v16H3z"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M7 14h3v3H7z"/>',
+    attendance:   '<path d="M3 5h18v16H3z"/><path d="M3 9h18M8 3v4M16 3v4"/><path d="m8.5 14 2 2 4-4"/>',
+    certificates: '<circle cx="12" cy="9" r="5"/><path d="m8.5 13.5-1 7 4.5-2.5 4.5 2.5-1-7"/>',
+    einbuergerungstest: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M7 2v20M10 18h7"/><circle cx="13.5" cy="9" r="3.5"/><path d="M10 9h7M13.5 5.5a6 6 0 0 1 0 7a6 6 0 0 1 0-7"/>',
+    // A card, not a shopping trolley. Nobody is buying anything here;
+    // they are looking at what a course cost and what is left to pay.
+    payments:     '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19"/><path d="M6 14.5h4"/>',
+    settings:     '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 4.1a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4z"/>',
+  };
+%>
+<details id="portal-navigation" class="sp-global-nav" data-responsive-menu data-menu-breakpoint="900" open>
+  <summary class="sp-global-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span><strong><%= student.name || 'Mein Portal' %></strong><small>Portal-Menü</small></span><svg class="material-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></summary>
+<aside class="sp-side">
+  <div class="sp-me">
+    <%- include("portal-avatar", {
+      avatarUrl: avatarUrl, initials: initials, hue: hue,
+      size: "lg", name: student.name,
+    }) %>
+    <p class="sp-me-name"><%= student.name %></p>
+    <% if (student.student_ref) { %>
+      <p class="sp-me-ref"><%= student.student_ref %></p>
+    <% } %>
+  </div>
+
+  <nav aria-label="Portal">
+    <ul class="sp-nav">
+      <% items.forEach(function (it) { const active=it.children?it.children.some(child=>child[0]===nav):it.key===nav; %>
+        <li>
+          <% if(it.children){ %>
+            <details class="sp-nav-group<%= active?' is-active':'' %>" data-portal-group="<%= it.key %>"<%- active?' open':'' %>>
+              <summary>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><%- icons[it.icon||it.key] %></svg>
+                <span><%= it.label %></span><svg class="sp-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+              </summary>
+              <ul class="sp-nav-children">
+                <% it.children.forEach(child=>{ %><li><a href="<%= child[1] %>"<%- child[0]==='homework'?' target="_blank" rel="noopener noreferrer"':'' %><%- nav===child[0]?' aria-current="page"':'' %>><%= child[2] %></a></li><% }); %>
+              </ul>
+            </details>
+          <% }else{ %>
+            <a href="<%= it.url %>"<%- active?' aria-current="page"':'' %>>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><%- icons[it.key] %></svg><%= it.label %>
+            </a>
+          <% } %>
+        </li>
+      <% }); %>
+      <li>
+        <%# A form, not a link: signing out changes something, and a
+            link that changes something is fetched by every crawler
+            and link-preview bot that sees it. %>
+        <form method="post" action="/portal/logout">
+          <button type="submit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>
+            </svg>
+            Sign out
+          </button>
+        </form>
+      </li>
+    </ul>
+  </nav>
+</aside>
+
+</details>

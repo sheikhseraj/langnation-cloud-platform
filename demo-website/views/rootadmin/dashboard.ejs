@@ -1,0 +1,182 @@
+<%#
+  What the school looks like from the office.
+
+  Reads top to bottom as one question and its answers: what is this term
+  worth, where did it come from, which courses carry it, and what needs
+  doing. Every number is counted from the rows the other pages list, so
+  a figure here and a list there cannot disagree.
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Dashboard", site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "dashboard", adArea: "content" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Dashboard",
+      adCrumbs: [{ label: "Root admin", href: "/rootadmin" }, { label: "Dashboard" }],
+      adLogout: "/rootadmin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <%# The one hero figure on the page, and the sentence that stops it
+          being read as money in the bank. Nothing here writes an invoice
+          or records a payment, so nobody has confirmed a euro of this
+          arrived — and a dashboard that says "income" over a number
+          meaning "if everybody pays" is worse than no dashboard. %>
+      <div class="ad-card ad-hero">
+        <p class="sp-eyebrow">Expected from the students now enrolled</p>
+        <p class="ad-hero-n"><%= euros(sum.expected) %></p>
+        <p class="muted">
+          <%= sum.students %> <%= sum.students === 1 ? "student" : "students" %> on
+          <%= sum.running + sum.planned %> running and planned
+          <%= sum.running + sum.planned === 1 ? "batch" : "batches" %>,
+          at each course's current price.
+          <strong>This is not money received.</strong>
+          Nothing in the site raises an invoice or records a payment yet, so
+          this is what the term is worth if everybody pays.
+        </p>
+      </div>
+
+      <div class="ad-tiles">
+        <div class="ad-tile">
+          <span class="ad-tile-n"><%= sum.students %></span>
+          <span class="ad-tile-l">students enrolled</span>
+        </div>
+        <div class="ad-tile">
+          <span class="ad-tile-n"><%= sum.running %></span>
+          <span class="ad-tile-l">batches running</span>
+        </div>
+        <div class="ad-tile">
+          <span class="ad-tile-n"><%= sum.planned %></span>
+          <span class="ad-tile-l">batches planned</span>
+        </div>
+        <div class="ad-tile">
+          <%# Null is not zero. A school that has set no seat limit
+              anywhere has not filled up — the question does not apply,
+              and "0 seats left" would read as the opposite. %>
+          <span class="ad-tile-n"><%= sum.seatsLeft == null ? "—" : sum.seatsLeft %></span>
+          <span class="ad-tile-l">
+            <%= sum.seatsLeft == null ? "no seat limits set" : "seats free" %>
+          </span>
+        </div>
+        <div class="ad-tile">
+          <span class="ad-tile-n"><%= euros(sum.perStudent) %></span>
+          <span class="ad-tile-l">average per student</span>
+        </div>
+      </div>
+
+      <%# Two charts, not one with two axes. Enrolments are a count and
+          fees are euros; on a shared y-scale every place the two lines
+          crossed would look like a fact, and none of them would be. %>
+      <div class="sp-cols sp-cols-even">
+        <div class="ad-card">
+          <%- include("../partials/admin-bars", {
+            chart: enrolChart,
+            ink: "var(--accent)",
+            fmt: (n) => String(n),
+            caption: "Students enrolled, by month",
+            note: "when they signed up, not when the course starts",
+          }) %>
+        </div>
+        <div class="ad-card">
+          <%- include("../partials/admin-bars", {
+            chart: moneyChart,
+            ink: "var(--gold-ink)",
+            fmt: euros,
+            caption: "What those enrolments are worth",
+            note: "at each course's price on the day this page loaded",
+          }) %>
+        </div>
+      </div>
+
+      <%# The table the charts are a picture of. It is here because
+          reading a value off a bar is a guess, and because somebody
+          will want to know which course the tall month was. %>
+      <div class="ad-card">
+        <div class="ad-card-head">
+          <h2>By course</h2>
+          <a href="/rootadmin/prices">Prices</a>
+        </div>
+        <% if (!courses.length) { %>
+          <p class="sp-empty">No courses yet.</p>
+        <% } else { %>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th style="text-align:right">Price</th>
+                  <th style="text-align:right">Batches</th>
+                  <th style="text-align:right">Students</th>
+                  <th style="text-align:right">Expected</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% courses.forEach(function (c) { %>
+                  <tr>
+                    <td>
+                      <a href="/rootadmin/course/<%= encodeURIComponent(c.slug) %>"><strong><%= c.title %></strong></a>
+                      <div class="muted" style="font-size:.78rem">
+                        <%= c.level ? c.level + " · " : "" %><%= c.track || "—" %><%= c.status !== "published" ? " · " + c.status : "" %>
+                      </div>
+                    </td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">
+                      <%= c.price ? euros(c.price) : "—" %>
+                    </td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">
+                      <%= c.batches %><% if (c.running) { %> <span class="muted">(<%= c.running %> running)</span><% } %>
+                    </td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums"><%= c.heads %></td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">
+                      <%= c.expected ? euros(c.expected) : "—" %>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+      <%# Not a count. "3 problems" is a number somebody learns to ignore
+          within a week, because clearing it means first finding out what
+          the three are. Each one names the thing and links to where it
+          gets fixed. %>
+      <div class="ad-card">
+        <div class="ad-card-head">
+          <h2>Worth a look</h2>
+        </div>
+        <% if (!attention.length) { %>
+          <p class="sp-empty">
+            Every published course has a batch, every batch has somebody on it,
+            and every course being taught has a price. Nothing to do.
+          </p>
+        <% } else { %>
+          <ul class="sp-list">
+            <% attention.forEach(function (a) { %>
+              <li>
+                <div>
+                  <strong><%= a.what %></strong>
+                  <div class="muted" style="font-size:.82rem"><%= a.why %></div>
+                </div>
+                <div class="sp-list-end">
+                  <a class="btn btn-sm btn-ghost" href="<%= a.href %>"><%= a.cta %></a>
+                </div>
+              </li>
+            <% }); %>
+          </ul>
+        <% } %>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

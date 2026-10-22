@@ -1,0 +1,215 @@
+[
+ {
+  "id": "hamburg-1",
+  "number": 351,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Welches Wappen gehört zur Freien und Hansestadt Hamburg?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/hamburg-1-1.webp",
+     "w": 241,
+     "h": 277
+    },
+    {
+     "src": "/img/einbuergerungstest/hamburg-1-2.webp",
+     "w": 221,
+     "h": 262
+    },
+    {
+     "src": "/img/einbuergerungstest/hamburg-1-3.webp",
+     "w": 195,
+     "h": 270
+    },
+    {
+     "src": "/img/einbuergerungstest/hamburg-1-4.webp",
+     "w": 220,
+     "h": 264
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ },
+ {
+  "id": "hamburg-2",
+  "number": 352,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Welches ist ein Bezirk von Hamburg?",
+  "answers": [
+   "Altona",
+   "Hemelingen",
+   "Pankow",
+   "Mecklenburgische Seenplatte"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ },
+ {
+  "id": "hamburg-3",
+  "number": 353,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Für wie viele Jahre wird das Landesparlament in Hamburg gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ },
+ {
+  "id": "hamburg-4",
+  "number": 354,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Ab welchem Alter darf man in Hamburg bei Kommunalwahlen (Wahl der Bezirksversammlungen) wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ },
+ {
+  "id": "hamburg-5",
+  "number": 355,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Welche Farben hat die Landesflagge von Hamburg?",
+  "answers": [
+   "blau-weiß-rot",
+   "weiß-rot",
+   "grün-weiß-rot",
+   "schwarz-gelb"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ },
+ {
+  "id": "hamburg-6",
+  "number": 356,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Wo können Sie sich in Hamburg über politische Themen informieren?",
+  "answers": [
+   "beim Ordnungsamt der Gemeinde",
+   "bei der Verbraucherzentrale",
+   "bei den Kirchen",
+   "bei der Landeszentrale für politische Bildung"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ },
+ {
+  "id": "hamburg-7",
+  "number": 357,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Welches Bundesland ist ein Stadtstaat?",
+  "answers": [
+   "Hamburg",
+   "Sachsen",
+   "Bayern",
+   "Thüringen"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ },
+ {
+  "id": "hamburg-8",
+  "number": 358,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Welches Bundesland ist Hamburg?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/hamburg-8.webp",
+     "w": 722,
+     "h": 608
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ },
+ {
+  "id": "hamburg-9",
+  "number": 359,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef des Stadtstaates Hamburg?",
+  "answers": [
+   "Ministerpräsidentin/Ministerpräsident",
+   "Erste Bürgermeisterin/Erster Bürgermeister",
+   "Regierende Senatorin/Regierender Senator",
+   "Oberbürgermeisterin/Oberbürgermeister"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ },
+ {
+  "id": "hamburg-10",
+  "number": 360,
+  "type": "state",
+  "category": "Hamburg",
+  "question": "Welche Senatorin/welchen Senator hat Hamburg nicht?",
+  "answers": [
+   "Justizsenatorin/Justizsenator",
+   "Senatorin/Senator für Außenbeziehungen",
+   "Finanzsenatorin/Finanzsenator",
+   "Innensenatorin/Innensenator"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Hamburg"
+ }
+]

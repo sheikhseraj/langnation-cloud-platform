@@ -1,0 +1,215 @@
+[
+ {
+  "id": "nordrhein-westfalen-1",
+  "number": 391,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Welches Wappen gehört zum Bundesland Nordrhein-Westfalen?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 1,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/nordrhein-westfalen-1-1.webp",
+     "w": 196,
+     "h": 281
+    },
+    {
+     "src": "/img/einbuergerungstest/nordrhein-westfalen-1-2.webp",
+     "w": 241,
+     "h": 276
+    },
+    {
+     "src": "/img/einbuergerungstest/nordrhein-westfalen-1-3.webp",
+     "w": 220,
+     "h": 264
+    },
+    {
+     "src": "/img/einbuergerungstest/nordrhein-westfalen-1-4.webp",
+     "w": 196,
+     "h": 270
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ },
+ {
+  "id": "nordrhein-westfalen-2",
+  "number": 392,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Welches ist ein Landkreis in Nordrhein-Westfalen?",
+  "answers": [
+   "Ammerland",
+   "Rhein-Sieg-Kreis",
+   "Nordfriesland",
+   "Vogtlandkreis"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ },
+ {
+  "id": "nordrhein-westfalen-3",
+  "number": 393,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Für wie viele Jahre wird der Landtag in Nordrhein-Westfalen gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ },
+ {
+  "id": "nordrhein-westfalen-4",
+  "number": 394,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Ab welchem Alter darf man in Nordrhein-Westfalen bei Kommunalwahlen wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ },
+ {
+  "id": "nordrhein-westfalen-5",
+  "number": 395,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Welche Farben hat die Landesflagge von Nordrhein-Westfalen?",
+  "answers": [
+   "rot-weiß",
+   "grün-weiß-rot",
+   "schwarz-gold",
+   "blau-weiß-rot"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ },
+ {
+  "id": "nordrhein-westfalen-6",
+  "number": 396,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Wo können Sie sich in Nordrhein-Westfalen über politische Themen informieren?",
+  "answers": [
+   "bei den Kirchen",
+   "beim Ordnungsamt der Gemeinde",
+   "bei der Verbraucherzentrale",
+   "bei der Landeszentrale für politische Bildung"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ },
+ {
+  "id": "nordrhein-westfalen-7",
+  "number": 397,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Die Landeshauptstadt von Nordrhein-Westfalen heißt …",
+  "answers": [
+   "Köln.",
+   "Bonn.",
+   "Düsseldorf.",
+   "Dortmund."
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ },
+ {
+  "id": "nordrhein-westfalen-8",
+  "number": 398,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Welches Bundesland ist Nordrhein-Westfalen?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/nordrhein-westfalen-8.webp",
+     "w": 722,
+     "h": 608
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ },
+ {
+  "id": "nordrhein-westfalen-9",
+  "number": 399,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef in Nordrhein-Westfalen?",
+  "answers": [
+   "Erste Ministerin/Erster Minister",
+   "Premierministerin/Premierminister",
+   "Bürgermeisterin/Bürgermeister",
+   "Ministerpräsidentin/Ministerpräsident"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ },
+ {
+  "id": "nordrhein-westfalen-10",
+  "number": 400,
+  "type": "state",
+  "category": "Nordrhein-Westfalen",
+  "question": "Welche Ministerin/welchen Minister hat Nordrhein-Westfalen nicht?",
+  "answers": [
+   "Justizministerin/Justizminister",
+   "Außenministerin/Außenminister",
+   "Finanzministerin/Finanzminister",
+   "Innenministerin/Innenminister"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Nordrhein-Westfalen"
+ }
+]

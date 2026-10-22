@@ -1,0 +1,261 @@
+<%
+  const pct = (n) => (Math.round(n * 10) / 10).toFixed(1).replace(".", ",") + " %";
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+    : null);
+
+  // A ring, drawn as one stroked circle with a dash offset. r=52 in a
+  // 120-box leaves room for a 12px stroke without clipping.
+  const R = 52, C = 2 * Math.PI * R;
+  const dash = (p) => (Math.max(0, Math.min(100, p)) / 100) * C;
+
+  // Green once ready, amber while close, red while a long way off —
+  // and the figure is always written out, so the colour is never the
+  // only thing saying it.
+  const band = (p) => (p >= stats.readyAt ? "ok" : p >= 50 ? "mid" : "low");
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "Einbürgerungstest",
+  pageLead: chosen
+    ? "Dein Stand für " + chosen.name + " — geübt wird auf der öffentlichen Übungsseite, hier siehst du, wo du stehst."
+    : "Dein Stand im Einbürgerungstest.",
+  nav: "einbuergerungstest", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue, notice: notice, error: error,
+}) %>
+
+<% if (!ready) { %>
+  <div class="sp-card">
+    <p class="sp-empty" style="margin:0">
+      Der Fragenkatalog ist auf diesem Server gerade nicht verfügbar.
+      Bitte versuche es später noch einmal.
+    </p>
+  </div>
+<% } else { %>
+
+<%# ── The three gauges ─────────────────────────────────────────────
+    Three numbers rather than one, because a single percentage hides
+    the two different ways of not being ready: knowing a little about
+    everything, and knowing everything about a little. %>
+<div class="etp-gauges">
+  <% [
+    { key: "ready",    value: stats.ready,    label: "Fit für die Prüfung",
+      note: "Der niedrigere Wert aus Abdeckung und Trefferquote" },
+    { key: "coverage", value: stats.coverage, label: "Fragen bearbeitet",
+      note: stats.seen + " von " + stats.total + " Fragen" },
+    { key: "accuracy", value: stats.accuracy, label: "Trefferquote",
+      note: stats.seen ? stats.known + " von " + stats.seen + " zuletzt richtig" : "noch keine Antworten" },
+  ].forEach(function (g) { %>
+    <figure class="etp-gauge is-<%= band(g.value) %>">
+      <svg viewBox="0 0 120 120" role="img"
+           aria-label="<%= g.label %>: <%= pct(g.value) %>">
+        <circle class="etp-track" cx="60" cy="60" r="<%= R %>"></circle>
+        <circle class="etp-arc" cx="60" cy="60" r="<%= R %>"
+                stroke-dasharray="<%= dash(g.value).toFixed(1) %> <%= C.toFixed(1) %>"></circle>
+        <text class="etp-figure" x="60" y="58"><%= pct(g.value) %></text>
+        <text class="etp-sub" x="60" y="76"><%= g.key === "ready" ? "fit" : "" %></text>
+      </svg>
+      <figcaption>
+        <strong><%= g.label %></strong>
+        <span><%= g.note %></span>
+      </figcaption>
+    </figure>
+  <% }); %>
+</div>
+
+<%# ── What that means ──────────────────────────────────────────── %>
+<div class="sp-card etp-verdict is-<%= advice.tone %>">
+  <% if (advice.tone === "ready") { %>
+    <h2>Du bist so weit</h2>
+    <p>
+      Mit <strong><%= pct(stats.ready) %></strong> liegst du über der Marke von
+      <%= stats.readyAt %> %. Wer hier steht, besteht den Einbürgerungstest in aller Regel.
+      <% if (days !== null && days >= 0) { %>
+        Bis zu deiner Prüfung sind es noch <strong><%= days %></strong>
+        <%= days === 1 ? "Tag" : "Tage" %> — halte dein Niveau mit ein paar Fragen am Tag.
+      <% } else { %>
+        Wenn du noch keinen Termin hast: jetzt wäre ein guter Zeitpunkt, einen zu machen.
+      <% } %>
+    </p>
+  <% } else if (advice.tone === "start") { %>
+    <h2>Noch nicht losgelegt</h2>
+    <p>
+      Sobald du die ersten Fragen übst, erscheint hier dein Stand. Für die Marke von
+      <%= stats.readyAt %> % brauchst du rund <strong><%= advice.left %></strong> bearbeitete Fragen.
+    </p>
+  <% } else { %>
+    <h2>Auf einem guten Weg</h2>
+    <p>
+      <% if (advice.key === "coverage") { %>
+        Deine Trefferquote liegt bei <strong><%= pct(stats.accuracy) %></strong> — das passt.
+        Es fehlt vor allem an Menge: noch etwa <strong><%= advice.need %></strong>
+        <%= advice.need === 1 ? "Frage" : "Fragen" %>, die du noch nie bearbeitet hast.
+      <% } else { %>
+        Du hast schon <strong><%= stats.seen %></strong> Fragen bearbeitet — es hakt noch an
+        der Sicherheit. Etwa <strong><%= advice.need %></strong>
+        <%= advice.need === 1 ? "Frage" : "Fragen" %> müssen noch sitzen.
+        <% if (stats.shaky) { %>
+          <a href="/einbuergerungstest">Übe gezielt deine <%= stats.shaky %> wackligen Fragen.</a>
+        <% } %>
+      <% } %>
+      <% if (advice.perDay) { %>
+        Bei <strong><%= days %></strong> <%= days === 1 ? "Tag" : "Tagen" %> bis zur Prüfung
+        sind das rund <strong><%= advice.perDay %></strong> am Tag.
+      <% } %>
+    </p>
+  <% } %>
+
+  <p class="etp-verdict-cta">
+    <a class="btn" href="/einbuergerungstest">
+      <%= stats.seen ? "Weiter üben" : "Jetzt üben" %> →
+    </a>
+    <% if (stats.shaky) { %>
+      <span class="muted etp-shaky"><%= stats.shaky %> Fragen sitzen noch nicht</span>
+    <% } %>
+  </p>
+</div>
+
+<div class="sp-cols">
+  <section>
+    <%# ── Categories ──────────────────────────────────────────── %>
+    <div class="sp-card">
+      <h2>Nach Themen</h2>
+      <% if (!stats.seen) { %>
+        <p class="sp-empty" style="margin:0">
+          Die Themen füllen sich, sobald du übst.
+        </p>
+      <% } else { %>
+        <ul class="etp-cats">
+          <% categories.forEach(function (c) { %>
+            <li>
+              <div class="etp-cat-head">
+                <span class="etp-cat-name"><%= c.name %></span>
+                <span class="etp-cat-n"><%= c.stats.known %> / <%= c.count %></span>
+              </div>
+              <%# Three segments in one bar: known, shaky, untouched.
+                  Each is labelled in the title, so the bar is not the
+                  only way to read it. %>
+              <span class="etp-cat-bar"
+                    title="<%= c.stats.known %> sitzen, <%= c.stats.shaky %> wacklig, <%= c.stats.untouched %> offen">
+                <i class="is-known" style="width:<%= (c.stats.known / c.count) * 100 %>%"></i>
+                <i class="is-shaky" style="width:<%= (c.stats.shaky / c.count) * 100 %>%"></i>
+              </span>
+            </li>
+          <% }); %>
+        </ul>
+        <p class="etp-legend">
+          <span class="is-known">sitzt</span>
+          <span class="is-shaky">wacklig</span>
+          <span class="is-open">noch offen</span>
+        </p>
+      <% } %>
+    </div>
+
+    <%# ── Mock exams ──────────────────────────────────────────── %>
+    <div class="sp-card">
+      <h2>Deine Prüfungssimulationen</h2>
+      <% if (!progress.exams.length) { %>
+        <p class="sp-empty" style="margin:0">
+          Noch keine Simulation gemacht. 33 Fragen, 60 Minuten —
+          <a href="/einbuergerungstest">einmal durchspielen</a> sagt dir mehr als jede Statistik.
+        </p>
+      <% } else { %>
+        <div class="table-scroll">
+          <table class="sp-table">
+            <thead><tr><th>Datum</th><th>Ergebnis</th><th>Quote</th><th>Status</th></tr></thead>
+            <tbody>
+              <% progress.exams.slice(0, 10).forEach(function (e) { %>
+                <tr>
+                  <td class="muted"><%= new Date(e.date).toLocaleDateString("de-DE", { day: "numeric", month: "short", year: "numeric" }) %></td>
+                  <td><strong><%= e.correct %> / <%= e.total %></strong></td>
+                  <td><%= Math.round((e.correct / e.total) * 100) %> %</td>
+                  <td>
+                    <span class="pill<%= e.passed ? " pill-live" : " pill-bad" %>">
+                      <%= e.passed ? "bestanden" : "nicht bestanden" %>
+                    </span>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <aside>
+    <%# ── Exam date ───────────────────────────────────────────── %>
+    <div class="sp-card etp-date">
+      <h2>Dein Prüfungstermin</h2>
+      <% if (progress.examDate && days !== null) { %>
+        <p class="etp-countdown">
+          <span class="etp-days"><%= days < 0 ? "—" : days %></span>
+          <span><%= days < 0 ? "Termin liegt zurück" : (days === 1 ? "Tag" : "Tage") %></span>
+        </p>
+        <p class="muted" style="font-size:.86rem"><%= day(progress.examDate) %></p>
+      <% } else { %>
+        <p class="muted" style="font-size:.88rem;margin-top:-.3rem">
+          Trag deinen Termin ein — dann rechnet dir die Seite aus, wie viel du am Tag
+          üben solltest. Freiwillig, und jederzeit änderbar.
+        </p>
+      <% } %>
+
+      <form method="post" action="/portal/einbuergerungstest/termin">
+        <label class="field">
+          <span>Datum der Prüfung</span>
+          <input type="date" name="exam_date" value="<%= progress.examDate || "" %>"
+                 min="<%= new Date().toISOString().slice(0, 10) %>">
+        </label>
+        <button class="btn btn-sm" type="submit">
+          <%= progress.examDate ? "Termin ändern" : "Termin speichern" %>
+        </button>
+        <% if (progress.examDate) { %>
+          <%#
+            Its own name, not exam_date.
+
+            It was a second control called exam_date, next to the date
+            input of the same name, and a form submits both — so pressing
+            it sent exam_date twice and the body arrived as
+            ["2026-09-30", ""]. The check for a valid date then ran
+            against "2026-09-30," and refused it, which is how removing a
+            date came back as "please choose a valid date".
+          %>
+          <button class="linklike" type="submit" name="clear" value="1"
+                  style="margin-left:.7rem">entfernen</button>
+        <% } %>
+      </form>
+    </div>
+
+    <div class="sp-card">
+      <h2>Das Wichtigste</h2>
+      <dl class="sp-facts">
+        <div><dt>Fragen insgesamt</dt><dd><%= stats.total %></dd></div>
+        <div><dt>Sitzen</dt><dd><%= stats.known %></dd></div>
+        <div><dt>Wacklig</dt><dd><%= stats.shaky %></dd></div>
+        <div><dt>Noch offen</dt><dd><%= stats.untouched %></dd></div>
+        <div><dt>Bundesland</dt><dd><%= chosen ? chosen.name : "—" %></dd></div>
+      </dl>
+      <% if (!chosen) { %>
+        <p class="muted" style="font-size:.84rem;margin:.9rem 0 0">
+          Noch kein Bundesland gewählt — die zehn Landesfragen fehlen deshalb hier.
+          <a href="/einbuergerungstest#bundesland">Jetzt wählen</a>.
+        </p>
+      <% } %>
+    </div>
+
+    <div class="sp-card">
+      <h2>Zur Prüfung</h2>
+      <p class="muted" style="font-size:.86rem;margin-top:-.3rem">
+        <%= rules.questions %> Fragen · <%= rules.minutes %> Minuten ·
+        <%= rules.passMark %> richtige zum Bestehen. Davon
+        <%= rules.stateQuestions %> aus deinem Bundesland.
+      </p>
+      <p style="margin:0">
+        <a href="/einbuergerungstest">Übungsseite öffnen →</a>
+      </p>
+    </div>
+  </aside>
+</div>
+
+<% } %>
+
+<%- include("../../partials/portal-shell-foot") %>

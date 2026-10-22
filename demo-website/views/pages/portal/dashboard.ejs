@@ -1,0 +1,290 @@
+<%
+  const first = String(student.name || "").trim().split(/\s+/)[0] || "there";
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : null);
+
+  // When the next lesson is, said the way somebody would say it out
+  // loud: "today at 18:00", "tomorrow at 09:30", "Thu 24 Sept, 18:00".
+  // The bare date is no use here — the whole question this answers is
+  // which of two classes today comes first.
+  //
+  // IN THE BATCH'S TIMEZONE, which this did not do. starts_at is a UTC
+  // instant, the server runs in UTC, and toLocaleTimeString without a
+  // timeZone formats in the server's zone — so a class set to 19:00 in
+  // Berlin was announced to students as 17:00, on a card whose own
+  // footnote says "Times are Europe/Berlin". Two hours early in summer,
+  // one in winter, and confidently wrong all year.
+  //
+  // "Today" and "tomorrow" have to be worked out in that zone too. A
+  // 21:00 Berlin class is already tomorrow in UTC for part of the year,
+  // so a server-side midnight would move it to the wrong day.
+  const zone = (tz) => tz || "Europe/Berlin";
+
+  const dayIn = (d, tz) => new Intl.DateTimeFormat("en-CA", {
+    timeZone: zone(tz), year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(d);
+
+  const meets = (v, tz) => {
+    if (!v) return null;
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return null;
+
+    const time = d.toLocaleTimeString("en-GB", {
+      hour: "2-digit", minute: "2-digit", timeZone: zone(tz),
+    });
+
+    // Both days as plain calendar dates in the same zone, then
+    // subtracted as dates rather than as instants.
+    const asUtc = (iso) => Date.parse(iso + "T00:00:00Z");
+    const days = Math.round(
+      (asUtc(dayIn(d, tz)) - asUtc(dayIn(new Date(), tz))) / 86400000
+    );
+
+    if (days === 0) return "today at " + time;
+    if (days === 1) return "tomorrow at " + time;
+    return d.toLocaleDateString("en-GB", {
+      weekday: "short", day: "numeric", month: "short", timeZone: zone(tz),
+    }) + ", " + time;
+  };
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "Hello, " + first,
+  pageLead: student.student_ref
+    ? "Student reference " + student.student_ref
+    : student.email,
+  nav: "dashboard", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue, notice: notice,
+}) %>
+
+<%# Money first, when there is money to mention.
+
+    Above the tiles rather than in a popup: this is a thing to read
+    once on arriving, not a thing to dismiss on every page. It is
+    shown only when something is actually overdue or actually near, so
+    a student who is up to date never sees it at all. %>
+<% if (typeof money !== "undefined" && money) {
+     const amount = new Intl.NumberFormat("en-GB", {
+       style: "currency", currency: money.currency || "EUR",
+     }).format(money.amount / 100);
+     const when = money.on
+       ? new Date(money.on + "T00:00:00Z").toLocaleDateString("en-GB", {
+           day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+       : null; %>
+  <p class="notice<%= money.level === "overdue" ? " notice-bad" : "" %>">
+    <% if (money.level === "overdue") { %>
+      <strong>Payment overdue.</strong>
+      Your payment of <%= amount %> for <%= money.course %>
+      <% if (when) { %>was due on <%= when %><% } else { %>has not arrived<% } %>.
+      Please arrange it, or <a href="/contact">tell the office</a>.
+    <% } else { %>
+      <strong>Payment reminder.</strong>
+      Your next payment of <%= amount %> for <%= money.course %>
+      <% if (when) { %>is due on <%= when %><% } %>.
+    <% } %>
+    <a href="/portal/payments">View payments</a>.
+  </p>
+<% } %>
+
+<%#
+  The figures are counted from the same rows the pages below link to,
+  so a tile can never disagree with its own list. The old portal showed
+  "9 enrolled · 0 active · 3 completed" over a list of three courses,
+  which is what happens when the numbers come from somewhere else.
+%>
+<div class="sp-tiles">
+  <a class="sp-tile" href="/portal/courses">
+    <span class="sp-tile-n"><%= stats.enrolled %></span>
+    <span class="sp-tile-l">enrolled <%= stats.enrolled === 1 ? "course" : "courses" %></span>
+  </a>
+  <%# stats.running, not stats.active: this tile says "running now" and
+      active counts enrolments, which includes a course that starts next
+      month. That is how it came to read "2 running now" over a card
+      showing one class. %>
+  <a class="sp-tile<%= stats.running ? " is-live" : "" %>" href="/portal/courses">
+    <span class="sp-tile-n"><%= stats.running %></span>
+    <span class="sp-tile-l">running now</span>
+  </a>
+  <a class="sp-tile" href="/portal/certificates">
+    <span class="sp-tile-n"><%= stats.certificates %></span>
+    <span class="sp-tile-l"><%= stats.certificates === 1 ? "certificate" : "certificates" %></span>
+  </a>
+  <a class="sp-tile<%= stats.outstanding > 0 ? " is-due" : "" %>" href="/portal/payments">
+    <span class="sp-tile-n"><%= stats.outstanding > 0 ? "€" + stats.outstanding.toFixed(0) : "—" %></span>
+    <span class="sp-tile-l"><%= stats.outstanding > 0 ? "to pay" : (locals.pendingFees && pendingFees.some(p=>p.fee!==0) ? "payment setup pending" : "nothing owed") %></span>
+  </a>
+</div>
+
+<%#
+  What is happening now, across the full width.
+
+  It used to share a column with a "My courses" list that repeated it:
+  the same batch, the same code, the same date, one card below the
+  other. The list is gone — the sidebar has My courses, and the first
+  tile above counts them and links there — so this card is the only
+  thing on the page saying what is happening, and it gets the room.
+
+  Three links, and each appears only if the school has actually set
+  one on the batch. A "Group chat" button that opens nothing is worse
+  than no button: it teaches people the portal is decorative.
+%>
+<% if (next) { %>
+  <%#
+    One card per running class.
+
+    This showed a single card built from next.enrolment, so a student on
+    two courses saw one of them — and which one was decided by the query's
+    ORDER BY rather than by anything meaningful. The other course's join
+    link was simply not reachable from the dashboard. The heading is said
+    once, above the set, rather than repeated over every card.
+  %>
+  <% const nowList = next.enrolments || [next.enrolment]; %>
+  <p class="sp-eyebrow sp-wide"><%= next.when === "now" ? "Happening now" : "Starting soon" %></p>
+  <% nowList.forEach(function (en) { %>
+    <div class="sp-card sp-now sp-wide">
+      <h2>
+        <%= en.course_title %>
+        <%- include("../../partials/batch-code", { code: en.code }) %>
+      </h2>
+      <p class="sp-now-meta">
+        <% if (en.teacher_name) { %> · <%= en.teacher_name %><% } %>
+        <%# The cover teacher, named so a student who arrives to find
+            somebody else at the front has read it here first. %>
+
+        <%# The next lesson when the batch has a timetable, the start
+            date when it does not. Not both: "meets today at 18:00" is
+            the answer to the question, and "from 16 Sept" beside it is
+            just an older, vaguer version of the same thing. %>
+        <% if (meets(en.next_lesson_at, en.timezone)) { %>
+          · <strong>meets <%= meets(en.next_lesson_at, en.timezone) %></strong>
+        <% } else if (day(en.starts_on)) { %>
+          · from <%= day(en.starts_on) %>
+        <% } %>
+      </p>
+
+      <div class="sp-now-actions">
+        <%#
+          Joining only once it has started. Before that the link usually
+          opens an empty room, which reads as a broken class rather than
+          an early one.
+
+          The meeting opens directly in a new tab. A separate protected POST
+          records the click; the teacher can correct the attendance mark.
+        %>
+        <% if (classLinks.room(en) && next.when === "now") { %>
+          <a class="btn" href="<%= classLinks.room(en) %>" target="_blank" rel="noopener noreferrer"
+             data-class-action="/portal/join/<%= en.intake_id %>" data-class-csrf="<%= locals.classJoinCsrf || '' %>"
+             title="Opens in a new tab or window">Join the class<span class="sr-only"> (opens in a new tab or window)</span></a>
+        <% } %>
+        <%# Join, chat, materials, exercises — in that order, because it
+            is the order of a class: get in, talk to people, read what
+            was set, then practise it. Each appears only when the office
+            has actually set one; a button that opens nothing teaches
+            people the portal is decorative. %>
+        <% if (en.whatsapp_url) { %>
+          <a class="btn btn-ghost" href="<%= en.whatsapp_url %>" target="_blank" rel="noopener noreferrer">
+            Group chat
+          </a>
+        <% } %>
+        <% if (en.drive_url) { %>
+          <a class="btn btn-ghost" href="<%= en.drive_url %>" target="_blank" rel="noopener noreferrer">
+            Course materials
+          </a>
+        <% } %>
+        <% if (en.exercise_url) { %>
+          <a class="btn btn-ghost" href="<%= en.exercise_url %>" target="_blank" rel="noopener noreferrer">
+            Exercise
+          </a>
+        <% } %>
+      </div>
+
+      <p class="muted sp-now-note">
+        Times are <%= en.timezone || "Europe/Berlin" %>.
+      </p>
+    </div>
+  <% }); %>
+<% } else { %>
+  <%# No class running and none coming. The page still has to say
+      something about courses, because the list that used to say it
+      has gone. %>
+  <div class="sp-card sp-wide">
+    <div class="sp-card-head">
+      <h2>My courses</h2>
+      <% if (enrolments.length) { %><a href="/portal/courses">See all</a><% } %>
+    </div>
+    <% if (!enrolments.length) { %>
+      <p class="sp-empty">
+        You are not on a course yet. Once the school adds you to a batch, your
+        timetable and materials appear here.
+        <a href="/courses">Browse the courses</a>.
+      </p>
+    <% } else { %>
+      <ul class="sp-list">
+        <% enrolments.slice(0, 3).forEach(function (e) { %>
+          <li>
+            <div>
+              <strong><%= e.course_title %></strong>
+              <div class="muted" style="font-size:.82rem">
+                <%- include("../../partials/batch-code", { code: e.code }) %><% if (day(e.starts_on)) { %> · <%= day(e.starts_on) %><% } %>
+              </div>
+            </div>
+            <div class="sp-list-end">
+              <% if (e.level) { %><span class="pill pill-level"><%= e.level %></span><% } %>
+              <span class="pill<%= e.status === "active" ? " pill-live" : "" %>"><%= e.status %></span>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </div>
+<% } %>
+
+<%# Two equal columns underneath, where the courses list used to be. %>
+<div class="sp-cols sp-cols-even">
+  <div class="sp-card">
+    <h2>My level</h2>
+    <% if (results.length) { %>
+      <div class="sp-level">
+        <span class="sp-level-badge"><%= results[0].placed_level %></span>
+        <div>
+          <p style="margin:0;font-weight:600"><%= results[0].track || "Placement test" %></p>
+          <p class="muted" style="margin:.15rem 0 0;font-size:.82rem">
+            <% if (results[0].score_percent !== null) { %><%= Number(results[0].score_percent).toFixed(0) %>% · <% } %>
+            <%= day(results[0].taken_at) %>
+          </p>
+        </div>
+      </div>
+    <% } else { %>
+      <p class="sp-empty">
+        No placement test on record.
+        <a href="/placement-test">Take the test</a> to find your level — it takes
+        about twenty minutes.
+      </p>
+    <% } %>
+  </div>
+
+  <div class="sp-card">
+    <h2>My events</h2>
+    <% if (events.length) { %>
+      <ul class="sp-list">
+        <% events.slice(0, 5).forEach(function (ev) { %>
+          <li>
+            <div>
+              <strong><%= ev.event_title || ev.event_slug %></strong>
+              <% if (day(ev.event_date)) { %>
+                <div class="muted" style="font-size:.82rem"><%= day(ev.event_date) %></div>
+              <% } %>
+            </div>
+            <span class="pill"><%= ev.status %></span>
+          </li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <p class="sp-empty">
+        Nothing booked. <a href="/events">See what is coming up</a>.
+      </p>
+    <% } %>
+  </div>
+</div>
+
+<%- include("../../partials/portal-shell-foot") %>

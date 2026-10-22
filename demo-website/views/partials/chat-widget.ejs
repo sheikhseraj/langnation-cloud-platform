@@ -1,0 +1,244 @@
+<%#
+  The assistant, in the corner of the page.
+
+  Rendered only when there is a key to answer with. A chat bubble that
+  opens and apologises is worse than no bubble: somebody has already
+  decided to ask, and being told "not available" is the moment they
+  leave rather than click Contact.
+
+  Everything inside is drawn by the server and filled in by app.js.
+  Without JavaScript the panel never opens and the button is not there
+  to be pressed — there is nothing here that half-works.
+
+  ── Why this is one partial and not seven ───────────────────────────
+
+  Launcher, greeting, header, quick actions, log and input are one
+  widget with one open/closed state between them. Split across seven
+  includes they would each need lang, lp and site passed down, and
+  reading the thing would mean opening seven files to follow one
+  button. The sections below are marked instead.
+
+  Expects: lang, lp, site.
+%>
+<% const de = lang === "de"; %>
+<%
+  /* The quick actions.
+   *
+   * Every one of these does something that already exists. Three ask
+   * the assistant a question it can answer from the site's own facts;
+   * three go to a page this site actually serves — the placement test,
+   * the study material, and the school's dictionary, which lives on
+   * its own domain and so opens in its own tab.
+   *
+   * No card here is decoration. A tile that looks like a feature and
+   * does nothing is worse than six tiles instead of seven. */
+  const QUICK = [
+    {
+      icon: "book",
+      title: de ? "Deutsch lernen" : "Learn German",
+      note: "A1 – C2",
+      ask: de
+        ? "Welche Deutschkurse gibt es von A1 bis C2?"
+        : "What German courses do you run from A1 to C2?",
+    },
+    {
+      icon: "cap",
+      title: de ? "Kurs finden" : "Find a course",
+      ask: de ? "Welcher Kurs passt zu mir?" : "Which course is right for me?",
+    },
+    {
+      icon: "chart",
+      title: de ? "Einstufungstest" : "Placement test",
+      note: de ? "Mein Niveau prüfen" : "Check my level",
+      href: lp("/placement-test"),
+    },
+    {
+      icon: "calendar",
+      title: de ? "Kurszeiten & Preise" : "Times & prices",
+      ask: de
+        ? "Wann starten die Kurse und was kosten sie?"
+        : "When do courses start and what do they cost?",
+    },
+    {
+      icon: "doc",
+      title: de ? "Grammatik & Übungen" : "Grammar & practice",
+      href: lp("/study-material"),
+    },
+    {
+      icon: "word",
+      title: de ? "Wort übersetzen" : "Translate a word",
+      note: "LangNation Dictionary",
+      href: site.dictionaryUrl,
+      away: true,
+    },
+    /* Across both columns, because it is the odd one out in two ways:
+       it is seventh of seven, and it is the only one that is not about
+       learning the language. Left in a half-row it looks like a tile
+       somebody forgot to pair. */
+    {
+      icon: "flag",
+      title: de ? "Einbürgerungstest" : "Citizenship test",
+      /* What the test is FOR, not what it is called. "Leben in
+         Deutschland" is its official name and means nothing to
+         somebody who has not already been told they need it; the two
+         things people are sitting it for are naturalisation and a
+         settlement permit. */
+      note: de
+        ? "Für Einbürgerung oder Niederlassung"
+        : "Test for Citizenship or PR",
+      href: lp("/einbuergerungstest"),
+      wide: true,
+    },
+  ];
+
+  /* Drawn here rather than loaded: the policy forbids scripts from a
+     CDN, so an icon font or a sprite library is not an option, and six
+     paths weigh less than either would. Same grid and stroke as the
+     icons already in the footer. */
+  const ICONS = {
+    book: '<path d="M12 7.6v11.9"/><path d="M12 7.6C10.5 6.1 8.3 5.5 4.5 5.5V17c3.8 0 6 .6 7.5 2.1"/><path d="M12 7.6c1.5-1.5 3.7-2.1 7.5-2.1V17c-3.8 0-6 .6-7.5 2.1"/>',
+    cap: '<path d="m12 4.6-9.5 4.7L12 14l9.5-4.7z"/><path d="M6.6 11.4V16c0 1.6 2.4 2.9 5.4 2.9s5.4-1.3 5.4-2.9v-4.6"/><path d="M21.5 9.3v5.2"/>',
+    chart: '<path d="M4 20h16"/><path d="M6.6 17V12"/><path d="M12 17V7.5"/><path d="M17.4 17v-6.6"/>',
+    calendar: '<rect x="3.5" y="5.5" width="17" height="15" rx="2.6"/><path d="M8 3.4v4.2M16 3.4v4.2M3.5 10.6h17"/>',
+    doc: '<path d="M14 3.6H7.6a2.1 2.1 0 0 0-2.1 2.1v12.6a2.1 2.1 0 0 0 2.1 2.1h8.8a2.1 2.1 0 0 0 2.1-2.1V8.1z"/><path d="M14 3.6v4.5h4.5"/><path d="M9 13.2h6M9 16.6h4"/>',
+    word: '<path d="M20.5 12.3c0 3.8-3.8 6.9-8.5 6.9-1 0-2-.14-2.9-.4L4 20.4l1.6-3.5a6.5 6.5 0 0 1-2.1-4.6c0-3.8 3.8-6.9 8.5-6.9s8.5 3.1 8.5 6.9z"/><path d="M8.6 12.3h6.8"/><path d="M10.4 9.6h3.2"/>',
+    flag: '<path d="M5.5 21V4"/><path d="M5.5 5.1c4-1.9 8-1.9 12 0v8.6c-4-1.9-8-1.9-12 0z"/>',
+  };
+  const svg = (d) =>
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>";
+%>
+<div class="ai" data-chat hidden>
+
+  <%# ── The launcher ────────────────────────────────────────────────
+      Her face, round, with a ring of gold and a dot to say somebody is
+      there. The label is spelled out rather than left to the picture:
+      without it the button announces itself as "Lina", which says who
+      she is and not what pressing her does. %>
+  <button class="ai-open" type="button" data-chat-open
+          aria-expanded="false" aria-controls="ai-panel"
+          aria-label="<%= de ? "Lina fragen" : "Ask Lina" %>"
+          title="<%= de ? "Zum Verschieben ziehen oder Alt + Pfeiltasten" : "Drag to move or use Alt + arrow keys" %>">
+    <%- include("chat-avatar", { kind: "launcher", w: 64, h: 64, site: site }) %>
+    <span class="ai-launch-label"><%= de ? "Lina fragen" : "Ask Lina" %></span>
+  </button>
+
+  <%# ── The panel ───────────────────────────────────────────────────
+      A dialog, not a modal: the page behind it stays usable, so there
+      is no focus trap and no inert background. Escape still closes it,
+      because that is what Escape does. %>
+  <div class="ai-panel" id="ai-panel" role="dialog"
+       aria-label="<%= de ? "Lina, LangNation-Assistentin" : "Lina, LangNation assistant" %>"
+       data-chat-panel hidden>
+
+    <header class="ai-head">
+      <%# Her portrait, as a disc. The photograph is composed as one, so
+          it is shown as one: a crop of a standing figure put in the
+          same place was a rectangle of her chin. %>
+      <%- include("chat-avatar", { kind: "face", w: 56, h: 56, site: site }) %>
+      <div class="ai-who">
+        <strong>Lina</strong>
+        <span class="ai-sub"><%= de ? "LangNation Assistentin" : "LangNation assistant" %></span>
+        <%# The word as well as the dot. A green circle on its own says
+            nothing to somebody who cannot tell it from a grey one. %>
+        <span class="ai-live"><i aria-hidden="true"></i><%= de ? "Online" : "Online" %></span>
+      </div>
+      <button class="ai-ctl" type="button" data-chat-min
+              aria-label="<%= de ? "Chat minimieren" : "Minimise the chat" %>">
+        <%- svg('<path d="M6 12.5h12"/>') %>
+      </button>
+      <button class="ai-ctl" type="button" data-chat-close
+              aria-label="<%= de ? "Chat schließen" : "Close the chat" %>">
+        <%- svg('<path d="M6.8 6.8 17.2 17.2M17.2 6.8 6.8 17.2"/>') %>
+      </button>
+    </header>
+
+    <div class="ai-body">
+      <div class="ai-log" data-chat-log role="log" aria-live="polite"></div>
+
+      <%# ── Quick actions ────────────────────────────────────────────
+          An empty box with a cursor in it is a question nobody knows
+          how to start. These are the things the office is actually
+          asked, and the pages it actually sends people to. %>
+      <div class="ai-quick" data-chat-starters>
+        <% QUICK.forEach(function (q) { %>
+          <% if (q.href) { %>
+            <a class="ai-tile<%= q.wide ? " is-wide" : "" %>" href="<%= q.href %>"
+               <%- q.away ? 'target="_blank" rel="noopener noreferrer"' : "" %>>
+              <span class="ai-tile-i"><%- svg(ICONS[q.icon]) %></span>
+              <span class="ai-tile-t">
+                <strong><%= q.title %></strong>
+                <% if (q.note) { %><small><%= q.note %></small><% } %>
+              </span>
+            </a>
+          <% } else { %>
+            <button class="ai-tile" type="button" data-chat-ask="<%= q.ask %>">
+              <span class="ai-tile-i"><%- svg(ICONS[q.icon]) %></span>
+              <span class="ai-tile-t">
+                <strong><%= q.title %></strong>
+                <% if (q.note) { %><small><%= q.note %></small><% } %>
+              </span>
+            </button>
+          <% } %>
+        <% }); %>
+      </div>
+    </div>
+
+    <%# ── Asking ──────────────────────────────────────────────────────
+        No paperclip: nothing here accepts a file, and a control that
+        does nothing is a promise the widget cannot keep. %>
+    <form class="ai-ask" data-chat-form>
+      <label class="ai-sr" for="ai-q"><%= de ? "Ihre Frage" : "Your question" %></label>
+      <input id="ai-q" type="text" autocomplete="off" maxlength="500"
+             data-chat-input
+             placeholder="<%= de ? "Nachricht schreiben…" : "Write a message…" %>">
+      <button class="ai-send" type="submit" data-chat-send
+              aria-label="<%= de ? "Senden" : "Send" %>">
+        <%- svg('<path d="M5 12.2 20 4.8l-4.3 14.9-3.3-6.1z"/><path d="M12.4 13.6 20 4.8"/>') %>
+      </button>
+    </form>
+
+    <%# Just the credit. The office moved into the conversation, under
+        every answer, where somebody is actually reading. %>
+    <p class="ai-foot">Powered by <b>LangNation</b></p>
+
+    <%# The office, written out once by the server.
+
+        Pressing "Contact the office" does not ask anybody anything: it
+        clones this. The details come from the same site.contact the
+        contact page uses, so they cannot drift from it and cannot be
+        invented — which is the whole reason this button is the
+        application's and not the model's.
+
+        A <template> rather than a hidden div: its contents are inert
+        until cloned, so the links in here are never in the tab order
+        and never read out while they are not on screen. %>
+    <template data-chat-office>
+      <div class="ai-office">
+        <p><%= de ? "So erreichen Sie das Büro:" : "Here is how to reach the office:" %></p>
+        <ul>
+          <li>
+            <span><%= de ? "E-Mail" : "Email" %></span>
+            <a href="mailto:<%= site.contact.email %>"><%= site.contact.email %></a>
+          </li>
+          <% if (site.contact.phoneDe) { %>
+            <li>
+              <span><%= de ? "Telefon" : "Phone" %></span>
+              <a href="tel:<%= site.contact.phoneDe.replace(/[^0-9+]/g, "") %>"><%= site.contact.phoneDe %></a>
+            </li>
+          <% } %>
+          <% if (site.contact.whatsapp) { %>
+            <li>
+              <span>WhatsApp</span>
+              <a href="https://wa.me/<%= site.contact.whatsapp.replace(/[^0-9]/g, "") %>"
+                 target="_blank" rel="noopener noreferrer"><%= site.contact.whatsapp %></a>
+            </li>
+          <% } %>
+        </ul>
+        <p class="ai-office-or">
+          <%= de ? "Oder " : "Or " %><a href="<%= lp("/contact") %>"><%= de ? "schreiben Sie uns hier" : "write to us here" %></a>.
+        </p>
+      </div>
+    </template>
+  </div>
+</div>

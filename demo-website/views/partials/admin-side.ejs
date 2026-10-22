@@ -1,0 +1,325 @@
+<%#
+  The left navigation.
+
+  Two areas, and each shows only its own menu. They used to share a
+  single list, so /admin and /rootadmin rendered an identical sidebar
+  and read as the same page with different contents — which is exactly
+  how it looked, and exactly the confusion it caused.
+
+  The split follows the passwords. /admin reads what people sent us; a
+  wrong click there costs nothing. /rootadmin changes what the public
+  site says and charges, live, with no publish step — so it is its own
+  area behind its own password, and the way across is one clearly
+  labelled link rather than a menu entry that quietly asks for a second
+  password.
+
+  Expects: adCurrent — a key naming the current page.
+           adArea    — "office" (default) or "content".
+%>
+<%
+  const cur = typeof adCurrent === "undefined" ? "" : adCurrent;
+  const area = typeof adArea === "undefined" ? "office" : adArea;
+  const on = (k) => (cur === k ? ' aria-current="page"' : "");
+  const content = area === "content";
+%>
+<aside class="ad-side">
+  <div class="ad-side-head">
+    <img src="/icons/logo-white-96.webp?v=<%= site.assetVersion %>" alt="" aria-hidden="true">
+    <span><%= content ? "Root admin" : "Admin" %></span>
+  </div>
+
+  <ul class="ad-nav">
+  <% if (!content) { %>
+
+    <li>
+      <a href="/admin/dashboard"<%- on("dashboard") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 4h7v7H4zM13 4h7v4h-7zM13 11h7v9h-7zM4 14h7v6H4z"/>
+        </svg>
+        Dashboard
+      </a>
+    </li>
+
+    <li class="ad-nav-group">Community</li>
+    <li><a href="/admin/community"<%- on('community-overview') %>>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M2 21v-4a7 7 0 0 1 14 0v4M17 4a3 3 0 0 1 0 6M19 14a5 5 0 0 1 3 5"/></svg>WhatsApp Community</a></li>
+    <% if (cur.startsWith('community-')) { const items = {'join-requests':'Join Requests','groups':'Groups','members':'Members','reports':'Reports','warnings':'Warnings','blocks':'Blocked Members','settings':'Rules & Settings','audit-logs':'Audit Log'}; Object.entries(items).forEach(([key,label])=>{ %>
+      <li><a href="/admin/community/<%= key %>"<%- on('community-'+key) %>><%= label %></a></li>
+    <% }); } %>
+    <li class="ad-nav-group">People</li>
+    <li>
+      <a href="/admin"<%- on("enquiries") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/>
+        </svg>
+        Enquiries
+      </a>
+    </li>
+    <li>
+      <a href="/admin/placement"<%- on("placement") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 11l2 2 4-4"/><path d="M5 3h14a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
+        </svg>
+        Placement tests
+      </a>
+    </li>
+    <li>
+      <a href="/admin/students"<%- on("students") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>
+        </svg>
+        Students
+      </a>
+    </li>
+    <li>
+      <%# Staff logins, not students. Its own entry under People
+          because creating one is the only way a teacher ever gets
+          into /teach — there is no self-registration there. %>
+      <a href="/admin/teachers"<%- on("teachers") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>
+        </svg>
+        Teachers
+      </a>
+    </li>
+    <li>
+      <a href="/admin/requests"<%- on("requests") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>
+        </svg>
+        Account requests
+      </a>
+    </li>
+
+    <li class="ad-nav-group">Quality</li>
+    <%# Fed by the "Fehler melden" button on every Einbürgerungstest
+        question. Its own entry because a report that nobody looks at
+        is worse than no report button at all. %>
+    <li>
+      <a href="/admin/einbuergerungstest"<%- on("etreports") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 21V4h10l1 2h5v9h-6l-1-2H4"/><path d="M4 21v-6"/>
+        </svg>
+        Question reports
+      </a>
+    </li>
+
+    <li class="ad-nav-group">Numbers</li>
+    <li>
+      <a href="/admin/payments"<%- on("payments") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19"/><path d="M6 14.5h4"/>
+        </svg>
+        Payments
+      </a>
+    </li>
+    <%# The shape of a batch over time, which no single register shows. %>
+    <li>
+      <a href="/admin/attendance"<%- on("attendance") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/>
+        </svg>
+        Attendance
+      </a>
+    </li>
+    <li>
+      <a href="/admin#views"<%- on("views") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 21h18"/><path d="M6 21V9M11 21V4M16 21v-8M21 21v-5"/>
+        </svg>
+        Page views
+      </a>
+    </li>
+
+  <% } else { %>
+
+    <%# First, because it is the page somebody opens to find out how
+        things are going rather than to change something. The editors
+        below it are what you reach for once you know. %>
+    <li>
+      <a href="/rootadmin/dashboard"<%- on("dashboard") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 21h18"/><path d="M7 21v-7M12 21V6M17 21v-11"/>
+        </svg>
+        Dashboard
+      </a>
+    </li>
+
+    <li class="ad-nav-group">Courses</li>
+    <li>
+      <a href="/rootadmin"<%- on("content") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>
+        </svg>
+        All courses
+      </a>
+    </li>
+    <li>
+      <a href="/rootadmin/prices"<%- on("prices") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2v20"/><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        Prices
+      </a>
+    </li>
+
+    <li class="ad-nav-group">Teaching</li>
+    <li><a href="/rootadmin/vocabulary-catalogue"<%- on("vocabulary-catalogue") %>>Wortschatz-Katalog</a></li>
+    <li>
+      <a href="/rootadmin/give"<%- on("give") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 12v8H4v-8M2 8h20v4H2zM12 8V4M12 8H7.5a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8zM12 8h4.5a2.5 2.5 0 0 0 0-5C13 3 12 8 12 8z"/>
+        </svg>
+        Give out homework
+      </a>
+    </li>
+    <li>
+      <a href="/rootadmin/lesen/exercises"<%- on("lesen") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 4h7l2 2 2-2h7v16h-7l-2 2-2-2H3zM12 6v16"/></svg>
+        Lesetraining
+      </a>
+    </li>
+    <li>
+      <a href="/rootadmin/exercises"<%- on("exercises") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h5"/>
+        </svg>
+        Aufgaben
+      </a>
+    </li>
+    <li>
+      <a href="/rootadmin/batches"<%- on("batches") %>>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 5h18v16H3z"/><path d="M3 9h18M8 3v4M16 3v4"/>
+        </svg>
+        Batches
+      </a>
+    </li>
+
+  <% } %>
+
+    <li class="ad-nav-group">Elsewhere</li>
+    <%# Labelled with what it costs. It asks for the other password, and
+        a link that does that without warning feels like a broken page. %>
+    <li>
+      <a href="<%= content ? "/admin/dashboard" : "/rootadmin" %>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+        </svg>
+        <span class="ad-nav-lbl">
+          <%= content ? "Admin" : "Root admin" %>
+          <span class="ad-nav-note">asks for the other password</span>
+        </span>
+      </a>
+    </li>
+    <li>
+      <a href="/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 14 21 3"/><path d="M21 3v7M21 3h-7"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/>
+        </svg>
+        View live site
+      </a>
+    </li>
+  </ul>
+
+  <%#
+    What is actually running here.
+
+    Not decoration. A change would be reported as missing, be present on
+    the remote, and the only way to tell the server had simply not pulled
+    was to notice some unrelated label further down the page still saying
+    the old thing. That is guesswork. This is the answer: compare it with
+    the latest commit and you know in one glance whether a deploy
+    happened, without reading a single feature.
+
+    Administrators only — this sidebar is behind a password, and the
+    commit a site runs is not something to publish to its visitors.
+  %>
+  <% if (site.build) { %>
+    <p class="ad-build" title="Deployed commit · server started <%= site.startedAt %>">
+      build <code><%= site.build %></code>
+      <%# The photographs' own version, beside the commit.
+
+          Both are needed because they answer different questions. The
+          commit says which code is running; this says which pictures are
+          on disk. A site showing last month's photographs is either
+          serving old files or serving new ones from a cache, and these
+          two numbers separate those cases without guessing: if the
+          picture version here matches the build you deployed, the files
+          are right and anything stale is in front of the server. %>
+      <br>pictures <code><%= site.imageVersion %></code>
+    </p>
+  <% } %>
+
+  <%#
+    Which database the site is talking to, and what it could not find
+    in it.
+
+    The site has known both since boot and had no way of saying either.
+    A missing column switches its feature off politely and silently --
+    correct for a visitor, useless for whoever has to work out why the
+    feature will not turn on. Without this the only recourse was to
+    restart the site and re-run migrations in turn, with no way to see
+    which of the two was needed, or whether either was.
+
+    The database NAME matters as much as the columns. An account with
+    several sites on it can easily have a migration run against the
+    right-looking name on the wrong database, and that is
+    indistinguishable from a migration that failed -- unless the site
+    says which one it actually opened.
+
+    Administrators only; this sidebar is behind a password.
+  %>
+  <% if (typeof dbState !== "undefined" && dbState) { %>
+    <p class="ad-build">
+      <% if (!dbState.enabled) { %>
+        database <code>not configured</code>
+      <% } else { %>
+        database <code><%= dbState.database || "unknown" %></code>
+        <%# "Never asked" and "asked and found nothing" look identical
+            and mean opposite things: one is a migration to run, the
+            other is a start-up that did not finish. The site spent days
+            being told to fix the first when it was the second. %>
+        <% if (!dbState.probed) { %>
+          <br><span class="ad-db-missing">schema never checked</span>
+          <br>start-up did not finish — see Runtime logs
+        <% } %>
+        <% if (dbState.missing.length) { %>
+          <br><span class="ad-db-missing">
+            <%= dbState.missing.length %> column<%= dbState.missing.length === 1 ? "" : "s" %> missing
+          </span>
+          <% dbState.missing.forEach(function (m) { %>
+            <br><code><%= m %></code>
+          <% }); %>
+          <br>Run the migration in <code>MySQL/</code>, then restart.
+        <% } else if (dbState.checked.length) { %>
+          <br>all <%= dbState.checked.length %> optional columns present
+        <% } %>
+
+        <%# Migrations the site refuses to run unattended, because they
+            rewrite rows somebody depends on -- renumbering student
+            references, resetting a teacher's status. They have to be
+            run deliberately, and a log line nobody opens is how the
+            last one went unnoticed for days.
+
+            Only the ones this database does not already show the result
+            of. It used to be all of them, on every boot, for the life
+            of the site: six jobs that had been done by hand long before
+            any of this existed, listed as outstanding forever. A
+            warning nobody can clear is a warning nobody reads, and the
+            next real one arrives in the same list. %>
+        <% if (dbState.migrations && dbState.migrations.skipped.length) { %>
+          <br><span class="ad-db-missing">run by hand:</span>
+          <% dbState.migrations.skipped.forEach(function (m) { %>
+            <br><code>MySQL/<%= m %></code>
+          <% }); %>
+        <% } %>
+        <% if (dbState.migrations && dbState.migrations.failed.length) { %>
+          <% dbState.migrations.failed.forEach(function (f) { %>
+            <br><span class="ad-db-missing">failed: <code><%= f.name %></code></span>
+          <% }); %>
+        <% } %>
+      <% } %>
+    </p>
+  <% } %>
+</aside>

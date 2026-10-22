@@ -1,0 +1,153 @@
+<%- include("../../partials/teach-shell-head", {
+  pageTitle: "Settings",
+  pageLead: "Your photo, your details and your password.",
+  nav: "settings", teacher: teacher, avatarUrl: avatarUrl,
+  initials: initials, hue: hue, notice: notice, error: error,
+}) %>
+
+<div class="sp-cols">
+  <section>
+    <%#
+      The photo is resized to 256x256 in the browser and posted as a
+      data: URL through the ordinary form encoding, so a 4MB phone photo
+      leaves as about 20KB and the server needs no upload library. The
+      same widget as the student portal, driven by the same handler in
+      app.js. Without JavaScript the control is hidden and the section
+      says why, rather than offering a button that silently does nothing.
+    %>
+    <div class="sp-card">
+      <h2>Profile photo</h2>
+
+      <div class="sp-photo">
+        <%- include("../../partials/portal-avatar", {
+          avatarUrl: avatarUrl, initials: initials, hue: hue,
+          size: "lg", name: teacher.name,
+        }) %>
+
+        <div class="sp-photo-side">
+          <p class="muted" style="font-size:.86rem;margin-top:0">
+            A square picture works best. It is resized on your own device before
+            it is sent. Your students see it on the classes you teach.
+          </p>
+
+          <form method="post" action="/teach/settings/avatar" data-avatar-form hidden>
+            <input type="hidden" name="image" data-avatar-payload>
+            <label class="btn btn-sm" style="cursor:pointer">
+              <%= avatarUrl ? "Change photo" : "Upload a photo" %>
+              <input type="file" accept="image/png,image/jpeg,image/webp" data-avatar-input hidden>
+            </label>
+            <span class="muted" style="margin-left:.6rem;font-size:.84rem" data-avatar-status></span>
+          </form>
+
+          <noscript>
+            <p class="notice" style="margin:0">
+              Uploading a photo needs JavaScript, because the picture is resized
+              in your browser before it is sent. Everything else on this page
+              works without it.
+            </p>
+          </noscript>
+
+          <% if (avatarUrl) { %>
+            <form method="post" action="/teach/settings/avatar" style="margin-top:.7rem"
+                  data-confirm-delete="your profile photo">
+              <input type="hidden" name="remove" value="1">
+              <button class="linklike" type="submit">Remove my photo</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <%#
+      Name and email are not on this form. A teacher's name is printed
+      against the batches they run, and the email is what they sign in
+      with — both are things the office changes, with a record of it,
+      not things a form changes at midnight.
+    %>
+    <div class="sp-card">
+      <h2>My details</h2>
+      <form method="post" action="/teach/settings/profile">
+        <label class="field">
+          <span>Phone</span>
+          <input type="tel" name="phone" maxlength="40" autocomplete="tel"
+                 value="<%= teacher.phone || "" %>">
+          <small class="muted">For the office, not for students. It is not shown in the student portal.</small>
+        </label>
+        <label class="field">
+          <span>Time zone</span>
+          <input type="text" name="timezone" maxlength="64" placeholder="Europe/Berlin"
+                 value="<%= teacher.timezone || "" %>">
+          <small class="muted">
+            An IANA name such as Europe/Berlin or Asia/Kolkata. Class times are
+            always shown in the batch's own zone, not yours.
+          </small>
+        </label>
+        <label class="field">
+          <span>About you</span>
+          <textarea name="bio" rows="3" maxlength="400"><%= teacher.bio || "" %></textarea>
+          <small class="muted">A sentence or two. Not published anywhere yet.</small>
+        </label>
+        <button class="btn" type="submit">Save my details</button>
+      </form>
+    </div>
+
+    <div class="sp-card">
+      <h2>Password</h2>
+      <form method="post" action="/teach/settings/password">
+        <%- include("../../partials/password-field", {
+          id: "current_password", name: "current_password", label: "Current password",
+        }) %>
+        <%- include("../../partials/password-field", {
+          id: "new_password", name: "new_password", label: "New password",
+          autocomplete: "new-password", minlength: 10,
+          hint: "At least 10 characters, and not your own name or address.",
+        }) %>
+        <button class="btn" type="submit">Change my password</button>
+      </form>
+      <p class="muted" style="font-size:.82rem;margin:.9rem 0 0">
+        Changing it signs out every other device. You stay signed in here.
+      </p>
+    </div>
+  </section>
+
+  <aside>
+    <div class="sp-card">
+      <h2>Your account</h2>
+      <dl class="sp-facts">
+        <% if (teacher.teacher_ref) { %>
+          <div><dt>Reference</dt><dd><%= teacher.teacher_ref %></dd></div>
+        <% } %>
+        <div><dt>Email</dt><dd><%= teacher.email %></dd></div>
+        <div><dt>Role</dt><dd><%= teacher.role === "teacher" ? "Teacher" : teacher.role %></dd></div>
+        <div><dt>Status</dt><dd><span class="pill pill-live"><%= teacher.status %></span></dd></div>
+        <% if (teacher.last_login_at) { %>
+          <div><dt>Last signed in</dt><dd>
+            <%= new Date(teacher.last_login_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) %>
+          </dd></div>
+        <% } %>
+      </dl>
+      <p class="muted" style="font-size:.82rem;margin:.9rem 0 0">
+        Your name, email and role are changed by the office. Ask and they will
+        do it.
+      </p>
+    </div>
+
+    <%#
+      Said here rather than in a policy nobody opens. A teacher account
+      reaches real people's contact details, and the person holding it
+      is the one who notices first if something is wrong with it.
+    %>
+    <div class="sp-card">
+      <h2>Looking after student data</h2>
+      <p class="muted" style="font-size:.86rem;margin-top:-.3rem">
+        Your class lists hold names, email addresses and phone numbers. Use
+        them for teaching your classes and nothing else, keep this password to
+        yourself, and tell the office at once if you think somebody else has it
+        — they can end every session on your account immediately.
+      </p>
+      <p style="margin:0"><a href="/privacy">Privacy policy</a></p>
+    </div>
+  </aside>
+</div>
+
+<%- include("../../partials/teach-shell-foot") %>

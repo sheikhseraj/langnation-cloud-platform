@@ -1,0 +1,326 @@
+<%#
+  Einbürgerungstest — practice page.
+
+  The questions are German whichever locale the page is reached
+  through: it teaches the official German-language exam, and a
+  translated question is a different question. Everything around them
+  — headings, buttons, the result, the praise — follows the reader's
+  language, and each question carries a button that shows an English
+  reading of it without replacing the German.
+
+  The landing is server-rendered so it is indexable and readable with no
+  JavaScript at all. Everything past "Prüfung starten" is a client-side
+  app, because a 33-question paper with a countdown is not something to
+  post back to a server thirty-three times.
+
+  Nothing here is black-red-gold. The one German cue is the flag stripe
+  on the hero card; the rest is LangNation's own navy and gold.
+%>
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<%
+  /* Every string the client-side app needs, in the reader's language.
+     Sent as one blob rather than fetched, because the quiz renders on
+     the first tap and a round trip for the word "Weiter" would show as
+     a flicker. Keys are listed rather than filtered out of the whole
+     table so that a typo is a missing string in the test run, not a
+     silent sweep that happens to catch it. */
+  const CLIENT_KEYS = [
+    "back", "qOf", "timeLeft", "save", "saved", "saySaved", "sayUnsaved",
+    "answersAria", "feedbackRight", "feedbackWrong", "correctAnswer",
+    "yourAnswer", "prevQuestion", "endPractice", "continue", "hint",
+    "prev", "next", "mark", "unmark", "submit",
+    "navTitle", "navAria", "navAnswered", "navOpen", "navMarked", "navCellAria",
+    "filterAria", "filterAll", "filterOpen", "filterRight", "filterWrong",
+    "filterSaved", "filterSay",
+    "leaveExam", "confirmSubmit", "confirmOpenOne", "confirmOpenMany",
+    "sayRight", "sayWrong", "sayResult",
+    "blocksTitle", "blocksLead", "blockAria", "blockLabel",
+    "resPractice", "resPracticeLead", "resPass", "resPassLead",
+    "resFail", "resFailLead", "resBlock", "resTimeUp",
+    "numRight", "numWrong", "numUnanswered", "numRate",
+    "practiseWrong", "wrongFromExam", "newExam", "nextBlock", "pickBlock",
+    "toOverview", "reviewTitle", "revRight", "revWrong", "revUnanswered",
+    "praiseExcellentHead", "praiseExcellentBody",
+    "praiseStrongHead", "praiseStrongBody",
+    "praiseGoodHead", "praiseGoodBody",
+    "praiseStartHead", "praiseStartBody",
+    "praiseSeedHead", "praiseSeedBody",
+    "translate", "translateAria", "translateOff", "translateOffAria", "toolsAria",
+    "translateHead", "translateNone", "translateNote", "translateLoading",
+    "explain", "explainAria", "explainHead", "explainNone", "explainTopic",
+    "explainSource", "explainRead", "explainOfficial", "explainClose",
+    "report", "reportAria", "reportTitle", "reportLead", "reportAbout",
+    "reportKind", "reportKindWrong", "reportKindTypo", "reportKindImage",
+    "reportKindTranslation", "reportKindOther",
+    "reportMessage", "reportMessagePlaceholder", "reportEmail",
+    "reportEmailNote", "reportSend", "reportCancel", "reportSending",
+    "reportThanks", "reportInvalid", "reportTooMany", "reportFailed",
+    "resetConfirm", "statLearned",
+    "accountBadge", "myProgress", "chosen", "sayChosen", "loadFailed",
+    "sayReset", "examFailed", "noneSaved", "noneWrong", "labelAll",
+    "labelPractice", "modeSavedBtn", "modeMistakesBtn", "modeSmart",
+    "modeMistakes", "modeSaved",
+  ];
+  const clientStrings = {};
+  CLIENT_KEYS.forEach((k) => { clientStrings[k] = t("et." + k); });
+%>
+
+<div class="et" data-et
+     data-states='<%= JSON.stringify(et.states || []) %>'
+     data-lang="<%= lang %>"
+     <%# A hash of the question data. It goes into the URLs the script
+         fetches, so correcting an answer changes the URL and a stale
+         copy in somebody's service worker is bypassed rather than
+         served for another day. %>
+     data-version="<%= et.version || "0" %>"
+     <%# Escaped output, not raw: the English copy has apostrophes in
+         it, and an unescaped apostrophe ends a single-quoted attribute
+         early — silently, and halfway through the strings. %>
+     data-i18n='<%= JSON.stringify(clientStrings) %>'
+     data-ready="<%= et.ready ? "1" : "0" %>">
+
+  <%# ── Landing ─────────────────────────────────────────────────── %>
+  <section class="section-tight" data-et-view="landing">
+    <div class="wrap">
+
+      <div class="et-hero">
+        <div class="et-hero-body">
+          <p class="eyebrow"><%= t("et.eyebrow") %></p>
+          <h1><%= t("et.title") %></h1>
+          <p class="lead"><%= t("et.pageLead") %></p>
+          <p class="et-hero-note"><%= t("et.pageNote") %></p>
+
+          <div class="et-facts">
+            <div class="et-fact">
+              <span class="et-fact-n">33</span>
+              <span class="et-fact-l"><%= t("et.factQ") %></span>
+            </div>
+            <div class="et-fact">
+              <span class="et-fact-n">60</span>
+              <span class="et-fact-l"><%= t("et.factMin") %></span>
+            </div>
+            <div class="et-fact">
+              <span class="et-fact-n">17</span>
+              <span class="et-fact-l"><%= t("et.factPass") %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%# Shown only once the page has confirmed there is an account.
+          A signed-out visitor never sees it and is never nagged to
+          make one — the whole page works without. %>
+      <p class="et-account" data-et-account hidden></p>
+
+      <%#
+        The case for an account, made once and only to somebody who has
+        not got one. Revealed by the script that has just checked, so a
+        signed-in learner never sees it and nobody is nagged before the
+        page even knows.
+
+        It says what an account is FOR rather than asking for one. The
+        page works completely without it, and the copy says so, because
+        the alternative reads as a wall.
+      %>
+      <aside class="et-signin" data-et-signin hidden>
+        <div>
+          <h2><%= t("et.keepTitle") %></h2>
+          <p><%= t("et.keepBody") %></p>
+          <ul class="et-signin-list">
+            <li><%= t("et.keep1") %></li>
+            <li><%= t("et.keep2") %></li>
+            <li><%= t("et.keep3") %></li>
+            <li><%= t("et.keep4") %></li>
+          </ul>
+        </div>
+        <p class="et-signin-cta">
+          <a class="btn" data-et-signin-link href="/portal?next=<%= encodeURIComponent(lp('/einbuergerungstest')) %>"><%= t("et.keepSignIn") %></a>
+          <a class="btn btn-ghost" href="/portal/request"><%= t("et.keepRequest") %></a>
+        </p>
+      </aside>
+
+      <%# The catalogue as a reading list. Some people want to revise by
+          reading rather than by being tested, and it is also how a
+          wrong answer gets spotted. Server-rendered, so it works with
+          no JavaScript and search engines can read it. %>
+      <p class="et-readlist">
+        <%= t("et.readFirst") %>
+        <a href="/einbuergerungstest/fragen"><%= t("et.readLink") %></a>
+      </p>
+
+      <% if (!et.ready) { %>
+        <p class="notice notice-bad" style="margin-top:2rem">
+          <%= t("et.notReady") %>
+          <a href="<%= lp('/contact') %>"><%= t("et.notReadyLink") %></a>.
+        </p>
+      <% } else { %>
+
+        <%# ── Bundesland ──────────────────────────────────────────── %>
+        <section class="et-block" id="bundesland">
+          <h2><%= t("et.stateTitle") %></h2>
+          <p class="muted et-block-lead"><%= t("et.stateLead") %></p>
+
+          <div class="et-states" role="group" aria-label="<%= t("et.stateAria") %>">
+            <% et.states.forEach(function (s) { %>
+              <button class="et-state" type="button"
+                      data-et-state="<%= s.slug %>" data-name="<%= s.name %>">
+                <%= s.name %>
+              </button>
+            <% }); %>
+          </div>
+
+          <%# Without JavaScript the buttons above do nothing, so the
+              page says what it needs rather than looking broken. %>
+          <noscript>
+            <p class="notice" style="margin-top:1.25rem">
+              <%= t("et.noscript") %>
+              <a href="https://www.bamf.de/SharedDocs/Anlagen/DE/Integration/Einbuergerung/gesamtfragenkatalog-lebenindeutschland.html"
+                 rel="noopener noreferrer" target="_blank">BAMF</a>.
+            </p>
+          </noscript>
+        </section>
+
+        <%# ── Modes, revealed once a Bundesland is chosen ─────────── %>
+        <section class="et-block" data-et-modes hidden>
+          <h2><%= t("et.modesTitle") %></h2>
+          <p class="muted et-block-lead" data-et-chosen></p>
+
+          <div class="et-modes">
+            <article class="et-mode et-mode-primary">
+              <h3><%= t("et.modeExam") %></h3>
+              <p><%= t("et.modeExamLead") %></p>
+              <button class="btn" type="button" data-et-start="exam"><%= t("et.modeExamBtn") %></button>
+            </article>
+
+            <article class="et-mode">
+              <h3><%= t("et.modeAll") %></h3>
+              <p><%= t("et.modeAllLead") %></p>
+              <button class="btn btn-ghost" type="button" data-et-start="all"><%= t("et.modeAllBtn") %></button>
+            </article>
+
+            <article class="et-mode">
+              <h3><%= t("et.modeState") %></h3>
+              <p><%= t("et.modeStateLead") %></p>
+              <button class="btn btn-ghost" type="button" data-et-start="state"><%= t("et.modeStateBtn") %></button>
+            </article>
+
+            <article class="et-mode">
+              <h3><%= t("et.modeSmart") %></h3>
+              <p><%= t("et.modeSmartLead") %></p>
+              <button class="btn btn-ghost" type="button" data-et-start="smart"><%= t("et.modeSmartBtn") %></button>
+            </article>
+
+            <article class="et-mode">
+              <h3><%= t("et.modeMistakes") %></h3>
+              <p><%= t("et.modeMistakesLead") %></p>
+              <button class="btn btn-ghost" type="button" data-et-start="mistakes"
+                      data-et-count="mistakes"><%= t("et.modeMistakesBtn") %></button>
+            </article>
+
+            <article class="et-mode">
+              <h3><%= t("et.modeSaved") %></h3>
+              <p><%= t("et.modeSavedLead") %></p>
+              <button class="btn btn-ghost" type="button" data-et-start="saved"
+                      data-et-count="saved"><%= t("et.modeSavedBtn") %></button>
+            </article>
+          </div>
+        </section>
+
+        <%# ── Progress, filled in from this device's history ──────── %>
+        <section class="et-block" data-et-progress hidden>
+          <h2><%= t("et.progressTitle") %></h2>
+          <div class="et-stats">
+            <div class="et-stat">
+              <span class="et-stat-n" data-et-stat="practised">0 / 310</span>
+              <span class="et-stat-l"><%= t("et.statPractised") %></span>
+            </div>
+            <div class="et-stat">
+              <span class="et-stat-n" data-et-stat="accuracy">—</span>
+              <span class="et-stat-l"><%= t("et.statAccuracy") %></span>
+            </div>
+            <div class="et-stat">
+              <span class="et-stat-n" data-et-stat="exams">0</span>
+              <span class="et-stat-l"><%= t("et.statExams") %></span>
+            </div>
+            <div class="et-stat">
+              <span class="et-stat-n" data-et-stat="best">—</span>
+              <span class="et-stat-l"><%= t("et.statBest") %></span>
+            </div>
+          </div>
+          <p class="et-progress-bar-wrap">
+            <span class="et-bar"><span class="et-bar-fill" data-et-stat-bar style="width:0%"></span></span>
+            <span class="muted et-bar-label" data-et-stat="learned"><%= t("et.statLearned", { n: 0, total: 310 }) %></span>
+          </p>
+          <p style="margin:1rem 0 0">
+            <button class="linklike" type="button" data-et-reset><%= t("et.reset") %></button>
+          </p>
+        </section>
+      <% } %>
+
+      <%# ── About, always rendered: it is the SEO body copy ──────── %>
+      <section class="et-block et-about">
+        <h2><%= t("et.aboutTitle") %></h2>
+        <div class="et-about-grid">
+          <ul class="et-about-list">
+            <li><%- t("et.about1") %></li>
+            <li><%- t("et.about2") %></li>
+            <li><%- t("et.about3") %></li>
+            <li><%- t("et.about4") %></li>
+            <li><%- t("et.about5") %></li>
+          </ul>
+          <div>
+            <p class="muted"><%- t("et.aboutPool") %></p>
+            <p class="muted">
+              <% if (et.ready) { %>
+                <%= t("et.aboutSource", {
+                  date: new Date(et.catalogueDate).toLocaleDateString(
+                    lang === "de" ? "de-DE" : "en-GB",
+                    { day: "numeric", month: "long", year: "numeric" }),
+                }) %>
+              <% } else { %>
+                <%= t("et.aboutSourceNoDate") %>
+              <% } %>
+            </p>
+            <p>
+              <a href="https://www.bamf.de/SharedDocs/Anlagen/DE/Integration/Einbuergerung/gesamtfragenkatalog-lebenindeutschland.html"
+                 rel="noopener noreferrer" target="_blank">
+                <%= t("et.aboutLink") %>
+              </a>
+            </p>
+            <p class="et-disclaimer"><%= t("et.disclaimer") %></p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </section>
+
+  <%#
+    ── Choosing a block ─────────────────────────────────────────────
+    "Alle Fragen üben" opens this rather than dropping somebody into
+    300 questions in a row. Thirty is a sitting; 300 is a chore nobody
+    finishes, and an unfinished chore teaches nothing.
+
+    Built by the client because every block carries how much of it is
+    already done, and that comes from the browser's own record.
+  %>
+  <section class="section-tight" data-et-view="blocks" hidden>
+    <div class="wrap et-quiz-wrap" data-et-blocks></div>
+  </section>
+
+  <%# ── The quiz, built by the client ───────────────────────────── %>
+  <section class="section-tight" data-et-view="quiz" hidden>
+    <div class="wrap et-quiz-wrap" data-et-quiz></div>
+  </section>
+
+  <%# ── Result ──────────────────────────────────────────────────── %>
+  <section class="section-tight" data-et-view="result" hidden>
+    <div class="wrap et-quiz-wrap" data-et-result></div>
+  </section>
+</div>
+
+<%- include("../partials/footer", {
+  pageScripts: ["et-core.js", "einbuergerungstest.js"],
+}) %>

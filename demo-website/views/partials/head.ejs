@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="<%= localeTag %>" data-theme-default data-ground="<%= site.ground %>"
+      data-sw-ready="<%= t("sw.ready") %>"
+      data-sw-update="<%= t("sw.update") %>"
+      data-sw-later="<%= t("sw.later") %>">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title><%= seo.title %></title>
+<meta name="description" content="<%= seo.description %>">
+<% if (seo.keywords) { %><meta name="keywords" content="<%= seo.keywords %>"><% } %>
+<meta name="author" content="LangNation Education Pvt. Ltd.">
+<% if (seo.noindex) { %><meta name="robots" content="noindex,follow"><% } %>
+
+<link rel="canonical" href="<%= site.origin %><%= canonicalPath %>">
+<% alternates.forEach(function (a) { %>
+<link rel="alternate" hreflang="<%= a.hreflang %>" href="<%= site.origin %><%= a.path %>">
+<% }); %>
+<link rel="alternate" hreflang="x-default" href="<%= site.origin %><%= alternates[0].path %>">
+
+<!-- Open Graph -->
+<meta property="og:type" content="<%= seo.type || 'website' %>">
+<meta property="og:site_name" content="LangNation <%= t("site.tagline") %>">
+<meta property="og:locale" content="<%= localeTag.replace('-', '_') %>">
+<meta property="og:title" content="<%= seo.title %>">
+<meta property="og:description" content="<%= seo.description %>">
+<meta property="og:url" content="<%= site.origin %><%= canonicalPath %>">
+<%#
+  The share card, versioned like everything else under /img/.
+
+  Stamped here rather than where seo.image is set, because "/img/og-default.png"
+  is written out in five separate route handlers and a sixth will be added
+  the day someone adds a page. Doing it at the one place they all pass
+  through means none of them has to remember.
+
+  Already-versioned URLs are left alone, so a picture coming from the
+  content files — which were stamped as they loaded — is not stamped twice.
+%>
+<%
+  const ogPath = seo.image || "/img/og-default.png";
+  const ogSrc = ogPath.startsWith("/img/") && !ogPath.includes("?")
+    ? ogPath + "?v=" + site.imageVersion
+    : ogPath;
+%>
+<meta property="og:image" content="<%= site.origin %><%= ogSrc %>">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="<%= site.groundColor %>" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a1628" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="LangNation">
+<meta name="mobile-web-app-capable" content="yes">
+<%# The seal, not a simplified mark: see tools/favicon.js. The larger
+    sizes are for HiDPI screens, which render a 32px tab slot at 64
+    real pixels — without them the browser upscales and the icon looks
+    soft. /favicon.ico is also served from the root, because browsers
+    and Google ask for it there regardless of these tags. %>
+<%# Versioned for the same reason the stylesheet is: these are served
+    with a long max-age, so without a changing URL a new mark would not
+    reach anyone who had already loaded the old one. /favicon.ico is the
+    exception — browsers ask for that exact path on their own, so it
+    cannot carry a version and is given a revalidating header instead. %>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/icons/favicon-16.png?v=<%= site.assetVersion %>" sizes="16x16" type="image/png">
+<link rel="icon" href="/icons/favicon-32.png?v=<%= site.assetVersion %>" sizes="32x32" type="image/png">
+<link rel="icon" href="/icons/favicon-48.png?v=<%= site.assetVersion %>" sizes="48x48" type="image/png">
+<link rel="icon" href="/icons/favicon-96.png?v=<%= site.assetVersion %>" sizes="96x96" type="image/png">
+<link rel="icon" href="/icons/favicon-128.png?v=<%= site.assetVersion %>" sizes="128x128" type="image/png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=<%= site.assetVersion %>">
+
+<!-- Pick the stored theme before first paint, so the page never flashes.
+     Also marks the document as script-enabled: the scroll-reveal animation
+     starts at opacity 0, so it must only apply where JS can finish it. -->
+<script>
+(function () {
+  document.documentElement.classList.add("js");
+  try {
+    var t = localStorage.getItem("ln-theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+  } catch (e) {}
+})();
+</script>
+
+<link rel="stylesheet" href="/css/site.css?v=<%= site.assetVersion %>">
+
+<!-- Fraunces is a nicety, not a necessity: load it without blocking render. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap"></noscript>
+
+<% if (typeof jsonLd !== "undefined" && jsonLd) { %>
+<script type="application/ld+json"><%- JSON.stringify(jsonLd) %></script>
+<% } %>
+</head>
+<body>
+<a class="skip" href="#main"><%= t("nav.skip") %></a>

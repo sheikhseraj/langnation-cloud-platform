@@ -1,0 +1,96 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.exams") %></p>
+      <h1><%= t("exams.title") %></h1>
+      <p class="lead"><%= t("exams.lead") %></p>
+    </div>
+
+    <div class="detail-grid">
+      <div>
+        <% if (!levels.length) { %>
+          <p class="notice"><%= t("exams.empty") %></p>
+        <% } %>
+
+        <% levels.forEach(function (lv) { %>
+          <section style="margin-bottom:2.75rem" id="level-<%= lv.level.toLowerCase() %>">
+            <div class="row" style="gap:.6rem;margin-bottom:1rem">
+              <span class="pill pill-level" style="font-size:.9rem;padding:.3rem .8rem"><%= lv.level %></span>
+              <h2 style="font-size:clamp(1.3rem,2.8vw,1.7rem)"><%= t("exams.levelTitle", { level: lv.level }) %></h2>
+            </div>
+
+            <% if (!lv.papers.length) { %>
+              <p class="notice"><%= t("exams.empty") %></p>
+            <% } %>
+
+            <% lv.sections.forEach(function (s) { %>
+              <% if (s.publisher) { %>
+                <h3 class="publisher"><%= s.publisher %></h3>
+              <% } %>
+              <ul class="papers">
+                <% s.papers.forEach(function (p) { %>
+                  <li>
+                    <span class="paper-name"><%= p.name %></span>
+                    <span class="paper-links">
+                      <% p.files.forEach(function (f) { %>
+                        <a class="btn btn-sm btn-ghost" href="<%= f.href %>"
+                           <%= f.external ? 'rel="noopener nofollow" target="_blank"' : "download" %>>
+                          <% if (f.label === "Audio") { %>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                                 stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                              <path d="M11 5 6 9H2v6h4l5 4zM16 9a5 5 0 0 1 0 6"/>
+                            </svg>
+                          <% } else if (f.label === "PDF") { %>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                              <path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+                            </svg>
+                          <% } %>
+                          <%= f.label %>
+                        </a>
+                      <% }); %>
+                    </span>
+                  </li>
+                <% }); %>
+              </ul>
+            <% }); %>
+          </section>
+        <% }); %>
+
+        <p class="muted" style="font-size:.84rem;border-top:1px solid var(--line);padding-top:1.25rem">
+          <%= t("exams.publisher") %>
+        </p>
+      </div>
+
+      <aside class="detail-aside">
+        <div class="facts">
+          <h3><%= t("exams.howTitle") %></h3>
+          <div class="facts-cta" style="border-bottom:1px solid var(--line)">
+            <ol style="padding-left:1.15rem;display:grid;gap:.7rem;font-size:.9rem">
+              <li><%= t("exams.how1") %></li>
+              <li><%= t("exams.how2") %></li>
+              <li><%= t("exams.how3") %></li>
+            </ol>
+          </div>
+          <div class="facts-cta">
+            <a class="btn btn-block" href="<%= lp('/contact') %>"><%= t("cta.enquire") %></a>
+          </div>
+        </div>
+
+        <div style="margin-top:1.75rem">
+          <h3 style="font-size:1.05rem;margin-bottom:.9rem"><%= t("courses.filterLevel") %></h3>
+          <div class="chips">
+            <% levels.forEach(function (lv) { %>
+              <a class="chip" href="#level-<%= lv.level.toLowerCase() %>"><%= lv.level %></a>
+            <% }); %>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

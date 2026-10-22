@@ -1,0 +1,26 @@
+<%#
+  Head for both back-office areas.
+
+  Same stylesheet and same theme bootstrap as the public site, so the
+  dark-mode toggle works here and there is one palette to maintain
+  rather than two. The inline script runs before first paint, which is
+  what stops a stored dark theme flashing white on load.
+
+  Expects: adTitle (string), site (from res.locals or passed in).
+%>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><%= adTitle %> · LangNation</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/icons/favicon-96.png" sizes="96x96" type="image/png">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem("ln-theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+  } catch (e) {}
+})();
+</script>
+<link rel="stylesheet" href="/css/site.css?v=<%= site.assetVersion %>">

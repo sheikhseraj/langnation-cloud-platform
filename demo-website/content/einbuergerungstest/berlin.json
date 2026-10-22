@@ -1,0 +1,215 @@
+[
+ {
+  "id": "berlin-1",
+  "number": 321,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Welches Wappen gehört zum Bundesland Berlin?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 3,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/berlin-1-1.webp",
+     "w": 220,
+     "h": 264
+    },
+    {
+     "src": "/img/einbuergerungstest/berlin-1-2.webp",
+     "w": 195,
+     "h": 270
+    },
+    {
+     "src": "/img/einbuergerungstest/berlin-1-3.webp",
+     "w": 196,
+     "h": 281
+    },
+    {
+     "src": "/img/einbuergerungstest/berlin-1-4.webp",
+     "w": 196,
+     "h": 316
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ },
+ {
+  "id": "berlin-2",
+  "number": 322,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Welches ist ein Bezirk von Berlin?",
+  "answers": [
+   "Altona",
+   "Prignitz",
+   "Pankow",
+   "Mecklenburgische Seenplatte"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ },
+ {
+  "id": "berlin-3",
+  "number": 323,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Für wie viele Jahre wird das Landesparlament in Berlin gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ },
+ {
+  "id": "berlin-4",
+  "number": 324,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Ab welchem Alter darf man in Berlin bei Kommunalwahlen (Wahl der Bezirksverordnetenversammlung) wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ },
+ {
+  "id": "berlin-5",
+  "number": 325,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Welche Farben hat die Landesflagge von Berlin?",
+  "answers": [
+   "blau-weiß-rot",
+   "weiß-rot",
+   "grün-weiß-rot",
+   "schwarz-gold"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ },
+ {
+  "id": "berlin-6",
+  "number": 326,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Wo können Sie sich in Berlin über politische Themen informieren?",
+  "answers": [
+   "beim Ordnungsamt der Gemeinde",
+   "bei den Kirchen",
+   "bei der Verbraucherzentrale",
+   "bei der Landeszentrale für politische Bildung"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ },
+ {
+  "id": "berlin-7",
+  "number": 327,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Welches Bundesland ist ein Stadtstaat?",
+  "answers": [
+   "Berlin",
+   "Saarland",
+   "Brandenburg",
+   "Hessen"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ },
+ {
+  "id": "berlin-8",
+  "number": 328,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Welches Bundesland ist Berlin?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 3,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/berlin-8.webp",
+     "w": 722,
+     "h": 608
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ },
+ {
+  "id": "berlin-9",
+  "number": 329,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef des Stadtstaates Berlin?",
+  "answers": [
+   "Ministerpräsidentin/Ministerpräsident",
+   "Oberbürgermeisterin/Oberbürgermeister",
+   "Präsidentin/Präsident des Senates",
+   "Regierende Bürgermeisterin/Regierender Bürgermeister"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ },
+ {
+  "id": "berlin-10",
+  "number": 330,
+  "type": "state",
+  "category": "Berlin",
+  "question": "Welche Senatorin/welchen Senator hat Berlin nicht?",
+  "answers": [
+   "Finanzsenatorin/Finanzsenator",
+   "Innensenatorin/Innensenator",
+   "Senatorin/Senator für Außenbeziehungen",
+   "Justizsenatorin/Justizsenator"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Berlin"
+ }
+]

@@ -1,0 +1,81 @@
+<%
+  const money = (c) => new Intl.NumberFormat("en-GB", {
+    style: "currency", currency: bill.currency || "EUR",
+  }).format((Number(c) || 0) / 100);
+  const day = (v) => {
+    if (!v) return "—";
+    const iso = v instanceof Date
+      ? `${v.getFullYear()}-${String(v.getMonth() + 1).padStart(2, "0")}-${String(v.getDate()).padStart(2, "0")}`
+      : String(v).slice(0, 10);
+    const d = new Date(`${iso}T00:00:00Z`);
+    return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en-GB", {
+      day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  };
+  /* Frozen on the invoice when it was issued, not read from settings
+     now: people move and companies rename themselves, and a reissued
+     invoice that quietly says something different from the one
+     somebody was sent is the problem those columns exist to avoid. */
+  /* site.invoiceReady, not the Impressum: an invoice needs the
+     issuer's legal name, address and TAX NUMBER, which the Impressum
+     settings do not carry. They are separate questions and were being
+     answered by the same flag. */
+  const ready = site.invoiceReady;
+%>
+<!DOCTYPE html>
+<html lang="en" data-theme-default data-ground="<%= site.ground %>">
+<head>
+<%- include("../partials/admin-head", { adTitle: "Invoice " + (bill.number || ""), site: site }) %>
+</head>
+<body>
+
+<div class="ad-shell">
+  <%- include("../partials/admin-side", { adCurrent: "payments" }) %>
+
+  <div class="ad-body">
+    <%- include("../partials/admin-top", {
+      adTitle: "Invoice " + (bill.number || "draft"),
+      adCrumbs: [
+        { label: "Admin", href: "/admin/dashboard" },
+        { label: "Payments", href: "/admin/payments" },
+        { label: bill.student_name, href: "/admin/payments/s/" + bill.student_id },
+        { label: bill.number || "draft" },
+      ],
+      adLogout: "/admin/logout",
+    }) %>
+
+    <main class="ad-main">
+
+      <% if (!ready) { %>
+        <%# Said loudly, because an invoice that looks finished and is
+            not is worse than no invoice. A German invoice has to carry
+            the supplier's name, address and tax number (§14 UStG), and
+            those are not configured yet. This page is the record, not
+            something to send. %>
+        <p class="notice notice-bad">
+          <strong>Not ready to send.</strong>
+          The school's own details — legal name, address and tax number — are
+          not configured, and §14 UStG requires an invoice to carry them.
+          This page is the record of what was billed; it is not a document to
+          give anybody until INVOICE_LEGAL_NAME, INVOICE_STREET,
+          INVOICE_POSTCODE, INVOICE_CITY and INVOICE_TAX_NUMBER are set.
+        </p>
+      <% } %>
+
+      <%- include("../partials/invoice-doc", { bill: bill, site: site, plan: plan }) %>
+
+      <p class="row" style="gap:.6rem;margin-top:1.25rem;flex-wrap:wrap">
+        <%# Print, not a PDF. The browser's own print-to-PDF produces
+            the same document and needs no library on a shared host —
+            and there is no point generating a file of something that
+            cannot legally be sent yet. %>
+        <button class="btn btn-sm btn-ghost" type="button" data-print>Print or save as PDF</button>
+        <a class="btn btn-sm btn-ghost" href="/admin/payments/s/<%= bill.student_id %>">Back to <%= bill.student_name %></a>
+      </p>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/app.js?v=<%= site.assetVersion %>" defer></script>
+</body>
+</html>

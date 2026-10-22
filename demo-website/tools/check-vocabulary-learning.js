@@ -1,0 +1,50 @@
+"use strict";
+const {test}=require('node:test'),assert=require('node:assert/strict'),path=require('path'),fs=require('fs');
+const domain=require('../lib/vocabulary-domain'),client=require('../lib/vocabulary-client'),learning=require('../lib/vocabulary-learning'),db=require('../lib/db');
+const {catalogue,filters}=require('../lib/vocabulary-contract');
+const canonical={id:'vocabulary:2',headword:'helfen',lemma:'helfen',meanings:[{text:'to help'}],primaryLevel:'A1',learningEnabled:true,examples:[]};
+test('client uses canonical ID and service key without exposing website credentials',async()=>{const old=process.env.DICTIONARY_SERVICE_KEY;process.env.DICTIONARY_SERVICE_KEY='test-service';try{const result=await require('../lib/vocabulary-upstream').get('vocabulary:2',async(url,options)=>{assert(url.pathname.endsWith('/vocabulary/vocabulary%3A2'));assert.equal(options.headers['x-dictionary-key'],'test-service');assert.equal(options.redirect,'error');return {ok:true,text:async()=>JSON.stringify(canonical)};});assert.equal(result.id,'vocabulary:2');await assert.rejects(require('../lib/vocabulary-upstream').get('vocabulary:2',async()=>({ok:true,text:async()=>JSON.stringify({...canonical,id:'vocabulary:3'})})),/mismatch/);}finally{if(old===undefined)delete process.env.DICTIONARY_SERVICE_KEY;else process.env.DICTIONARY_SERVICE_KEY=old;}});
+
+test('flashcard actions maintain counters, mastery and due dates',()=>{const now=new Date('2026-10-07T12:00:00Z');let p=domain.transition({},'known',now);assert.equal(p.mastery,20);assert.equal(p.correct_count,1);assert.equal(p.first_seen_at,now);for(let i=0;i<3;i++)p=domain.transition(p,'known',now);assert.equal(p.learning_status,'learned');p=domain.transition(p,'difficult',now);assert.equal(p.difficult,1);assert.equal(p.incorrect_count,1);assert.equal(p.learning_status,'review');assert.equal(p.next_review_at.toISOString(),'2026-10-07T12:10:00.000Z');assert.throws(()=>domain.transition({},'arbitrary'));});
+
+test('quiz generation only offers questions backed by source metadata',()=>{assert.deepEqual(domain.quizTypes({}),[]);const questions=domain.quizQuestions({...canonical,article:'der',plural:'Häuser'});assert(questions.some(q=>q.type==='article'));assert(!questions.some(q=>q.type==='listening'||q.type==='pattern'));assert(questions.every(q=>q.dictionaryEntryId==='vocabulary:2'&&q.acceptedAnswers[0]));});
+
+test('student save prevents duplicates, records progress and uses Dictionary ID',async()=>{
+ const legacy=require('../lib/student-vocabulary'),original={query:db.query,transaction:db.transaction,hasColumn:db.hasColumn};const words=new Map(),states=new Map(),calls=[];
+ const conn={query:async(sql,p)=>{calls.push({sql,p});if(sql.includes('INSERT INTO student_vocabulary ('))words.set(p[0]+':'+p[1],p);if(sql.includes('INSERT INTO student_vocabulary_progress')){const k=p[0]+':'+p[1];if(!states.has(k))states.set(k,{saved:0});}if(sql.includes('UPDATE student_vocabulary_progress SET saved'))states.get(p[1]+':'+p[2]).saved=p[0];return [];}};
+ db.hasColumn=()=>true;db.transaction=async fn=>fn(conn);db.query=conn.query;
+ try{for(let i=0;i<2;i++)await legacy.save(7,canonical,{exerciseId:null,selection:'helfen',context:'',module:'vocabulary'});assert.equal(words.size,1);assert.equal(states.size,1);assert.equal(states.get('7:vocabulary:2').saved,1);assert(calls.filter(c=>c.sql.includes('INSERT')).every(c=>c.p[0]===7&&c.p[1]==='vocabulary:2'));}finally{Object.assign(db,original);}
+});
+
+test('student progress updates lock only the authenticated owner and validate the canonical source',async()=>{
+ const original={transaction:db.transaction,get:client.get};const calls=[];client.get=async()=>canonical;db.transaction=async fn=>fn({query:async(sql,p)=>{calls.push({sql,p});return [];},queryOne:async(sql,p)=>{assert(sql.includes('FOR UPDATE'));assert.deepEqual(p,[7,'vocabulary:2']);return {mastery:0,correct_count:0,incorrect_count:0};}});
+ try{const p=await learning.update(7,'vocabulary:2','known');assert.equal(p.mastery,20);assert.deepEqual(calls.at(-1).p.slice(-2),[7,'vocabulary:2']);await assert.rejects(learning.update(7,'LN00001','known'));client.get=async()=>({...canonical,learningEnabled:false});await assert.rejects(learning.update(7,'vocabulary:2','known'),/not enabled/);}finally{db.transaction=original.transaction;client.get=original.get;}
+});
+
+test('collection progress is joined by canonical ID without duplicating Dictionary content',async()=>{const old={list:client.list,query:db.query};client.list=async()=>({results:[canonical],total:1,page:1,limit:20});db.query=async(sql,p)=>{assert.deepEqual(p,[7,'vocabulary:2']);return [{dictionary_entry_id:'vocabulary:2',mastery:60}];};try{const data=await learning.collection(7,{level:'A1'});assert.equal(data.results[0].progress.mastery,60);assert.equal(data.results[0].id,canonical.id);}finally{Object.assign(client,{list:old.list});db.query=old.query;}});
+
+test('daily selection combines due reviews with remaining new target across pages',async()=>{
+ const old={query:db.query,queryOne:db.queryOne,list:client.list};let pages=[];db.queryOne=async()=>({daily_target:5});db.query=async(sql)=>sql.includes('first_seen_at IS NOT NULL')?[{dictionary_entry_id:'vocabulary:2',first_seen_at:new Date()}]:[{dictionary_entry_id:'vocabulary:2',difficult:1,mastery:10,incorrect_count:2,next_review_at:new Date(0)}];
+ client.list=async f=>{if(f.ids)return {results:[canonical],total:1};pages.push(f.page);return {results:Array.from({length:100},(_,i)=>({...canonical,id:'vocabulary:'+(i+2)})),total:100};};
+ try{const data=await learning.daily(7);assert.equal(data.target,5);assert.equal(data.introduced,1);assert.equal(data.newWords.length,4);assert(data.newWords.every(e=>e.id!=='vocabulary:2'));assert.equal(data.reviews[0].id,'vocabulary:2');assert.deepEqual(pages,[1]);}finally{db.query=old.query;db.queryOne=old.queryOne;client.list=old.list;}
+});
+
+test('student API requires authentication and CSRF; invalid actions cannot write progress',async()=>{
+ const express=require('express'),cookies=require('cookie-parser'),routes=require('../routes/vocabulary-learning');const old={hasColumn:db.hasColumn,allowed:require('../lib/dictionary-client').allowed};db.hasColumn=()=>true;require('../lib/dictionary-client').allowed=()=>true;
+ const app=express();app.use(express.json(),cookies());const router=express.Router();routes.register(router,{requireStudent(req,res,next){if(req.get('x-test-student')!=='7')return res.sendStatus(401);req.student={id:7};next();},fullStudent:async()=>({id:7}),shell:()=>({}),view:()=>{}});app.use('/portal/me',router);
+ const server=await new Promise(resolve=>{const s=app.listen(0,'127.0.0.1',()=>resolve(s));});try{const url='http://127.0.0.1:'+server.address().port+'/portal/me/vocabulary/entries/vocabulary:2/progress';assert.equal((await fetch(url,{method:'POST'})).status,401);assert.equal((await fetch(url,{method:'POST',headers:{'x-test-student':'7'}})).status,403);const token='a'.repeat(64);assert.equal((await fetch(url,{method:'POST',headers:{'x-test-student':'7','Content-Type':'application/json',cookie:'ln_csrf='+token,'x-csrf-token':token},body:JSON.stringify({action:'invalid'})})).status,400);}finally{await new Promise(resolve=>server.close(resolve));db.hasColumn=old.hasColumn;require('../lib/dictionary-client').allowed=old.allowed;}
+});
+
+test('additive website migration uses the existing migration convention',()=>{const sql=fs.readFileSync(path.resolve(__dirname,'../MySQL/42_vocabulary_learning.sql'),'utf8');assert.equal(require('../lib/migrate').classify(sql),'schema');assert(!/DROP TABLE|DELETE FROM|INSERT INTO vocabulary\b/.test(sql));assert(sql.includes('PRIMARY KEY (student_id,dictionary_entry_id)'));});
+
+test('enabled vocabulary page renders existing portal shell, six levels and escaped saved content',async()=>{
+ const ejs=require('ejs'),site=require('../lib/site');const common={icons:require('../public/js/study-icons'),site,student:{id:7,name:'Test'},avatarUrl:'',initials:'T',hue:0,nav:'vocabulary',notice:null,error:null,csrf:'a'.repeat(64),catalogue:catalogue,words:[{id:1,headword:'<script>unsafe</script>',meaning:'meaning',source_selection:'word'}]};
+ const html=await ejs.renderFile(path.resolve(__dirname,'../views/pages/portal/vocabulary.ejs'),{...common,learningReady:true});
+ for(const label of ['Tagesziel starten','Alle Vokabeln lernen','Meine Sammlung','Niveau','Thema','Grammatik','Wortart'])assert(html.includes(label));
+ for(const level of catalogue.levels)assert(html.includes('data-level="'+level+'"'));assert(html.includes('data-theme-toggle'));assert(html.includes('/portal/lesen'));assert(!html.includes('<script>unsafe</script>'));assert(html.includes('&lt;script&gt;unsafe&lt;/script&gt;'));
+ const legacy=await ejs.renderFile(path.resolve(__dirname,'../views/pages/portal/vocabulary.ejs'),{...common,learningReady:false});assert(!legacy.includes('id="v-start-block"'));assert(legacy.includes('vocabulary-list'));
+});
+
+test('website validates the same six levels and controlled collection identifiers',()=>{for(const level of catalogue.levels)assert.equal(filters({level,theme:'T16',grammar:'G06',type:'W02'}).level,level);for(const invalid of [{level:'A3'},{theme:'arbitrary'},{grammar:'arbitrary'},{type:'noun'},{limit:101}])assert.throws(()=>filters(invalid));});
+
+test('neutral study records activity without awarding mastery or assessment counters',()=>{const now=new Date('2026-10-08T12:00:00Z'),current={learning_status:'review',mastery:40,correct_count:2,incorrect_count:3,difficult:1,first_seen_at:new Date(0),next_review_at:new Date(0)};const updated={...current,...domain.transition(current,'studied',now)};for(const field of ['learning_status','mastery','correct_count','incorrect_count','difficult','first_seen_at','next_review_at'])assert.equal(updated[field],current[field]);assert.equal(updated.last_seen_at,now);const first=domain.transition({},'studied',now);assert.equal(first.learning_status,'learning');assert.equal(first.first_seen_at,now);assert(first.next_review_at>now);});

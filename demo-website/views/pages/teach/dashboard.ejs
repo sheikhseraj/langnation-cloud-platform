@@ -1,0 +1,397 @@
+<%
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : null);
+
+  // When a class next meets, said the way somebody says it out loud.
+  // The same wording the student sees, deliberately: a teacher reading
+  // "meets tomorrow at 19:00" and a student reading the same sentence
+  // are then talking about the same moment.
+  //
+  // IN THE BATCH'S TIMEZONE. starts_at is a UTC instant and this server
+  // runs in UTC, so formatting without a zone announced a 19:00 Berlin
+  // class as 17:00 — which is exactly what the student portal did until
+  // this was fixed.
+  const zone = (tz) => tz || "Europe/Berlin";
+
+  const dayIn = (d, tz) => new Intl.DateTimeFormat("en-CA", {
+    timeZone: zone(tz), year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(d);
+
+  const meets = (v, tz) => {
+    if (!v) return null;
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return null;
+
+    const time = d.toLocaleTimeString("en-GB", {
+      hour: "2-digit", minute: "2-digit", timeZone: zone(tz),
+    });
+    const asUtc = (iso) => Date.parse(iso + "T00:00:00Z");
+    const days = Math.round(
+      (asUtc(dayIn(d, tz)) - asUtc(dayIn(new Date(), tz))) / 86400000
+    );
+
+    if (days === 0) return "today at " + time;
+    if (days === 1) return "tomorrow at " + time;
+    return d.toLocaleDateString("en-GB", {
+      weekday: "short", day: "numeric", month: "short", timeZone: zone(tz),
+    }) + ", " + time;
+  };
+%>
+<%- include("../../partials/teach-shell-head", {
+  // Worked out in lib/teachers.js, not here: "Frau Weber" is a title
+  // and a surname, and the obvious split greets somebody as "Frau".
+  pageTitle: "Hello, " + greeting,
+  pageLead: stats.batches
+    ? (stats.running
+        ? stats.running + (stats.running === 1 ? " class" : " classes") + " running, "
+          + stats.students + (stats.students === 1 ? " student" : " students")
+        : "Nothing running at the moment.")
+    : teacher.email,
+  nav: "dashboard", teacher: teacher, avatarUrl: avatarUrl,
+  initials: initials, hue: hue, notice: notice,
+}) %>
+
+<%- include("../../partials/teach-backlog", { pending: pending, pendingSummary: pendingSummary }) %>
+
+<%#
+  Counted from the same rows the lists below show, so a tile can never
+  disagree with the list it links to. The student portal learned that
+  one the hard way — "9 enrolled" over a list of three.
+%>
+<div class="sp-tiles">
+  <a class="sp-tile" href="/teach/batches">
+    <span class="sp-tile-n"><%= stats.batches %></span>
+    <span class="sp-tile-l"><%= stats.batches === 1 ? "class" : "classes" %></span>
+  </a>
+  <a class="sp-tile<%= stats.running ? " is-live" : "" %>" href="/teach/batches">
+    <span class="sp-tile-n"><%= stats.running %></span>
+    <span class="sp-tile-l">running now</span>
+  </a>
+  <a class="sp-tile" href="/teach/batches">
+    <span class="sp-tile-n"><%= stats.students %></span>
+    <span class="sp-tile-l"><%= stats.students === 1 ? "student" : "students" %></span>
+  </a>
+  <a class="sp-tile" href="/teach/schedule">
+    <span class="sp-tile-n"><%= stats.seatsLeft === null ? "—" : stats.seatsLeft %></span>
+    <span class="sp-tile-l"><%= stats.seatsLeft === null ? "no seat limit" : "seats free" %></span>
+  </a>
+</div>
+
+<%#
+  What is happening now, across the full width — the same card the
+  student sees, from the other side of the same class.
+
+  Each link appears only if the office has actually set one on the
+  batch. A "Group chat" button that opens nothing is worse than no
+  button: it teaches people the portal is decorative.
+%>
+<% if (next) { %>
+  <div class="sp-card sp-now sp-wide">
+    <%# Standing in is one lesson, so the card says so rather than
+        letting somebody read it as "your class". %>
+    <% const standIn = Number(next.batch.standing_in); %>
+    <p class="sp-eyebrow"><%= next.when === "now" ? "Happening now" : "Starting soon" %></p>
+    <h2>
+      <%= next.batch.course_title || next.batch.batch_title || next.batch.code %>
+      <% if (standIn) { %>
+        <span class="pill pill-cover">standing in</span>
+      <% } else { %>
+        <%- include("../../partials/batch-code", { code: next.batch.code, id: next.batch.id }) %>
+      <% } %>
+    </h2>
+    <%# Built as a list and joined, rather than each part printing its
+        own separator. Printing them meant every part that did not
+        appear left its dot behind: the line read "B2 · · meets today"
+        whenever the head count was missing, which is every class a
+        teacher is standing in for and was already true of a batch with
+        nobody on it. %>
+    <%
+      const meetsAt = meets(next.batch.next_lesson_at, next.batch.timezone);
+      const heads = Number(next.batch.active_students);
+      const metaParts = [
+        next.batch.level || null,
+        // The head count comes off the batch, which a stand-in has no
+        // claim on. Their number is the register on the day.
+        !standIn && next.batch.active_students != null
+          ? heads + (heads === 1 ? " student" : " students")
+          : null,
+      ].filter(Boolean);
+    %>
+    <p class="sp-now-meta">
+      <%= metaParts.join(" · ") %>
+      <% if (meetsAt) { %>
+        <%= metaParts.length ? "· " : "" %><strong>meets <%= meetsAt %></strong>
+      <% } else if (day(next.batch.starts_on)) { %>
+        <%= metaParts.length ? "· " : "" %>from <%= day(next.batch.starts_on) %>
+      <% } %>
+    </p>
+    <% if (standIn) { %>
+      <p class="sp-now-note">
+        <%= next.batch.for_name ? "For " + next.batch.for_name : "You were asked to take this one" %><%
+          if (next.batch.handover_note) { %> — <%= next.batch.handover_note %><% } %>.
+        This one class, on this day.
+      </p>
+    <% } %>
+
+    <div class="sp-now-actions">
+      <%# "Start", not "Join" — this is the person who opens the room,
+          and a teacher told to join their own class is being told the
+          portal was written for somebody else. Only once the batch is
+          running: before that the link usually opens an empty room. %>
+        <%# The room opens directly in a new tab. A separate protected POST
+            records the class start, so previewing this link writes nothing. %>
+      <% if (classLinks.room(next.batch) && next.when === "now") { %>
+        <a class="btn" href="<%= classLinks.room(next.batch) %>" target="_blank" rel="noopener noreferrer"
+             data-class-action="/teach/batch/<%= next.batch.id %>/start" data-class-csrf="<%= locals.classJoinCsrf || '' %>"
+             title="Opens in a new tab or window">Start the class<span class="sr-only"> (opens in a new tab or window)</span></a>
+      <% } %>
+      <%# The materials, the chat and the class list belong to the
+          batch and not to the lesson, so they are not offered to
+          somebody standing in for one evening of it. The queries
+          behind them would return nothing anyway; offering a button
+          that opens an empty page is the worse of the two. %>
+      <% if (!standIn) { %>
+        <% if (next.batch.drive_url) { %>
+          <a class="btn btn-ghost" href="<%= next.batch.drive_url %>" target="_blank" rel="noopener noreferrer">
+            Course materials
+          </a>
+        <% } %>
+        <% if (next.batch.whatsapp_url) { %>
+          <a class="btn btn-ghost" href="<%= next.batch.whatsapp_url %>" target="_blank" rel="noopener noreferrer">
+            Group chat
+          </a>
+        <% } %>
+        <a class="btn btn-ghost" href="/teach/batch/<%= next.batch.id %>">Class list</a>
+      <% } %>
+      <% if (next.when === "now") { %>
+        <%# One name for one thing. "Take the register" and
+            "Attendance" were the same page, and a teacher should not
+            have to learn that. %>
+        <a class="btn btn-ghost" href="/teach/batch/<%= next.batch.id %>/register">Attendance</a>
+      <% } %>
+    </div>
+
+    <%# A link the office has not filled in is a link the students do not
+        have either. Saying which is missing is the fastest way it gets
+        fixed, and the teacher is the person who notices. %>
+    <%
+      const missing = [
+        !classLinks.room(next.batch) ? "the class link" : null,
+        !next.batch.drive_url ? "a materials folder" : null,
+        !next.batch.whatsapp_url ? "a group chat" : null,
+      ].filter(Boolean);
+    %>
+    <p class="muted sp-now-note">
+      Times are <%= next.batch.timezone || "Europe/Berlin" %>.
+      <% if (missing.length) { %>
+        This batch has no <%= missing.join(", no ") %> yet — your students do not
+        have <%= missing.length === 1 ? "it" : "them" %> either.
+        <a href="/contact">Ask the office to add <%= missing.length === 1 ? "it" : "them" %></a>.
+      <% } %>
+    </p>
+  </div>
+<% } else { %>
+  <div class="sp-card sp-wide">
+    <div class="sp-card-head">
+      <h2>My classes</h2>
+      <% if (batches.length) { %><a href="/teach/batches">See all</a><% } %>
+    </div>
+    <% if (!batches.length) { %>
+      <%# A new teacher, correctly. The account works; there is simply
+          nothing attached to it yet, and saying that is better than an
+          empty page that looks broken. %>
+      <p class="sp-empty">
+        No classes are assigned to you yet. When the office puts you on a
+        batch it appears here, with the class list and the links your
+        students see.
+      </p>
+    <% } else { %>
+      <p class="sp-empty" style="margin-bottom:1rem">
+        Nothing is running at the moment. Here is what you have taught.
+      </p>
+      <ul class="sp-list">
+        <% batches.slice(0, 4).forEach(function (b) { %>
+          <li>
+            <div>
+              <strong>
+                <a href="/teach/batch/<%= b.id %>"><%= b.course_title || b.code %></a>
+                <%- include("../../partials/batch-code", { code: b.code, id: b.id }) %>
+              </strong>
+              <div class="muted" style="font-size:.82rem">
+                <% if (day(b.starts_on)) { %><%= day(b.starts_on) %><% } %>
+                <% if (meets(b.next_lesson_at, b.timezone)) { %>
+                  · <strong>meets <%= meets(b.next_lesson_at, b.timezone) %></strong>
+                <% } %>
+              </div>
+            </div>
+            <div class="sp-list-end">
+              <% if (b.level) { %><span class="pill pill-level"><%= b.level %></span><% } %>
+              <span class="pill"><%= b.batch_status %></span>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </div>
+<% } %>
+
+<%#
+  The shape of the term, above the names.
+
+  The list below says who has already slipped far enough to be worth a
+  message. This says whether a whole BATCH is sliding, which shows up
+  weeks earlier and belongs to no individual student — a class that was
+  at 90% in week two and 70% in week six has a problem that no single
+  name on that list explains.
+
+  Drawn only once there is enough to be a shape. Two dots joined by a
+  line is not a trend, it is two registers, and charting it invites a
+  conclusion the data cannot carry.
+%>
+<% if (typeof chart !== "undefined" && chart.lines.length && chart.days.length >= 3) { %>
+  <div class="sp-card sp-wide">
+    <%- include("../../partials/attendance-chart", {
+      chart: chart,
+      lineColour: lineColour,
+      chartTitle: "How your classes are attending",
+      chartLead: "The percentage here or late, lesson by lesson. The dashed line is two thirds — below it a class has stopped being healthy.",
+    }) %>
+  </div>
+<% } %>
+
+<%#
+  The students who are drifting away, across every running batch.
+
+  This is the whole reason for keeping a register. Nobody spots someone
+  slipping by reading back through registers — it only shows up when
+  something adds the days together and says a name. A student told in
+  week four that they have missed three classes usually comes back; one
+  told in week ten has already gone.
+
+  Contact details are here on purpose. The gap between noticing and
+  doing something about it should be one tap, not a trip to the class
+  list.
+%>
+<% if (typeof slipping !== "undefined" && slipping.length) { %>
+  <div class="sp-card sp-wide" style="border-left:3px solid var(--danger)">
+    <div class="sp-card-head">
+      <h2>Worth a message</h2>
+      <span class="muted" style="font-size:.85rem">
+        <%= slipping.length %> <%= slipping.length === 1 ? "student" : "students" %>
+      </span>
+    </div>
+    <ul class="sp-list">
+      <% slipping.forEach(function (s) { %>
+        <li>
+          <div>
+            <strong><%= s.name %></strong>
+            <div class="muted" style="font-size:.82rem">
+              <%- include("../../partials/batch-code", { code: s.batch_code, id: s.intake_id }) %> ·
+              <%= s.absent %> missed<% if (s.excused) { %>, <%= s.excused %> excused<% } %>
+              <% if (s.last_seen) { %> · last here <%= day(s.last_seen) %><% } %>
+            </div>
+          </div>
+          <div class="sp-list-end">
+            <% if (s.rate !== null) { %>
+              <span class="sp-rate sp-rate-<%= s.band %>"><%= s.rate %>%</span>
+            <% } %>
+            <a class="btn btn-ghost btn-sm" href="mailto:<%= s.email %>">Email</a>
+            <% if (s.phone) { %>
+              <a class="btn btn-ghost btn-sm" href="tel:<%= s.phone.replace(/[^0-9+]/g, "") %>">Call</a>
+            <% } %>
+          </div>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+<% } %>
+
+<%# Two equal columns underneath: who is in the class on screen, and
+    everything else being taught. %>
+<div class="sp-cols sp-cols-even">
+  <div class="sp-card">
+    <div class="sp-card-head">
+      <%# A class you are standing in for has a list, and it is not
+          yours: the roster belongs to the batch and the batch belongs
+          to somebody else. Saying so matters, because the empty branch
+          below reads "nobody is enrolled" — which is a different fact
+          and a worrying one to be told the evening before you teach. %>
+      <% const coverOnly = next && Number(next.batch.standing_in); %>
+      <h2><%= next && !coverOnly ? "In this class" : "Class list" %></h2>
+      <% if (next && !coverOnly && roster.length) { %><a href="/teach/batch/<%= next.batch.id %>">See all</a><% } %>
+    </div>
+    <% if (coverOnly) { %>
+      <p class="sp-empty">
+        The class list belongs to <%= next.batch.for_name || "the batch's own teacher" %>.
+        You will see who turned up when you take the register, which is
+        <a href="/teach/batch/<%= next.batch.id %>/register">Attendance</a> on the day.
+      </p>
+    <% } else if (!next) { %>
+      <p class="sp-empty">A class list appears here once one of your batches is running.</p>
+    <% } else if (!roster.length) { %>
+      <p class="sp-empty">
+        Nobody is enrolled on <%= next.batch.code %> yet. The office adds students
+        to a batch as they enrol.
+      </p>
+    <% } else { %>
+      <ul class="sp-list">
+        <% roster.slice(0, 6).forEach(function (s) { %>
+          <li>
+            <div class="sp-person">
+              <%- include("../../partials/portal-avatar", {
+                avatarUrl: s.photo, initials: s.initials, hue: s.hue,
+                size: "sm", name: s.name,
+              }) %>
+              <div>
+                <strong><%= s.name %></strong>
+                <% if (s.student_ref) { %>
+                  <div class="muted" style="font-size:.82rem"><%= s.student_ref %></div>
+                <% } %>
+              </div>
+            </div>
+            <div class="sp-list-end">
+              <span class="pill<%= s.status === "active" ? " pill-live" : "" %>"><%= s.status %></span>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+      <% if (roster.length > 6) { %>
+        <p class="muted" style="margin:.8rem 0 0;font-size:.85rem">
+          and <%= roster.length - 6 %> more.
+        </p>
+      <% } %>
+    <% } %>
+  </div>
+
+  <div class="sp-card">
+    <div class="sp-card-head">
+      <h2>My classes</h2>
+      <% if (batches.length) { %><a href="/teach/batches">See all</a><% } %>
+    </div>
+    <% if (!batches.length) { %>
+      <p class="sp-empty">Nothing assigned to you yet.</p>
+    <% } else { %>
+      <ul class="sp-list">
+        <% batches.slice(0, 5).forEach(function (b) { %>
+          <li>
+            <div>
+              <strong>
+                <a href="/teach/batch/<%= b.id %>"><%= b.course_title || b.code %></a>
+                <%- include("../../partials/batch-code", { code: b.code, id: b.id }) %>
+              </strong>
+              <div class="muted" style="font-size:.82rem">
+                <%= b.active_students %> <%= Number(b.active_students) === 1 ? "student" : "students" %>
+              </div>
+            </div>
+            <div class="sp-list-end">
+              <span class="pill<%= b.batch_status === "running" ? " pill-live" : "" %>"><%= b.batch_status %></span>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </div>
+</div>
+
+<%- include("../../partials/teach-shell-foot") %>

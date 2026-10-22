@@ -1,0 +1,215 @@
+[
+ {
+  "id": "bayern-1",
+  "number": 311,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Welches Wappen gehört zum Freistaat Bayern?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 1,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/bayern-1-1.webp",
+     "w": 196,
+     "h": 270
+    },
+    {
+     "src": "/img/einbuergerungstest/bayern-1-2.webp",
+     "w": 196,
+     "h": 260
+    },
+    {
+     "src": "/img/einbuergerungstest/bayern-1-3.webp",
+     "w": 220,
+     "h": 264
+    },
+    {
+     "src": "/img/einbuergerungstest/bayern-1-4.webp",
+     "w": 233,
+     "h": 251
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bayern"
+ },
+ {
+  "id": "bayern-2",
+  "number": 312,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Welches ist ein Landkreis in Bayern?",
+  "answers": [
+   "Prignitz",
+   "Rhein-Sieg-Kreis",
+   "Nordfriesland",
+   "Altötting"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bayern"
+ },
+ {
+  "id": "bayern-3",
+  "number": 313,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Für wie viele Jahre wird der Landtag in Bayern gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bayern"
+ },
+ {
+  "id": "bayern-4",
+  "number": 314,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Ab welchem Alter darf man in Bayern bei Kommunalwahlen wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-12",
+  "state": "Bayern"
+ },
+ {
+  "id": "bayern-5",
+  "number": 315,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Welche Farben hat die Landesflagge von Bayern?",
+  "answers": [
+   "blau-weiß-rot",
+   "weiß-blau",
+   "grün-weiß-rot",
+   "schwarz-gelb"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bayern"
+ },
+ {
+  "id": "bayern-6",
+  "number": 316,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Wo können Sie sich in Bayern über politische Themen informieren?",
+  "answers": [
+   "beim Ordnungsamt der Gemeinde",
+   "bei der Landeszentrale für politische Bildung",
+   "bei der Verbraucherzentrale",
+   "bei den Kirchen"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bayern"
+ },
+ {
+  "id": "bayern-7",
+  "number": 317,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Die Landeshauptstadt von Bayern heißt …",
+  "answers": [
+   "Ingolstadt.",
+   "Regensburg.",
+   "Nürnberg.",
+   "München."
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bayern"
+ },
+ {
+  "id": "bayern-8",
+  "number": 318,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Welches Bundesland ist Bayern?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 3,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/bayern-8.webp",
+     "w": 722,
+     "h": 613
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bayern"
+ },
+ {
+  "id": "bayern-9",
+  "number": 319,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef in Bayern?",
+  "answers": [
+   "Erste Ministerin/Erster Minister",
+   "Premierministerin/Premierminister",
+   "Bürgermeisterin/Bürgermeister",
+   "Ministerpräsidentin/Ministerpräsident"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bayern"
+ },
+ {
+  "id": "bayern-10",
+  "number": 320,
+  "type": "state",
+  "category": "Bayern",
+  "question": "Welche Ministerin/welchen Minister hat Bayern nicht?",
+  "answers": [
+   "Justizministerin/Justizminister",
+   "Außenministerin/Außenminister",
+   "Finanzministerin/Finanzminister",
+   "Innenministerin/Innenminister"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bayern"
+ }
+]

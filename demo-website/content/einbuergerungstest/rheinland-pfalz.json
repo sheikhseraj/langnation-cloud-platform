@@ -1,0 +1,215 @@
+[
+ {
+  "id": "rheinland-pfalz-1",
+  "number": 401,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Welches Wappen gehört zum Bundesland Rheinland-Pfalz?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 0,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/rheinland-pfalz-1-1.webp",
+     "w": 233,
+     "h": 280
+    },
+    {
+     "src": "/img/einbuergerungstest/rheinland-pfalz-1-2.webp",
+     "w": 195,
+     "h": 270
+    },
+    {
+     "src": "/img/einbuergerungstest/rheinland-pfalz-1-3.webp",
+     "w": 220,
+     "h": 255
+    },
+    {
+     "src": "/img/einbuergerungstest/rheinland-pfalz-1-4.webp",
+     "w": 220,
+     "h": 252
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Rheinland-Pfalz"
+ },
+ {
+  "id": "rheinland-pfalz-2",
+  "number": 402,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Welches ist ein Landkreis in Rheinland-Pfalz?",
+  "answers": [
+   "Westerwaldkreis",
+   "Altötting",
+   "Emsland",
+   "Prignitz"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Rheinland-Pfalz"
+ },
+ {
+  "id": "rheinland-pfalz-3",
+  "number": 403,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Für wie viele Jahre wird der Landtag in Rheinland-Pfalz gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Rheinland-Pfalz"
+ },
+ {
+  "id": "rheinland-pfalz-4",
+  "number": 404,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Ab welchem Alter darf man in Rheinland-Pfalz bei Kommunalwahlen wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-12",
+  "state": "Rheinland-Pfalz"
+ },
+ {
+  "id": "rheinland-pfalz-5",
+  "number": 405,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Welche Farben hat die Landesflagge von Rheinland-Pfalz?",
+  "answers": [
+   "weiß-rot",
+   "schwarz-rot-gold",
+   "schwarz-gelb",
+   "grün-weiß-rot"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Rheinland-Pfalz"
+ },
+ {
+  "id": "rheinland-pfalz-6",
+  "number": 406,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Wo können Sie sich in Rheinland-Pfalz über politische Themen informieren?",
+  "answers": [
+   "bei den Kirchen",
+   "bei der Verbraucherzentrale",
+   "beim Ordnungsamt der Gemeinde",
+   "bei der Landeszentrale für politische Bildung"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Rheinland-Pfalz"
+ },
+ {
+  "id": "rheinland-pfalz-7",
+  "number": 407,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Die Landeshauptstadt von Rheinland-Pfalz heißt …",
+  "answers": [
+   "Mainz.",
+   "Kaiserslautern.",
+   "Ludwigshafen.",
+   "Koblenz."
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Rheinland-Pfalz"
+ },
+ {
+  "id": "rheinland-pfalz-8",
+  "number": 408,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Welches Bundesland ist Rheinland-Pfalz?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 0,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/rheinland-pfalz-8.webp",
+     "w": 723,
+     "h": 607
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Rheinland-Pfalz"
+ },
+ {
+  "id": "rheinland-pfalz-9",
+  "number": 409,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef in Rheinland-Pfalz?",
+  "answers": [
+   "Erste Ministerin/Erster Minister",
+   "Premierministerin/Premierminister",
+   "Bürgermeisterin/Bürgermeister",
+   "Ministerpräsidentin/Ministerpräsident"
+  ],
+  "correctAnswer": 3,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Rheinland-Pfalz"
+ },
+ {
+  "id": "rheinland-pfalz-10",
+  "number": 410,
+  "type": "state",
+  "category": "Rheinland-Pfalz",
+  "question": "Welche Ministerin/welchen Minister hat Rheinland-Pfalz nicht?",
+  "answers": [
+   "Justizministerin/Justizminister",
+   "Außenministerin/Außenminister",
+   "Finanzministerin/Finanzminister",
+   "Innenministerin/Innenminister"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Rheinland-Pfalz"
+ }
+]

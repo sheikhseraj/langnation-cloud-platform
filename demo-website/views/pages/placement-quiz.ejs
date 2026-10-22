@@ -1,0 +1,159 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <span><a href="<%= lp('/') %>"><%= t("nav.home") %></a></span>
+      <span><a href="<%= lp('/placement-test') %>"><%= t("nav.placement") %></a></span>
+    </nav>
+
+    <p class="eyebrow"><%= paper.track.from %> – <%= paper.track.to %></p>
+    <h1><%= t("placement.examTitle") %></h1>
+
+    <%- include("../partials/placement-steps", { step: 3 }) %>
+
+    <p class="lead"><%= t("placement.examLead", { n: paper.questions.length }) %></p>
+    <p class="notice" style="margin-top:1.25rem"><%= t("placement.instructions") %></p>
+
+    <div class="notice notice-bad" data-form-error hidden><%= t("placement.error") %></div>
+
+    <form class="form" method="post" action="<%= lp('/placement-test/' + paper.track.id) %>" data-quiz-form novalidate>
+      <%# The signed paper. It records which questions were served and in
+          what option order, so the server can mark exactly what was seen.
+          It holds no answers. %>
+      <input type="hidden" name="paper" value="<%= paper.token %>">
+      <input type="hidden" name="candidate" value="<%= candidateToken %>">
+      <input type="hidden" name="lang" value="<%= lang %>">
+      <%# Counted by the script below and sent with the paper. Signals
+          for a human to read, never grounds for refusing anything. %>
+      <input type="hidden" name="pastes" value="0" data-count-pastes>
+      <input type="hidden" name="away" value="0" data-count-away>
+
+      <div class="hp" aria-hidden="true">
+        <label for="website">Leave this empty</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="quiz-progress" data-quiz-progress aria-live="polite">
+        <span data-quiz-count><%= t("placement.progress", { n: 0, total: paper.questions.length }) %></span>
+        <span class="quiz-bar"><span data-quiz-fill></span></span>
+      </div>
+
+      <ol class="quiz">
+        <% paper.questions.forEach(function (q) { %>
+          <% if (q.startsPassage) { %>
+            <li class="quiz-passage">
+              <article>
+                <h2><%= q.passage.title %></h2>
+                <%# Paragraph breaks in the source text are preserved by
+                    `white-space: pre-line` on .quiz-passage p, so the text
+                    goes out in one block rather than being split here. %>
+                <p><%= q.passage.text %></p>
+              </article>
+            </li>
+          <% } %>
+          <li class="quiz-item<%= q.passage ? " is-reading" : "" %>" data-quiz-item>
+            <fieldset>
+              <legend>
+                <span class="quiz-n"><%= q.n %></span>
+                <span class="quiz-prompt"><%= q.prompt %></span>
+              </legend>
+              <div class="quiz-options">
+                <%# Wrapping the input in its label already associates the
+                    two, but the explicit for/id pair is what older
+                    assistive tech honours. %>
+                <% q.options.forEach(function (opt, oi) { %>
+                  <label class="quiz-option" for="opt-<%= q.id %>-<%= oi %>">
+                    <input type="radio" id="opt-<%= q.id %>-<%= oi %>"
+                           name="answers[<%= q.id %>]" value="<%= oi %>">
+                    <span><%= opt %></span>
+                  </label>
+                <% }); %>
+              </div>
+            </fieldset>
+          </li>
+        <% }); %>
+      </ol>
+
+      <div class="facts" style="margin-top:2rem">
+        <div class="facts-cta">
+          <p class="muted" style="font-size:.88rem;margin-bottom:1rem">
+            <strong><%= candidate.name %></strong> · <%= candidate.email %><br>
+            <%= t("placement.startedNote") %>
+          </p>
+          <button class="btn btn-block" type="submit" data-submit><%= t("placement.finish") %></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+/* Exam conditions, such as a browser can offer them.
+
+   Be clear about what this is: deterrence and observation, not
+   enforcement. Anyone determined can open the console, disable
+   JavaScript, or simply read a dictionary on their phone — no web page
+   can prevent that, and pretending otherwise would be dishonest.
+
+   What it does do is make casual copy-and-paste inconvenient, warn
+   before an accidental reload throws the paper away, and count two
+   things worth knowing: paste attempts, and how often the window lost
+   focus. Both travel with the result for a teacher to weigh. The real
+   safeguard remains retesting in class, which the rules already say. */
+(function () {
+  var form = document.querySelector("[data-quiz-form]");
+  if (!form) return;
+
+  var pastes = form.querySelector("[data-count-pastes]");
+  var away = form.querySelector("[data-count-away]");
+  var submitting = false;
+
+  /* ── Discourage copying and pasting ─────────────────────────────
+     Blocked on the paper only, so nothing else on the page is
+     affected. A person who needs to paste their own name into the
+     details step is not touched by this. */
+  ["paste", "copy", "cut"].forEach(function (type) {
+    form.addEventListener(type, function (e) {
+      e.preventDefault();
+      if (type === "paste") pastes.value = String(Number(pastes.value) + 1);
+    });
+  });
+
+  form.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  });
+
+  /* Selecting the questions is not blocked. Doing so breaks the test
+     for anyone using a screen reader or a magnifier, and stops nobody:
+     a screenshot and a phone camera are always available. */
+
+  /* ── Notice when the window loses focus ─────────────────────────
+     visibilitychange fires on a tab switch or a minimise. It does not
+     fire when somebody picks up their phone, which is the obvious
+     limitation and the reason this is a signal rather than a verdict. */
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") {
+      away.value = String(Number(away.value) + 1);
+    }
+  });
+
+  /* ── Warn before losing the paper ───────────────────────────────
+     A browser will not let a page refuse to close; all it allows is
+     the native "Leave site?" prompt, and only after the visitor has
+     interacted with the page. Suppressed on submit, or it would fire
+     on the way to the result. */
+  form.addEventListener("submit", function () {
+    submitting = true;
+  });
+
+  window.addEventListener("beforeunload", function (e) {
+    if (submitting) return;
+    e.preventDefault();
+    e.returnValue = "";
+  });
+})();
+</script>
+
+<%- include("../partials/footer") %>

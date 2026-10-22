@@ -1,0 +1,172 @@
+<%
+  const day = (v) => (v
+    ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : null);
+  const kb = (n) => (!n ? "" : n > 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.round(n / 1024) + " KB");
+  // Running first, then upcoming, then everything finished.
+  const rank = { active: 0, completed: 2, withdrawn: 3, failed: 3 };
+  const sorted = enrolments.slice().sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9));
+%>
+<%- include("../../partials/portal-shell-head", {
+  pageTitle: "My courses",
+  pageLead: enrolments.length
+    ? "Everything you are enrolled on, and the materials that come with it."
+    : null,
+  nav: "courses", student: student, avatarUrl: avatarUrl,
+  initials: initials, hue: hue,
+}) %>
+
+<% if (!enrolments.length) { %>
+  <div class="sp-card">
+    <p class="sp-empty" style="margin:0">
+      You are not enrolled on a course yet. Enrolment is done by the school —
+      once you are added to a batch it appears here with its dates, its teacher
+      and its materials. <a href="/courses">Browse the courses</a> or
+      <a href="/contact">ask us</a> which one fits.
+    </p>
+  </div>
+<% } %>
+
+<div class="sp-courses">
+  <% sorted.forEach(function (e) { %>
+    <article class="sp-card sp-course">
+      <div class="sp-course-head">
+        <div>
+          <h2>
+            <%= e.course_title %>
+            <%- include("../../partials/batch-code", { code: e.code }) %>
+          </h2>
+          <p class="sp-course-meta">
+            <% if (e.batch_title) { %><%= e.batch_title %><% } %>
+          </p>
+        </div>
+        <div class="sp-list-end">
+          <% if (e.level) { %><span class="pill pill-level"><%= e.level %></span><% } %>
+          <span class="pill<%= e.status === "active" ? " pill-live" : "" %>"><%= e.status %></span>
+        </div>
+      </div>
+
+      <dl class="sp-facts">
+        <div><dt>Runs</dt><dd>
+          <%= day(e.starts_on) || "date to be set" %><% if (day(e.ends_on)) { %> – <%= day(e.ends_on) %><% } %>
+        </dd></div>
+        <%# Both names when a batch has cover, so a student who arrives to
+            find somebody else at the front read it here first. %>
+        <%# One name. There used to be "or <somebody>" beside it, from
+            the batch's second-teacher field — which said a person who
+            had no access to the class might turn up to teach it. When
+            somebody does stand in, it is now on the lesson itself. %>
+        <div><dt>Teacher</dt><dd><%= e.teacher_name || "to be announced" %></dd></div>
+        <%# When it meets, in words. The dated lessons are on My
+            schedule and any of them can move; this is the shape of the
+            week, which is what somebody arranging childcare or a shift
+            needs. Shown only once the office has set it — an invented
+            default here would be a timetable nobody agreed to. %>
+        <% if (e.meets_days && e.meets_from) { %>
+          <div><dt>Meets</dt><dd>
+            <%= sched.describeDays(e.meets_days) %>, <%= sched.parseTime(e.meets_from) %>–<%= sched.endTime(e.meets_from, e.meets_minutes || 120) %>
+            <a class="muted" href="/portal/schedule" style="font-size:.82rem">see every date</a>
+          </dd></div>
+        <% } %>
+        <div><dt>Times shown in</dt><dd><%= e.timezone || "Europe/Berlin" %></dd></div>
+        <div><dt>Enrolled</dt><dd><%= day(e.enrolled_on) || "—" %></dd></div>
+        <% if (e.completed_on) { %>
+          <div><dt>Completed</dt><dd><%= day(e.completed_on) %></dd></div>
+        <% } %>
+        <% if (e.final_grade !== null && e.final_grade !== undefined) { %>
+          <div><dt>Final grade</dt><dd><%= Number(e.final_grade).toFixed(1) %></dd></div>
+        <% } %>
+      </dl>
+
+      <%#
+        The batch's links, and only to somebody actually on it and only
+        while it is running. A live class link on a batch that finished
+        in March is a link to an empty room, and people do click it.
+
+        The materials folder and the group chat outlive the lesson, so
+        they stay available while the enrolment is active even once the
+        batch itself is over — a student revising in July still wants
+        the folder.
+      %>
+      <% const live = e.status === "active"; %>
+      <% if (live && (classLinks.room(e) || e.drive_url || e.whatsapp_url || e.exercise_url)) { %>
+        <div class="sp-links">
+          <% if (classLinks.room(e) && e.batch_status === "running") { %>
+            <a class="btn btn-sm" href="<%= classLinks.room(e) %>" data-class-action="/portal/join/<%= e.intake_id %>" data-class-csrf="<%= locals.classJoinCsrf || '' %>" target="_blank" rel="noopener noreferrer">
+              Join the class
+            </a>
+          <% } %>
+          <%#
+            Say why, when there is a class link but no button.
+
+            A button that is simply absent reads as a missing feature —
+            it was reported as one. The batch has a meeting link, the
+            student is on it, and the only reason they cannot join is
+            that the batch has not been switched to running yet. That is
+            a sentence, so say the sentence.
+          %>
+          <% if (classLinks.room(e) && e.batch_status !== "running") { %>
+            <span class="sp-link-note muted">
+              <% if (e.batch_status === "planned") { %>
+                Joining opens when the batch starts<% if (day(e.starts_on)) { %>, <%= day(e.starts_on) %><% } %>.
+              <% } else if (e.batch_status === "finished") { %>
+                This batch has finished — the materials below stay available.
+              <% } else if (e.batch_status === "cancelled") { %>
+                This batch was cancelled. Talk to the office if that is a surprise.
+              <% } else { %>
+                Joining is not open yet.
+              <% } %>
+            </span>
+          <% } %>
+          <%# Same order as the dashboard, so the two pages do not
+              disagree about where a button is. %>
+          <% if (e.whatsapp_url) { %>
+            <a class="btn btn-sm btn-ghost" href="<%= e.whatsapp_url %>" target="_blank" rel="noopener noreferrer">
+              Group chat
+            </a>
+          <% } %>
+          <% if (e.drive_url) { %>
+            <a class="btn btn-sm btn-ghost" href="<%= e.drive_url %>" target="_blank" rel="noopener noreferrer">
+              Course materials
+            </a>
+          <% } %>
+          <% if (e.exercise_url) { %>
+            <a class="btn btn-sm btn-ghost" href="<%= e.exercise_url %>" target="_blank" rel="noopener noreferrer">
+              Exercise
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+    </article>
+  <% }); %>
+</div>
+
+<% if (materials.length) { %>
+  <div class="sp-card" style="margin-top:1.25rem">
+    <h2>Materials</h2>
+    <p class="muted" style="font-size:.86rem;margin-top:-.3rem">
+      Shared by your teacher, for the batches you are on.
+    </p>
+    <ul class="sp-list">
+      <% materials.forEach(function (m) { %>
+        <li>
+          <div>
+            <strong><%= m.title %></strong>
+            <div class="muted" style="font-size:.82rem">
+              <%= m.batch_code %> · <%= m.kind %><% if (kb(m.bytes)) { %> · <%= kb(m.bytes) %><% } %>
+            </div>
+            <% if (m.description) { %>
+              <div class="muted" style="font-size:.82rem"><%= m.description %></div>
+            <% } %>
+          </div>
+          <%# No download link yet: the route that would serve these
+              does not exist, and a link that 404s is worse than a
+              line saying where to ask. %>
+          <span class="muted" style="font-size:.8rem">ask your teacher</span>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+<% } %>
+
+<%- include("../../partials/portal-shell-foot") %>

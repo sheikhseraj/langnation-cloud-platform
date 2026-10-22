@@ -1,0 +1,168 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow"><%= t("nav.tools") %></p>
+      <h1><%= t("tools.title") %></h1>
+      <p class="lead"><%= t("tools.lead") %></p>
+    </div>
+
+    <div class="grid grid-2">
+
+      <!-- ── Modified Bavarian formula ───────────────────────────── -->
+      <section class="feature" style="flex-direction:column;gap:1.25rem" id="grade">
+        <div>
+          <h2 style="font-size:1.35rem"><%= t("tools.grade.title") %></h2>
+          <p class="muted" style="font-size:.9rem;margin-top:.5rem"><%= t("tools.grade.lead") %></p>
+        </div>
+
+        <form class="form" data-grade-form novalidate>
+          <div class="field">
+            <label for="g-max"><%= t("tools.grade.max") %></label>
+            <input type="number" id="g-max" name="max" value="100" step="any" min="0" inputmode="decimal" required>
+          </div>
+          <div class="field">
+            <label for="g-min"><%= t("tools.grade.min") %></label>
+            <input type="number" id="g-min" name="min" value="40" step="any" min="0" inputmode="decimal" required>
+          </div>
+          <div class="field">
+            <label for="g-yours"><%= t("tools.grade.yours") %></label>
+            <input type="number" id="g-yours" name="yours" step="any" min="0" inputmode="decimal" required>
+            <span class="err" hidden></span>
+          </div>
+          <p class="muted" style="font-size:.8rem"><%= t("tools.grade.hint") %></p>
+          <button class="btn" type="submit"><%= t("tools.grade.calculate") %></button>
+        </form>
+
+        <div class="result" data-grade-result hidden>
+          <b data-grade-value>—</b>
+          <span><%= t("tools.grade.result") %> · <span data-grade-label></span></span>
+        </div>
+        <p class="notice notice-bad" data-grade-error hidden><%= t("tools.grade.invalid") %></p>
+      </section>
+
+      <!-- ── ECTS ────────────────────────────────────────────────── -->
+      <section class="feature" style="flex-direction:column;gap:1.25rem" id="ects">
+        <div>
+          <h2 style="font-size:1.35rem"><%= t("tools.ects.title") %></h2>
+          <p class="muted" style="font-size:.9rem;margin-top:.5rem"><%= t("tools.ects.lead") %></p>
+        </div>
+
+        <form class="form" data-ects-form novalidate>
+          <div class="field">
+            <label for="e-contact"><%= t("tools.ects.contact") %></label>
+            <input type="number" id="e-contact" name="contact" value="0" step="any" min="0" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="e-self"><%= t("tools.ects.self") %></label>
+            <input type="number" id="e-self" name="self" value="0" step="any" min="0" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="e-exam"><%= t("tools.ects.exam") %></label>
+            <input type="number" id="e-exam" name="exam" value="0" step="any" min="0" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="e-per"><%= t("tools.ects.hoursPerCredit") %></label>
+            <select id="e-per" name="per" data-enhance>
+              <option value="25">25</option>
+              <option value="30" selected>30</option>
+            </select>
+          </div>
+          <button class="btn" type="submit"><%= t("tools.grade.calculate") %></button>
+        </form>
+
+        <div class="result" data-ects-result hidden>
+          <b data-ects-value>—</b>
+          <span><%= t("tools.ects.result") %> · <span data-ects-total></span> <%= t("tools.ects.hours") %></span>
+        </div>
+      </section>
+
+      <!-- ── IELTS overall band ──────────────────────────────────── -->
+      <section class="feature" style="flex-direction:column;gap:1.25rem" id="ielts">
+        <div>
+          <h2 style="font-size:1.35rem"><%= t("tools.ielts.title") %></h2>
+          <p class="muted" style="font-size:.9rem;margin-top:.5rem"><%= t("tools.ielts.lead") %></p>
+        </div>
+
+        <form class="form" data-ielts-form novalidate>
+          <div class="form-row form-row-2">
+            <div class="field">
+              <label for="i-listening"><%= t("tools.ielts.listening") %></label>
+              <input type="number" id="i-listening" name="listening" min="0" max="9" step="0.5" inputmode="decimal" required>
+            </div>
+            <div class="field">
+              <label for="i-reading"><%= t("tools.ielts.reading") %></label>
+              <input type="number" id="i-reading" name="reading" min="0" max="9" step="0.5" inputmode="decimal" required>
+            </div>
+          </div>
+          <div class="form-row form-row-2">
+            <div class="field">
+              <label for="i-writing"><%= t("tools.ielts.writing") %></label>
+              <input type="number" id="i-writing" name="writing" min="0" max="9" step="0.5" inputmode="decimal" required>
+            </div>
+            <div class="field">
+              <label for="i-speaking"><%= t("tools.ielts.speaking") %></label>
+              <input type="number" id="i-speaking" name="speaking" min="0" max="9" step="0.5" inputmode="decimal" required>
+            </div>
+          </div>
+          <button class="btn" type="submit"><%= t("tools.grade.calculate") %></button>
+        </form>
+
+        <div class="result" data-ielts-result hidden>
+          <b data-ielts-value>—</b>
+          <span><%= t("tools.ielts.result") %> · <span data-ielts-avg></span></span>
+        </div>
+        <p class="notice notice-bad" data-ielts-error hidden><%= t("tools.ielts.invalid") %></p>
+      </section>
+
+      <!-- ── TOEFL ⇄ IELTS ───────────────────────────────────────── -->
+      <section class="feature" style="flex-direction:column;gap:1.25rem" id="toefl">
+        <div>
+          <h2 style="font-size:1.35rem"><%= t("tools.toefl.title") %></h2>
+          <p class="muted" style="font-size:.9rem;margin-top:.5rem"><%= t("tools.toefl.lead") %></p>
+        </div>
+
+        <form class="form" data-toefl-form novalidate>
+          <div class="field">
+            <label for="c-toefl"><%= t("tools.toefl.toefl") %></label>
+            <input type="number" id="c-toefl" name="toefl" min="0" max="120" step="1" inputmode="numeric">
+          </div>
+          <div class="row">
+            <button class="btn btn-sm" type="submit" data-direction="toefl"><%= t("tools.toefl.fromToefl") %></button>
+          </div>
+
+          <div class="field" style="margin-top:.5rem">
+            <label for="c-ielts"><%= t("tools.toefl.ielts") %></label>
+            <input type="number" id="c-ielts" name="ielts" min="0" max="9" step="0.5" inputmode="decimal">
+          </div>
+          <div class="row">
+            <button class="btn btn-sm" type="submit" data-direction="ielts"><%= t("tools.toefl.fromIelts") %></button>
+          </div>
+        </form>
+
+        <div class="result" data-toefl-result hidden>
+          <b data-toefl-value>—</b>
+          <span data-toefl-label></span>
+        </div>
+        <p class="muted" style="font-size:.8rem"><%= t("tools.toefl.note") %></p>
+      </section>
+
+    </div>
+
+    <% if (notes.length) { %>
+      <hr class="rule">
+      <div class="grid grid-2">
+        <% notes.forEach(function (p) { %>
+          <div class="prose" style="max-width:none">
+            <h2 style="font-size:1.3rem"><%= p.title %></h2>
+            <%- p.body %>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

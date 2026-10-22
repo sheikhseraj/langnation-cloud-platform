@@ -1,0 +1,41 @@
+<%- include("../../partials/teach-head", { title: "Choose a new password", teacher: null }) %>
+
+<section class="section-tight">
+  <div class="wrap wrap-narrow">
+    <p class="eyebrow">Teacher portal</p>
+    <h1>Choose a new password</h1>
+    <p class="sp-lead">
+      For <strong><%= email %></strong>.
+    </p>
+
+    <form class="form" method="post" action="/teach/reset/<%= encodeURIComponent(token) %>"
+          style="margin-top:1.5rem">
+      <%- include("../../partials/password-field", {
+        id: "password",
+        name: "password",
+        label: "New password",
+        autocomplete: "new-password",
+        minlength: 10,
+        autofocus: true,
+        error: errors.password || null,
+        hint: "At least ten characters. A few unrelated words are easier to remember than a short jumble, and harder to guess.",
+      }) %>
+
+      <button class="btn btn-block" type="submit">Set my new password</button>
+    </form>
+
+    <%#
+      Said plainly, because it is the thing somebody resetting after a
+      break-in most needs to know, and the thing somebody resetting on a
+      new laptop is most surprised by.
+    %>
+    <p class="muted" style="margin-top:1.5rem;font-size:.88rem;line-height:1.6">
+      Setting a new password signs the account out everywhere else — every
+      phone, tablet and computer. If you are doing this because you think
+      somebody else knows your password, that is what ends their access to
+      your class lists. Tell the office as well.
+    </p>
+  </div>
+</section>
+
+<%- include("../../partials/portal-foot") %>

@@ -1,0 +1,16 @@
+# The server is Linux; keep every text file LF in the repository so a
+# checkout there is never CRLF. Git still hands Windows working copies
+# whatever core.autocrlf asks for.
+* text=auto eol=lf
+
+# Binaries git must not touch.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.ico  binary
+*.mp3  binary
+*.pdf  binary
+*.zip  binary
+*.woff binary
+*.woff2 binary

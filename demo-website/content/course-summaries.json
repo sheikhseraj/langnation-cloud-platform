@@ -1,0 +1,64 @@
+{
+  "_comment": "Hand-written card summaries, one per course, in English and German. These override the summary that would otherwise be derived from the old database, whose SEO text was near-identical for every course and read as spam. Descriptions follow the CEFR level definitions. Edit freely — plain text only, no HTML, keep to roughly 25 words.",
+
+  "german-regular-a1": {
+    "en": "Your first German. Greetings, introducing yourself, numbers and times, the present tense, and enough everyday vocabulary to handle simple, routine exchanges.",
+    "de": "Ihr erstes Deutsch. Begrüßungen, sich vorstellen, Zahlen und Uhrzeit, Präsens und genug Alltagswortschatz für einfache, wiederkehrende Gespräche."
+  },
+  "german-regular-a2": {
+    "en": "Shopping, work, family and daily routine. You add the past tense, separable verbs and modal verbs, and start describing things that already happened.",
+    "de": "Einkaufen, Arbeit, Familie und Alltag. Sie lernen das Perfekt, trennbare Verben und Modalverben und können über Vergangenes sprechen."
+  },
+  "german-regular-b1": {
+    "en": "The independence level. Handle most situations while travelling or at work, give reasons and opinions, and talk about plans. The level most visas and Ausbildung places ask for.",
+    "de": "Die Stufe der Selbstständigkeit. Sie meistern die meisten Situationen auf Reisen und im Beruf, begründen Meinungen und sprechen über Pläne — das Niveau, das Visa und Ausbildungsplätze meist verlangen."
+  },
+  "german-regular-b2": {
+    "en": "Follow complex texts and technical discussion in your own field. Passive voice, connectors and academic register. Required by many universities and for nursing recognition.",
+    "de": "Komplexe Texte und Fachdiskussionen im eigenen Bereich verstehen. Passiv, Konnektoren und Wissenschaftssprache — Voraussetzung an vielen Hochschulen und für die Pflegeanerkennung."
+  },
+  "german-regular-c1": {
+    "en": "Fluent and spontaneous, without obviously searching for words. Academic and professional register, long texts, implicit meaning. The usual admission level for German universities.",
+    "de": "Fließend und spontan, ohne erkennbar nach Worten zu suchen. Wissenschafts- und Berufssprache, lange Texte, implizite Bedeutung — das übliche Zulassungsniveau deutscher Hochschulen."
+  },
+  "german-regular-c2": {
+    "en": "Near-native precision. Nuance, idiom and register, summarising complex argument from several sources and restating it convincingly.",
+    "de": "Nahezu muttersprachliche Präzision. Nuancen, Idiomatik und Register, komplexe Argumente aus mehreren Quellen zusammenfassen und überzeugend wiedergeben."
+  },
+
+  "german-weekend-a1": {
+    "en": "The A1 syllabus taught on Saturdays and Sundays, for people who work full time. Same curriculum, same certificate, no weekday commitment.",
+    "de": "Der A1-Lehrplan samstags und sonntags — für Berufstätige. Gleicher Lehrplan, gleiches Zertifikat, ohne Termine unter der Woche."
+  },
+  "german-weekend-a2": {
+    "en": "A2 at weekends. Past tense, modal verbs and everyday description, taught in a slower rhythm that fits around a full working week.",
+    "de": "A2 am Wochenende. Perfekt, Modalverben und Alltagsbeschreibung — in einem ruhigeren Rhythmus neben einer vollen Arbeitswoche."
+  },
+  "german-weekend-b1": {
+    "en": "B1 at weekends, over ten weeks. Reach the independence level required for most visa and apprenticeship applications without taking time off work.",
+    "de": "B1 am Wochenende, über zehn Wochen. Erreichen Sie das für Visum und Ausbildung geforderte Niveau, ohne sich freinehmen zu müssen."
+  },
+
+  "german-speaking-course-a1-a2": {
+    "en": "Conversation only, no new grammar. Four weeks of guided speaking practice to turn the German you have already studied into German you can actually use.",
+    "de": "Nur Konversation, keine neue Grammatik. Vier Wochen angeleitetes Sprechtraining, um Gelerntes endlich aktiv anzuwenden."
+  },
+  "german-speaking-course-b1-b2": {
+    "en": "Discussion and debate at B1–B2. Argue a position, disagree politely, handle interviews and meetings — the skills written exams never test.",
+    "de": "Diskussion und Debatte auf B1–B2. Standpunkte vertreten, höflich widersprechen, Vorstellungsgespräche und Meetings meistern — was schriftliche Prüfungen nie abfragen."
+  },
+
+  "individual-training-a1": {
+    "en": "Private one-to-one lessons, scheduled around you and paced to your goal. Best if you need a specific level by a specific date.",
+    "de": "Privater Einzelunterricht, nach Ihrem Zeitplan und in Ihrem Tempo. Ideal, wenn Sie ein bestimmtes Niveau bis zu einem festen Termin brauchen."
+  },
+  "individual-training-a2": {
+    "en": "One-to-one tuition for school students, matched to the German their school curriculum expects and to the topics they are struggling with.",
+    "de": "Einzelunterricht für Schülerinnen und Schüler, abgestimmt auf den Lehrplan der Schule und auf die Themen, die gerade Schwierigkeiten machen."
+  },
+
+  "intensive-courses": {
+    "en": "A1 to B1 in ninety days. A full-time programme for students with a visa deadline or a university start date to meet.",
+    "de": "Von A1 bis B1 in neunzig Tagen. Ein Vollzeitprogramm für alle mit einer Visumsfrist oder einem festen Studienbeginn."
+  }
+}

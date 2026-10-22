@@ -1,0 +1,1460 @@
+# Kapitel 08 — Pronomen
+@learning
+{
+  "version": 1,
+  "key": "kapitel-08-pronomen",
+  "title": "Kapitel 08 — Pronomen",
+  "label": "Kapitel 08",
+  "sections": [
+    {
+      "id": "exercise-1",
+      "label": "Übung 1",
+      "title": "Übung 1 – Personalpronomen einsetzen",
+      "instruction": "Ersetze die markierte Nomengruppe durch ein Pronomen.",
+      "objective": "Nomengruppen durch passende Personalpronomen im richtigen Kasus ersetzen.",
+      "examples": [
+        {
+          "prompt": "Ich sehe die Frau. → Ich sehe ___.",
+          "answer": "sie",
+          "explanation": "Akkusativ feminin → sie."
+        },
+        {
+          "prompt": "Ich helfe dem Mann. → Ich helfe ___.",
+          "answer": "ihm",
+          "explanation": "helfen + Dativ; maskulin → ihm."
+        }
+      ],
+      "questions": [
+        {
+          "id": "1",
+          "title": "Aufgabe 1",
+          "type": "fill_blank",
+          "prompt": "Ich sehe den Mann. → Ich sehe ___.",
+          "accepted": [
+            "ihn"
+          ],
+          "hints": [
+            "Welche Funktion hat „den Mann“?",
+            "Akkusativ maskulin → ihn."
+          ],
+          "feedback": "Richtig: Ich sehe ihn."
+        },
+        {
+          "id": "2",
+          "title": "Aufgabe 2",
+          "type": "fill_blank",
+          "prompt": "Ich helfe der Frau. → Ich helfe ___.",
+          "accepted": [
+            "ihr"
+          ],
+          "hints": [
+            "Das Verb „helfen“ verlangt Dativ.",
+            "Dativ feminin → ihr."
+          ],
+          "feedback": "Richtig: Ich helfe ihr."
+        },
+        {
+          "id": "3",
+          "title": "Aufgabe 3",
+          "type": "fill_blank",
+          "prompt": "Der Lehrer spricht mit den Studenten. → Er spricht mit ___.",
+          "accepted": [
+            "ihnen"
+          ],
+          "hints": [
+            "„mit“ verlangt Dativ.",
+            "Dativ Plural → ihnen."
+          ],
+          "feedback": "Richtig: mit ihnen."
+        },
+        {
+          "id": "4",
+          "title": "Aufgabe 4",
+          "type": "fill_blank",
+          "prompt": "Das Kind schläft. → ___ schläft.",
+          "accepted": [
+            "Es"
+          ],
+          "hints": [
+            "„das Kind“ ist Neutrum und Subjekt.",
+            "Nominativ Neutrum → es."
+          ],
+          "feedback": "Richtig: Es schläft."
+        },
+        {
+          "id": "5",
+          "title": "Aufgabe 5",
+          "type": "fill_blank",
+          "prompt": "Ich besuche meine Eltern. → Ich besuche ___.",
+          "accepted": [
+            "sie"
+          ],
+          "hints": [
+            "„meine Eltern“ steht im Akkusativ Plural.",
+            "Akkusativ Plural → sie."
+          ],
+          "feedback": "Richtig: Ich besuche sie."
+        },
+        {
+          "id": "6",
+          "title": "Aufgabe 6",
+          "type": "fill_blank",
+          "prompt": "Können Sie Frau Berger helfen? → Können Sie ___ helfen?",
+          "accepted": [
+            "ihr"
+          ],
+          "hints": [
+            "helfen + Dativ.",
+            "Dativ feminin → ihr."
+          ],
+          "feedback": "Richtig: Können Sie ihr helfen?"
+        }
+      ]
+    },
+    {
+      "id": "exercise-2",
+      "label": "Übung 2",
+      "title": "Übung 2 – Akkusativ oder Dativ?",
+      "instruction": "Setze das passende Personalpronomen ein.",
+      "objective": "Kasus durch Verb/Struktur erkennen und das passende Personalpronomen einsetzen.",
+      "examples": [
+        {
+          "prompt": "Kannst du ___ sehen? (ich)",
+          "answer": "mich",
+          "explanation": "sehen + Akkusativ → mich."
+        },
+        {
+          "prompt": "Kannst du ___ helfen? (du)",
+          "answer": "dir",
+          "explanation": "helfen + Dativ → dir."
+        }
+      ],
+      "questions": [
+        {
+          "id": "7",
+          "title": "Aufgabe 7",
+          "type": "fill_blank",
+          "prompt": "Kannst du ___ helfen? (ich)",
+          "accepted": [
+            "mir"
+          ],
+          "hints": [
+            "Welchen Kasus verlangt „helfen“?",
+            "Dativ von ich = mir."
+          ],
+          "feedback": "Richtig: mir."
+        },
+        {
+          "id": "8",
+          "title": "Aufgabe 8",
+          "type": "fill_blank",
+          "prompt": "Ich sehe ___. (du)",
+          "accepted": [
+            "dich"
+          ],
+          "hints": [
+            "sehen + Akkusativ.",
+            "Akkusativ von du = dich."
+          ],
+          "feedback": "Richtig: dich."
+        },
+        {
+          "id": "9",
+          "title": "Aufgabe 9",
+          "type": "fill_blank",
+          "prompt": "Die Jacke gefällt ___. (sie, Singular)",
+          "accepted": [
+            "ihr"
+          ],
+          "hints": [
+            "gefallen + Dativ.",
+            "Dativ von sie = ihr."
+          ],
+          "feedback": "Richtig: ihr."
+        },
+        {
+          "id": "10",
+          "title": "Aufgabe 10",
+          "type": "fill_blank",
+          "prompt": "Wir besuchen ___. (er)",
+          "accepted": [
+            "ihn"
+          ],
+          "hints": [
+            "besuchen + Akkusativ.",
+            "Akkusativ von er = ihn."
+          ],
+          "feedback": "Richtig: ihn."
+        },
+        {
+          "id": "11",
+          "title": "Aufgabe 11",
+          "type": "fill_blank",
+          "prompt": "Der Lehrer antwortet ___. (wir)",
+          "accepted": [
+            "uns"
+          ],
+          "hints": [
+            "antworten + Dativ.",
+            "Dativ von wir = uns."
+          ],
+          "feedback": "Richtig: uns."
+        },
+        {
+          "id": "12",
+          "title": "Aufgabe 12",
+          "type": "fill_blank",
+          "prompt": "Ich danke ___. (Sie, formell)",
+          "accepted": [
+            "Ihnen"
+          ],
+          "hints": [
+            "danken + Dativ; formelle Anrede groß.",
+            "Dativ von Sie = Ihnen."
+          ],
+          "feedback": "Richtig: Ihnen."
+        }
+      ]
+    },
+    {
+      "id": "exercise-3",
+      "label": "Übung 3",
+      "title": "Übung 3 – Possessivartikel",
+      "instruction": "Ergänze die passende Form.",
+      "objective": "Possessivartikel nach Person und Nomen richtig auswählen.",
+      "examples": [
+        {
+          "prompt": "Ich habe eine Schwester. Das ist ___ Schwester.",
+          "answer": "meine",
+          "explanation": "ich → mein-; feminin → meine."
+        },
+        {
+          "prompt": "Wir haben ein Auto. Das ist ___ Auto.",
+          "answer": "unser",
+          "explanation": "wir → unser-; Neutrum Nominativ → unser."
+        }
+      ],
+      "questions": [
+        {
+          "id": "13",
+          "title": "Aufgabe 13",
+          "type": "fill_blank",
+          "prompt": "Ich habe einen Bruder. Das ist ___ Bruder.",
+          "accepted": [
+            "mein"
+          ],
+          "hints": [
+            "Wem gehört der Bruder?",
+            "ich → mein-. Bruder ist maskulin."
+          ],
+          "feedback": "Richtig: mein Bruder."
+        },
+        {
+          "id": "14",
+          "title": "Aufgabe 14",
+          "type": "fill_blank",
+          "prompt": "Du hast eine Tasche. Das ist ___ Tasche.",
+          "accepted": [
+            "deine"
+          ],
+          "hints": [
+            "du → dein-.",
+            "Tasche ist feminin → deine."
+          ],
+          "feedback": "Richtig: deine Tasche."
+        },
+        {
+          "id": "15",
+          "title": "Aufgabe 15",
+          "type": "fill_blank",
+          "prompt": "Er hat ein Auto. Das ist ___ Auto.",
+          "accepted": [
+            "sein"
+          ],
+          "hints": [
+            "er → sein-.",
+            "Auto ist Neutrum → sein."
+          ],
+          "feedback": "Richtig: sein Auto."
+        },
+        {
+          "id": "16",
+          "title": "Aufgabe 16",
+          "type": "fill_blank",
+          "prompt": "Wir haben Kinder. Das sind ___ Kinder.",
+          "accepted": [
+            "unsere"
+          ],
+          "hints": [
+            "wir → unser-.",
+            "Plural → unsere."
+          ],
+          "feedback": "Richtig: unsere Kinder."
+        },
+        {
+          "id": "17",
+          "title": "Aufgabe 17",
+          "type": "fill_blank",
+          "prompt": "Ihr habt einen Kurs. Das ist ___ Kurs.",
+          "accepted": [
+            "euer"
+          ],
+          "hints": [
+            "ihr → euer-.",
+            "Vor maskulinem Nomen ohne Endung: euer Kurs."
+          ],
+          "feedback": "Richtig: euer Kurs."
+        },
+        {
+          "id": "18",
+          "title": "Aufgabe 18",
+          "type": "fill_blank",
+          "prompt": "Frau Klein, ist das ___ Pass?",
+          "accepted": [
+            "Ihr"
+          ],
+          "hints": [
+            "Formelle Anrede „Sie“.",
+            "Possessivartikel zu Sie wird großgeschrieben: Ihr."
+          ],
+          "feedback": "Richtig: Ihr Pass."
+        }
+      ]
+    },
+    {
+      "id": "exercise-4",
+      "label": "Übung 4",
+      "title": "Übung 4 – Possessivpronomen",
+      "instruction": "Ersetze Nomen + Possessivartikel, wenn möglich.",
+      "objective": "Possessivpronomen verwenden, wenn das Nomen bereits bekannt ist.",
+      "examples": [
+        {
+          "prompt": "Das ist mein Auto. → Das ist ___.",
+          "answer": "meins",
+          "explanation": "Auto = Neutrum; das Nomen wird ersetzt."
+        },
+        {
+          "prompt": "Ist das deine Jacke? → Nein, das ist ___.",
+          "answer": "meine",
+          "explanation": "Jacke = feminin; alleinstehendes Possessivpronomen."
+        }
+      ],
+      "questions": [
+        {
+          "id": "19",
+          "title": "Aufgabe 19",
+          "type": "fill_blank",
+          "prompt": "Das ist mein Buch. → Das ist ___.",
+          "accepted": [
+            "meins"
+          ],
+          "hints": [
+            "Das Nomen „Buch“ ist schon bekannt.",
+            "Neutrum → meins."
+          ],
+          "feedback": "Richtig: Das ist meins."
+        },
+        {
+          "id": "20",
+          "title": "Aufgabe 20",
+          "type": "fill_blank",
+          "prompt": "Ist das deine Tasche? → Ja, das ist ___.",
+          "accepted": [
+            "meine"
+          ],
+          "hints": [
+            "Tasche ist feminin.",
+            "Alleinstehend: meine."
+          ],
+          "feedback": "Richtig: das ist meine."
+        },
+        {
+          "id": "21",
+          "title": "Aufgabe 21",
+          "type": "fill_blank",
+          "prompt": "Das ist sein Handy. → Das ist ___.",
+          "accepted": [
+            "seins"
+          ],
+          "hints": [
+            "Handy ist Neutrum.",
+            "sein + s → seins."
+          ],
+          "feedback": "Richtig: Das ist seins."
+        },
+        {
+          "id": "22",
+          "title": "Aufgabe 22",
+          "type": "fill_blank",
+          "prompt": "Das sind unsere Stühle. → Das sind ___.",
+          "accepted": [
+            "unsere"
+          ],
+          "hints": [
+            "Stühle = Plural.",
+            "Pluralform bleibt unsere."
+          ],
+          "feedback": "Richtig: Das sind unsere."
+        }
+      ]
+    },
+    {
+      "id": "exercise-5",
+      "label": "Übung 5",
+      "title": "Übung 5 – Wer, wen, wem oder wessen?",
+      "instruction": "Ergänze das richtige Fragepronomen.",
+      "objective": "Fragepronomen passend zu Nominativ, Akkusativ, Dativ und Besitz auswählen.",
+      "examples": [
+        {
+          "prompt": "___ kommt heute?",
+          "answer": "Wer",
+          "explanation": "Subjekt/Person → Wer."
+        },
+        {
+          "prompt": "___ hilfst du?",
+          "answer": "Wem",
+          "explanation": "helfen + Dativ → Wem."
+        }
+      ],
+      "questions": [
+        {
+          "id": "23",
+          "title": "Aufgabe 23",
+          "type": "fill_blank",
+          "prompt": "___ kommt heute?",
+          "accepted": [
+            "Wer"
+          ],
+          "hints": [
+            "Gesucht ist das Subjekt.",
+            "Person im Nominativ → Wer."
+          ],
+          "feedback": "Richtig: Wer."
+        },
+        {
+          "id": "24",
+          "title": "Aufgabe 24",
+          "type": "fill_blank",
+          "prompt": "___ besuchst du?",
+          "accepted": [
+            "Wen"
+          ],
+          "hints": [
+            "besuchen + Akkusativ.",
+            "Person im Akkusativ → Wen."
+          ],
+          "feedback": "Richtig: Wen."
+        },
+        {
+          "id": "25",
+          "title": "Aufgabe 25",
+          "type": "fill_blank",
+          "prompt": "___ hilfst du?",
+          "accepted": [
+            "Wem"
+          ],
+          "hints": [
+            "helfen + Dativ.",
+            "Person im Dativ → Wem."
+          ],
+          "feedback": "Richtig: Wem."
+        },
+        {
+          "id": "26",
+          "title": "Aufgabe 26",
+          "type": "fill_blank",
+          "prompt": "___ Auto ist das?",
+          "accepted": [
+            "Wessen"
+          ],
+          "hints": [
+            "Gefragt wird nach Besitz.",
+            "Besitz/Zugehörigkeit → Wessen."
+          ],
+          "feedback": "Richtig: Wessen."
+        },
+        {
+          "id": "27",
+          "title": "Aufgabe 27",
+          "type": "fill_blank",
+          "prompt": "Mit ___ sprichst du?",
+          "accepted": [
+            "wem"
+          ],
+          "hints": [
+            "„mit“ verlangt Dativ.",
+            "Nach mit: wem."
+          ],
+          "feedback": "Richtig: Mit wem ...?"
+        },
+        {
+          "id": "28",
+          "title": "Aufgabe 28",
+          "type": "fill_blank",
+          "prompt": "___ fragst du?",
+          "accepted": [
+            "Wen"
+          ],
+          "hints": [
+            "fragen + Akkusativ.",
+            "Person im Akkusativ → Wen."
+          ],
+          "feedback": "Richtig: Wen."
+        }
+      ]
+    },
+    {
+      "id": "exercise-6",
+      "label": "Übung 6",
+      "title": "Übung 6 – Indefinitpronomen",
+      "instruction": "Ergänze das passende Indefinitpronomen.",
+      "objective": "man, jemand, niemand, etwas, nichts, alle, einige und manche nach Bedeutung unterscheiden.",
+      "examples": [
+        {
+          "prompt": "___ wartet vor der Tür.",
+          "answer": "Jemand",
+          "explanation": "unbestimmte Person → jemand."
+        },
+        {
+          "prompt": "Ich sehe ___.",
+          "answer": "nichts",
+          "explanation": "keine Sache → nichts."
+        }
+      ],
+      "questions": [
+        {
+          "id": "29",
+          "title": "Aufgabe 29",
+          "type": "fill_blank_adaptive",
+          "prompt": "Hier ist ___. Die Wohnung ist leer.",
+          "accepted": [
+            "niemand"
+          ],
+          "hints": [
+            "Gesucht ist „keine Person“.",
+            "Niemand = keine Person."
+          ],
+          "feedback": "Richtig: niemand.",
+          "wordBank": [
+            "man",
+            "jemand",
+            "niemand",
+            "etwas",
+            "nichts",
+            "alle",
+            "einige",
+            "manche"
+          ]
+        },
+        {
+          "id": "30",
+          "title": "Aufgabe 30",
+          "type": "fill_blank_adaptive",
+          "prompt": "Ich möchte ___ trinken.",
+          "accepted": [
+            "etwas"
+          ],
+          "hints": [
+            "Gesucht ist eine unbestimmte Sache/Menge.",
+            "etwas = eine nicht bestimmte Sache/Menge."
+          ],
+          "feedback": "Richtig: etwas.",
+          "wordBank": [
+            "man",
+            "jemand",
+            "niemand",
+            "etwas",
+            "nichts",
+            "alle",
+            "einige",
+            "manche"
+          ]
+        },
+        {
+          "id": "31",
+          "title": "Aufgabe 31",
+          "type": "fill_blank_adaptive",
+          "prompt": "___ sagt, dass Deutsch schwer ist.",
+          "accepted": [
+            "man"
+          ],
+          "hints": [
+            "Allgemeine Aussage über Menschen.",
+            "man = unpersönliches Pronomen; nicht Mann."
+          ],
+          "feedback": "Richtig: Man.",
+          "wordBank": [
+            "man",
+            "jemand",
+            "niemand",
+            "etwas",
+            "nichts",
+            "alle",
+            "einige",
+            "manche"
+          ]
+        },
+        {
+          "id": "32",
+          "title": "Aufgabe 32",
+          "type": "fill_blank_adaptive",
+          "prompt": "___ Studenten sind heute krank, aber die meisten sind da.",
+          "accepted": [
+            "einige",
+            "manche"
+          ],
+          "hints": [
+            "Nur ein Teil der Gruppe ist krank.",
+            "Einige und manche passen beide zur Aussage."
+          ],
+          "feedback": "Akzeptiert: einige / manche.",
+          "wordBank": [
+            "man",
+            "jemand",
+            "niemand",
+            "etwas",
+            "nichts",
+            "alle",
+            "einige",
+            "manche"
+          ]
+        },
+        {
+          "id": "33",
+          "title": "Aufgabe 33",
+          "type": "fill_blank_adaptive",
+          "prompt": "Ich habe gesucht, aber ich finde ___.",
+          "accepted": [
+            "nichts"
+          ],
+          "hints": [
+            "Es wird keine Sache gefunden.",
+            "nichts = keine Sache."
+          ],
+          "feedback": "Richtig: nichts.",
+          "wordBank": [
+            "man",
+            "jemand",
+            "niemand",
+            "etwas",
+            "nichts",
+            "alle",
+            "einige",
+            "manche"
+          ]
+        },
+        {
+          "id": "34",
+          "title": "Aufgabe 34",
+          "type": "fill_blank_adaptive",
+          "prompt": "___ Teilnehmer haben die Aufgabe verstanden.",
+          "accepted": [
+            "einige",
+            "manche"
+          ],
+          "hints": [
+            "Es geht um einen Teil der Gruppe.",
+            "Einige oder manche sind beide möglich."
+          ],
+          "feedback": "Akzeptiert: einige / manche.",
+          "wordBank": [
+            "man",
+            "jemand",
+            "niemand",
+            "etwas",
+            "nichts",
+            "alle",
+            "einige",
+            "manche"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exercise-7",
+      "label": "Übung 7",
+      "title": "Übung 7 – Wortstellung mit Pronomen",
+      "instruction": "Forme um.",
+      "objective": "Objektpronomen einsetzen und bei zwei Pronomen die Grundreihenfolge Akkusativ vor Dativ anwenden.",
+      "examples": [
+        {
+          "prompt": "Ich gebe der Frau den Schlüssel. → Ersetze „der Frau“.",
+          "answer": "Ich gebe ihr den Schlüssel.",
+          "explanation": "Dativnomen → Dativpronomen."
+        },
+        {
+          "prompt": "Ich gebe der Frau den Schlüssel. → Ersetze beide.",
+          "answer": "Ich gebe ihn ihr.",
+          "explanation": "Bei zwei Pronomen: Akkusativ vor Dativ."
+        }
+      ],
+      "questions": [
+        {
+          "id": "35",
+          "title": "Aufgabe 35",
+          "type": "sentence_builder",
+          "prompt": "Ich gebe dem Mann das Buch. → Ersetze „dem Mann“.",
+          "accepted": [
+            "Ich gebe ihm das Buch."
+          ],
+          "hints": [
+            "Nur das Dativobjekt wird ersetzt.",
+            "dem Mann → ihm."
+          ],
+          "feedback": "Richtig: Ich gebe ihm das Buch.",
+          "tiles": [
+            ".",
+            "Buch",
+            "das",
+            "gebe",
+            "Ich",
+            "ihm"
+          ]
+        },
+        {
+          "id": "36",
+          "title": "Aufgabe 36",
+          "type": "sentence_builder",
+          "prompt": "Ich gebe dem Mann das Buch. → Ersetze „das Buch“.",
+          "accepted": [
+            "Ich gebe es dem Mann."
+          ],
+          "hints": [
+            "Nur das Akkusativobjekt wird ersetzt.",
+            "das Buch → es."
+          ],
+          "feedback": "Richtig: Ich gebe es dem Mann.",
+          "tiles": [
+            ".",
+            "dem",
+            "es",
+            "gebe",
+            "Ich",
+            "Mann"
+          ]
+        },
+        {
+          "id": "37",
+          "title": "Aufgabe 37",
+          "type": "sentence_builder",
+          "prompt": "Ich gebe dem Mann das Buch. → Ersetze beide.",
+          "accepted": [
+            "Ich gebe es ihm."
+          ],
+          "hints": [
+            "Beide Objekte werden Pronomen.",
+            "Bei zwei Pronomen steht meist Akkusativ vor Dativ."
+          ],
+          "feedback": "Richtig: Ich gebe es ihm.",
+          "tiles": [
+            ".",
+            "es",
+            "gebe",
+            "Ich",
+            "ihm"
+          ]
+        },
+        {
+          "id": "38",
+          "title": "Aufgabe 38",
+          "type": "sentence_builder",
+          "prompt": "Sie zeigt der Kundin die Wohnung. → Ersetze beide Objekte.",
+          "accepted": [
+            "Sie zeigt sie ihr."
+          ],
+          "hints": [
+            "die Wohnung → sie; der Kundin → ihr.",
+            "Akkusativpronomen vor Dativpronomen."
+          ],
+          "feedback": "Richtig: Sie zeigt sie ihr.",
+          "tiles": [
+            ".",
+            "ihr",
+            "sie",
+            "Sie",
+            "zeigt"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reading",
+      "label": "Lesetext",
+      "title": "Lesetext – Ein neues Team",
+      "instruction": "Lies den Text und bearbeite die Aufgaben.",
+      "examples": [
+        {
+          "prompt": "Ich sehe die Frau. → Ich sehe ___.",
+          "answer": "sie",
+          "explanation": "Akkusativ feminin → sie."
+        }
+      ],
+      "questions": [
+        {
+          "id": "r1",
+          "title": "Aufgabe R1",
+          "type": "text_highlight",
+          "prompt": "Markiere alle Personalpronomen im Text.",
+          "hints": [
+            "Suche Wörter, die Personen direkt ersetzen.",
+            "Possessivformen wie „Ihr“ und Indefinitpronomen wie „niemanden“ gehören nicht dazu."
+          ],
+          "feedback": "Die UI prüft markierte Text-Spans; Wiederholungen werden positionsbezogen gespeichert.",
+          "tokens": [
+            "Mira",
+            "beginnt",
+            "heute",
+            "in",
+            "einer",
+            "neuen",
+            "Firma.",
+            "Ihr",
+            "Chef",
+            "begrüßt",
+            "sie",
+            "und",
+            "zeigt",
+            "ihr",
+            "das",
+            "Büro.",
+            "„Dieser",
+            "Schreibtisch",
+            "ist",
+            "deiner“,",
+            "sagt",
+            "er.",
+            "Einige",
+            "Kollegen",
+            "sind",
+            "schon",
+            "da.",
+            "Einer",
+            "von",
+            "ihnen",
+            "bringt",
+            "ihr",
+            "einen",
+            "Kaffee.",
+            "Mira",
+            "kennt",
+            "noch",
+            "niemanden,",
+            "aber",
+            "alle",
+            "sind",
+            "freundlich.",
+            "Ein",
+            "Kollege",
+            "fragt",
+            "sie:",
+            "„Kann",
+            "ich",
+            "dir",
+            "etwas",
+            "erklären?“",
+            "Mira",
+            "antwortet:",
+            "„Danke,",
+            "im",
+            "Moment",
+            "brauche",
+            "ich",
+            "nichts.“",
+            "Später",
+            "stellt",
+            "der",
+            "Chef",
+            "sie",
+            "dem",
+            "ganzen",
+            "Team",
+            "vor."
+          ],
+          "groups": [
+            {
+              "id": "group-1",
+              "label": "sie",
+              "tokens": [
+                10
+              ]
+            },
+            {
+              "id": "group-2",
+              "label": "ihr",
+              "tokens": [
+                13
+              ]
+            },
+            {
+              "id": "group-3",
+              "label": "er",
+              "tokens": [
+                21
+              ]
+            },
+            {
+              "id": "group-4",
+              "label": "ihnen",
+              "tokens": [
+                29
+              ]
+            },
+            {
+              "id": "group-5",
+              "label": "ihr",
+              "tokens": [
+                31
+              ]
+            },
+            {
+              "id": "group-6",
+              "label": "sie",
+              "tokens": [
+                45
+              ]
+            },
+            {
+              "id": "group-7",
+              "label": "ich",
+              "tokens": [
+                47
+              ]
+            },
+            {
+              "id": "group-8",
+              "label": "dir",
+              "tokens": [
+                48
+              ]
+            },
+            {
+              "id": "group-9",
+              "label": "ich",
+              "tokens": [
+                57
+              ]
+            },
+            {
+              "id": "group-10",
+              "label": "sie",
+              "tokens": [
+                63
+              ]
+            }
+          ],
+          "examples": [
+            {
+              "prompt": "Er hilft mir.",
+              "answer": "Er · mir",
+              "explanation": "Klicke jedes gesuchte Wort an. Bei getrennten Teilen bleiben die Wörter dazwischen frei."
+            }
+          ]
+        },
+        {
+          "id": "r2",
+          "title": "Aufgabe R2",
+          "type": "text_highlight",
+          "prompt": "Markiere alle Possessivformen im Text.",
+          "hints": [
+            "Suche nach Zugehörigkeit/Besitz.",
+            "Eine Form steht vor „Chef“, eine ersetzt „Schreibtisch“."
+          ],
+          "feedback": "Richtig: Ihr · deiner.",
+          "tokens": [
+            "Mira",
+            "beginnt",
+            "heute",
+            "in",
+            "einer",
+            "neuen",
+            "Firma.",
+            "Ihr",
+            "Chef",
+            "begrüßt",
+            "sie",
+            "und",
+            "zeigt",
+            "ihr",
+            "das",
+            "Büro.",
+            "„Dieser",
+            "Schreibtisch",
+            "ist",
+            "deiner“,",
+            "sagt",
+            "er.",
+            "Einige",
+            "Kollegen",
+            "sind",
+            "schon",
+            "da.",
+            "Einer",
+            "von",
+            "ihnen",
+            "bringt",
+            "ihr",
+            "einen",
+            "Kaffee.",
+            "Mira",
+            "kennt",
+            "noch",
+            "niemanden,",
+            "aber",
+            "alle",
+            "sind",
+            "freundlich.",
+            "Ein",
+            "Kollege",
+            "fragt",
+            "sie:",
+            "„Kann",
+            "ich",
+            "dir",
+            "etwas",
+            "erklären?“",
+            "Mira",
+            "antwortet:",
+            "„Danke,",
+            "im",
+            "Moment",
+            "brauche",
+            "ich",
+            "nichts.“",
+            "Später",
+            "stellt",
+            "der",
+            "Chef",
+            "sie",
+            "dem",
+            "ganzen",
+            "Team",
+            "vor."
+          ],
+          "groups": [
+            {
+              "id": "group-1",
+              "label": "Ihr",
+              "tokens": [
+                7
+              ]
+            },
+            {
+              "id": "group-2",
+              "label": "deiner",
+              "tokens": [
+                19
+              ]
+            }
+          ],
+          "examples": [
+            {
+              "prompt": "Mein Stift ist neu.",
+              "answer": "Mein",
+              "explanation": "Klicke jedes gesuchte Wort an. Bei getrennten Teilen bleiben die Wörter dazwischen frei."
+            }
+          ]
+        },
+        {
+          "id": "r3",
+          "title": "Aufgabe R3",
+          "type": "text_highlight",
+          "prompt": "Markiere alle Indefinitpronomen im Text.",
+          "hints": [
+            "Suche unbestimmte Personen/Sachen/Mengen.",
+            "Dazu gehören u. a. jemand/niemand/etwas/nichts/alle/einige."
+          ],
+          "feedback": "Die UI prüft alle sechs positionsbezogenen Treffer.",
+          "tokens": [
+            "Mira",
+            "beginnt",
+            "heute",
+            "in",
+            "einer",
+            "neuen",
+            "Firma.",
+            "Ihr",
+            "Chef",
+            "begrüßt",
+            "sie",
+            "und",
+            "zeigt",
+            "ihr",
+            "das",
+            "Büro.",
+            "„Dieser",
+            "Schreibtisch",
+            "ist",
+            "deiner“,",
+            "sagt",
+            "er.",
+            "Einige",
+            "Kollegen",
+            "sind",
+            "schon",
+            "da.",
+            "Einer",
+            "von",
+            "ihnen",
+            "bringt",
+            "ihr",
+            "einen",
+            "Kaffee.",
+            "Mira",
+            "kennt",
+            "noch",
+            "niemanden,",
+            "aber",
+            "alle",
+            "sind",
+            "freundlich.",
+            "Ein",
+            "Kollege",
+            "fragt",
+            "sie:",
+            "„Kann",
+            "ich",
+            "dir",
+            "etwas",
+            "erklären?“",
+            "Mira",
+            "antwortet:",
+            "„Danke,",
+            "im",
+            "Moment",
+            "brauche",
+            "ich",
+            "nichts.“",
+            "Später",
+            "stellt",
+            "der",
+            "Chef",
+            "sie",
+            "dem",
+            "ganzen",
+            "Team",
+            "vor."
+          ],
+          "groups": [
+            {
+              "id": "group-1",
+              "label": "Einige",
+              "tokens": [
+                22
+              ]
+            },
+            {
+              "id": "group-2",
+              "label": "Einer",
+              "tokens": [
+                27
+              ]
+            },
+            {
+              "id": "group-3",
+              "label": "niemanden",
+              "tokens": [
+                37
+              ]
+            },
+            {
+              "id": "group-4",
+              "label": "alle",
+              "tokens": [
+                39
+              ]
+            },
+            {
+              "id": "group-5",
+              "label": "etwas",
+              "tokens": [
+                49
+              ]
+            },
+            {
+              "id": "group-6",
+              "label": "nichts",
+              "tokens": [
+                58
+              ]
+            }
+          ],
+          "examples": [
+            {
+              "prompt": "Jemand wartet.",
+              "answer": "Jemand",
+              "explanation": "Klicke jedes gesuchte Wort an. Bei getrennten Teilen bleiben die Wörter dazwischen frei."
+            }
+          ]
+        },
+        {
+          "id": "r4",
+          "title": "Aufgabe R4",
+          "type": "short_answer",
+          "prompt": "Wofür steht „ihr“ in „zeigt ihr das Büro“?",
+          "accepted": [
+            "Mira",
+            "für Mira"
+          ],
+          "hints": [
+            "Wer bekommt das Büro gezeigt?",
+            "Das Pronomen „ihr“ bezieht sich auf die neue Mitarbeiterin."
+          ],
+          "feedback": "Richtig: Mira."
+        },
+        {
+          "id": "r5",
+          "title": "Aufgabe R5",
+          "type": "short_answer",
+          "prompt": "Ersetze die Pronomen durch Nomen: „Ihr Chef begrüßt sie und zeigt ihr das Büro.“",
+          "accepted": [
+            "Miras Chef begrüßt Mira und zeigt Mira das Büro.",
+            "Der Chef begrüßt Mira und zeigt Mira das Büro."
+          ],
+          "hints": [
+            "Ersetze beide Pronomen, die auf Mira verweisen.",
+            "sie + ihr → Mira; „Ihr Chef“ kann als „Miras Chef“ formuliert werden."
+          ],
+          "feedback": "Akzeptiert werden die beiden kontrollierten Varianten."
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "label": "Mini-Test",
+      "title": "Mini-Test",
+      "instruction": "Bearbeite die Aufgaben. Bei Bedarf stehen dir zwei Hinweise zur Verfügung.",
+      "examples": [
+        {
+          "prompt": "Ich sehe die Frau. → Ich sehe ___.",
+          "answer": "sie",
+          "explanation": "Akkusativ feminin → sie."
+        }
+      ],
+      "questions": [
+        {
+          "id": "t1",
+          "title": "Aufgabe T1",
+          "type": "fill_blank",
+          "prompt": "Ersetze „den Mann“: Ich sehe ___.",
+          "accepted": [
+            "ihn"
+          ],
+          "hints": [
+            "Akkusativ maskulin.",
+            "er → ihn."
+          ],
+          "feedback": "Richtig: ihn."
+        },
+        {
+          "id": "t2",
+          "title": "Aufgabe T2",
+          "type": "fill_blank",
+          "prompt": "Ersetze „der Frau“: Ich helfe ___.",
+          "accepted": [
+            "ihr"
+          ],
+          "hints": [
+            "helfen + Dativ.",
+            "sie → ihr."
+          ],
+          "feedback": "Richtig: ihr."
+        },
+        {
+          "id": "t3",
+          "title": "Aufgabe T3",
+          "type": "fill_blank",
+          "prompt": "Das ist ___ Bruder. (ich)",
+          "accepted": [
+            "mein"
+          ],
+          "hints": [
+            "ich → mein-.",
+            "Bruder maskulin."
+          ],
+          "feedback": "Richtig: mein."
+        },
+        {
+          "id": "t4",
+          "title": "Aufgabe T4",
+          "type": "fill_blank",
+          "prompt": "Frau Weber, ist das ___ Tasche?",
+          "accepted": [
+            "Ihre"
+          ],
+          "hints": [
+            "Formelle Anrede.",
+            "Sie → Ihr-; Tasche feminin → Ihre."
+          ],
+          "feedback": "Richtig: Ihre."
+        },
+        {
+          "id": "t5",
+          "title": "Aufgabe T5",
+          "type": "fill_blank",
+          "prompt": "Wer/Wen/Wem: ___ hilfst du?",
+          "accepted": [
+            "Wem"
+          ],
+          "hints": [
+            "helfen + Dativ.",
+            "Dativfrage → Wem."
+          ],
+          "feedback": "Richtig: Wem."
+        },
+        {
+          "id": "t6",
+          "title": "Aufgabe T6",
+          "type": "fill_blank",
+          "prompt": "Wer/Wen/Wem: ___ besuchst du?",
+          "accepted": [
+            "Wen"
+          ],
+          "hints": [
+            "besuchen + Akkusativ.",
+            "Akkusativfrage → Wen."
+          ],
+          "feedback": "Richtig: Wen."
+        },
+        {
+          "id": "t7",
+          "title": "Aufgabe T7",
+          "type": "fill_blank",
+          "prompt": "___ sagt, dass man hier gut essen kann. (allgemein)",
+          "accepted": [
+            "Man"
+          ],
+          "hints": [
+            "Allgemeine Person(en).",
+            "Nicht „Mann“."
+          ],
+          "feedback": "Richtig: Man."
+        },
+        {
+          "id": "t8",
+          "title": "Aufgabe T8",
+          "type": "fill_blank",
+          "prompt": "Ich sehe ___. (keine Sache)",
+          "accepted": [
+            "nichts"
+          ],
+          "hints": [
+            "keine Sache = nichts.",
+            "Kein Nomen folgt."
+          ],
+          "feedback": "Richtig: nichts."
+        },
+        {
+          "id": "t9",
+          "title": "Aufgabe T9",
+          "type": "short_answer",
+          "prompt": "Korrigiere: „Mann spricht hier Deutsch.“",
+          "accepted": [
+            "Man spricht hier Deutsch."
+          ],
+          "hints": [
+            "Hier ist das unpersönliche Pronomen gemeint.",
+            "man ≠ Mann."
+          ],
+          "feedback": "Richtig: Man spricht hier Deutsch."
+        },
+        {
+          "id": "t10",
+          "title": "Aufgabe T10",
+          "type": "short_answer",
+          "prompt": "Ich gebe dem Kind das Buch. → Ersetze beide Objekte.",
+          "accepted": [
+            "Ich gebe es ihm."
+          ],
+          "hints": [
+            "das Buch → es; dem Kind → ihm.",
+            "Bei zwei Pronomen: Akkusativ vor Dativ."
+          ],
+          "feedback": "Richtig: Ich gebe es ihm."
+        },
+        {
+          "id": "t11",
+          "title": "Aufgabe T11",
+          "type": "fill_blank",
+          "prompt": "___ Mann hier ist mein Lehrer. (dieser)",
+          "accepted": [
+            "Dieser"
+          ],
+          "hints": [
+            "Maskulin Nominativ.",
+            "dieser Mann."
+          ],
+          "feedback": "Richtig: Dieser."
+        },
+        {
+          "id": "t12",
+          "title": "Aufgabe T12",
+          "type": "fill_blank",
+          "prompt": "___ Bücher dort sind neu. (dieser)",
+          "accepted": [
+            "Diese"
+          ],
+          "hints": [
+            "Plural Nominativ.",
+            "diese Bücher."
+          ],
+          "feedback": "Richtig: Diese."
+        },
+        {
+          "id": "t13",
+          "title": "Aufgabe T13",
+          "type": "choice",
+          "prompt": "Wähle die richtige Erklärung zu „mein Buch“ und „meins“.",
+          "accepted": [
+            "mein Buch = Possessivartikel + Nomen; meins = Possessivpronomen und ersetzt das Nomen."
+          ],
+          "hints": [
+            "Welche Form steht direkt vor einem Nomen?",
+            "„meins“ kann allein stehen."
+          ],
+          "feedback": "Richtig: „mein Buch“ enthält das Nomen; „meins“ ersetzt es.",
+          "options": [
+            "Beide Formen müssen immer direkt vor einem Nomen stehen.",
+            "mein Buch = Personalpronomen; meins = Possessivartikel vor einem Nomen.",
+            "mein Buch = Possessivartikel + Nomen; meins = Possessivpronomen und ersetzt das Nomen."
+          ],
+          "examples": [
+            {
+              "prompt": "Welche Zeitform hat „Ich lerne“?",
+              "answer": "Präsens",
+              "explanation": "Wähle eine passende Erklärung bzw. Kategorie."
+            }
+          ]
+        },
+        {
+          "id": "t14",
+          "title": "Aufgabe T14",
+          "type": "fill_blank",
+          "prompt": "Setze „jemand“ ein: ___ wartet draußen.",
+          "accepted": [
+            "Jemand"
+          ],
+          "hints": [
+            "Gesucht ist eine unbestimmte Person.",
+            "Am Satzanfang groß."
+          ],
+          "feedback": "Richtig: Jemand."
+        },
+        {
+          "id": "t15",
+          "title": "Aufgabe T15",
+          "type": "fill_blank",
+          "prompt": "Setze „niemand“ ein: ___ ist heute im Büro.",
+          "accepted": [
+            "Niemand"
+          ],
+          "hints": [
+            "Gesucht ist „keine Person“.",
+            "Am Satzanfang groß."
+          ],
+          "feedback": "Richtig: Niemand."
+        }
+      ]
+    }
+  ],
+  "passage": "Mira beginnt heute in einer neuen Firma. Ihr Chef begrüßt sie und zeigt ihr das Büro. „Dieser Schreibtisch ist deiner“, sagt er. Einige Kollegen sind schon da. Einer von ihnen bringt ihr einen Kaffee. Mira kennt noch niemanden, aber alle sind freundlich. Ein Kollege fragt sie: „Kann ich dir etwas erklären?“ Mira antwortet: „Danke, im Moment brauche ich nichts.“ Später stellt der Chef sie dem ganzen Team vor."
+}

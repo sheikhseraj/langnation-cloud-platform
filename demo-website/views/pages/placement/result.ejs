@@ -1,0 +1,109 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<%
+  // What a level actually means, in the terms a person recognises about
+  // themselves. A letter and a number tell a learner nothing; "you can
+  // handle everyday conversations" tells them whether it sounds right.
+  const CAN_DO = {
+    A1: {
+      en: "You can introduce yourself, ask and answer simple questions, and get by in very familiar situations — ordering, shopping, saying where you live.",
+      de: "Sie können sich vorstellen, einfache Fragen stellen und beantworten und sich in ganz vertrauten Situationen verständigen — bestellen, einkaufen, sagen, wo Sie wohnen.",
+    },
+    A2: {
+      en: "You can handle everyday exchanges: shopping, appointments, describing your background and daily routine in simple terms.",
+      de: "Sie kommen im Alltag zurecht: einkaufen, Termine machen, Ihre Herkunft und Ihren Tagesablauf einfach beschreiben.",
+    },
+    B1: {
+      en: "You can cope with most situations while travelling, describe experiences and give reasons for your opinions. This is the level most visas and Ausbildung places ask for.",
+      de: "Sie bewältigen die meisten Situationen auf Reisen, können Erlebnisse beschreiben und Meinungen begründen. Dieses Niveau verlangen die meisten Visa und Ausbildungsplätze.",
+    },
+    B2: {
+      en: "You can follow complex texts and technical discussion in your own field, and hold a conversation with native speakers without strain on either side.",
+      de: "Sie verstehen komplexe Texte und Fachdiskussionen in Ihrem Gebiet und können sich mit Muttersprachlern unterhalten, ohne dass es für eine Seite anstrengend wird.",
+    },
+    C1: {
+      en: "You use German fluently and spontaneously for academic and professional purposes, and pick up implicit meaning. This is the usual admission level for German universities.",
+      de: "Sie verwenden Deutsch fließend und spontan im Studium und Beruf und erfassen implizite Bedeutungen. Das ist das übliche Zulassungsniveau deutscher Hochschulen.",
+    },
+    C2: {
+      en: "You handle nuance, idiom and register with near-native precision, and can summarise complex argument from several sources convincingly.",
+      de: "Sie beherrschen Nuancen, Redewendungen und Register nahezu muttersprachlich und können komplexe Argumentationen aus mehreren Quellen überzeugend zusammenfassen.",
+    },
+  };
+  const canDo = (CAN_DO[level] || CAN_DO.A2)[lang] || CAN_DO[level].en;
+%>
+
+<section class="section-tight">
+  <div class="wrap pt-shell">
+
+    <div class="center" style="margin-bottom:1.5rem">
+      <div class="pt-level-badge"><%= level %></div>
+      <h1 style="margin-top:1rem"><%= lang === "de" ? "Ihr Niveau: " : "Your level: " %><%= level %></h1>
+    </div>
+
+    <p class="lead"><%= canDo %></p>
+
+    <%# The path, so the number is not a black box. Somebody can see
+        which levels they handled and where it stopped. %>
+    <div class="pt-path">
+      <% result.blocks.forEach(function (b) {
+           const passed = b.total && b.correct / b.total >= 0.45; %>
+        <span class="pt-step" <%= passed ? "data-passed" : "" %>><%= b.level %> · <%= b.correct %>/<%= b.total %></span>
+      <% }); %>
+    </div>
+
+    <div class="facts" style="margin-top:1.5rem">
+      <h3><%= lang === "de" ? "Ihr Test" : "Your test" %></h3>
+      <dl>
+        <div><dt><%= lang === "de" ? "Richtig" : "Correct" %></dt><dd><%= result.correct %>/<%= result.total %> (<%= result.percent %>%)</dd></div>
+        <div><dt><%= lang === "de" ? "Dauer" : "Time taken" %></dt><dd>~<%= result.minutes %> min</dd></div>
+        <div>
+          <dt><%= lang === "de" ? "Schreibaufgabe" : "Written task" %></dt>
+          <dd><%= wroteWords ? wroteWords + (lang === "de" ? " Wörter" : " words") : (lang === "de" ? "übersprungen" : "skipped") %></dd>
+        </div>
+      </dl>
+    </div>
+
+    <%# The honest caveat, and not in small print. Every serious school
+        confirms a placement in person; saying so builds more trust than
+        a confident number would. %>
+    <p class="notice" style="margin-top:1.5rem">
+      <% if (wroteWords) { %>
+        <%= lang === "de"
+          ? "Eine Lehrkraft liest jetzt Ihren Text und bestätigt das Niveau — oder korrigiert es, wenn Ihr Deutsch besser ist, als die Fragen zeigen konnten. Sie hören von uns per E-Mail."
+          : "A teacher will now read what you wrote and confirm this level — or adjust it, if your German is better than the questions could show. You will hear from us by email." %>
+      <% } else { %>
+        <%= lang === "de"
+          ? "Sie haben die Schreibaufgabe übersprungen, daher beruht dieses Niveau nur auf Multiple-Choice-Fragen. Es ist ein guter Ausgangspunkt, aber wir bestätigen es in Ihrer ersten Stunde."
+          : "You skipped the written task, so this level rests on multiple choice alone. It is a good starting point, but we will confirm it in your first lesson." %>
+      <% } %>
+    </p>
+
+    <% if (recommended && recommended.length) { %>
+      <h2 style="margin-top:2.5rem;font-size:1.2rem"><%= lang === "de" ? "Passende Kurse" : "Courses at this level" %></h2>
+      <div class="grid" style="margin-top:1rem">
+        <% recommended.forEach(function (c) { %>
+          <a class="card" href="<%= lp('/courses/' + c.slug) %>">
+            <div class="card-body">
+              <h3 style="font-size:1.05rem"><%= c.title %></h3>
+              <% if (c.summary) { %><p class="muted" style="font-size:.88rem"><%= c.summary %></p><% } %>
+              <div class="card-foot">
+                <% if (c.priceEur) { %><span class="price">€<%= c.priceEur %></span><% } %>
+                <span class="go"><%= lang === "de" ? "Ansehen" : "See the course" %> →</span>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <div class="row" style="gap:.6rem;margin-top:2rem;flex-wrap:wrap">
+      <a class="btn" href="<%= lp('/contact') %>"><%= lang === "de" ? "Beratung anfragen" : "Ask us about a course" %></a>
+      <a class="btn btn-ghost" href="<%= lp('/courses') %>"><%= lang === "de" ? "Alle Kurse" : "All courses" %></a>
+    </div>
+
+  </div>
+</section>
+
+<%- include("../../partials/footer") %>

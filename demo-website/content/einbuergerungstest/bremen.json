@@ -1,0 +1,215 @@
+[
+ {
+  "id": "bremen-1",
+  "number": 348,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Welches Wappen gehört zur Freien Hansestadt Bremen?",
+  "answers": [
+   "Bild 1",
+   "Bild 2",
+   "Bild 3",
+   "Bild 4"
+  ],
+  "correctAnswer": 2,
+  "image": {
+   "kind": "options",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/bremen-1-1.webp",
+     "w": 221,
+     "h": 252
+    },
+    {
+     "src": "/img/einbuergerungstest/bremen-1-2.webp",
+     "w": 196,
+     "h": 270
+    },
+    {
+     "src": "/img/einbuergerungstest/bremen-1-3.webp",
+     "w": 196,
+     "h": 281
+    },
+    {
+     "src": "/img/einbuergerungstest/bremen-1-4.webp",
+     "w": 196,
+     "h": 260
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bremen"
+ },
+ {
+  "id": "bremen-2",
+  "number": 342,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Welches ist ein Stadtteil von Bremen?",
+  "answers": [
+   "Altona",
+   "Hemelingen",
+   "Pankow",
+   "Babelsberg"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bremen"
+ },
+ {
+  "id": "bremen-3",
+  "number": 343,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Für wie viele Jahre wird das Landesparlament in Bremen gewählt?",
+  "answers": [
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-12",
+  "state": "Bremen"
+ },
+ {
+  "id": "bremen-4",
+  "number": 344,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Ab welchem Alter darf man in Bremen bei den Wahlen zur Bürgerschaft (Landtag) wählen?",
+  "answers": [
+   "14",
+   "16",
+   "18",
+   "20"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bremen"
+ },
+ {
+  "id": "bremen-5",
+  "number": 345,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Welche Farben hat die Landesflagge von Bremen?",
+  "answers": [
+   "blau-weiß-rot",
+   "rot-weiß",
+   "grün-weiß-rot",
+   "schwarz-gold"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bremen"
+ },
+ {
+  "id": "bremen-6",
+  "number": 346,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Wo können Sie sich in Bremen über politische Themen informieren?",
+  "answers": [
+   "beim Ordnungsamt der Gemeinde",
+   "bei der Landeszentrale für politische Bildung",
+   "bei den Kirchen",
+   "bei der Verbraucherzentrale"
+  ],
+  "correctAnswer": 1,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bremen"
+ },
+ {
+  "id": "bremen-7",
+  "number": 347,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Was ist ein deutscher Stadtstaat?",
+  "answers": [
+   "Bremen",
+   "München",
+   "Frankfurt",
+   "Erfurt"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bremen"
+ },
+ {
+  "id": "bremen-8",
+  "number": 341,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Welches Bundesland ist Bremen?",
+  "answers": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "correctAnswer": 0,
+  "image": {
+   "kind": "single",
+   "files": [
+    {
+     "src": "/img/einbuergerungstest/bremen-8.webp",
+     "w": 722,
+     "h": 605
+    }
+   ]
+  },
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bremen"
+ },
+ {
+  "id": "bremen-9",
+  "number": 349,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Wie nennt man die Regierungschefin/den Regierungschef des Stadtstaates Bremen?",
+  "answers": [
+   "Ministerpräsidentin/Ministerpräsident",
+   "Erste Bürgermeisterin/Erster Bürgermeister",
+   "Präsidentin/Präsident des Senates",
+   "Regierende Bürgermeisterin/Regierender Bürgermeister"
+  ],
+  "correctAnswer": 2,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-12",
+  "state": "Bremen"
+ },
+ {
+  "id": "bremen-10",
+  "number": 350,
+  "type": "state",
+  "category": "Bremen",
+  "question": "Welche Senatorin/welchen Senator hat Bremen nicht?",
+  "answers": [
+   "Senatorin/Senator für Außenbeziehungen",
+   "Finanzsenatorin/Finanzsenator",
+   "Justizsenatorin/Justizsenator",
+   "Innensenatorin/Innensenator"
+  ],
+  "correctAnswer": 0,
+  "image": null,
+  "source": "BAMF Gesamtfragenkatalog, Stand 2025-05-07",
+  "lastVerified": "2026-09-11",
+  "state": "Bremen"
+ }
+]
