@@ -56,21 +56,21 @@ This milestone therefore extended the platform from application functionality in
 
 The Milestone 10 design sketch should show the monitoring path from application services into CloudWatch and the governance path from AWS management activity into CloudTrail and the dedicated audit bucket.
 
-![Milestone 10 design sketch](../architecture/milestones/m10/design-sketch.png)
+![Milestone 10 design sketch](../architecture/milestones/M10/design-sketch.png)
 
 ### Final Milestone Architecture
 
 The final milestone architecture should show CloudWatch dashboards and alarms alongside the multi-Region CloudTrail audit path.
 
-![Milestone 10 final architecture](../architecture/milestones/m10/milestone-architecture.png)
+![Milestone 10 final architecture](../architecture/milestones/M10/milestone-architecture.png)
 
 ### Platform Design After Milestone 10
 
 This cumulative view should show the complete M1–M10 platform with monitoring and governance added around the application, database, RAG and edge layers.
 
-![Milestone 10 cumulative design sketch](../architecture/milestones/m10/design-sketch-platform.png)
+![Milestone 10 cumulative design sketch](../architecture/milestones/M10/design-sketch-platform.png)
 
-![Platform after Milestone 10](../architecture/milestones/m10/platform-after-m10.png)
+![Platform after Milestone 10](../architecture/milestones/M10/platform-after-m10.png)
 
 ---
 
