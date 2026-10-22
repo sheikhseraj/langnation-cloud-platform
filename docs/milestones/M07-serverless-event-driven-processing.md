@@ -70,21 +70,21 @@ Those capabilities are introduced in Milestone 8.
 
 The Milestone 7 design sketch should show how S3 events are routed through EventBridge into SQS and then consumed by Lambda, including the retry and DLQ path.
 
-![Milestone 7 design sketch](../architecture/milestones/m07/design-sketch.png)
+![Milestone 7 design sketch](../architecture/milestones/M07/design-sketch.png)
 
 ### Final Milestone Architecture
 
 The final milestone architecture should present the serverless event-processing pipeline in a clean implementation view.
 
-![Milestone 7 final architecture](../architecture/milestones/m07/milestone-architecture.png)
+![Milestone 7 final architecture](../architecture/milestones/M07/milestone-architecture.png)
 
 ### Platform Design After Milestone 7
 
 This cumulative view should show how the event-driven processing layer extends the existing M1–M6 platform.
 
-![Milestone 7 cumulative design sketch](../architecture/milestones/m07/design-sketch-platform.png)
+![Milestone 7 cumulative design sketch](../architecture/milestones/M07/design-sketch-platform.png)
 
-![Platform after Milestone 7](../architecture/milestones/m07/platform-after-m07.png)
+![Platform after Milestone 7](../architecture/milestones/M07/platform-after-m07.png)
 
 ---
 
