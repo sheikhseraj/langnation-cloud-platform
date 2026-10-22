@@ -400,3 +400,17 @@ output "db_restore_log_group_name" {
   description = "CloudWatch log group used by database restore tasks"
   value       = module.database_restore.cloudwatch_log_group_name
 }
+
+# ============================================================
+# Milestone 10 - Monitoring Outputs
+# ============================================================
+
+output "monitoring_dashboard_name" {
+  description = "CloudWatch operations dashboard name"
+  value       = module.monitoring.dashboard_name
+}
+
+output "monitoring_alarm_names" {
+  description = "CloudWatch operational alarm names"
+  value       = module.monitoring.alarm_names
+}

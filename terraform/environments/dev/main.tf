@@ -429,3 +429,62 @@ module "authentication" {
   project_name = var.project_name
   environment  = var.environment
 }
+
+# ============================================================
+# Milestone 10
+# Monitoring & Operational Observability
+# ============================================================
+
+module "monitoring" {
+
+  source = "../../modules/monitoring"
+
+  project_name = var.project_name
+  environment  = var.environment
+  aws_region   = var.aws_region
+
+
+  # ----------------------------------------------------------
+  # ECS
+  # ----------------------------------------------------------
+
+  ecs_cluster_name = module.container.ecs_cluster_name
+  ecs_service_name = module.container.ecs_service_name
+
+
+  # ----------------------------------------------------------
+  # Application Load Balancer
+  # ----------------------------------------------------------
+
+  alb_arn          = module.load_balancing.alb_arn
+  target_group_arn = module.load_balancing.target_group_arn
+
+
+  # ----------------------------------------------------------
+  # RDS MariaDB
+  # ----------------------------------------------------------
+
+  db_instance_id = module.database.db_instance_id
+
+
+  # ----------------------------------------------------------
+  # Lambda Document Processor
+  # ----------------------------------------------------------
+
+  lambda_function_name = module.event_processing.document_processor_function_name
+
+
+  # ----------------------------------------------------------
+  # SQS / DLQ
+  # ----------------------------------------------------------
+
+  document_queue_arn = module.event_processing.document_queue_arn
+  document_dlq_arn   = module.event_processing.document_dlq_arn
+
+
+  # ----------------------------------------------------------
+  # CloudFront
+  # ----------------------------------------------------------
+
+  cloudfront_distribution_id = module.edge.cloudfront_distribution_id
+}
