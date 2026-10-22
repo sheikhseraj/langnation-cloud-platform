@@ -17,6 +17,11 @@ variable "aws_region" {
   type        = string
 }
 
+variable "aws_account_id" {
+  description = "AWS account ID discovered dynamically by Terraform"
+  type        = string
+}
+
 
 # ============================================================
 # ECS Container Configuration
@@ -123,11 +128,45 @@ variable "force_delete" {
 
 
 # ============================================================
+# Milestone 9 - LangNation MariaDB Runtime
+# ============================================================
+#
+# These values are supplied dynamically from the database
+# Terraform module.
+#
+# No RDS endpoint, username, password, or Secret ARN is
+# hard-coded in the container module.
+# ============================================================
+
+variable "db_host" {
+  description = "RDS MariaDB hostname used by the LangNation application"
+  type        = string
+}
+
+variable "db_port" {
+  description = "RDS MariaDB port"
+  type        = number
+}
+
+variable "db_name" {
+  description = "LangNation application database name"
+  type        = string
+}
+
+variable "db_master_secret_arn" {
+  description = "Secrets Manager ARN containing the RDS master username and password"
+  type        = string
+}
+
+
+# ============================================================
 # Milestone 9 - Lina AI / RAG Runtime
 # ============================================================
 
-# Titan Text Embeddings V2 model used to convert
-# student questions into 1024-dimensional vectors.
+# ------------------------------------------------------------
+# Titan Text Embeddings V2
+# ------------------------------------------------------------
+
 variable "bedrock_embedding_model_id" {
   description = "Amazon Bedrock embedding model used by Lina for semantic search"
   type        = string
@@ -135,24 +174,37 @@ variable "bedrock_embedding_model_id" {
 }
 
 
-# Name of the S3 Vector bucket created in Milestone 8.
+# ------------------------------------------------------------
+# Lina Grounded Answer Generation
+# ------------------------------------------------------------
+
+variable "bedrock_chat_model_id" {
+  description = "Amazon Bedrock inference profile used by Lina for grounded answer generation"
+  type        = string
+  default     = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+}
+
+variable "bedrock_chat_foundation_model_id" {
+  description = "Underlying Bedrock foundation model used by the Lina inference profile"
+  type        = string
+  default     = "anthropic.claude-haiku-4-5-20251001-v1:0"
+}
+
+
+# ------------------------------------------------------------
+# S3 Vector Knowledge Store
+# ------------------------------------------------------------
+
 variable "vector_bucket_name" {
   description = "Name of the Amazon S3 Vector bucket containing LangNation knowledge vectors"
   type        = string
 }
 
-
-# Name of the vector index inside the S3 Vector bucket.
 variable "vector_index_name" {
   description = "Name of the Amazon S3 Vector index queried by Lina"
   type        = string
 }
 
-
-# ARN of the vector index.
-#
-# Used by the ECS task IAM policy so Lina receives
-# least-privilege access only to the LangNation knowledge index.
 variable "vector_index_arn" {
   description = "ARN of the Amazon S3 Vector index queried by the Lina RAG runtime"
   type        = string

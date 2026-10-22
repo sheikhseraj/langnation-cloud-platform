@@ -47,6 +47,7 @@ resource "aws_ecs_cluster" "main" {
 # Responsibilities:
 # - Pull container image from ECR
 # - Send container logs to CloudWatch
+# - Retrieve RDS credentials from Secrets Manager
 # - Start the ECS/Fargate task
 #
 # The application does NOT use this role to access Bedrock
@@ -87,6 +88,53 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 
 
 # ============================================================
+# Milestone 9 - RDS Secret Injection
+# ============================================================
+#
+# ECS itself needs permission to retrieve the database secret
+# before starting the application container.
+#
+# The RDS-managed Secrets Manager secret contains:
+#
+# - username
+# - password
+#
+# ECS injects these values into the application as:
+#
+# - DB_USER
+# - DB_PASSWORD
+#
+# No database password is stored in Terraform source,
+# GitHub, the Docker image, or application source code.
+# ============================================================
+
+resource "aws_iam_role_policy" "ecs_task_execution_database_secret" {
+  name = "${var.project_name}-${var.environment}-database-secret"
+
+  role = aws_iam_role.ecs_task_execution.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Sid    = "ReadApplicationDatabaseSecret"
+        Effect = "Allow"
+
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+
+        Resource = [
+          var.db_master_secret_arn
+        ]
+      }
+    ]
+  })
+}
+
+
+# ============================================================
 # Milestone 9 - ECS Application Task Role
 # ============================================================
 #
@@ -95,11 +143,13 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 #
 # Lina uses this role to:
 #
-# 1. Invoke Amazon Bedrock Titan Text Embeddings V2
+# 1. Invoke Amazon Titan Text Embeddings V2
 # 2. Query the LangNation S3 Vector index
 # 3. Retrieve vector metadata such as source_text
+# 4. Invoke Claude Haiku 4.5 for grounded Lina answers
 #
-# This is intentionally separate from the ECS execution role.
+# This role is intentionally separate from the ECS
+# infrastructure execution role.
 # ============================================================
 
 resource "aws_iam_role" "ecs_task" {
@@ -130,6 +180,27 @@ resource "aws_iam_role" "ecs_task" {
 # ============================================================
 # Milestone 9 - Lina RAG Runtime IAM Policy
 # ============================================================
+#
+# Lina runtime:
+#
+# Student question
+#      |
+#      v
+# Titan Text Embeddings V2
+#      |
+#      v
+# S3 Vectors similarity search
+#      |
+#      v
+# Relevant LangNation context
+#      |
+#      v
+# Claude Haiku 4.5
+#      |
+#      v
+# Grounded Lina answer
+#
+# ============================================================
 
 resource "aws_iam_role_policy" "ecs_task_rag" {
   name = "${var.project_name}-${var.environment}-lina-rag-runtime"
@@ -142,8 +213,9 @@ resource "aws_iam_role_policy" "ecs_task_rag" {
     Statement = [
 
       # --------------------------------------------------------
-      # Generate embeddings using Amazon Bedrock
+      # Generate embeddings using Amazon Titan
       # --------------------------------------------------------
+
       {
         Sid    = "InvokeTitanEmbeddingModel"
         Effect = "Allow"
@@ -157,9 +229,72 @@ resource "aws_iam_role_policy" "ecs_task_rag" {
         ]
       },
 
+
+      # --------------------------------------------------------
+      # Invoke the geographic inference profile used by Lina
+      # --------------------------------------------------------
+      #
+      # No AWS account ID is hard-coded.
+      #
+      # Terraform receives aws_account_id dynamically from:
+      #
+      # data.aws_caller_identity.current.account_id
+      #
+      # --------------------------------------------------------
+
+      {
+        Sid    = "InvokeLinaChatInferenceProfile"
+        Effect = "Allow"
+
+        Action = [
+          "bedrock:InvokeModel"
+        ]
+
+        Resource = [
+          "arn:aws:bedrock:${var.aws_region}:${var.aws_account_id}:inference-profile/${var.bedrock_chat_model_id}"
+        ]
+      },
+
+
+      # --------------------------------------------------------
+      # Allow the inference profile to invoke its underlying
+      # Claude Haiku 4.5 foundation model.
+      #
+      # The Region is intentionally not hard-coded because a
+      # geographic inference profile can route the request to
+      # supported destination Regions.
+      #
+      # Permission remains restricted to:
+      #
+      # - one foundation model
+      # - one Lina inference profile
+      #
+      # --------------------------------------------------------
+
+      {
+        Sid    = "InvokeLinaChatFoundationModel"
+        Effect = "Allow"
+
+        Action = [
+          "bedrock:InvokeModel"
+        ]
+
+        Resource = [
+          "arn:aws:bedrock:*::foundation-model/${var.bedrock_chat_foundation_model_id}"
+        ]
+
+        Condition = {
+          StringEquals = {
+            "bedrock:InferenceProfileArn" = "arn:aws:bedrock:${var.aws_region}:${var.aws_account_id}:inference-profile/${var.bedrock_chat_model_id}"
+          }
+        }
+      },
+
+
       # --------------------------------------------------------
       # Query the LangNation S3 Vector knowledge index
       # --------------------------------------------------------
+
       {
         Sid    = "QueryLangNationVectorIndex"
         Effect = "Allow"
@@ -206,20 +341,23 @@ resource "aws_ecs_task_definition" "app" {
   cpu    = var.task_cpu
   memory = var.task_memory
 
+
   # ----------------------------------------------------------
   # ECS infrastructure role
   # ----------------------------------------------------------
 
   execution_role_arn = aws_iam_role.ecs_task_execution.arn
 
+
   # ----------------------------------------------------------
-  # Milestone 9
+  # Application runtime role
+  # ----------------------------------------------------------
   #
-  # Application runtime role.
-  #
-  # Node.js AWS SDK automatically receives temporary
+  # The Node.js AWS SDK automatically receives temporary
   # credentials for this role through the ECS task metadata
   # endpoint.
+  #
+  # No AWS access keys are stored in the application.
   # ----------------------------------------------------------
 
   task_role_arn = aws_iam_role.ecs_task.arn
@@ -258,12 +396,38 @@ resource "aws_ecs_task_definition" "app" {
 
 
         # ----------------------------------------------------
-        # Milestone 9 - AWS Runtime Configuration
+        # AWS Runtime Configuration
         # ----------------------------------------------------
 
         {
           name  = "AWS_REGION"
           value = var.aws_region
+        },
+
+
+        # ----------------------------------------------------
+        # Milestone 9 - LangNation MariaDB Configuration
+        # ----------------------------------------------------
+        #
+        # These values come dynamically from the RDS
+        # Terraform module.
+        #
+        # No RDS endpoint is hard-coded.
+        # ----------------------------------------------------
+
+        {
+          name  = "DB_HOST"
+          value = var.db_host
+        },
+
+        {
+          name  = "DB_PORT"
+          value = tostring(var.db_port)
+        },
+
+        {
+          name  = "DB_NAME"
+          value = var.db_name
         },
 
 
@@ -274,6 +438,16 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "BEDROCK_EMBEDDING_MODEL_ID"
           value = var.bedrock_embedding_model_id
+        },
+
+
+        # ----------------------------------------------------
+        # Milestone 9 - Lina Answer Model
+        # ----------------------------------------------------
+
+        {
+          name  = "BEDROCK_CHAT_MODEL_ID"
+          value = var.bedrock_chat_model_id
         },
 
 
@@ -289,6 +463,36 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "VECTOR_INDEX_NAME"
           value = var.vector_index_name
+        }
+      ]
+
+
+      # ======================================================
+      # Database Credentials from AWS Secrets Manager
+      # ======================================================
+      #
+      # Terraform passes only the Secret ARN.
+      #
+      # ECS retrieves:
+      #
+      # username -> DB_USER
+      # password -> DB_PASSWORD
+      #
+      # at container startup.
+      #
+      # The actual values are never stored in this task
+      # definition source file.
+      # ======================================================
+
+      secrets = [
+        {
+          name      = "DB_USER"
+          valueFrom = "${var.db_master_secret_arn}:username::"
+        },
+
+        {
+          name      = "DB_PASSWORD"
+          valueFrom = "${var.db_master_secret_arn}:password::"
         }
       ]
 
@@ -368,9 +572,19 @@ resource "aws_ecs_service" "app" {
   # ==========================================================
   # Dependencies
   # ==========================================================
+  #
+  # Ensure that:
+  #
+  # 1. Standard ECS execution permissions exist
+  # 2. ECS can retrieve the RDS secret
+  # 3. Lina runtime permissions exist
+  #
+  # before the ECS service starts.
+  # ==========================================================
 
   depends_on = [
     aws_iam_role_policy_attachment.ecs_task_execution,
+    aws_iam_role_policy.ecs_task_execution_database_secret,
     aws_iam_role_policy.ecs_task_rag
   ]
 

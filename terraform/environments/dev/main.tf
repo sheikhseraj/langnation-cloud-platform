@@ -14,6 +14,7 @@ module "networking" {
   environment  = var.environment
 }
 
+
 # ============================================================
 # Security
 # ============================================================
@@ -27,6 +28,7 @@ module "security" {
   environment  = var.environment
 }
 
+
 # ============================================================
 # Container Platform
 # ============================================================
@@ -38,9 +40,21 @@ module "container" {
   environment  = var.environment
   aws_region   = var.aws_region
 
-  # Disposable development environment:
-  # allow ECR cleanup during destroy
+  # AWS account identity is discovered dynamically.
+  # No AWS account ID is hard-coded.
+  aws_account_id = data.aws_caller_identity.current.account_id
+
+
+  # ==========================================================
+  # Disposable Development Environment
+  # ==========================================================
+  #
+  # The training sandbox is destroyed/recreated regularly.
+  # Allow Terraform to clean up the ECR repository.
+  # ==========================================================
+
   force_delete = true
+
 
   # ==========================================================
   # Networking
@@ -61,13 +75,75 @@ module "container" {
 
 
   # ==========================================================
-  # Milestone 9 - Lina AI / RAG Runtime
+  # Milestone 9 - LangNation MariaDB Runtime
+  # ==========================================================
+  #
+  # All database connection information comes dynamically
+  # from the RDS Terraform module.
+  #
+  # No RDS hostname, port, database credentials, or secret ARN
+  # is hard-coded.
   # ==========================================================
 
-  # Amazon Bedrock model used to create query embeddings.
+  db_host = module.database.db_endpoint
+  db_port = module.database.db_port
+  db_name = module.database.db_name
+
+  # The RDS master credentials are managed by AWS Secrets
+  # Manager and injected into ECS at task startup.
+  db_master_secret_arn = module.database.db_master_secret_arn
+
+
+  # ==========================================================
+  # Milestone 9 - Lina AI / RAG Runtime
+  # ==========================================================
+  #
+  # Flow:
+  #
+  # Student question
+  #      |
+  #      v
+  # Titan Text Embeddings V2
+  #      |
+  #      v
+  # S3 Vectors similarity search
+  #      |
+  #      v
+  # Relevant LangNation context
+  #      |
+  #      v
+  # Claude Haiku 4.5
+  #      |
+  #      v
+  # Grounded Lina response
+  #
+  # ==========================================================
+
+
+  # ----------------------------------------------------------
+  # Query Embedding Model
+  # ----------------------------------------------------------
+
   bedrock_embedding_model_id = "amazon.titan-embed-text-v2:0"
 
-  # Reuse the S3 Vector infrastructure created in Milestone 8.
+
+  # ----------------------------------------------------------
+  # Lina Answer Generation Model
+  # ----------------------------------------------------------
+  #
+  # The application invokes Claude Haiku 4.5 through the
+  # Bedrock US inference profile.
+  # ----------------------------------------------------------
+
+  bedrock_chat_model_id = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+
+  bedrock_chat_foundation_model_id = "anthropic.claude-haiku-4-5-20251001-v1:0"
+
+
+  # ----------------------------------------------------------
+  # Milestone 8 S3 Vector Knowledge Store
+  # ----------------------------------------------------------
+
   vector_bucket_name = module.rag_knowledge.vector_bucket_name
   vector_index_name  = module.rag_knowledge.vector_index_name
   vector_index_arn   = module.rag_knowledge.vector_index_arn
@@ -77,7 +153,7 @@ module "container" {
   # ECS Capacity
   # ==========================================================
 
-  # Development environment runs two ECS tasks
+  # Development environment runs two ECS tasks.
   desired_count = 2
 
   # Temporary Controlled Auto Scaling Test
@@ -87,12 +163,23 @@ module "container" {
   # ==========================================================
   # Dependencies
   # ==========================================================
+  #
+  # The application task requires:
+  #
+  # - ALB target group
+  # - MariaDB RDS
+  # - RAG vector infrastructure
+  #
+  # before ECS can be fully configured.
+  # ==========================================================
 
   depends_on = [
     module.load_balancing,
+    module.database,
     module.rag_knowledge
   ]
 }
+
 
 # ============================================================
 # Load Balancing
@@ -112,6 +199,7 @@ module "load_balancing" {
   health_check_path = "/health"
 }
 
+
 # ============================================================
 # CI/CD
 # ============================================================
@@ -128,18 +216,27 @@ module "cicd" {
   github_repository_id = var.github_repository_id
   github_branch        = var.github_branch
 
-  # Application deployment
+
+  # ==========================================================
+  # Application Deployment
+  # ==========================================================
+
   ecr_repository_arn          = module.container.ecr_repository_arn
   ecs_cluster_arn             = module.container.ecs_cluster_arn
   ecs_service_name            = module.container.ecs_service_name
   ecs_task_role_arn           = module.container.ecs_task_role_arn
   ecs_task_execution_role_arn = module.container.ecs_task_execution_role_arn
 
-  # Milestone 9 - Reproducible database restore
+
+  # ==========================================================
+  # Milestone 9 - Reproducible Database Restore
+  # ==========================================================
+
   db_restore_ecr_repository_arn  = module.database_restore.ecr_repository_arn
   db_restore_task_definition_arn = module.database_restore.task_definition_arn
   db_restore_execution_role_arn  = module.database_restore.execution_role_arn
 }
+
 
 # ============================================================
 # Database
@@ -155,14 +252,20 @@ module "database" {
   db_security_group_id  = module.security.db_security_group_id
 }
 
+
 # ============================================================
 # Milestone 9 - Reproducible Database Restore
 # ============================================================
 #
-# Creates the dedicated ECR repository, CloudWatch logs,
-# execution role, and one-off ECS task definition used to
-# restore the sanitized LangNation demo database after each
-# sandbox rebuild.
+# Creates:
+#
+# - Dedicated restore ECR repository
+# - CloudWatch log group
+# - ECS execution role
+# - One-off Fargate restore task definition
+#
+# The restore task imports the sanitized LangNation database
+# after every disposable sandbox rebuild.
 #
 # No AWS resource IDs are hard-coded.
 # ============================================================
@@ -174,22 +277,40 @@ module "database_restore" {
   environment  = var.environment
   aws_region   = var.aws_region
 
-  # Current RDS values are discovered dynamically from
-  # the database module after every sandbox rebuild.
+
+  # ----------------------------------------------------------
+  # Dynamic RDS Configuration
+  # ----------------------------------------------------------
+
   db_endpoint          = module.database.db_endpoint
   db_port              = module.database.db_port
   db_name              = module.database.db_name
   db_master_secret_arn = module.database.db_master_secret_arn
 
+
+  # ----------------------------------------------------------
+  # Restore Validation
+  # ----------------------------------------------------------
+
   expected_table_count = 58
 
-  # Training sandbox resources are disposable.
+
+  # ----------------------------------------------------------
+  # Disposable Sandbox
+  # ----------------------------------------------------------
+
   force_delete = true
+
+
+  # ----------------------------------------------------------
+  # Dependency
+  # ----------------------------------------------------------
 
   depends_on = [
     module.database
   ]
 }
+
 
 # ============================================================
 # Storage
@@ -202,9 +323,10 @@ module "storage" {
   environment  = var.environment
 
   # Disposable development environment:
-  # allow S3 cleanup during destroy
+  # allow S3 cleanup during destroy.
   force_destroy = true
 }
+
 
 # ============================================================
 # Milestone 8 - RAG Knowledge Vector Storage
@@ -218,8 +340,31 @@ module "rag_knowledge" {
   aws_account_id = data.aws_caller_identity.current.account_id
 }
 
+
 # ============================================================
-# Milestone 7 + Milestone 8 - Event-Driven Document Processing
+# Milestone 7 + Milestone 8
+# Event-Driven Document Processing
+# ============================================================
+#
+# Flow:
+#
+# S3 document upload
+#      |
+#      v
+# EventBridge
+#      |
+#      v
+# SQS
+#      |
+#      v
+# Lambda
+#      |
+#      v
+# Titan Embeddings
+#      |
+#      v
+# S3 Vectors
+#
 # ============================================================
 
 module "event_processing" {
@@ -228,18 +373,31 @@ module "event_processing" {
   project_name = var.project_name
   environment  = var.environment
 
-  # Source documents
+
+  # ----------------------------------------------------------
+  # Source Documents
+  # ----------------------------------------------------------
+
   storage_bucket_name = module.storage.bucket_name
   storage_bucket_arn  = module.storage.bucket_arn
 
-  # RAG vector storage
+
+  # ----------------------------------------------------------
+  # RAG Vector Storage
+  # ----------------------------------------------------------
+
   vector_bucket_name = module.rag_knowledge.vector_bucket_name
   vector_index_name  = module.rag_knowledge.vector_index_name
   vector_index_arn   = module.rag_knowledge.vector_index_arn
 
-  # Embedding model
+
+  # ----------------------------------------------------------
+  # Embedding Model
+  # ----------------------------------------------------------
+
   bedrock_embedding_model_id = "amazon.titan-embed-text-v2:0"
 }
+
 
 # ============================================================
 # Edge / HTTPS
@@ -259,6 +417,7 @@ module "edge" {
 
   alb_dns_name = module.load_balancing.alb_dns_name
 }
+
 
 # ============================================================
 # Authentication / Cognito
