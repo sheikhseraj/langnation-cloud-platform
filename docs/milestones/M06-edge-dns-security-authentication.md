@@ -1,33 +1,70 @@
 # LangNation Cloud Platform
 ## Milestone 6 — Edge, DNS, Security & Authentication
 
-**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS<br>
-**Course:** AWS Cloud Computing with AI Bootcamp<br>
-**Environment:** Development (`dev`)<br>
-**AWS Region:** `us-east-1`<br>
-**Public Capstone Endpoint:** `cloud.namienterprises.in`<br>
-**Infrastructure as Code:** Terraform<br>
+**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS  
+**Author:** Seraj Ahmad Siddiqui  
+**Course:** AWS Cloud Computing with AI Bootcamp  
+**Environment:** Development (`dev`)  
+**AWS Region:** `us-east-1`  
+**Public Capstone Endpoint:** `cloud.namienterprises.in`  
+**Infrastructure as Code:** Terraform  
+**Relevant Technologies / Services:** Amazon Route 53, Amazon CloudFront, AWS Certificate Manager, AWS WAF, Application Load Balancer, Amazon Cognito, AWS IAM, AWS STS, GitHub OIDC  
+**Remote State / Authoritative Plan & Apply:** HCP Terraform  
 **Status:** ✅ Complete
 
 ---
 
 ## 1. Objective
 
-Milestone 6 added the secure public edge and authentication layer to the LangNation platform.
+Milestone 6 added the secure public edge, persistent DNS and authentication layer to the LangNation Cloud Platform.
 
-The main goals were:
+The main goals were to:
 
 - keep the existing LangNation production domain untouched
-- use a separate experimental domain for the capstone
+- use a separate experimental hostname for the capstone
 - keep authoritative DNS persistent outside the disposable training sandbox
 - terminate public HTTPS at CloudFront
-- protect the edge with AWS WAF
+- protect the public edge with AWS WAF
 - prevent direct ALB bypass
 - add Cognito authentication
 - validate JWT-protected application access
 - extend recovery automation so DNS follows recreated CloudFront infrastructure
 
-This milestone turned the application from a publicly reachable ALB-backed service into a protected edge architecture with persistent DNS and authenticated API access.
+The public application path became:
+
+```text
+User
+  ↓
+Persistent Route 53
+  ↓
+CloudFront + ACM
+  ↓
+AWS WAF
+  ↓
+Application Load Balancer
+  ↓
+Private ECS Fargate
+  ↓
+Node.js application
+```
+
+Authentication adds:
+
+```text
+Client
+  ↓
+Amazon Cognito
+  ↓
+access token
+  ↓
+GET /protected
+  ↓
+JWT verification
+  ↓
+authorized response
+```
+
+This milestone transformed the application from a publicly reachable ALB-backed service into a protected edge architecture with persistent DNS and authenticated API access.
 
 ---
 
@@ -41,9 +78,13 @@ I recreated the Milestone 6 architecture in Excalidraw to understand the relatio
 
 ### Final Milestone Architecture
 
+The final milestone architecture shows the secure public edge, origin protection and authentication components introduced in Milestone 6.
+
 ![Milestone 6 final architecture](../architecture/milestones/m06/milestone-architecture.png)
 
 ### Platform Design After Milestone 6
+
+This cumulative view shows the platform after networking, containerization, load balancing, Auto Scaling, CI/CD, persistent data, secure edge services and authentication had been combined.
 
 ![Milestone 6 cumulative design sketch](../architecture/milestones/m06/design-sketch-platform.png)
 
@@ -51,7 +92,9 @@ I recreated the Milestone 6 architecture in Excalidraw to understand the relatio
 
 ---
 
-## 3. Final Public Request Path
+## 3. Public Edge Architecture
+
+The final public request path is:
 
 ```text
 User
@@ -71,23 +114,7 @@ Private ECS Fargate tasks
 Node.js application
 ```
 
-Authentication adds:
-
-```text
-Client
-  ↓
-Cognito
-  ↓
-access token
-  ↓
-GET /protected
-  ↓
-application verifies JWT
-  ↓
-authorized response
-```
-
-The platform still retains the earlier milestones:
+The platform still retains the capabilities introduced in earlier milestones:
 
 - Multi-AZ VPC
 - public, private-app and private-DB subnets
@@ -105,7 +132,7 @@ The platform still retains the earlier milestones:
 
 ## 4. Persistent DNS Strategy
 
-The training sandbox is disposable, but public DNS should remain stable.
+The training sandbox is disposable, but public DNS must remain stable.
 
 The design therefore separates:
 
@@ -117,17 +144,19 @@ Training sandbox AWS account
 → disposable CloudFront, WAF, ACM, ALB, ECS, RDS, S3, etc.
 ```
 
-This became an important architectural principle:
+This created an important architecture principle:
 
 > **Persistent DNS + disposable infrastructure**
 
-The experimental hostname used for the capstone is:
+The capstone hostname is:
 
 ```text
 cloud.namienterprises.in
 ```
 
 The existing root website and email DNS records were preserved when authoritative DNS moved to Route 53.
+
+This means the public hostname stays stable even when the underlying sandbox infrastructure is recreated.
 
 ---
 
@@ -158,7 +187,7 @@ new certificate reaches ISSUED
 
 Terraform uses an explicit certificate-validation dependency so CloudFront waits for ACM validation before using the certificate.
 
-### Viewer security
+### Viewer Security
 
 ```text
 HTTP
@@ -166,14 +195,19 @@ HTTP
 301 redirect
   ↓
 HTTPS
+```
 
-Minimum TLS:
+Minimum TLS policy:
+
+```text
 TLSv1.2_2021
 ```
 
+Public viewer traffic is therefore encrypted before reaching the application edge.
+
 ---
 
-## 6. CloudFront
+## 6. Amazon CloudFront
 
 CloudFront sits in front of the Application Load Balancer.
 
@@ -191,9 +225,9 @@ Cache policy: CachingDisabled
 Origin request policy: AllViewerExceptHostHeader
 ```
 
-Caching is disabled because the current application is a dynamic API and `/health` should represent the current runtime state.
+Caching is disabled because the current application behaves primarily as a dynamic API and `/health` should reflect current runtime state.
 
-### Important TLS boundary
+### TLS Boundary
 
 Public viewer traffic is encrypted to CloudFront.
 
@@ -205,7 +239,7 @@ CloudFront
 ALB
 ```
 
-This project does **not** claim end-to-end TLS between CloudFront and the ALB.
+The project therefore does **not** claim end-to-end TLS between CloudFront and the ALB.
 
 A future production-hardening option is HTTPS between CloudFront and the ALB.
 
@@ -213,7 +247,7 @@ A future production-hardening option is HTTPS between CloudFront and the ALB.
 
 ## 7. AWS WAF
 
-A CloudFront-scoped WAF Web ACL protects the edge.
+A CloudFront-scoped AWS WAF Web ACL protects the public edge.
 
 Rules include:
 
@@ -228,7 +262,7 @@ The per-IP rate rule uses a limit of:
 1000 requests
 ```
 
-### Functional validation
+### Functional Validation
 
 Normal request:
 
@@ -237,14 +271,14 @@ GET /health
 → HTTP 200
 ```
 
-Controlled suspicious/XSS-style request:
+Controlled suspicious / XSS-style request:
 
 ```text
 GET /health?test=<script>...</script>
 → HTTP 403
 ```
 
-This verified that WAF was actively filtering traffic, not merely attached to the distribution.
+This proved that WAF was actively filtering traffic rather than being attached without functional validation.
 
 ---
 
@@ -266,7 +300,7 @@ The ALB security group was therefore restricted to the AWS-managed CloudFront or
 com.amazonaws.global.cloudfront.origin-facing
 ```
 
-Validated prefix list:
+Validated prefix list during the milestone:
 
 ```text
 pl-3b927c52
@@ -281,7 +315,7 @@ Source: CloudFront origin-facing managed prefix list
 Public CIDR: none
 ```
 
-The old public HTTPS rule was removed because CloudFront currently reaches the ALB over HTTP port 80.
+The previous public HTTPS rule was removed because CloudFront currently reaches the ALB over HTTP port 80.
 
 ### Validation
 
@@ -299,11 +333,11 @@ http://<alb-dns>/health
 → timeout / blocked
 ```
 
-This proved that the ALB could no longer be used to bypass CloudFront and WAF.
+This proved that users could no longer bypass CloudFront and WAF by calling the ALB DNS name directly.
 
 ---
 
-## 9. Cognito Authentication
+## 9. Amazon Cognito Authentication
 
 Milestone 6 introduced a dedicated authentication module.
 
@@ -330,7 +364,7 @@ The browser-style app client uses:
 generate_secret = false
 ```
 
-Supported flows include:
+Supported authentication flows include:
 
 ```text
 ALLOW_USER_SRP_AUTH
@@ -379,7 +413,7 @@ ECS task definition
 Node.js application
 ```
 
-These values are identifiers rather than secret credentials, so normal ECS environment variables are appropriate.
+These values identify AWS resources but are not secret credentials, so normal ECS environment variables are appropriate.
 
 Passwords, access tokens and refresh tokens are not stored in Terraform.
 
@@ -415,7 +449,7 @@ JWT validation checks include:
 - expected app client ID
 - token expiration
 
-### Functional tests
+### Functional Tests
 
 Public health:
 
@@ -462,7 +496,7 @@ Milestone 6 also strengthened the GitHub Actions deployment checks.
 
 The earlier pipeline could report a transient ECS deployment failure even though ECS later converged to the correct healthy state.
 
-The current sequence is:
+The hardened sequence is:
 
 ```text
 Build Docker image
@@ -486,7 +520,9 @@ discover CloudFront distribution
 GET /health through CloudFront
 ```
 
-This validates the final service state rather than relying only on one transient deployment identifier.
+This validates the final service state rather than relying only on one transient deployment indicator.
+
+Public health verification now occurs through CloudFront instead of directly through the ALB because the ALB is intentionally no longer publicly bypassable.
 
 ---
 
@@ -496,7 +532,11 @@ The nightly sandbox cleanup means edge resources such as CloudFront and ACM can 
 
 The recovery workflow therefore also handles public DNS.
 
-**Operational prerequisite:** the neue-fische training sandbox must be activated manually before AWS API access is available. The scheduled workflow can trigger automatically, but it cannot activate the educational sandbox. Once the sandbox session is active, the remaining recovery sequence is automated.
+**Operational prerequisite:** the neue-fische training sandbox must be activated manually before AWS API access is available.
+
+The scheduled workflow can trigger automatically, but it cannot activate the educational sandbox itself.
+
+Once the sandbox session is active, the remaining recovery sequence is automated.
 
 ### Schedule
 
@@ -507,7 +547,7 @@ The recovery workflow therefore also handles public DNS.
 
 The fallback skips the rebuild when the endpoint is already healthy.
 
-### Recovery flow
+### Recovery Flow
 
 ```text
 Manual: activate training sandbox
@@ -535,9 +575,11 @@ A dedicated cross-account GitHub OIDC role is restricted to the Route 53 operati
 
 No long-lived personal AWS access keys are stored in GitHub.
 
-### Validation status
+### Validation Status
 
-Before activation, recovery attempts produced explicit-deny errors because the training sandbox session was inactive. After manually activating the sandbox, a complete `workflow_dispatch` run was validated successfully:
+Before activation, recovery attempts produced explicit-deny errors because the training sandbox session was inactive.
+
+After manually activating the sandbox, a complete `workflow_dispatch` run was validated successfully:
 
 ```text
 Check Whether Recovery Is Needed   PASS
@@ -546,15 +588,17 @@ Restore LangNation Application     PASS
 Sync Persistent Route 53 DNS       PASS
 ```
 
-The scheduled primary/fallback behavior is implemented. Both schedules still depend on an active training-sandbox session; sandbox activation itself remains manual. Observing additional real scheduled runs remains useful ongoing operational evidence rather than a missing implementation requirement.
+The primary/fallback schedule is implemented.
 
-For the full recovery design, see:
+Both schedules still depend on an active training-sandbox session; sandbox activation itself remains manual.
+
+For the complete operational recovery design, see:
 
 [OP01 — Automated Morning Sandbox Recovery](../operations/OP01-automated-morning-sandbox-recovery.md)
 
 ---
 
-## 14. Terraform Modules Added / Extended
+## 14. Terraform Structure
 
 Milestone 6 introduced or extended infrastructure for:
 
@@ -579,11 +623,118 @@ CI/CD / recovery
 → cross-account Route 53 update
 ```
 
-The result remains reproducible through Terraform and GitHub Actions rather than manual console configuration.
+The resulting architecture remains reproducible through Terraform and GitHub Actions rather than depending on manual console configuration.
+
+The modules exchange identifiers and outputs rather than depending on hard-coded disposable AWS resource IDs.
 
 ---
 
-## 15. Validation
+## 15. Implementation Summary
+
+1. selected a separate capstone hostname
+2. preserved the existing production-domain and email DNS records
+3. kept authoritative DNS in a persistent Route 53 hosted zone
+4. created the ACM certificate for the capstone hostname
+5. configured DNS-based ACM validation
+6. created the CloudFront distribution
+7. configured HTTP-to-HTTPS redirect
+8. configured `TLSv1.2_2021`
+9. used the ALB as the CloudFront origin
+10. disabled caching for the dynamic application
+11. created the CloudFront-scoped AWS WAF Web ACL
+12. attached the AWS managed common rule set
+13. configured the per-IP rate rule
+14. validated WAF with a controlled suspicious request
+15. restricted ALB ingress to the CloudFront origin-facing managed prefix list
+16. verified that direct public ALB access was blocked
+17. created the Cognito User Pool
+18. created the browser-style Cognito App Client
+19. passed Cognito identifiers into ECS
+20. added JWT verification to the Node.js application
+21. validated public `/health`
+22. validated unauthorized `/protected` access
+23. validated authorized `/protected` access with a Cognito token
+24. hardened deployment verification through CloudFront
+25. extended morning recovery to discover recreated CloudFront infrastructure
+26. added cross-account Route 53 synchronization through OIDC
+27. validated complete recovery after manually activating the sandbox
+
+---
+
+## 16. Useful Commands and Validation Checks
+
+### Public Health Check
+
+```text
+GET https://cloud.namienterprises.in/health
+```
+
+Expected result:
+
+```text
+HTTP 200
+```
+
+### Direct ALB Validation
+
+```text
+GET http://<alb-dns>/health
+```
+
+Expected after origin hardening:
+
+```text
+blocked / timeout
+```
+
+### Protected Endpoint Without Token
+
+```text
+GET /protected
+```
+
+Expected result:
+
+```text
+HTTP 401
+```
+
+### Protected Endpoint With Valid Cognito Access Token
+
+```text
+GET /protected
+Authorization: Bearer <access-token>
+```
+
+Expected result:
+
+```text
+HTTP 200
+```
+
+### ECS Stability Check Used by CI/CD
+
+```text
+aws ecs wait services-stable
+```
+
+### Recovery DNS Operation
+
+The recovery workflow performs a Route 53 UPSERT for:
+
+```text
+cloud.namienterprises.in
+```
+
+and waits until the Route 53 change reaches:
+
+```text
+INSYNC
+```
+
+---
+
+## 17. Validation
 
 ### DNS / HTTPS
 
@@ -614,51 +765,156 @@ The result remains reproducible through Terraform and GitHub Actions rather than
 - [x] `/protected` without JWT returns 401
 - [x] `/protected` with valid access token returns 200
 
-### Automation
+### CI/CD / Recovery
 
 - [x] GitHub deployment verifies CloudFront health
 - [x] cross-account Route 53 OIDC role works
-- [x] recovery workflow reads the recreated CloudFront domain
+- [x] recovery workflow reads recreated CloudFront domain
 - [x] Route 53 update reaches `INSYNC`
-- [x] manual full recovery workflow completed successfully
+- [x] manually triggered full recovery completed successfully after sandbox activation
 
 ---
 
-## 16. Problems and Solutions
+## 18. Controlled Security Tests
 
-### DNS delegation took time to propagate
+### WAF Functional Test
+
+Normal request:
+
+```text
+GET /health
+→ HTTP 200
+```
+
+Controlled suspicious request:
+
+```text
+GET /health?test=<script>...</script>
+→ HTTP 403
+```
+
+Observed result:
+
+```text
+Normal traffic
+→ allowed
+
+Controlled suspicious traffic
+→ blocked by WAF
+```
+
+### Direct-Origin Bypass Test
+
+CloudFront path:
+
+```text
+https://cloud.namienterprises.in/health
+→ HTTP 200
+```
+
+Direct ALB path:
+
+```text
+http://<alb-dns>/health
+→ blocked / timeout
+```
+
+This proved that the public edge controls could not be bypassed by calling the ALB directly.
+
+### Authentication Test
+
+```text
+/protected without access token
+→ HTTP 401
+
+/protected with valid Cognito access token
+→ HTTP 200
+```
+
+This proved that the application enforced JWT authorization rather than merely creating Cognito resources.
+
+---
+
+## 19. Problems and Solutions
+
+### Problem 1 — DNS Delegation Took Time to Propagate
 
 After changing nameservers, some public resolvers continued returning the previous nameservers for several hours.
 
-**Lesson:** normal DNS propagation should be allowed to complete before repeatedly changing delegation settings.
+**Cause:**  
+Normal DNS delegation propagation and resolver caching.
 
-### ACM ARN changed after sandbox cleanup
+**Resolution:**  
+Allow propagation to complete instead of repeatedly changing delegation settings.
 
-A hard-coded ACM ARN became invalid when the sandbox removed the certificate.
-
-**Fix:** rely on Terraform-managed dependencies and outputs rather than treating disposable-resource ARNs as persistent.
-
-### ECS deployment action reported a false failure
-
-One deployment action reported a failure even though ECS later converged to the correct Git SHA and healthy state.
-
-**Fix:** use independent ECS stability waiting plus exact image, task-count and public-health verification.
-
-### PowerShell AWS CLI shorthand parsing
-
-Compound AWS CLI arguments containing commas were initially parsed incorrectly.
-
-**Lesson:** quote compound shorthand values carefully in PowerShell or construct the full argument in a variable before passing it to the AWS CLI.
+**Lesson:**  
+DNS changes should be validated patiently across authoritative and recursive resolution paths before making additional changes.
 
 ---
 
-## 17. Security Decisions
+### Problem 2 — ACM ARN Changed After Sandbox Cleanup
 
-### Why persistent Route 53?
+A hard-coded ACM ARN became invalid when the sandbox removed the certificate.
+
+**Cause:**  
+ACM certificates inside the sandbox are disposable resources and receive new identifiers after recreation.
+
+**Fix:**  
+Use Terraform-managed dependencies and outputs instead of treating disposable ARNs as persistent configuration.
+
+**Lesson:**  
+Persistent automation should reference recreated infrastructure dynamically.
+
+---
+
+### Problem 3 — ECS Deployment Action Reported a False Failure
+
+One deployment action reported a failure even though ECS later converged to the correct Git SHA and healthy state.
+
+**Fix:**  
+Use independent ECS stability waiting plus exact image, task-count and public-health verification.
+
+**Lesson:**  
+The final AWS state is a stronger deployment signal than a single transient action result.
+
+---
+
+### Problem 4 — PowerShell AWS CLI Shorthand Parsing
+
+Compound AWS CLI arguments containing commas were initially parsed incorrectly.
+
+**Fix:**  
+Quote compound shorthand values carefully in PowerShell or construct the complete argument in a variable before passing it to the AWS CLI.
+
+**Lesson:**  
+Shell parsing behavior is part of reliable infrastructure automation and should be considered when translating AWS CLI examples between shells.
+
+---
+
+### Problem 5 — Recovery Failed While the Training Sandbox Was Inactive
+
+Automated recovery attempts received explicit-deny errors before the neue-fische training sandbox had been activated.
+
+**Cause:**  
+AWS API access for the educational sandbox is not available until the sandbox session is manually started.
+
+**Resolution:**  
+Treat sandbox activation as an external prerequisite. Once active, the automated recovery workflow handles the remaining infrastructure, deployment and DNS recovery steps.
+
+**Lesson:**  
+Automation boundaries should be documented clearly when an external system cannot be controlled programmatically.
+
+---
+
+## 20. Security Decisions
+
+### Why Persistent Route 53?
 
 DNS must survive nightly cleanup even when the workload does not.
 
-### Why CloudFront in front of ALB?
+Separating persistent DNS from the disposable sandbox keeps the public hostname stable.
+
+### Why CloudFront in Front of the ALB?
 
 CloudFront provides:
 
@@ -667,23 +923,27 @@ CloudFront provides:
 - a controlled public entry point
 - future caching possibilities for static content
 
-### Why block direct ALB access?
+### Why Block Direct ALB Access?
 
 Leaving the ALB publicly accessible would allow users to bypass CloudFront and WAF.
 
-### Why keep `/health` public?
+The ALB therefore accepts origin traffic only from the AWS-managed CloudFront origin-facing prefix list.
+
+### Why Keep `/health` Public?
 
 Infrastructure health checks and deployment validation require a non-authenticated health endpoint.
 
-### Why no Cognito client secret?
+### Why No Cognito Client Secret?
 
 A browser/public client cannot safely store a long-lived client secret.
 
-### Why Cognito IDs are normal environment variables
+### Why Cognito IDs Are Normal Environment Variables
 
 The User Pool ID and Client ID identify resources but are not credentials.
 
-### Why origin traffic remains HTTP
+Passwords and tokens remain outside Terraform configuration.
+
+### Why Origin Traffic Remains HTTP
 
 Viewer traffic is encrypted to CloudFront, and the ALB accepts origin traffic only from CloudFront addresses.
 
@@ -691,15 +951,9 @@ For this milestone, that provided a simpler edge design without claiming end-to-
 
 ---
 
-## 18. Cost Decisions
+## 21. Cost and Operational Decisions
 
-Milestone 6 introduces additional cost areas:
-
-- CloudFront requests and data transfer
-- AWS WAF Web ACL, rules and requests
-- Route 53 hosted zone and DNS queries
-- Cognito usage
-- CloudWatch metrics
+### CloudFront Price Class
 
 CloudFront uses:
 
@@ -707,11 +961,42 @@ CloudFront uses:
 PriceClass_100
 ```
 
-to limit the edge footprint and reduce cost for the capstone environment.
+This limits the edge footprint and reduces cost for the capstone environment.
+
+### AWS WAF
+
+Milestone 6 adds costs for:
+
+- Web ACL
+- managed rules
+- rate-based rule processing
+- requests
+
+The WAF cost is accepted because the milestone demonstrates an actively protected public edge.
+
+### Route 53
+
+The persistent hosted zone remains outside the disposable sandbox.
+
+This introduces a small continuing DNS cost, but it prevents nightly infrastructure cleanup from breaking the public hostname.
+
+### Cognito
+
+Cognito adds authentication capability without requiring the application to implement a complete identity store itself.
+
+### Dynamic Application Caching
+
+Caching is disabled because the current workload is dynamic and operational validation should observe live application behavior.
+
+### Manual Sandbox Activation
+
+Morning recovery is largely automated, but the training sandbox itself must still be activated manually.
+
+This is an operational limitation of the educational environment, not a missing step in the AWS recovery workflow.
 
 ---
 
-## 19. What I Learned
+## 22. What I Learned
 
 Milestone 6 gave me practical experience with:
 
@@ -732,11 +1017,15 @@ Milestone 6 gave me practical experience with:
 - automated DNS synchronization
 - recovery design for recreated edge infrastructure
 
-The most important architecture lesson was that recoverability is not only about recreating AWS resources. External dependencies such as DNS must also be designed so they remain stable while disposable infrastructure changes underneath them.
+The most important architecture lesson was that recoverability is not only about recreating AWS resources.
+
+External dependencies such as DNS must also be designed so they remain stable while disposable infrastructure changes underneath them.
+
+Another important lesson was that a security service should be functionally tested. WAF, origin restrictions and Cognito were validated through actual allow/deny behavior rather than only through resource existence.
 
 ---
 
-## 20. Result
+## 23. Result
 
 Milestone 6 completed the secure public-access layer:
 
@@ -754,7 +1043,29 @@ Private ECS Fargate
 Cognito JWT authorization
 ```
 
-The platform now has:
+Final milestone state:
+
+```text
+Persistent Route 53 DNS              ✅
+Custom capstone hostname              ✅
+ACM certificate                       ✅
+HTTPS through CloudFront              ✅
+HTTP → HTTPS redirect                 ✅
+AWS WAF                               ✅
+Controlled WAF block test             ✅
+CloudFront-only ALB ingress           ✅
+Direct ALB bypass blocked             ✅
+Cognito User Pool                     ✅
+Cognito public app client             ✅
+JWT-protected API                     ✅
+401 without access token              ✅
+200 with valid access token           ✅
+CloudFront deployment verification    ✅
+Cross-account DNS synchronization     ✅
+Morning recovery integration          ✅
+```
+
+The platform now had:
 
 - persistent DNS
 - HTTPS
@@ -765,10 +1076,10 @@ The platform now has:
 - JWT-protected API access
 - hardened deployment verification
 
-The next implementation phase is **Milestone 7 — Serverless & Event-Driven Architecture**.
+This prepared the platform for **Milestone 7 — Serverless & Event-Driven Processing**.
 
 ---
 
-## Interview / Presentation Summary
+## Presentation Summary
 
-> In Milestone 6 I added the secure edge and authentication layer to the LangNation platform. I kept authoritative DNS in a persistent Route 53 hosted zone outside the disposable training sandbox, then placed CloudFront, ACM and AWS WAF in front of the existing ALB. I hardened the origin by allowing ALB port 80 only from the AWS-managed CloudFront origin-facing prefix list, which prevents users from bypassing WAF through the ALB DNS name. I also added Cognito and implemented JWT verification in the Node.js API, where `/health` stays public and `/protected` returns 401 without a token and 200 with a valid access token. The training sandbox itself still requires manual activation; once its AWS session is active, the recovery automation can recreate the edge infrastructure, discover the new CloudFront distribution, update persistent Route 53 through a restricted cross-account OIDC role and verify the public HTTPS health endpoint.
+> In Milestone 6 I added the secure edge, persistent DNS and authentication layer to the LangNation platform. I kept authoritative DNS in a persistent Route 53 hosted zone outside the disposable training sandbox, then placed CloudFront, ACM and AWS WAF in front of the existing ALB. I hardened the origin by allowing ALB port 80 only from the AWS-managed CloudFront origin-facing prefix list, which prevents users from bypassing WAF through the ALB DNS name. I also added Amazon Cognito and implemented JWT verification in the Node.js API, where `/health` remains public while `/protected` returns 401 without a token and 200 with a valid access token. Finally, I extended the recovery workflow so that after the sandbox is manually activated, Terraform can recreate disposable edge resources, GitHub Actions can redeploy the application, and a restricted cross-account OIDC role can update persistent Route 53 to the recreated CloudFront distribution. The key lesson was that a recoverable cloud platform must treat persistent external dependencies such as DNS differently from disposable runtime infrastructure.

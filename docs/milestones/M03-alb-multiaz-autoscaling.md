@@ -1,11 +1,14 @@
 # LangNation Cloud Platform
 ## Milestone 3 — Application Load Balancer, Multi-AZ & Auto Scaling
 
-**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS
-**Course:** AWS Cloud Computing with AI Bootcamp
-**Environment:** Development (`dev`)
-**AWS Region:** `us-east-1`
-**Infrastructure as Code:** Terraform
+**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS  
+**Author:** Seraj Ahmad Siddiqui  
+**Course:** AWS Cloud Computing with AI Bootcamp  
+**Environment:** Development (`dev`)  
+**AWS Region:** `us-east-1`  
+**Infrastructure as Code:** Terraform  
+**Relevant Technologies / Services:** Application Load Balancer, Target Groups, Amazon ECS, AWS Fargate, Application Auto Scaling, CloudWatch health checks, Terraform lifecycle rules  
+**Remote State / Authoritative Plan & Apply:** HCP Terraform  
 **Status:** ✅ Complete
 
 ---
@@ -30,7 +33,23 @@ The milestone added:
 - normal CPU target 50%
 - a controlled scale-out test from 2 to 4 tasks
 
-The result was the first fully working multi-AZ application path.
+The resulting application path became:
+
+```text
+Internet
+   ↓
+Application Load Balancer
+   ↓
+HTTP Listener :80
+   ↓
+Target Group
+   ↓
+Healthy private ECS Fargate tasks
+   ↓
+Node.js application
+```
+
+This was the first milestone where the platform became publicly reachable while preserving private compute and multi-AZ redundancy.
 
 ---
 
@@ -43,6 +62,8 @@ I first recreated the Milestone 3 architecture in Excalidraw to understand how t
 ![Milestone 3 design sketch](../architecture/milestones/m03/design-sketch.png)
 
 ### Final Milestone Architecture
+
+The final milestone architecture shows the load-balancing, health-check and Auto Scaling components introduced in Milestone 3.
 
 ![Milestone 3 final architecture](../architecture/milestones/m03/milestone-architecture.png)
 
@@ -76,7 +97,7 @@ Healthy ECS Fargate task
 Node.js application
 ```
 
-The application tasks remained in private application subnets:
+The application tasks remained in the private application subnets created in Milestone 1:
 
 ```text
 us-east-1a
@@ -87,6 +108,14 @@ us-east-1b
 ```
 
 Neither task received a public IP.
+
+This kept the architecture separated into:
+
+```text
+Public ingress
+      ↓
+Private application compute
+```
 
 ---
 
@@ -149,9 +178,9 @@ Target type: ip
 VPC: LangNation VPC
 ```
 
-`target_type = "ip"` is required because Fargate tasks using `awsvpc` networking register their task ENI/private IP rather than an EC2 instance ID.
+`target_type = "ip"` is required because Fargate tasks using `awsvpc` networking register their task ENI/private IP instead of an EC2 instance ID.
 
-### Health check
+### Health Check Configuration
 
 ```text
 Path: /health
@@ -172,7 +201,7 @@ Application response:
 }
 ```
 
-This allowed the ALB to send traffic only to healthy ECS targets.
+This allowed the ALB to route requests only to healthy ECS targets.
 
 ---
 
@@ -230,7 +259,7 @@ network_configuration {
 }
 ```
 
-This separates public ingress from private compute.
+This separates the public entry point from the private application runtime.
 
 ---
 
@@ -264,7 +293,7 @@ Private subnet: 10.0.12.0/24
 Public IP: none
 ```
 
-This created real application-layer redundancy across two Availability Zones.
+This created real application-layer redundancy across two Availability Zones rather than simply provisioning multiple tasks in one failure domain.
 
 ---
 
@@ -278,7 +307,9 @@ autoscaling_max_capacity = 4
 autoscaling_cpu_target   = 50
 ```
 
-### Scalable target
+### Scalable Target
+
+Terraform resource:
 
 ```text
 aws_appautoscaling_target.ecs_service
@@ -293,7 +324,9 @@ Minimum capacity: 2
 Maximum capacity: 4
 ```
 
-### Target-tracking policy
+### Target-Tracking Policy
+
+Terraform resource:
 
 ```text
 aws_appautoscaling_policy.ecs_cpu
@@ -307,6 +340,8 @@ Target: 50%
 Scale-out cooldown: 60 seconds
 Scale-in cooldown: 300 seconds
 ```
+
+The scaling policy allows ECS to increase or decrease the service task count automatically while remaining inside the configured minimum and maximum boundaries.
 
 ---
 
@@ -326,19 +361,21 @@ This separates responsibilities:
 
 ```text
 Terraform
-→ defines the service and scaling configuration
+→ defines the ECS service and scaling configuration
 
 Application Auto Scaling
 → controls the live desired task count
 ```
 
-Without this lifecycle rule, Terraform could attempt to overwrite a task count changed dynamically by Auto Scaling.
+Without this lifecycle rule, a later Terraform operation could attempt to overwrite a task count changed dynamically by Application Auto Scaling.
+
+This became an important ownership principle used again in later milestones.
 
 ---
 
 ## 11. Terraform Structure
 
-Milestone 3 added the load-balancing module:
+Milestone 3 added the reusable load-balancing module:
 
 ```text
 terraform/
@@ -366,34 +403,52 @@ load_balancing
 → ALB, target group, listener, health checks
 ```
 
+The modules communicate through Terraform variables and outputs rather than hard-coded AWS-generated resource IDs.
+
+The important dependency path is:
+
+```text
+networking
+     ↓ public/private subnet IDs
+
+security
+     ↓ security-group IDs
+
+load_balancing
+     ↓ target-group ARN
+
+container
+     ↓ ECS Service integration
+```
+
 ---
 
 ## 12. Implementation Summary
 
-### Load balancing
+### Load Balancing
 
 1. created the `load_balancing` Terraform module
 2. created the Application Load Balancer
 3. deployed it to both public subnets
 4. created the IP target group
-5. configured `/health`
+5. configured the `/health` target-group health check
 6. created the HTTP listener
 7. passed the target-group ARN into the ECS Service
 8. verified the public application endpoint
 
-### Multi-AZ
+### Multi-AZ Application Layer
 
 9. changed the ECS baseline from one task to two
 10. verified both tasks were running
 11. verified one task in each Availability Zone
-12. verified both tasks remained private
+12. verified both tasks remained private and had no public IP
 
 ### Auto Scaling
 
 13. created the Application Auto Scaling target
-14. configured min 2 / max 4
+14. configured minimum capacity 2 and maximum capacity 4
 15. added target tracking on average ECS CPU
-16. configured the normal target at 50%
+16. configured the normal CPU target at 50%
 17. added `ignore_changes` for `desired_count`
 18. performed a controlled scale-out test
 19. confirmed the service automatically reached 4 running tasks
@@ -401,9 +456,76 @@ load_balancing
 
 ---
 
-## 13. End-to-End Validation
+## 13. Useful Commands
 
-The public root endpoint and health endpoint were both tested through the ALB.
+### Work from the Terraform Environment Directory
+
+```powershell
+cd "D:\Project_All\LangNation-Cloud-Platform-Capstone\terraform\environments\dev"
+```
+
+This ensures Terraform commands run against the actual development configuration rather than the repository root.
+
+### Initialize Terraform
+
+```powershell
+terraform init
+```
+
+This initializes the working directory and installs the required modules and providers.
+
+### Check Untracked Git Files
+
+```powershell
+git status --short
+```
+
+This is important after adding new Terraform modules because untracked files do not appear in a normal tracked diff.
+
+### Check Staged Changes for Whitespace Problems
+
+```powershell
+git diff --cached --check
+```
+
+This detects issues such as hidden trailing whitespace before a commit.
+
+---
+
+## 14. Validation
+
+The milestone was validated at the load-balancer, ECS, networking and Auto Scaling layers.
+
+### Load Balancer and Health
+
+- [x] ALB is active
+- [x] ALB spans both public subnets
+- [x] target type is `ip`
+- [x] target group forwards to port 3000
+- [x] `/health` returns HTTP 200
+- [x] ECS Service is registered with the target group
+- [x] healthy targets confirmed
+
+### ECS and Multi-AZ
+
+- [x] Fargate tasks remain private
+- [x] no public IP is assigned to tasks
+- [x] two ECS tasks are running
+- [x] tasks are distributed across both Availability Zones
+- [x] desired count = 2
+- [x] running count = 2
+- [x] pending count = 0
+
+### Auto Scaling
+
+- [x] Application Auto Scaling target is active
+- [x] minimum capacity = 2
+- [x] maximum capacity = 4
+- [x] normal CPU target = 50%
+- [x] controlled scale-out from 2 to 4 tasks verified
+- [x] normal 50% target restored after the test
+
+### End-to-End Request Validation
 
 The verified request path was:
 
@@ -425,29 +547,11 @@ Node.js application
 Response
 ```
 
-Validation included:
-
-- [x] ALB active
-- [x] ALB spans two public subnets
-- [x] target type is `ip`
-- [x] target group forwards to port 3000
-- [x] `/health` check returns HTTP 200
-- [x] ECS Service registered with the target group
-- [x] Fargate tasks remain private
-- [x] no public IP assigned to tasks
-- [x] two ECS tasks running
-- [x] tasks distributed across both AZs
-- [x] healthy targets confirmed
-- [x] Auto Scaling target active
-- [x] minimum capacity = 2
-- [x] maximum capacity = 4
-- [x] normal CPU target = 50%
-- [x] controlled scale-out from 2 to 4 tasks verified
-- [x] normal 50% target restored after the test
+This proved that the application was publicly reachable without assigning public IP addresses to the ECS tasks.
 
 ---
 
-## 14. Controlled Auto Scaling Test
+## 15. Controlled Auto Scaling Test
 
 To prove that Auto Scaling actually reacted, the CPU target was temporarily reduced from:
 
@@ -498,11 +602,13 @@ Service reaches 4 running tasks
 
 After validation, the normal 50% CPU target was restored.
 
+This test proved that the scaling policy was functional rather than merely configured.
+
 ---
 
-## 15. Resilience Mechanisms Demonstrated
+## 16. Resilience Mechanisms Demonstrated
 
-### ECS service self-healing
+### ECS Service Self-Healing
 
 ```text
 Task stops
@@ -512,14 +618,14 @@ running < desired
 ECS launches replacement task
 ```
 
-### Multi-AZ redundancy
+### Multi-AZ Redundancy
 
 ```text
 Task A → us-east-1a
 Task B → us-east-1b
 ```
 
-### Health-aware routing
+### Health-Aware Routing
 
 ```text
 ALB /health
@@ -527,7 +633,7 @@ ALB /health
 only healthy targets receive traffic
 ```
 
-### Dynamic scaling
+### Dynamic Scaling
 
 ```text
 CPU increases
@@ -539,29 +645,43 @@ additional tasks launch
 maximum 4
 ```
 
+Together, these mechanisms gave the application a stronger resilience model than the single-task ECS service from Milestone 2.
+
 ---
 
-## 16. Problems and Solutions
+## 17. Problems and Solutions
 
-### Terraform started in the wrong directory
+### Problem 1 — Terraform Started in the Wrong Directory
 
 After reopening VS Code, the terminal started at the repository root.
 
-Running `terraform init` there produced:
+Running:
+
+```powershell
+terraform init
+```
+
+there produced:
 
 ```text
 Terraform initialized in an empty directory!
 ```
 
-The correct working directory was:
+**Cause:**  
+Terraform was executed from the repository root instead of the development environment directory.
+
+**Fix:**
 
 ```powershell
 cd "D:\Project_All\LangNation-Cloud-Platform-Capstone\terraform\environments\dev"
 ```
 
-This reinforced the value of keeping a dedicated Terraform terminal.
+**Lesson:**  
+Terraform commands must be run from the intended working directory. Keeping a dedicated Terraform terminal reduces context mistakes.
 
-### New module did not appear in the diff
+---
+
+### Problem 2 — New Module Did Not Appear in the Diff
 
 The load-balancing module was initially untracked, so it did not appear in a normal diff summary.
 
@@ -571,25 +691,55 @@ The load-balancing module was initially untracked, so it did not appear in a nor
 ?? terraform/modules/load_balancing/
 ```
 
-This was a useful reminder to check both tracked changes and untracked files before committing.
+**Cause:**  
+Normal Git diff output does not show untracked files.
 
-### Hidden trailing whitespace
+**Fix:**  
+Check repository status before committing:
+
+```powershell
+git status --short
+```
+
+**Lesson:**  
+Review both tracked changes and untracked files when adding Terraform modules or other new project directories.
+
+---
+
+### Problem 3 — Hidden Trailing Whitespace
 
 `git diff --cached --check` detected trailing whitespace on a visually blank line.
 
+**Fix:**  
 The whitespace was removed before commit.
 
-### `ignore_changes` was placed on the wrong resource
+**Lesson:**  
+A staged-diff quality check can catch formatting problems that are easy to miss visually.
 
-The lifecycle rule for `desired_count` was first placed under the task definition, which produced an unsupported-attribute error.
+---
 
-**Fix:** move the lifecycle rule into the ECS Service resource, where `desired_count` actually exists.
+### Problem 4 — `ignore_changes` Was Placed on the Wrong Resource
 
-### ECS network configuration was accidentally removed
+The lifecycle rule for `desired_count` was initially placed under the ECS task definition.
 
-A staged-diff review caught that the ECS Service network block had been removed during Auto Scaling changes.
+This produced an unsupported-attribute error.
 
-It was restored before commit:
+**Cause:**  
+`desired_count` belongs to the ECS Service rather than the task definition.
+
+**Fix:**  
+Move the lifecycle rule into the ECS Service resource.
+
+**Lesson:**  
+Terraform lifecycle rules must be attached to the resource that actually owns the attribute being ignored.
+
+---
+
+### Problem 5 — ECS Network Configuration Was Accidentally Removed
+
+A staged-diff review caught that the ECS Service network block had been removed during the Auto Scaling changes.
+
+The required configuration was restored:
 
 ```text
 Private app subnets
@@ -597,11 +747,112 @@ ECS security group
 No public IP
 ```
 
-This is a good example of why reviewing the staged diff matters before pushing infrastructure code.
+**Lesson:**  
+Reviewing staged infrastructure changes before pushing is important because an unrelated edit can unintentionally change network or security behavior.
 
 ---
 
-## 17. What I Learned
+## 18. Security Decisions
+
+### Public Load Balancer, Private Compute
+
+The Application Load Balancer is the public entry point, but the Fargate tasks remain in private subnets.
+
+This preserves the boundary:
+
+```text
+Internet
+   ↓
+ALB
+   ↓
+Private ECS tasks
+```
+
+### No Public IPs on ECS Tasks
+
+Even after public application access was introduced, ECS tasks continued to use:
+
+```text
+assign_public_ip = false
+```
+
+This prevents direct internet access to individual task interfaces.
+
+### Security-Group Separation
+
+The existing security-group model remains intact:
+
+```text
+ALB Security Group
+        ↓
+ECS Security Group
+```
+
+The load balancer controls ingress into the application layer instead of exposing the container port publicly.
+
+### Health-Aware Routing
+
+The ALB uses `/health` and sends traffic only to targets that meet the configured health-check criteria.
+
+This reduces the chance of routing user traffic to an unhealthy application task.
+
+> **Current-state note:** Milestone 6 later strengthened the origin boundary further by restricting direct ALB access and placing CloudFront and WAF in front of it.
+
+---
+
+## 19. Cost and Operational Decisions
+
+### Minimum Two ECS Tasks
+
+The service baseline was intentionally increased from one task to two.
+
+This creates application redundancy across both Availability Zones, but it also means the development environment continuously runs two Fargate tasks instead of one.
+
+The decision favors high-availability demonstration over the lowest possible development cost.
+
+### Auto Scaling Boundaries
+
+The service uses:
+
+```text
+Minimum: 2
+Maximum: 4
+```
+
+This ensures the application does not scale below the redundant two-task baseline and does not grow beyond the controlled capstone limit.
+
+### CPU Target and Cooldowns
+
+Normal target:
+
+```text
+50%
+```
+
+Cooldowns:
+
+```text
+Scale out: 60 seconds
+Scale in: 300 seconds
+```
+
+These settings allow the service to react to increased utilization while making scale-in more conservative.
+
+### ALB Deletion Protection
+
+Deletion protection is disabled for the sandbox/dev environment.
+
+This fits the disposable training environment, where infrastructure must be recreated rather than permanently protected.
+
+### Runtime Ownership
+
+Terraform defines the service and scaling configuration, while Application Auto Scaling controls the live desired count.
+
+This ownership separation reduces configuration conflicts during normal runtime scaling.
+
+---
+
+## 20. What I Learned
 
 This milestone gave me practical experience with:
 
@@ -617,14 +868,16 @@ This milestone gave me practical experience with:
 - target-tracking policies
 - scale-out and scale-in cooldowns
 - Terraform lifecycle rules
-- validating autoscaling behavior with controlled load
+- validating Auto Scaling behavior with controlled load
 - reviewing Terraform and Git changes before deployment
 
 A key lesson was that high availability is not achieved by creating multiple resources alone. The resources must actually be distributed across failure domains and connected through health-aware routing.
 
+Another important lesson was that Terraform, ECS and Application Auto Scaling each own different aspects of service state. Clear ownership prevents automation systems from fighting over the same runtime configuration.
+
 ---
 
-## 18. Result
+## 21. Result
 
 Milestone 3 transformed the containerized application into a multi-AZ, health-aware and automatically scalable service.
 
@@ -642,6 +895,23 @@ Two Availability Zones
 Auto Scaling 2–4 tasks
 ```
 
+Final milestone state:
+
+```text
+Application Load Balancer          ✅
+Two public-subnet ALB deployment   ✅
+IP target group                    ✅
+/health target checks              ✅
+Private ECS tasks                  ✅
+No task public IP                  ✅
+Two-AZ application redundancy      ✅
+ECS desired baseline = 2           ✅
+Auto Scaling min 2 / max 4         ✅
+CPU target tracking                ✅
+Controlled scale-out to 4 tasks    ✅
+Terraform ownership separation     ✅
+```
+
 The application now had:
 
 - public entry through an ALB
@@ -651,10 +921,10 @@ The application now had:
 - ECS self-healing
 - automatic scale-out and scale-in
 
-This prepared the platform for **Milestone 4 — Automated Deployment**.
+This prepared the platform for **Milestone 4 — Automated Deployment**, where application releases were automated through GitHub Actions.
 
 ---
 
-## Interview / Presentation Summary
+## Presentation Summary
 
-> I extended the private ECS/Fargate platform with an internet-facing Application Load Balancer spanning both public subnets. I used an IP target group because Fargate tasks run with `awsvpc` networking, and I connected the application's `/health` endpoint to the target-group health check. I then increased the ECS baseline to two private tasks and verified that they were distributed across both Availability Zones. Finally, I configured ECS Service Auto Scaling with a minimum of two tasks, maximum of four and a 50% average CPU target. To prove that scaling worked, I temporarily lowered the threshold, generated controlled HTTP load through the ALB and observed the service scale automatically from two to four running tasks before restoring the normal policy.
+> In Milestone 3 I extended the private ECS/Fargate platform with an internet-facing Application Load Balancer spanning both public subnets. I used an IP target group because Fargate tasks run with `awsvpc` networking, and I connected the application's `/health` endpoint to the target-group health check. I then increased the ECS baseline to two private tasks and verified that they were distributed across both Availability Zones without public IP addresses. Finally, I configured ECS Service Auto Scaling with a minimum of two tasks, a maximum of four and a 50% average CPU target. To prove the configuration worked, I temporarily lowered the target threshold, generated controlled HTTP load through the ALB and observed the service scale automatically from two to four running tasks before restoring the normal policy. The main lesson was that real high availability depends on failure-domain distribution, health-aware routing and clearly defined ownership between Terraform and runtime Auto Scaling.

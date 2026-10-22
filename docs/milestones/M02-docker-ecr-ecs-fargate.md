@@ -1,24 +1,26 @@
 # LangNation Cloud Platform
 ## Milestone 2 — Docker, Amazon ECR & ECS Fargate
 
-**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS
-**Course:** AWS Cloud Computing with AI Bootcamp
-**Environment:** Development (`dev`)
-**AWS Region:** `us-east-1`
-**Infrastructure as Code:** Terraform
-**Container Runtime:** Docker
-**Container Registry:** Amazon ECR
-**Container Orchestration:** Amazon ECS on AWS Fargate
-**Remote State / Authoritative Plan & Apply:** HCP Terraform
+**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS  
+**Author:** Seraj Ahmad Siddiqui  
+**Course:** AWS Cloud Computing with AI Bootcamp  
+**Environment:** Development (`dev`)  
+**AWS Region:** `us-east-1`  
+**Infrastructure as Code:** Terraform  
+**Relevant Technologies / Services:** Node.js, Express, Docker, Amazon ECR, Amazon ECS, AWS Fargate, IAM, CloudWatch Logs, Container Insights  
+**Container Runtime:** Docker  
+**Container Registry:** Amazon ECR  
+**Container Orchestration:** Amazon ECS on AWS Fargate  
+**Remote State / Authoritative Plan & Apply:** HCP Terraform  
 **Status:** ✅ Complete
 
 ---
 
 ## 1. Objective
 
-Milestone 2 moved the project from a network-only environment to a running containerized application on AWS.
+Milestone 2 moved the LangNation Cloud Platform from a network-only environment to a running containerized application on AWS.
 
-The goal was to prove the complete path from source code to a private Fargate workload:
+The goal was to prove the complete path from application source code to a private managed compute workload:
 
 ```text
 Node.js application
@@ -52,6 +54,8 @@ The milestone introduced:
 - desired-state recovery / basic self-healing
 - repeatable rebuilds after sandbox cleanup
 
+The network created in Milestone 1 therefore became a functioning private application runtime instead of remaining infrastructure only.
+
 ---
 
 ## 2. Architecture Design
@@ -63,6 +67,8 @@ I first recreated the container flow in Excalidraw to understand the relationshi
 ![Milestone 2 design sketch](../architecture/milestones/m02/design-sketch.png)
 
 ### Final Milestone Architecture
+
+The final milestone architecture shows the container delivery and runtime components introduced in Milestone 2.
 
 ![Milestone 2 final architecture](../architecture/milestones/m02/milestone-architecture.png)
 
@@ -76,13 +82,20 @@ This cumulative view shows how the container platform builds on top of the Miles
 
 ---
 
-## 3. Application
+## 3. Application Architecture
 
 A small controlled Node.js / Express API was created for the capstone rather than immediately deploying the full LangNation production application.
 
-This kept the milestone focused on containerization and AWS runtime architecture.
+This kept the milestone focused on:
 
-### Application structure
+- containerization
+- image distribution
+- ECS runtime behavior
+- private networking
+- logging
+- basic service recovery
+
+### Application Structure
 
 ```text
 application/
@@ -114,11 +127,11 @@ The application listens on:
 0.0.0.0:3000
 ```
 
-Binding to `0.0.0.0` allows the process to receive traffic through the container network interface.
+Binding to `0.0.0.0` allows the Node.js process to receive traffic through the container network interface rather than listening only on the local loopback interface.
 
 ---
 
-## 4. Docker
+## 4. Docker Containerization
 
 ### Dockerfile
 
@@ -143,7 +156,7 @@ USER node
 CMD ["npm", "start"]
 ```
 
-### Design decisions
+### Container Design Decisions
 
 - `node:22-alpine` keeps the base image relatively small
 - `npm ci` installs versions from the lock file
@@ -162,11 +175,13 @@ npm-debug.log
 .env*
 ```
 
-This reduces the build context and helps prevent local dependencies, Git metadata and environment files from being copied into the image.
+This reduces the Docker build context and prevents local dependencies, Git metadata and environment files from being copied into the image.
 
 ---
 
 ## 5. Amazon ECR
+
+Amazon Elastic Container Registry stores the private Docker image used by ECS.
 
 Repository:
 
@@ -174,13 +189,13 @@ Repository:
 langnation-cloud-platform-dev-app
 ```
 
-Repository URI:
+Repository URI used during the milestone:
 
 ```text
 881893827142.dkr.ecr.us-east-1.amazonaws.com/langnation-cloud-platform-dev-app
 ```
 
-Configuration used during the milestone:
+Configuration:
 
 ```text
 Tag mutability: MUTABLE
@@ -194,15 +209,25 @@ The first application image was tagged:
 dev
 ```
 
-A key lesson from the nightly sandbox cleanup was that Terraform can recreate the **ECR repository**, but not the Docker image stored inside it.
+A key operational lesson appeared after nightly sandbox cleanup:
 
-That distinction later became one of the reasons for automating application deployment separately from infrastructure provisioning.
+```text
+Terraform
+→ can recreate the ECR repository
+
+Terraform
+→ does not recreate the Docker image stored inside it
+```
+
+This distinction later became one of the main reasons for separating infrastructure provisioning from application deployment automation.
+
+> **Current-state note:** Later milestones replaced the initial moving `dev` tag strategy with Git-SHA image tags through GitHub Actions for traceability and automated deployment.
 
 ---
 
 ## 6. ECS Fargate Platform
 
-### ECS cluster
+### ECS Cluster
 
 ```text
 langnation-cloud-platform-dev-cluster
@@ -215,7 +240,9 @@ Launch model: AWS Fargate
 Container Insights: Enabled
 ```
 
-### Task execution role
+AWS Fargate was used so the project could run containers without provisioning or managing EC2 worker instances.
+
+### Task Execution Role
 
 ```text
 langnation-cloud-platform-dev-ecs-task-execution-role
@@ -223,21 +250,23 @@ langnation-cloud-platform-dev-ecs-task-execution-role
 
 The execution role is used by ECS/Fargate to:
 
-- pull the image from ECR
+- pull the application image from Amazon ECR
 - publish container logs to CloudWatch
 - perform startup operations required by the task
 
-Important distinction:
+An important IAM distinction established in this milestone is:
 
 ```text
 Execution Role
-→ used by ECS/Fargate
+→ used by ECS/Fargate to start and operate the task
 
 Task Role
-→ used by the application itself when calling AWS APIs
+→ used by application code when calling AWS APIs
 ```
 
-### CloudWatch log group
+The task role became more important in later milestones when the application began calling AWS services directly.
+
+### CloudWatch Log Group
 
 ```text
 /ecs/langnation-cloud-platform-dev-app
@@ -249,7 +278,7 @@ Retention:
 7 days
 ```
 
-### Task definition
+### ECS Task Definition
 
 Family:
 
@@ -269,27 +298,27 @@ Container port: 3000
 Logging: awslogs
 ```
 
-`awsvpc` gives each Fargate task its own network interface inside the VPC.
+`awsvpc` networking gives each Fargate task its own elastic network interface inside the VPC.
 
 ---
 
 ## 7. ECS Service and Private Networking
 
-The service runs the application inside the two private application subnets created in Milestone 1:
+The ECS service runs the application inside the two private application subnets created in Milestone 1:
 
 ```text
 10.0.11.0/24
 10.0.12.0/24
 ```
 
-Tasks use:
+Task networking uses:
 
 ```text
 Public IP: disabled
 Security Group: ECS security group
 ```
 
-Therefore, the application workload itself is not directly internet-facing.
+The application workload is therefore not directly internet-facing.
 
 Outbound traffic follows the private application route:
 
@@ -303,9 +332,9 @@ same-AZ NAT Gateway
 AWS services / public package endpoints
 ```
 
-During Milestone 2, the ECS service was initially introduced with a desired count of one to validate service behavior and self-healing.
+During Milestone 2, the ECS service was initially introduced with a desired count of one so service behavior and self-healing could be validated in a controlled way.
 
-> **Current-state note:** Milestone 3 later changed the service baseline to two tasks across both Availability Zones and added ALB health checks and Auto Scaling with a minimum of 2 and maximum of 4 tasks.
+> **Current-state note:** Milestone 3 later changed the service baseline to two tasks across both Availability Zones and added an Application Load Balancer, target-group health checks and Auto Scaling with a minimum of 2 and maximum of 4 tasks.
 
 ---
 
@@ -332,7 +361,23 @@ The module manages:
 - ECS task definition
 - ECS service
 
-The module consumes subnet IDs and security-group IDs from the earlier Terraform modules instead of hardcoding AWS-generated IDs.
+The module consumes subnet IDs and security-group IDs from the earlier Terraform modules rather than hard-coding AWS-generated resource IDs.
+
+The dependency path is:
+
+```text
+networking module
+      ↓ subnet IDs
+
+security module
+      ↓ ECS security group
+
+container module
+      ↓
+ECR + ECS + Fargate
+```
+
+HCP Terraform remains the authoritative source for plan, apply and persistent remote state.
 
 ---
 
@@ -341,39 +386,41 @@ The module consumes subnet IDs and security-group IDs from the earlier Terraform
 ### Application and Docker
 
 1. created the Node.js / Express application
-2. verified `/` and `/health` locally
-3. created `Dockerfile` and `.dockerignore`
-4. built the image locally
-5. ran the container with `3000:3000`
-6. verified the application and container logs locally
+2. implemented `/` and `/health`
+3. verified the application locally
+4. created `Dockerfile`
+5. created `.dockerignore`
+6. built the Docker image locally
+7. ran the container using local port mapping
+8. verified the application and container logs locally
 
-### ECR
+### Amazon ECR
 
-7. created the ECR repository with Terraform
-8. authenticated Docker to ECR
-9. tagged the local image
-10. pushed the image to ECR
-11. verified the tag and digest in AWS
+9. created the ECR repository with Terraform
+10. authenticated Docker to ECR
+11. tagged the local Docker image
+12. pushed the image to ECR
+13. verified the image tag and digest in AWS
 
 ### ECS / Fargate
 
-12. created the ECS cluster
-13. enabled Container Insights
-14. created the ECS task execution role
-15. created the CloudWatch log group
-16. created the Fargate task definition
-17. ran the first Fargate task in a private application subnet
-18. verified no public IP was assigned
-19. verified the application startup logs in CloudWatch
-20. created the Terraform-managed ECS service
-21. stopped the running service task intentionally
-22. verified that ECS automatically created a replacement task
+14. created the ECS cluster
+15. enabled Container Insights
+16. created the ECS task execution role
+17. created the CloudWatch log group
+18. created the Fargate task definition
+19. ran the first Fargate task in a private application subnet
+20. verified that no public IP was assigned
+21. verified application startup logs in CloudWatch
+22. created the Terraform-managed ECS service
+23. intentionally stopped the running service task
+24. verified that ECS automatically created a replacement task
 
 ---
 
 ## 10. Useful Commands
 
-### Local application
+### Local Application
 
 ```powershell
 npm install
@@ -382,7 +429,9 @@ curl http://localhost:3000/
 curl http://localhost:3000/health
 ```
 
-### Docker
+These commands install dependencies, start the application locally and verify the two initial endpoints.
+
+### Docker Build and Runtime
 
 ```powershell
 docker build -t langnation-app:dev .
@@ -391,14 +440,18 @@ docker ps
 docker logs langnation-app-dev
 ```
 
-### ECR authentication
+These commands build the image, start the container, confirm the running container and inspect its logs.
+
+### ECR Authentication
 
 ```powershell
 aws ecr get-login-password --region us-east-1 |
 docker login --username AWS --password-stdin 881893827142.dkr.ecr.us-east-1.amazonaws.com
 ```
 
-### Tag and push
+This retrieves a temporary ECR authentication token through the AWS CLI and passes it to Docker.
+
+### Tag and Push
 
 ```powershell
 docker tag langnation-app:dev `
@@ -408,7 +461,9 @@ docker push `
 881893827142.dkr.ecr.us-east-1.amazonaws.com/langnation-cloud-platform-dev-app:dev
 ```
 
-### Terraform validation
+The local image is tagged with the ECR repository URI and then uploaded to the private registry.
+
+### Terraform Validation
 
 ```powershell
 terraform init
@@ -428,7 +483,7 @@ state
 
 ## 11. Validation
 
-The milestone was validated at each layer.
+The milestone was validated at each layer rather than treating successful resource creation as sufficient proof.
 
 ### Application
 
@@ -438,13 +493,13 @@ The milestone was validated at each layer.
 
 ### Docker
 
-- [x] Docker image builds
+- [x] Docker image builds successfully
 - [x] container runs locally
 - [x] port mapping works
 - [x] container logs are visible
 - [x] container runs as the non-root `node` user
 
-### ECR
+### Amazon ECR
 
 - [x] ECR repository exists
 - [x] Docker authentication succeeds
@@ -454,16 +509,15 @@ The milestone was validated at each layer.
 ### ECS / Fargate
 
 - [x] ECS cluster is active
-- [x] Container Insights enabled
-- [x] task execution role created
-- [x] CloudWatch log group created
-- [x] Fargate task definition created
-- [x] CPU and memory configuration verified
-- [x] task runs in private application subnet
+- [x] Container Insights is enabled
+- [x] task execution role is created
+- [x] CloudWatch log group is created
+- [x] Fargate task definition is created
+- [x] CPU and memory configuration is verified
+- [x] task runs in a private application subnet
 - [x] task has no public IP
-- [x] application startup visible in CloudWatch
-- [x] ECS service created successfully
-- [x] desired-state task replacement tested successfully
+- [x] application startup is visible in CloudWatch
+- [x] ECS service is created successfully
 
 ### Reproducibility
 
@@ -473,9 +527,52 @@ The milestone was validated at each layer.
 
 ---
 
-## 12. Problems and Solutions
+## 12. Controlled Failure / Self-Healing Test
 
-### Docker Linux engine would not start
+To prove ECS service desired-state behavior, the running service task was intentionally stopped.
+
+Initial state:
+
+```text
+ECS Service
+Desired tasks: 1
+Running tasks: 1
+```
+
+Controlled action:
+
+```text
+Stop running service task
+```
+
+Expected behavior:
+
+```text
+running < desired
+        ↓
+ECS detects missing task
+        ↓
+replacement task launched
+        ↓
+service returns to desired state
+```
+
+Observed result:
+
+- [x] the original task stopped
+- [x] ECS detected that running capacity was below the configured desired count
+- [x] ECS automatically launched a replacement task
+- [x] the service recovered without manually launching a new task
+
+At this stage, ECS task health could still appear as `Unknown` because ALB target-group health checks had not yet been introduced.
+
+Milestone 3 later connected the application `/health` endpoint to the Application Load Balancer target group.
+
+---
+
+## 13. Problems and Solutions
+
+### Problem 1 — Docker Linux Engine Would Not Start
 
 The first Docker build failed because Docker Desktop could not start the Linux container engine.
 
@@ -487,6 +584,9 @@ dockerDesktopLinuxEngine
 
 Docker Desktop then reported that WSL was unavailable.
 
+**Cause:**  
+The Windows workstation did not yet have the required WSL 2 environment for Docker Linux containers.
+
 **Fix:**
 
 ```powershell
@@ -495,11 +595,20 @@ wsl --install
 
 After WSL 2 and Ubuntu were configured, Docker Desktop could run Linux containers successfully.
 
-### ECR image disappeared after sandbox cleanup
+**Lesson:**  
+Docker Desktop on Windows depends on a functioning Linux container backend. Local platform prerequisites should be validated before troubleshooting Dockerfile or application code.
+
+---
+
+### Problem 2 — ECR Image Disappeared After Sandbox Cleanup
 
 Terraform recreated the ECR repository, but the container image itself was gone.
 
-**Solution:** authenticate to the recreated repository and push the Docker image again.
+**Cause:**  
+Terraform manages the ECR repository infrastructure, not the Docker image artifact stored inside the registry.
+
+**Fix:**  
+Authenticate to the recreated repository and push the Docker image again.
 
 **Lesson:**
 
@@ -507,9 +616,14 @@ Terraform recreated the ECR repository, but the container image itself was gone.
 
 This gap was later solved through GitHub Actions in Milestone 4.
 
-### ECS task health showed `Unknown`
+---
 
-At this stage there was no ALB target-group health check yet.
+### Problem 3 — ECS Task Health Showed `Unknown`
+
+The ECS task did not yet have a load-balancer-based application health signal.
+
+**Cause:**  
+Milestone 2 had no ALB target group or target-group health check.
 
 The application already exposed:
 
@@ -517,25 +631,55 @@ The application already exposed:
 /health
 ```
 
-Milestone 3 connected that endpoint to the ALB target group.
+but ECS service health was not yet connected to that endpoint through an ALB.
+
+**Resolution:**  
+Milestone 3 introduced the ALB and configured `/health` as the target-group health check.
+
+**Lesson:**  
+A running container and an application-level health check are separate concepts. Later architecture should validate both process state and application responsiveness.
 
 ---
 
-## 13. Security Decisions
+## 14. Security Decisions
 
-- Fargate tasks run in private application subnets
-- tasks receive no public IP
-- the ECS security group is reused from Milestone 1
-- the container runs as the non-root `node` user
-- `.env` files are excluded from the build context
-- the execution role is separated from future application task permissions
-- container logs are centralized in CloudWatch
+### Private Fargate Tasks
 
-These decisions kept the compute layer private while still allowing controlled outbound access through NAT.
+Fargate tasks run only in private application subnets and receive no public IP.
+
+This prevents direct public access to the application workload.
+
+### Non-Root Container User
+
+The Docker container runs as:
+
+```dockerfile
+USER node
+```
+
+Running the application as a non-root user reduces the privileges available inside the container.
+
+### Build Context Protection
+
+`.env` files, local dependencies and Git metadata are excluded from the Docker build context.
+
+This reduces the risk of unintentionally copying local configuration or sensitive material into the image.
+
+### IAM Role Separation
+
+The ECS execution role is used for task startup operations.
+
+Application-level AWS permissions are conceptually separated into the task role, which later milestones use for application runtime access.
+
+### Centralized Logging
+
+Container logs are sent to CloudWatch rather than depending only on ephemeral local container output.
 
 ---
 
-## 14. Cost and Operational Decisions
+## 15. Cost and Operational Decisions
+
+### Fargate Task Size
 
 The initial development task used:
 
@@ -544,15 +688,44 @@ The initial development task used:
 512 MiB memory
 ```
 
-This kept the Fargate footprint small while still providing enough capacity for the capstone API.
+This kept the Fargate footprint small while providing enough capacity for the controlled capstone API.
 
-CloudWatch log retention was limited to seven days.
+### CloudWatch Log Retention
 
-The training sandbox also removes resources regularly, so reproducible infrastructure was more important than manually preserving individual runtime resources.
+CloudWatch log retention was limited to:
+
+```text
+7 days
+```
+
+This provides enough operational visibility for the training environment without retaining development logs indefinitely.
+
+### Managed Compute
+
+Fargate avoids operating EC2 instances for the container layer.
+
+For this capstone, that reduces operational overhead and keeps the milestone focused on container orchestration rather than host management.
+
+### Disposable Sandbox
+
+Because the training sandbox regularly removes AWS resources, reproducibility is more important than manually preserving individual runtime resources.
+
+The operational model therefore separates:
+
+```text
+Terraform
+→ infrastructure definition
+
+Docker / ECR
+→ application artifact
+
+ECS Service
+→ desired runtime state
+```
 
 ---
 
-## 15. What I Learned
+## 16. What I Learned
 
 This milestone gave me practical experience with:
 
@@ -585,9 +758,11 @@ Service
 
 They are related, but each solves a different problem.
 
+Another important lesson was that infrastructure and application artifacts have different lifecycles. Terraform can recreate a repository or ECS service, but the application image still needs its own deployment process.
+
 ---
 
-## 16. Result
+## 17. Result
 
 Milestone 2 produced a working private container platform:
 
@@ -609,7 +784,23 @@ Private Application Subnets
 CloudWatch Logs
 ```
 
-The project now had:
+Final milestone state:
+
+```text
+Node.js application                ✅
+Docker containerization            ✅
+Private ECR repository             ✅
+ECS Fargate cluster                ✅
+Task execution IAM role            ✅
+CloudWatch logging                 ✅
+Private task networking            ✅
+No task public IP                  ✅
+Terraform-managed ECS service      ✅
+Desired-state task replacement     ✅
+Sandbox rebuild understanding      ✅
+```
+
+The platform now had:
 
 - containerized application delivery
 - private managed compute
@@ -619,10 +810,10 @@ The project now had:
 - automatic task replacement
 - Terraform-managed infrastructure
 
-This platform became the basis for **Milestone 3 — Application Load Balancer, Multi-AZ & Auto Scaling**.
+This became the basis for **Milestone 3 — Application Load Balancer, Multi-AZ & Auto Scaling**.
 
 ---
 
-## Interview / Presentation Summary
+## Presentation Summary
 
-> I containerized a small LangNation Node.js API with Docker, tested it locally and pushed the image to a Terraform-managed Amazon ECR repository. I then built an ECS Fargate platform with a cluster, task execution role, CloudWatch logging, task definition and ECS service. The tasks run in private application subnets with no public IP. I also tested ECS desired-state management by deliberately stopping the running service task and confirming that ECS launched a replacement automatically. One important operational lesson was that Terraform can recreate the ECR repository after the sandbox cleanup, but the Docker image is an application artifact and must be rebuilt or repushed separately. That later became part of the automated CI/CD workflow.
+> In Milestone 2 I containerized a controlled LangNation Node.js API with Docker, tested it locally and pushed the image to a private Terraform-managed Amazon ECR repository. I then built an ECS Fargate platform with a cluster, task execution role, CloudWatch logging, task definition and ECS service. The application task runs in the private application tier created in Milestone 1 and receives no public IP. I also tested ECS desired-state behavior by deliberately stopping the running service task and confirming that ECS automatically launched a replacement. One of the most important operational lessons was that Terraform can recreate the ECR repository after sandbox cleanup, but the Docker image is an application artifact and requires its own deployment process. That separation later became the basis for the automated GitHub Actions deployment pipeline.

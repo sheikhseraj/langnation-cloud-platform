@@ -1,5 +1,8 @@
-# Milestone 7 — Validation Evidence Checklist
+# Milestone 7 — Validation Evidence
 
+**Project:** LangNation Cloud Platform  
+**Author:** Seraj Ahmad Siddiqui  
+**Course:** AWS Cloud Computing with AI Bootcamp  
 **Milestone:** M07 — Serverless & Event-Driven Processing  
 **Environment:** `dev`  
 **AWS Region:** `us-east-1`  
@@ -212,3 +215,10 @@ Validated:
 | Least-privilege IAM | ✅ PASS |
 
 **M07 — Serverless & Event-Driven Processing: ✅ COMPLETE**
+
+
+---
+
+## Evidence File Purpose
+
+This file is the validation record for Milestone 7. It is intentionally separate from the milestone implementation document so the architecture narrative remains readable while retry, failure, DLQ, IAM and Terraform proof stays easy to find during final review.

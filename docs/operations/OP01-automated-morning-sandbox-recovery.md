@@ -2,6 +2,7 @@
 ## OP01 — Automated Morning Sandbox Recovery
 
 **Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS<br>
+**Author:** Seraj Ahmad Siddiqui<br>
 **Course:** AWS Cloud Computing with AI Bootcamp<br>
 **Document Type:** Operations Automation<br>
 **Scope:** Automated recovery after manual activation of the disposable development environment<br>
@@ -26,11 +27,21 @@ application artifacts disappear
 CloudFront endpoint can change
 ```
 
-Terraform can recreate AWS resources, but Terraform does not restore the Docker image into a newly recreated ECR repository.
+Terraform can recreate AWS resources, but Terraform alone does not restore:
+
+```text
+the Docker image into a newly recreated ECR repository
++
+the sanitized LangNation MariaDB dataset
++
+the live ECS application revision
++
+the public DNS target for the recreated CloudFront distribution
+```
 
 The public DNS record also needs to follow the newly recreated CloudFront distribution.
 
-The goal of OP01 is therefore to automate the complete recovery sequence after the training sandbox has been activated.
+The goal of OP01 is therefore to automate the complete recovery sequence after the training sandbox has been activated: infrastructure rebuild, sanitized database restore, application redeployment, CloudFront discovery, Route 53 synchronization and public health validation.
 
 ### Operational prerequisite
 
@@ -53,39 +64,53 @@ Once the sandbox has issued an active AWS session, OP01 automates the remaining 
 The complete recovery path is:
 
 ```text
-Manual prerequisite: activate training sandbox
+Manual prerequisite: activate neue-fische training sandbox
         ↓
 Active AWS session available
         ↓
 07:37 primary schedule or manual workflow_dispatch
         ↓
-GitHub Actions
+GitHub Actions Morning Sandbox Recovery
         ↓
 HCP Terraform API
         ↓
-Terraform rebuild
+Dedicated Terraform plan + auto-apply recovery run
         ↓
 AWS infrastructure recreated
         ↓
+Build database-restore image
+        ↓
+Push restore image to Amazon ECR
+        ↓
+Run one-off ECS Fargate database-restore task
+        ↓
+Read RDS credentials from AWS Secrets Manager
+        ↓
+Restore sanitized LangNation MariaDB seed
+        ↓
+Validate expected 58 tables
+        ↓
 Reusable application deployment workflow
         ↓
-Docker image rebuilt
+Build Git-SHA-tagged LangNation image
         ↓
-Amazon ECR
+Push image to Amazon ECR
         ↓
-ECS task-definition revision
+Register ECS task-definition revision
         ↓
-ECS deployment + validation
+Update ECS service and wait for stability
         ↓
-Read recreated CloudFront domain
+Read recreated CloudFront domain from HCP Terraform outputs
         ↓
-Assume personal-AWS Route 53 OIDC role
+Assume restricted personal-AWS Route 53 OIDC role
         ↓
-Update cloud.namienterprises.in
+UPSERT cloud.namienterprises.in
         ↓
-Wait for DNS INSYNC
+Wait for Route 53 INSYNC
         ↓
-Verify public HTTPS /health
+Verify https://cloud.namienterprises.in/health
+        ↓
+HTTP 200
 ```
 
 A second schedule at **08:17 Europe/Berlin** acts as a fallback.
@@ -153,6 +178,12 @@ The automation deliberately separates responsibilities.
 ```text
 HCP Terraform
 → infrastructure
+
+GitHub Actions recovery workflow
+→ database-restore image
+→ one-off ECS Fargate restore task
+→ sanitized MariaDB restore
+→ 58-table validation
 
 GitHub Actions deploy workflow
 → Docker image
@@ -223,7 +254,41 @@ The chained workflow starts the next stage only after the required previous stag
 
 ---
 
-## 8. Application Recovery
+## 8. Database Recovery
+
+After Terraform recreates Amazon RDS, the database infrastructure exists but the sanitized LangNation application dataset must still be restored.
+
+The recovery workflow therefore performs a dedicated database-restore stage before application redeployment.
+
+Recovery path:
+
+```text
+Terraform recreates RDS
+        ↓
+build database-restore Docker image
+        ↓
+push restore image to dedicated Amazon ECR repository
+        ↓
+launch one-off ECS Fargate restore task
+        ↓
+read RDS credentials from AWS Secrets Manager
+        ↓
+restore database/seed/langnation-capstone-sanitized.sql
+        ↓
+validate expected 58 tables
+```
+
+The restore task runs inside the private application network and reaches the private MariaDB database over the existing ECS-to-database security-group path.
+
+Database credentials are not stored in GitHub, the Docker image or the repository. The task receives the current RDS-managed credentials through AWS Secrets Manager.
+
+The restore task is intentionally one-off rather than a permanently running service because it is required only during environment recovery.
+
+The application deployment stage begins only after the database restore succeeds.
+
+---
+
+## 9. Application Recovery
 
 After Terraform recreates the infrastructure, ECR exists again but is empty.
 
@@ -252,7 +317,7 @@ application artifact recovery
 
 ---
 
-## 9. Deployment Validation
+## 10. Deployment Validation
 
 The current deployment workflow does not rely only on one ECS deployment action result.
 
@@ -284,7 +349,7 @@ rather than by calling the ALB directly.
 
 ---
 
-## 10. Persistent DNS
+## 11. Persistent DNS
 
 The public hostname is:
 
@@ -310,7 +375,7 @@ from HCP Terraform outputs and updates Route 53 automatically.
 
 ---
 
-## 11. Cross-Account Route 53 Authentication
+## 12. Cross-Account Route 53 Authentication
 
 GitHub Actions uses a separate OIDC role in the personal AWS account.
 
@@ -340,7 +405,7 @@ The CNAME uses a short TTL so the hostname can follow rebuilt CloudFront infrast
 
 ---
 
-## 12. End-to-End Recovery Flow
+## 13. End-to-End Recovery Flow
 
 ```text
 Nightly sandbox cleanup
@@ -358,6 +423,14 @@ Primary GitHub recovery run
 HCP Terraform rebuild
         ↓
 ECR / ECS / ALB / CloudFront / RDS / other resources recreated
+        ↓
+Database-restore image built and pushed to ECR
+        ↓
+One-off ECS Fargate restore task
+        ↓
+Sanitized MariaDB database restored
+        ↓
+58 tables validated
         ↓
 Application deployment workflow
         ↓
@@ -392,7 +465,7 @@ skip       full recovery
 
 ---
 
-## 13. Manual End-to-End Validation
+## 14. Manual End-to-End Validation
 
 The complete recovery workflow was tested manually with `workflow_dispatch`. Before the training sandbox was activated, HCP Terraform received explicit-deny errors on AWS read operations. After the sandbox was activated, the same recovery path completed successfully.
 
@@ -401,10 +474,11 @@ This validates an important boundary: **sandbox activation is manual; recovery a
 Validated stages:
 
 ```text
-Check Whether Recovery Is Needed      PASS
-Rebuild AWS Infrastructure            PASS
-Restore LangNation Application        PASS
-Sync Persistent Route 53 DNS          PASS
+Check Whether Recovery Is Needed         PASS
+Rebuild AWS Infrastructure               PASS
+Restore Sanitized LangNation Database     PASS
+Restore LangNation Application            PASS
+Sync Persistent Route 53 DNS              PASS
 ```
 
 The final public health check also succeeded.
@@ -415,7 +489,7 @@ Additional real scheduled runs can still be recorded as operational evidence, bu
 
 ---
 
-## 14. Security Decisions
+## 15. Security Decisions
 
 ### GitHub OIDC instead of static credentials
 
@@ -449,7 +523,7 @@ It does not bypass WAF by health-checking the ALB directly.
 
 ---
 
-## 15. Reliability Decisions
+## 16. Reliability Decisions
 
 The recovery workflow includes several reliability controls:
 
@@ -457,6 +531,8 @@ The recovery workflow includes several reliability controls:
 - fallback health check to avoid duplicate work
 - chained stages instead of independent timers
 - HCP Terraform status polling
+- one-off database restore before application deployment
+- 58-table database validation
 - reusable application deployment workflow
 - independent ECS stability validation
 - exact Git-SHA deployment verification
@@ -468,7 +544,7 @@ A workflow is considered successful only when the public application is actually
 
 ---
 
-## 16. Troubleshooting and Improvements
+## 17. Troubleshooting and Improvements
 
 ### Scheduled run did not execute as expected
 
@@ -502,11 +578,13 @@ A deployment action once reported failure even though ECS later converged succes
 
 ---
 
-## 17. What I Learned
+## 18. What I Learned
 
 OP01 gave me practical experience with:
 
 - recovery automation
+- one-off ECS Fargate database restoration
+- Secrets Manager integration during recovery
 - HCP Terraform API runs
 - controlled auto-apply
 - GitHub Actions reusable workflows
@@ -532,7 +610,7 @@ external DNS dependencies
 
 ---
 
-## 18. Result
+## 19. Result
 
 Before OP01:
 
@@ -540,6 +618,8 @@ Before OP01:
 Morning
   ↓
 manually rebuild infrastructure
+  ↓
+manually restore database
   ↓
 manually restore Docker image
   ↓
@@ -558,6 +638,8 @@ active AWS session
 07:37 primary or manual trigger
         ↓
 automatic infrastructure recovery
+        ↓
+automatic sanitized database recovery
         ↓
 automatic application recovery
         ↓
@@ -578,6 +660,22 @@ After the training sandbox is manually activated, the disposable environment can
 
 ---
 
-## Interview / Presentation Summary
+## 20. Related Evidence
 
-> My AWS training sandbox removes resources overnight. The sandbox itself must be activated manually because GitHub Actions cannot start the educational sandbox. Once an active AWS session exists, I automated the remaining recovery process. A primary GitHub Actions workflow runs at 07:37 Europe/Berlin, with a fallback at 08:17 that first checks whether the application is already healthy. The workflow calls the HCP Terraform API to rebuild the infrastructure using an isolated auto-apply run, then invokes the reusable deployment workflow to rebuild the Docker image, push the Git-SHA-tagged image to ECR and restore the ECS service. After the edge infrastructure is recreated, the workflow reads the current CloudFront domain from Terraform outputs, assumes a least-privilege cross-account Route 53 role through OIDC, updates `cloud.namienterprises.in`, waits for DNS to become `INSYNC` and finally verifies the public HTTPS `/health` endpoint. Normal Terraform development still keeps global auto-apply disabled, so automatic apply is limited to this recovery workflow.
+Operational evidence for the recovery design is maintained separately from this runbook.
+
+Relevant locations:
+
+```text
+docs/architecture/flows/morning-sandbox-recovery.png
+docs/evidence/M06-validation-evidence.md
+docs/evidence/screenshots/
+```
+
+The architecture diagram explains the recovery sequence, while evidence files and screenshots prove that the workflow and its dependent services behaved as expected.
+
+---
+
+## Presentation Summary
+
+> My AWS training sandbox removes resources overnight, while the educational sandbox itself still has to be activated manually before AWS API access is available. Once the session is active, OP01 coordinates the remaining recovery process. A primary GitHub Actions run is scheduled for 07:37 Europe/Berlin, with an 08:17 fallback that first checks whether the public endpoint is already healthy. The workflow calls the HCP Terraform API to recreate the disposable infrastructure through a dedicated recovery run, then builds a database-restore image, launches a one-off ECS Fargate restore task, reads the current RDS credentials from Secrets Manager, restores the sanitized LangNation MariaDB dataset and validates the expected 58 tables. It then invokes the reusable application deployment workflow to build the Git-SHA-tagged image, push it to ECR, update ECS and verify service stability. Finally, the workflow reads the recreated CloudFront domain from HCP Terraform outputs, assumes a least-privilege Route 53 role in the persistent personal AWS account through GitHub OIDC, updates `cloud.namienterprises.in`, waits for `INSYNC` and verifies the public HTTPS `/health` endpoint. Normal Terraform development still keeps global auto-apply disabled; automated apply is isolated to the known recovery path.

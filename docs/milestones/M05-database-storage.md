@@ -1,34 +1,58 @@
 # LangNation Cloud Platform
 ## Milestone 5 — Database & Storage
 
-**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS
-**Course:** AWS Cloud Computing with AI Bootcamp
-**Environment:** Development (`dev`)
-**AWS Region:** `us-east-1`
-**Infrastructure as Code:** Terraform
-**Database:** Amazon RDS for MySQL
-**Object Storage:** Amazon S3
+**Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS  
+**Author:** Seraj Ahmad Siddiqui  
+**Course:** AWS Cloud Computing with AI Bootcamp  
+**Environment:** Development (`dev`)  
+**AWS Region:** `us-east-1`  
+**Infrastructure as Code:** Terraform  
+**Relevant Technologies / Services:** Amazon RDS for MySQL, AWS Secrets Manager, Amazon S3, IAM, VPC Security Groups, Multi-AZ, Terraform lifecycle and storage controls  
+**Database:** Amazon RDS for MySQL  
+**Object Storage:** Amazon S3  
+**Remote State / Authoritative Plan & Apply:** HCP Terraform  
 **Status:** ✅ Complete
 
 ---
 
 ## 1. Objective
 
-Milestone 5 introduced persistent data services into the LangNation platform.
+Milestone 5 introduced persistent data services into the LangNation Cloud Platform.
 
-The milestone added two capabilities:
+The milestone added two major capabilities:
 
 - **Amazon RDS for MySQL** for relational application data
 - **Amazon S3** for private object storage and future application / RAG content
 
-The design preserves the principles established in the earlier milestones:
+The data layer extended the existing platform while preserving the design principles established in earlier milestones:
 
 - private application compute
 - isolated database networking
 - least-privilege security-group relationships
 - Multi-AZ availability
 - encryption at rest
+- managed credentials
 - reproducible Terraform deployment
+
+The resulting data flow became:
+
+```text
+Private ECS Fargate
+        │
+        ├───────────────┐
+        │               │
+        │ TCP 3306      │ HTTPS
+        ▼               ▼
+Private RDS MySQL     Amazon S3
+        │             private
+        │             encrypted
+        │             versioned
+        ▼
+Private DB subnets
+across two AZs
+```
+
+This milestone transformed the platform from a stateless application runtime into a system with durable relational and object storage.
 
 ---
 
@@ -42,9 +66,13 @@ I first recreated the Milestone 5 architecture in Excalidraw to understand how E
 
 ### Final Milestone Architecture
 
+The final milestone architecture shows the persistent database and object-storage services introduced in Milestone 5.
+
 ![Milestone 5 final architecture](../architecture/milestones/m05/milestone-architecture.png)
 
 ### Platform Design After Milestone 5
+
+This cumulative view shows the platform after networking, containerization, load balancing, Auto Scaling, CI/CD and persistent data services had been combined.
 
 ![Milestone 5 cumulative design sketch](../architecture/milestones/m05/design-sketch-platform.png)
 
@@ -53,6 +81,8 @@ I first recreated the Milestone 5 architecture in Excalidraw to understand how E
 ---
 
 ## 3. Data-Layer Architecture
+
+The Milestone 5 data architecture is:
 
 ```text
 ECS Fargate
@@ -68,17 +98,27 @@ DB Security Group      Amazon S3
 RDS MySQL              versioned
         │              HTTPS-only
         │
-  Private DB Subnets
-  us-east-1a + us-east-1b
+Private DB Subnets
+us-east-1a + us-east-1b
 ```
 
-The database remains reachable only from the application security group, while S3 provides private object storage for files and future AI/RAG source material.
+The database is reachable only from the application security group.
+
+Amazon S3 provides private object storage for:
+
+- application files
+- learning materials
+- future user uploads
+- exports
+- future AI/RAG source documents
+
+The storage module remains independent from the later RAG implementation.
 
 ---
 
-## 4. Amazon RDS MySQL
+## 4. Amazon RDS for MySQL
 
-### Final configuration
+### Final Configuration
 
 ```text
 Engine: MySQL
@@ -95,9 +135,11 @@ Database name: langnation
 Master password: managed by AWS Secrets Manager
 ```
 
-The explicit engine version was not pinned because the training sandbox denied the RDS engine-version discovery APIs. AWS selected a supported MySQL version during deployment.
+The explicit engine version was not pinned because the training sandbox denied the RDS engine-version discovery APIs.
 
-### DB subnet group
+AWS selected a supported MySQL version during deployment.
+
+### DB Subnet Group
 
 RDS uses both private database subnets:
 
@@ -106,9 +148,9 @@ RDS uses both private database subnets:
 10.0.22.0/24 — us-east-1b
 ```
 
-These subnets use private DB route tables with no default internet route.
+These subnets use private database route tables with no default internet route.
 
-### Terraform configuration
+### Terraform Configuration
 
 The database resource uses:
 
@@ -127,20 +169,20 @@ copy_tags_to_snapshot   = true
 auto_minor_version_upgrade = true
 ```
 
-For this training sandbox:
+For the disposable training sandbox:
 
 ```hcl
 deletion_protection = false
 skip_final_snapshot = true
 ```
 
-Those settings make rebuilds practical in an environment that is cleaned regularly.
+These settings make rebuilds practical in an environment that is regularly cleaned.
 
 ---
 
 ## 5. Database Security
 
-The database security-group path is:
+The database security-group relationship is:
 
 ```text
 ECS Security Group
@@ -156,17 +198,19 @@ RDS MySQL
 The important controls are:
 
 - RDS is not publicly accessible
-- RDS is placed only in private DB subnets
+- RDS is placed only in private database subnets
 - the DB security group accepts TCP `3306` only from the ECS security group
 - no public IPv4 or IPv6 CIDR rule is configured
-- the private DB route tables have no internet default route
+- the private DB route tables have no default internet route
 
-So the intended network relationship is:
+The intended network relationship is therefore:
 
 ```text
 Internet → RDS          ❌
 ECS → TCP 3306 → RDS   ✅
 ```
+
+A database endpoint can still exist while the database remains private. Public accessibility depends on routing, subnet placement, security groups and the RDS public-access setting.
 
 ---
 
@@ -177,7 +221,7 @@ The database password is not stored in:
 - Terraform source
 - GitHub
 - `.env` files
-- documentation
+- project documentation
 
 Instead:
 
@@ -187,13 +231,25 @@ manage_master_user_password = true
 
 allows RDS to manage the master password through AWS Secrets Manager.
 
-Only the secret reference/ARN is exposed through Terraform outputs; the secret value itself is never printed into the project documentation.
+Only the secret reference / ARN is exposed through Terraform outputs.
+
+The secret value itself is not printed into the repository or documentation.
+
+This separates:
+
+```text
+Infrastructure configuration
+→ Terraform
+
+Secret value
+→ AWS Secrets Manager
+```
 
 ---
 
 ## 7. Amazon S3
 
-Milestone 5 also introduced a private object-storage layer.
+Milestone 5 introduced a private object-storage layer.
 
 Bucket:
 
@@ -209,9 +265,7 @@ The bucket is intended for:
 - exports
 - future AI/RAG source documents
 
-The storage module remains independent from the later RAG implementation.
-
-### Security configuration
+### Security Configuration
 
 ```text
 Block Public Access: enabled
@@ -221,7 +275,7 @@ Server-side encryption: SSE-S3 / AES256
 HTTPS-only access: enforced
 ```
 
-### Public-access protection
+### Public-Access Protection
 
 All four S3 public-access controls are enabled:
 
@@ -232,7 +286,7 @@ BlockPublicPolicy: true
 RestrictPublicBuckets: true
 ```
 
-### HTTPS-only bucket policy
+### HTTPS-Only Bucket Policy
 
 The bucket policy denies requests when:
 
@@ -260,13 +314,18 @@ Incomplete multipart uploads: 7 days
 
 Current object versions are not automatically deleted by this rule.
 
-This keeps versioning useful for recovery while preventing unlimited accumulation of old versions.
+This keeps versioning useful for recovery while preventing unlimited accumulation of:
+
+- old object versions
+- incomplete multipart uploads
+
+The lifecycle configuration balances recoverability with storage hygiene.
 
 ---
 
 ## 9. Terraform Structure
 
-Milestone 5 introduced two reusable modules:
+Milestone 5 introduced two reusable Terraform modules:
 
 ```text
 terraform/
@@ -282,15 +341,26 @@ terraform/
         └── outputs.tf
 ```
 
-The modules intentionally separate:
+The modules intentionally separate responsibilities:
 
 ```text
-database concerns
-→ RDS, DB subnet group, Secrets Manager integration
+database
+→ RDS
+→ DB subnet group
+→ Secrets Manager integration
 
-storage concerns
-→ S3 security, versioning, encryption, lifecycle
+storage
+→ S3 security
+→ versioning
+→ encryption
+→ lifecycle management
 ```
+
+The database module consumes the private DB subnet IDs and database security group created in earlier milestones.
+
+The storage module remains independent from application runtime logic.
+
+No disposable AWS-generated resource IDs need to be hard-coded into the module design.
 
 ---
 
@@ -302,31 +372,86 @@ storage concerns
 2. created the RDS DB subnet group
 3. placed the subnet group across both private DB subnets
 4. created the MySQL RDS instance
-5. enabled storage encryption
-6. enabled Multi-AZ
-7. disabled public accessibility
-8. configured 7-day backups
-9. enabled RDS-managed master credentials
-10. restricted TCP 3306 to the ECS security group
-11. exposed safe database outputs without exposing the password
+5. configured 20 GiB gp3 storage
+6. enabled storage autoscaling up to 100 GiB
+7. enabled storage encryption
+8. enabled Multi-AZ
+9. disabled public accessibility
+10. configured seven-day backup retention
+11. enabled RDS-managed master credentials
+12. restricted TCP 3306 to the ECS security group
+13. exposed safe database outputs without exposing the password
 
-### Storage
+### Object Storage
 
-12. created the storage Terraform module
-13. created the S3 bucket
-14. enabled Block Public Access
-15. enabled `BucketOwnerEnforced`
-16. enabled versioning
-17. enabled SSE-S3 encryption
-18. enforced HTTPS-only access
-19. added lifecycle cleanup for old versions
-20. added cleanup for incomplete multipart uploads
+14. created the storage Terraform module
+15. created the S3 bucket
+16. enabled Block Public Access
+17. enabled `BucketOwnerEnforced`
+18. enabled versioning
+19. enabled SSE-S3 encryption
+20. enforced HTTPS-only access
+21. added lifecycle cleanup for noncurrent object versions
+22. added cleanup for incomplete multipart uploads
 
 ---
 
-## 11. Validation
+## 11. Useful Commands
 
-### RDS
+### Terraform Initialization
+
+```powershell
+terraform init
+```
+
+Required after introducing the new database and storage modules.
+
+### Terraform Formatting
+
+```powershell
+terraform fmt -recursive
+```
+
+Keeps Terraform configuration consistently formatted.
+
+### Terraform Validation
+
+```powershell
+terraform validate
+```
+
+Validates module references and configuration structure.
+
+### RDS Discovery Commands Attempted
+
+The sandbox restricted the APIs used for engine and instance discovery:
+
+```text
+rds:DescribeDBEngineVersions
+rds:DescribeOrderableDBInstanceOptions
+```
+
+Because those permissions were unavailable, the implementation avoided depending on local discovery of a pinned engine version.
+
+### Authoritative Infrastructure Operations
+
+The project continues to use:
+
+```text
+Local Terraform
+→ init / fmt / validate
+
+HCP Terraform
+→ authoritative plan / apply / remote state
+```
+
+---
+
+## 12. Validation
+
+The milestone was validated independently at the database, storage and Terraform layers.
+
+### Amazon RDS
 
 - [x] RDS instance status is `available`
 - [x] engine is MySQL
@@ -336,12 +461,13 @@ storage concerns
 - [x] Multi-AZ is enabled
 - [x] public access is disabled
 - [x] 20 GiB gp3 storage configured
+- [x] maximum storage configured at 100 GiB
 - [x] backup retention is 7 days
-- [x] DB subnet group spans both AZs
+- [x] DB subnet group spans both Availability Zones
 - [x] DB security group accepts only ECS SG traffic on port 3306
 - [x] master credentials are managed through Secrets Manager
 
-### S3
+### Amazon S3
 
 - [x] bucket created successfully
 - [x] public access fully blocked
@@ -361,7 +487,7 @@ storage concerns
 
 ---
 
-## 12. Sandbox Rebuild Validation
+## 13. Controlled Recovery / Sandbox Rebuild Validation
 
 The training sandbox removes AWS resources regularly.
 
@@ -381,7 +507,7 @@ GitHub Actions
 → application artifact + deployment recovery
 ```
 
-After the deployment pipeline completed, the ECS service returned to:
+After the application deployment completed, the ECS service returned to:
 
 ```text
 Desired: 2
@@ -389,13 +515,13 @@ Running: 2
 Pending: 0
 ```
 
-This demonstrated that infrastructure and application recovery work together.
+This demonstrated that infrastructure recovery and application artifact recovery are separate but complementary responsibilities.
 
 ---
 
-## 13. Problems and Solutions
+## 14. Problems and Solutions
 
-### RDS engine discovery APIs were denied
+### Problem 1 — RDS Engine Discovery APIs Were Denied
 
 The sandbox denied:
 
@@ -404,13 +530,21 @@ rds:DescribeDBEngineVersions
 rds:DescribeOrderableDBInstanceOptions
 ```
 
-**Impact:** local CLI discovery of supported versions/classes was limited.
+**Impact:**  
+Local CLI discovery of supported engine versions and instance combinations was limited.
 
-**Decision:** do not pin an explicit engine version in Terraform; allow AWS to select a supported version.
+**Decision:**  
+Do not pin an explicit engine version in Terraform and allow AWS to select a supported version during deployment.
 
-**Result:** MySQL `8.4.11` was deployed successfully.
+**Result:**  
+MySQL `8.4.11` was deployed successfully.
 
-### New Terraform module was not initialized
+**Lesson:**  
+Infrastructure code sometimes needs to adapt to the permissions available in a managed training environment.
+
+---
+
+### Problem 2 — New Terraform Module Was Not Initialized
 
 After adding a new local module, validation reported:
 
@@ -418,71 +552,148 @@ After adding a new local module, validation reported:
 Module not installed
 ```
 
+**Cause:**  
+Terraform had not been reinitialized after introducing the new module.
+
 **Fix:**
 
 ```powershell
 terraform init
 ```
 
-### Terminal output was accidentally pasted into PowerShell
-
-Prompt and output characters were pasted together with commands, causing PowerShell to try to execute non-command text.
-
-**Lesson:** copy only the command itself, especially during step-by-step troubleshooting.
+**Lesson:**  
+New module references require Terraform initialization before validation can succeed.
 
 ---
 
-## 14. Security Decisions
+### Problem 3 — Terminal Output Was Accidentally Pasted into PowerShell
 
-### Database
+Prompt and output characters were pasted together with commands, causing PowerShell to interpret non-command text as executable input.
 
-```text
-Private DB subnets           ✅
-No public RDS access         ✅
-Storage encryption           ✅
-Secrets Manager credentials  ✅
-ECS SG → DB SG only          ✅
-TCP 3306 only                ✅
-Automated backups            ✅
-Multi-AZ                     ✅
-```
+**Fix:**  
+Run only the actual command text.
 
-### S3
-
-```text
-Public access blocked        ✅
-ACL-based ownership disabled ✅
-Versioning enabled           ✅
-SSE-S3 encryption            ✅
-HTTPS-only                   ✅
-Old-version cleanup          ✅
-Multipart cleanup            ✅
-```
-
-> **Current-state note:** Milestone 6 later hardened the public application path with CloudFront, WAF and Cognito, but the private RDS/S3 design established here remains part of the current architecture.
+**Lesson:**  
+During step-by-step troubleshooting, terminal prompts and previous output should not be copied together with commands.
 
 ---
 
-## 15. Cost Decisions
+## 15. Security Decisions
+
+### Private Database Placement
+
+RDS is deployed only in the private database subnets.
+
+The database is not publicly accessible.
+
+### Security-Group Referencing
+
+Database traffic follows:
+
+```text
+ECS Security Group
+        ↓ TCP 3306
+Database Security Group
+        ↓
+RDS
+```
+
+No public CIDR access is required.
+
+### Managed Credentials
+
+RDS manages the master password through AWS Secrets Manager.
+
+The password is not stored in source code, GitHub or Terraform configuration.
+
+### Encryption at Rest
+
+RDS storage encryption is enabled.
+
+The S3 bucket uses SSE-S3 / AES256 encryption.
+
+### S3 Public Access Controls
+
+The object-storage layer uses:
+
+```text
+Block Public Access
+BucketOwnerEnforced
+HTTPS-only policy
+```
+
+### S3 Versioning
+
+Versioning provides an additional recovery mechanism for stored objects.
+
+### Current-State Note
+
+> Milestone 6 later hardened the public application path with CloudFront, WAF and Cognito, but the private RDS and S3 security design established here remains part of the platform.
+
+---
+
+## 16. Cost and Operational Decisions
+
+### Multi-AZ RDS
 
 The largest Milestone 5 cost driver is Multi-AZ RDS.
 
-Multi-AZ improves availability but requires additional database infrastructure compared with a Single-AZ development database.
+Multi-AZ improves database availability but requires more infrastructure than a Single-AZ development database.
 
-Other cost considerations include:
+For this capstone, the higher cost was accepted because the project demonstrates a production-style highly available architecture.
 
-- gp3 storage
-- backup storage
-- Secrets Manager
-- data transfer
-- S3 stored object versions
-- S3 requests
+### RDS Instance and Storage
 
-The S3 lifecycle rule helps prevent indefinite growth of old object versions.
+The database uses:
+
+```text
+db.t3.micro
+20 GiB gp3
+maximum storage 100 GiB
+```
+
+This keeps the database relatively small while still demonstrating:
+
+- managed relational storage
+- Multi-AZ
+- backup retention
+- storage autoscaling
+
+### Backup Retention
+
+Backups are retained for:
+
+```text
+7 days
+```
+
+This provides recovery capability without retaining development backups indefinitely.
+
+### S3 Lifecycle Management
+
+The lifecycle configuration reduces unnecessary long-term storage growth:
+
+```text
+Noncurrent versions: 30 days
+Incomplete multipart uploads: 7 days
+```
+
+### Disposable Sandbox Settings
+
+For the training environment:
+
+```text
+deletion_protection = false
+skip_final_snapshot = true
+```
+
+These settings prioritize reproducible rebuilds over long-lived resource preservation.
+
+They are environment-specific choices rather than a recommendation for every production database.
 
 ---
 
-## 16. What I Learned
+## 17. What I Learned
 
 This milestone gave me practical experience with:
 
@@ -493,6 +704,7 @@ This milestone gave me practical experience with:
 - managed database credentials
 - AWS Secrets Manager integration
 - RDS backup retention
+- storage autoscaling
 - S3 Block Public Access
 - S3 object ownership
 - versioning
@@ -501,11 +713,27 @@ This milestone gave me practical experience with:
 - lifecycle management
 - infrastructure recovery after sandbox cleanup
 
-One important lesson was that a database can still have a DNS endpoint while remaining private. Public accessibility depends on network placement, routing, security groups and the RDS public-access setting—not merely on whether an endpoint exists.
+One important lesson was that a database can still have a DNS endpoint while remaining private.
+
+Public accessibility depends on:
+
+```text
+subnet placement
++
+routing
++
+security groups
++
+RDS publicly_accessible setting
+```
+
+not merely on whether the service has a DNS endpoint.
+
+Another important lesson was that durable application data introduces different recovery responsibilities from stateless application compute.
 
 ---
 
-## 17. Result
+## 18. Result
 
 Before Milestone 5:
 
@@ -531,6 +759,7 @@ LangNation
 │   ├── private
 │   ├── Multi-AZ
 │   ├── encrypted
+│   ├── backed up
 │   └── Secrets Manager credentials
 │
 └── Amazon S3
@@ -541,10 +770,28 @@ LangNation
     └── lifecycle managed
 ```
 
-Milestone 5 added a secure, persistent data layer and prepared the platform for **Milestone 6 — Edge, DNS, Security & Authentication**.
+Final milestone state:
+
+```text
+Private RDS MySQL                 ✅
+Multi-AZ database                 ✅
+Encrypted database storage        ✅
+Secrets Manager credentials       ✅
+7-day database backups            ✅
+Private S3 bucket                 ✅
+S3 Block Public Access            ✅
+BucketOwnerEnforced               ✅
+S3 versioning                     ✅
+SSE-S3 encryption                 ✅
+HTTPS-only S3 access              ✅
+Lifecycle management              ✅
+Sandbox rebuild validation        ✅
+```
+
+Milestone 5 added a secure persistent data layer and prepared the platform for **Milestone 6 — Edge, DNS, Security & Authentication**.
 
 ---
 
-## Interview / Presentation Summary
+## Presentation Summary
 
-> I added the persistent data layer using Amazon RDS MySQL and Amazon S3. RDS runs in dedicated private database subnets across two Availability Zones, is encrypted, is not publicly accessible and only accepts MySQL traffic on port 3306 from the ECS security group. RDS manages the master password through Secrets Manager, so the password is not stored in Terraform or GitHub. For object storage, I created a private S3 bucket with Block Public Access, BucketOwnerEnforced ownership, versioning, SSE-S3 encryption, HTTPS-only access and lifecycle cleanup. I also validated that after the training sandbox removed the environment, Terraform could recreate the infrastructure and the GitHub Actions pipeline could restore the application separately.
+> In Milestone 5 I added the persistent data layer using Amazon RDS for MySQL and Amazon S3. RDS runs in dedicated private database subnets across two Availability Zones, is encrypted, is not publicly accessible and accepts MySQL traffic on port 3306 only from the ECS security group. RDS manages the master password through AWS Secrets Manager so credentials are not stored in Terraform or GitHub. For object storage, I created a private S3 bucket with Block Public Access, BucketOwnerEnforced ownership, versioning, SSE-S3 encryption, HTTPS-only access and lifecycle cleanup. I also validated the recovery model after the training sandbox removed the environment: HCP Terraform could recreate the infrastructure while the GitHub Actions deployment pipeline separately restored the application artifact. The main lesson was that database security depends on network placement, routing, security groups and service configuration together—not simply on whether the database has an endpoint.

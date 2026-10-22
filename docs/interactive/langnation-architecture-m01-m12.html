@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LangNation Cloud Platform — Detailed Interactive Walkthrough M1–M12</title>
+<style>
+:root{--bg:#edf3f8;--paper:#fff;--ink:#10243f;--muted:#667085;--line:#cbd6e2;--purple:#7c3aed;--blue:#1682e8;--orange:#f97316;--green:#16a34a;--pink:#e83e8c;--teal:#0f9f8f;--red:#e5484d;--gold:#d99a15;--indigo:#4f46e5}
+*{box-sizing:border-box} html,body{margin:0;height:100%;font-family:Segoe UI,Inter,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+body{display:flex;flex-direction:column}.top{min-height:58px;background:white;border-bottom:1px solid #dbe4ed;display:flex;align-items:center;justify-content:space-between;padding:8px 18px 8px 24px;gap:12px;position:sticky;top:0;z-index:30}
+.brand{font-weight:800;font-size:14px}.brand span{font-weight:500;color:#7c899a}.ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+button,select{height:38px;border:1px solid #c8d5e3;background:#fff;border-radius:10px;color:#173554;font-size:13px;padding:0 12px;cursor:pointer}select{min-width:360px}
+.mainstage{flex:1;overflow:auto;padding:16px;display:flex;justify-content:center;align-items:flex-start}.board{width:1880px;min-width:1450px;background:#fff;border:1px solid #dfe7ef;box-shadow:0 14px 42px rgba(15,39,68,.11);padding:18px;position:relative;transform-origin:top center}
+#svg{position:absolute;inset:0;pointer-events:none;z-index:8;overflow:visible}.title{display:flex;justify-content:space-between;gap:20px;margin-bottom:10px}.title h1{margin:0;font-size:22px}.sub{font-size:10px;color:#6d798b;line-height:1.45}
+.pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.pill{font-size:8.6px;border:1px solid #d4dee9;border-radius:99px;padding:4px 7px;background:#fff}.pill.on{background:#173a61;color:white;border-color:#173a61}
+.grid{display:grid;grid-template-columns:255px 1fr 300px;gap:12px}.panel{border:1px solid #bfd0e1;border-radius:10px;background:#f9fbfe;padding:10px;position:relative}.panel h2{font-size:12px;margin:0 0 4px;color:#1768aa}.hint{font-size:8.5px;color:#748195;margin-bottom:8px}
+.stack{display:flex;flex-direction:column;gap:8px}.node{background:#fff;border:1.5px solid #c0ccda;border-radius:8px;padding:7px 9px;min-height:45px;position:relative;transition:.22s;box-shadow:0 1px 0 rgba(15,39,68,.02)}
+.node .name{font-size:10.4px;font-weight:800}.node .small{font-size:7.8px;color:#6d798b;margin-top:3px;line-height:1.3}.node .port{font-size:7.4px;color:#526176;margin-top:2px}.node.active{box-shadow:0 0 0 3px rgba(22,130,232,.15),0 7px 18px rgba(15,39,68,.09);transform:translateY(-1px)}.node.dim{opacity:.12;filter:grayscale(.65)}
+.node[data-kind="edge"]{border-color:#c2a5fb}.node[data-kind="cicd"]{border-color:#ffc08c}.node[data-kind="compute"]{border-color:#ffb875}.node[data-kind="data"]{border-color:#8fcaf4}.node[data-kind="storage"]{border-color:#8fd7a8}.node[data-kind="auth"]{border-color:#f1a6c1}.node[data-kind="infra"]{border-color:#baa0ef}.node[data-kind="network"]{border-color:#89c0ee}.node[data-kind="security"]{border-color:#f2b3b7}.node[data-kind="event"]{border-color:#f6a3d3}.node[data-kind="ai"]{border-color:#a99cff}.node[data-kind="ops"]{border-color:#7bc6c1}.node[data-kind="cost"]{border-color:#eac87c}
+.center{display:grid;gap:10px}.edgepanel{background:#fcf9ff}.edgegrid{display:grid;grid-template-columns:100px 125px 150px 210px 1fr;gap:8px;align-items:center}
+.vpc{background:#f5faff;padding:10px}.vpctitle{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:7px}.vpctitle h2{margin:0;color:#1269b0}.sgstrip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}.albrow{display:grid;grid-template-columns:180px 1fr 200px;gap:10px;align-items:center;margin-bottom:8px}
+.azgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.az{border:1px solid #b9d7ed;border-radius:9px;padding:9px;background:#fff;min-height:340px}.aztitle{font-size:10.2px;font-weight:800;color:#1269b0}.cidr{font-size:7.6px;color:#6d7888;font-weight:500}.tier{border-radius:7px;padding:7px;margin-top:7px}.public{background:#eef8ef}.app{background:#eef7fd}.db{background:#f3effb}.tiertitle{font-size:8.2px;font-weight:700;color:#526176;margin-bottom:5px}.cols{display:grid;grid-template-columns:125px 1fr;gap:8px;align-items:center}.dbcols{display:grid;grid-template-columns:1fr 1fr;gap:8px}.servicegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.eventpanel{background:#fff8fc}.ragpanel{background:#faf9ff}.opspanel{background:#f7fcfb}.sideRight{background:#fffaf5}.steps{display:flex;flex-direction:column;gap:7px}.step{border:1px solid #e5e7eb;border-radius:8px;background:#fff;padding:7px 8px;display:grid;grid-template-columns:24px 1fr;gap:7px;align-items:start}.step .num{width:22px;height:22px;border-radius:50%;background:#173a61;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:800}.step .txt{font-size:9px;line-height:1.35;color:#4d5c6e}
+.callout{margin-top:9px;background:#f6faff;border-left:4px solid var(--blue);border-radius:6px;padding:8px 10px;font-size:9.4px;line-height:1.45;color:#536275}.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:11px;font-size:8px;color:#69778b}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}.status{min-height:46px;background:#fff;border-top:1px solid #d8e1ea;padding:8px 22px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;font-size:11px;color:#59687b}.keys{font-size:10px;color:#7d8998}
+path.flow{fill:none;stroke-width:2.4;opacity:.95}.web{stroke:var(--purple)}.cicd{stroke:var(--orange)}.data{stroke:var(--blue)}.storage{stroke:var(--green)}.auth{stroke:var(--pink);stroke-dasharray:6 5}.recovery{stroke:var(--green)}.network{stroke:var(--teal)}.security{stroke:var(--red)}.event{stroke:#d946ef}.ai{stroke:var(--indigo)}.ops{stroke:#0f9f8f}.cost{stroke:var(--gold)}
+.label{font-size:7.7px;fill:#516174;font-weight:600;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}.badge{font-size:9px;color:#6d798b;text-align:right;line-height:1.5}
+body[data-theme="dark"]{--bg:#0b1220;--paper:#101827;--ink:#e7eef8;--muted:#9fb0c4;--line:#334155}body[data-theme="dark"] .top,body[data-theme="dark"] .status{background:#0f172a;border-color:#263449;color:#cbd5e1}body[data-theme="dark"] .board{background:#111827;border-color:#263449;box-shadow:0 14px 42px rgba(0,0,0,.45)}body[data-theme="dark"] .panel{background:#111b2c;border-color:#31445d}body[data-theme="dark"] .edgepanel{background:#171426}body[data-theme="dark"] .vpc{background:#0f1d2d}body[data-theme="dark"] .eventpanel{background:#241624}body[data-theme="dark"] .ragpanel{background:#18172a}body[data-theme="dark"] .opspanel{background:#102422}body[data-theme="dark"] .sideRight{background:#211a13}body[data-theme="dark"] .node{background:#121c2b;color:#eaf2fb;border-color:#496078}body[data-theme="dark"] .node .small,body[data-theme="dark"] .node .port,body[data-theme="dark"] .hint,body[data-theme="dark"] .sub,body[data-theme="dark"] .badge,body[data-theme="dark"] .keys,body[data-theme="dark"] .legend{color:#a9b7c9}body[data-theme="dark"] .az{background:#101827;border-color:#35526d}body[data-theme="dark"] .public{background:#11261a}body[data-theme="dark"] .app{background:#102334}body[data-theme="dark"] .db{background:#201b31}body[data-theme="dark"] .step{background:#121c2b;border-color:#334155}body[data-theme="dark"] .step .txt{color:#cbd5e1}body[data-theme="dark"] .callout{background:#102238;color:#cbd5e1}body[data-theme="dark"] button,body[data-theme="dark"] select{background:#111827;color:#e7eef8;border-color:#3a4a60}body[data-theme="dark"] .pill{background:#101827;color:#cbd5e1;border-color:#415168}body[data-theme="dark"] .pill.on{background:#dbeafe;color:#10243f;border-color:#dbeafe}body[data-theme="dark"] .label{fill:#d8e4f0;stroke:#111827}
+#speed{min-width:92px}.overviewStatus{font-size:9px;color:#6d798b;margin-top:4px}body[data-theme="dark"] .overviewStatus{color:#a9b7c9}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand">LangNation <span>/ detailed architecture walkthrough · M1–M12</span></div>
+  <div class="ctrl">
+    <button id="play" title="Pause or resume all architecture animations">Pause</button>
+    <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1.0×</option><option value="1.5">1.5×</option><option value="2">2.0×</option></select>
+    <button id="theme">◐</button>
+    <select id="sel">
+      <option value="all">Overview · All flows animated together</option>
+      <option value="auto">Auto Presentation · M1 → M12 → Key Flows</option>
+      <optgroup label="Milestones">
+        <option value="m1">M1 · Foundation & Networking</option><option value="m2">M2 · Docker, ECR & ECS Fargate</option><option value="m3">M3 · ALB, Multi-AZ & Auto Scaling</option><option value="m4">M4 · Automated Deployment</option><option value="m5">M5 · Database & Storage</option><option value="m6">M6 · Edge, DNS, Security & Authentication</option><option value="m7">M7 · Serverless Event Processing</option><option value="m8">M8 · RAG Knowledge Pipeline</option><option value="m9">M9 · Real App + Lina RAG Runtime</option><option value="m10">M10 · Monitoring & Governance</option><option value="m11">M11 · CI/CD Quality Gates</option><option value="m12">M12 · Resilience & Cost Validation</option>
+      </optgroup>
+      <optgroup label="End-to-end flows">
+        <option value="web">Flow · Public web request</option><option value="auth">Flow · Cognito authentication</option><option value="cicd">Flow · CI/CD deployment</option><option value="data">Flow · Database & storage</option><option value="eventflow">Flow · Event-driven processing</option><option value="rag">Flow · RAG ingestion</option><option value="lina">Flow · Lina grounded answer</option><option value="monitoring">Flow · Monitoring & audit</option><option value="qualityflow">Flow · Quality gates</option><option value="resilienceflow">Flow · ECS self-healing</option><option value="costview">Flow · Cost analysis</option><option value="recovery">Flow · Morning sandbox recovery</option><option value="iac">Flow · Terraform / IaC provisioning</option>
+      </optgroup>
+    </select>
+    <button id="minus">−</button><button id="fit">Fit</button><button id="plus">+</button><button id="full">Fullscreen</button>
+  </div>
+</div>
+<div class="mainstage" id="stage"><div class="board" id="board"><svg id="svg"></svg>
+<div class="title"><div><h1>LangNation Cloud Platform — Milestones 1–12</h1><div class="sub">AWS us-east-1 · Terraform/HCP-managed · ECS Fargate · Multi-AZ MariaDB · Event-driven RAG · CloudWatch/CloudTrail · quality-gated CI/CD · automated recovery</div><div class="overviewStatus" id="overviewStatus">Complete platform overview</div><div class="pills">
+<span class="pill" data-p="m1">M1 Network</span><span class="pill" data-p="m2">M2 Containers</span><span class="pill" data-p="m3">M3 HA</span><span class="pill" data-p="m4">M4 CI/CD</span><span class="pill" data-p="m5">M5 Data</span><span class="pill" data-p="m6">M6 Edge/Auth</span><span class="pill" data-p="m7">M7 Events</span><span class="pill" data-p="m8">M8 RAG</span><span class="pill" data-p="m9">M9 Lina</span><span class="pill" data-p="m10">M10 Ops</span><span class="pill" data-p="m11">M11 Gates</span><span class="pill" data-p="m12">M12 Final</span>
+</div></div><div class="badge"><b>Final capstone walkthrough</b><br>Select a milestone or flow.<br>Animated paths show direction.</div></div>
+
+<div class="grid">
+<section class="panel"><h2>Delivery & Recovery</h2><div class="hint">Source, CI/CD, Terraform, quality gates and sandbox recovery</div><div class="stack">
+<div class="node" id="dev" data-kind="cicd"><div class="name">Developer / GitHub</div><div class="small">Push to main branch</div></div>
+<div class="node" id="quality" data-kind="security"><div class="name">M11 Quality Gates</div><div class="small">App · npm audit · Terraform · Docker smoke · Trivy</div></div>
+<div class="node" id="gha" data-kind="cicd"><div class="name">GitHub Actions</div><div class="small">Build · deploy · verify · recover</div></div>
+<div class="node" id="oidc" data-kind="auth"><div class="name">GitHub OIDC → AWS STS</div><div class="small">Temporary credentials · no static AWS keys</div></div>
+<div class="node" id="ecr" data-kind="cicd"><div class="name">Amazon ECR</div><div class="small">Application + DB restore images</div></div>
+<div class="node" id="taskdef" data-kind="cicd"><div class="name">ECS Task Definition</div><div class="small">Versioned Git-SHA application image</div></div>
+<div class="node" id="tfcode" data-kind="infra"><div class="name">Terraform Code</div><div class="small">network · security · compute · data · edge · events · RAG · monitoring</div></div>
+<div class="node" id="hcp" data-kind="infra"><div class="name">HCP Terraform</div><div class="small">langnation-capstone-dev · authoritative state/plan/apply</div></div>
+<div class="node" id="morning" data-kind="storage"><div class="name">OP01 Morning Recovery</div><div class="small">07:37 primary · 08:17 fallback · manual sandbox activation</div></div>
+</div></section>
+
+<div class="center">
+<section class="panel edgepanel"><h2>Public Edge, DNS & Authentication</h2><div class="hint">Persistent DNS is separated from the disposable training sandbox</div><div class="edgegrid">
+<div class="node" id="user" data-kind="edge"><div class="name">Users</div><div class="small">Students · staff · admins</div></div>
+<div class="node" id="registrar" data-kind="network"><div class="name">Domain Registrar</div><div class="small">NS delegation</div></div>
+<div class="node" id="r53" data-kind="edge"><div class="name">Route 53</div><div class="small">Persistent personal AWS account</div></div>
+<div class="node" id="cf" data-kind="edge"><div class="name">CloudFront + WAF + ACM</div><div class="small">HTTPS edge · WAF rules · managed TLS</div></div>
+<div class="node" id="cognito" data-kind="auth"><div class="name">Amazon Cognito</div><div class="small">Email login · JWT access token</div></div>
+</div></section>
+
+<section class="panel vpc"><div class="vpctitle"><div><h2>AWS VPC · 10.0.0.0/16</h2><div class="hint">Two AZs · public / private app / private DB tiers</div></div><div class="node" id="autoscale" data-kind="compute" style="width:230px"><div class="name">ECS Service Auto Scaling</div><div class="small">min 2 · max 4 · target CPU 50%</div></div></div>
+<div class="sgstrip"><div class="node" id="albsg" data-kind="security"><div class="name">ALB Security Group</div><div class="small">HTTP 80 only from CloudFront origin prefix list</div></div><div class="node" id="ecssg" data-kind="security"><div class="name">ECS Security Group</div><div class="small">TCP 3000 only from ALB SG</div></div><div class="node" id="dbsg" data-kind="security"><div class="name">DB Security Group</div><div class="small">MariaDB 3306 only from ECS SG</div></div></div>
+<div class="albrow"><div class="node" id="igw" data-kind="network"><div class="name">Internet Gateway</div><div class="small">Public VPC internet path</div></div><div class="node" id="alb" data-kind="edge"><div class="name">Application Load Balancer</div><div class="small">CloudFront origin · public subnets</div><div class="port">HTTP 80 → target group :3000 · /health</div></div><div class="node" id="tg" data-kind="compute"><div class="name">Target Group</div><div class="small">Target type IP · healthy ECS tasks</div></div></div>
+<div class="azgrid">
+<div class="az"><div class="aztitle">us-east-1a <span class="cidr">Public 10.0.1.0/24 · App 10.0.11.0/24 · DB 10.0.21.0/24</span></div>
+<div class="tier public"><div class="tiertitle">Public subnet 1</div><div class="cols"><div class="node" id="prt1" data-kind="network"><div class="name">Public RT</div><div class="small">0.0.0.0/0 → IGW</div></div><div class="node" id="nat1" data-kind="network"><div class="name">NAT Gateway 1 + EIP</div><div class="small">Private app outbound</div></div></div></div>
+<div class="tier app"><div class="tiertitle">Private app subnet 1</div><div class="cols"><div class="node" id="art1" data-kind="network"><div class="name">Private App RT 1</div><div class="small">0.0.0.0/0 → NAT 1</div></div><div class="node" id="taskA" data-kind="compute"><div class="name">ECS Fargate · Task A</div><div class="small">Real LangNation app · no public IP</div></div></div></div>
+<div class="tier db"><div class="tiertitle">Private DB subnet 1</div><div class="dbcols"><div class="node" id="dbrt1" data-kind="network"><div class="name">Private DB RT 1</div><div class="small">Local route only</div></div><div class="node" id="rds1" data-kind="data"><div class="name">RDS MariaDB · Primary</div><div class="small">11.8.9 · db.t3.micro · encrypted</div></div></div></div>
+</div>
+<div class="az"><div class="aztitle">us-east-1b <span class="cidr">Public 10.0.2.0/24 · App 10.0.12.0/24 · DB 10.0.22.0/24</span></div>
+<div class="tier public"><div class="tiertitle">Public subnet 2</div><div class="cols"><div class="node" id="prt2" data-kind="network"><div class="name">Public RT</div><div class="small">0.0.0.0/0 → IGW</div></div><div class="node" id="nat2" data-kind="network"><div class="name">NAT Gateway 2 + EIP</div><div class="small">Private app outbound</div></div></div></div>
+<div class="tier app"><div class="tiertitle">Private app subnet 2</div><div class="cols"><div class="node" id="art2" data-kind="network"><div class="name">Private App RT 2</div><div class="small">0.0.0.0/0 → NAT 2</div></div><div class="node" id="taskB" data-kind="compute"><div class="name">ECS Fargate · Task B</div><div class="small">Real LangNation app · no public IP</div></div></div></div>
+<div class="tier db"><div class="tiertitle">Private DB subnet 2</div><div class="dbcols"><div class="node" id="dbrt2" data-kind="network"><div class="name">Private DB RT 2</div><div class="small">Local route only</div></div><div class="node" id="rds2" data-kind="data"><div class="name">RDS MariaDB · Standby</div><div class="small">Multi-AZ synchronous standby</div></div></div></div>
+</div></div>
+<div class="servicegrid" style="margin-top:8px"><div class="node" id="secret" data-kind="auth"><div class="name">Secrets Manager</div><div class="small">RDS credentials</div></div><div class="node" id="s3" data-kind="storage"><div class="name">Amazon S3</div><div class="small">Private · versioned · AES256</div></div><div class="node" id="dbrestore" data-kind="compute"><div class="name">DB Restore Task</div><div class="small">One-off Fargate · sanitized seed · 58 tables</div></div><div class="node" id="cwlogs" data-kind="ops"><div class="name">CloudWatch Logs</div><div class="small">Application + Lambda logs</div></div></div>
+</section>
+
+<section class="panel eventpanel"><h2>M7 · Event-Driven Processing</h2><div class="servicegrid"><div class="node" id="eventbridge" data-kind="event"><div class="name">EventBridge</div><div class="small">S3 Object Created rule</div></div><div class="node" id="sqs" data-kind="event"><div class="name">Amazon SQS</div><div class="small">180 s visibility · maxReceiveCount 3</div></div><div class="node" id="lambda" data-kind="event"><div class="name">AWS Lambda</div><div class="small">Python 3.12 document processor</div></div><div class="node" id="dlq" data-kind="event"><div class="name">Dead Letter Queue</div><div class="small">14-day retention</div></div></div></section>
+
+<section class="panel ragpanel"><h2>M8–M9 · RAG Knowledge + Lina Runtime</h2><div class="servicegrid"><div class="node" id="titan" data-kind="ai"><div class="name">Titan Text Embeddings V2</div><div class="small">1024 dimensions</div></div><div class="node" id="vectors" data-kind="ai"><div class="name">Amazon S3 Vectors</div><div class="small">Cosine similarity knowledge index</div></div><div class="node" id="haiku" data-kind="ai"><div class="name">Claude Haiku 4.5</div><div class="small">Grounded answer generation</div></div><div class="node" id="lina" data-kind="ai"><div class="name">Lina API</div><div class="small">POST /api/lina/ask · grounded=true</div></div></div></section>
+
+<section class="panel opspanel"><h2>M10–M12 · Operations, Governance, Quality & Final Validation</h2><div class="servicegrid"><div class="node" id="cwdash" data-kind="ops"><div class="name">CloudWatch Dashboard</div><div class="small">Operations overview</div></div><div class="node" id="alarms" data-kind="ops"><div class="name">9 CloudWatch Alarms</div><div class="small">ECS · ALB · RDS · Lambda · DLQ · CloudFront</div></div><div class="node" id="trail" data-kind="ops"><div class="name">AWS CloudTrail</div><div class="small">Multi-Region management events</div></div><div class="node" id="audit" data-kind="storage"><div class="name">Audit S3 Bucket</div><div class="small">Private · versioned · AES256 · 30-day lifecycle</div></div><div class="node" id="trivy" data-kind="security"><div class="name">Trivy</div><div class="small">CRITICAL findings block release</div></div><div class="node" id="resilience" data-kind="ops"><div class="name">M12 Self-Healing</div><div class="small">2/2/0 → 2/1/1 → ~44 s → 2/2/0</div></div><div class="node" id="cost" data-kind="cost"><div class="name">AWS Cost Explorer</div><div class="small">~$23.78 usage before tax</div></div><div class="node" id="health" data-kind="ops"><div class="name">Final Public Health</div><div class="small">cloud.namienterprises.in/health · HTTP 200</div></div></div></section>
+</div>
+
+<section class="panel sideRight"><h2>Walkthrough steps</h2><div class="hint">Use this list while presenting the selected milestone or flow.</div><div class="steps" id="steps"></div><div class="callout" id="note"></div></section>
+</div>
+<div class="legend"><span><i class="dot" style="background:#7c3aed"></i>Web</span><span><i class="dot" style="background:#f97316"></i>CI/CD</span><span><i class="dot" style="background:#1682e8"></i>Database</span><span><i class="dot" style="background:#16a34a"></i>Storage/Recovery</span><span><i class="dot" style="background:#e83e8c"></i>Auth</span><span><i class="dot" style="background:#0f9f8f"></i>Network/Ops</span><span><i class="dot" style="background:#e5484d"></i>Security</span><span><i class="dot" style="background:#d946ef"></i>Events</span><span><i class="dot" style="background:#4f46e5"></i>AI/RAG</span><span><i class="dot" style="background:#d99a15"></i>Cost</span></div>
+</div></div>
+<div class="status"><div><b>Keyboard:</b> 1–9 = M1–M9 · 0 = M10 · Q = M11 · W = M12 · A = overview · S = auto · Space = pause/play · F = fullscreen</div><div class="keys">Suggested demo: Overview → M1–M12 → Lina → Quality → Recovery → Resilience.</div></div>
+<script>
+
+const board=document.getElementById('board'),stage=document.getElementById('stage'),svg=document.getElementById('svg'),sel=document.getElementById('sel'),note=document.getElementById('note'),stepsBox=document.getElementById('steps');
+let scale=1,playing=true,speed=1,overviewIndex=0,overviewTimer=null;
+// Full animated overview: retain every implemented milestone and operational flow.
+// Deduplicate matching connections so the same arrow is not drawn repeatedly.
+const overviewFlowModes=[
+  'm1','m2','m3','m4','m5','m6','m7','m8','m9','m10','m11','m12',
+  'web','auth','cicd','data','eventflow','rag','lina','monitoring',
+  'qualityflow','resilienceflow','costview','recovery','iac'
+];
+const autoSequence=[
+  'm1','m2','m3','m4','m5','m6','m7','m8','m9','m10','m11','m12',
+  'web','lina','qualityflow','recovery','resilienceflow'
+];
+const autoNames={
+  m1:'M1 · Foundation & Networking',
+  m2:'M2 · Docker, ECR & ECS Fargate',
+  m3:'M3 · ALB, Multi-AZ & Auto Scaling',
+  m4:'M4 · Automated Deployment',
+  m5:'M5 · Database & Storage',
+  m6:'M6 · Edge, DNS, Security & Authentication',
+  m7:'M7 · Serverless Event Processing',
+  m8:'M8 · RAG Knowledge Pipeline',
+  m9:'M9 · Real App + Lina RAG Runtime',
+  m10:'M10 · Monitoring & Governance',
+  m11:'M11 · CI/CD Quality Gates',
+  m12:'M12 · Resilience & Cost Validation',
+  web:'Public web request',
+  lina:'Lina grounded answer',
+  qualityflow:'CI/CD quality gates',
+  recovery:'Morning sandbox recovery',
+  resilienceflow:'ECS self-healing'
+};
+
+const flows={
+m1:[['prt1','igw','network','Public route'],['prt2','igw','network','Public route'],['art1','nat1','network','App egress'],['art2','nat2','network','App egress']],
+m2:[['ecr','taskdef','cicd','Image'],['taskdef','taskA','cicd','Run'],['taskdef','taskB','cicd','Run'],['taskA','cwlogs','ops','Logs'],['taskB','cwlogs','ops','Logs']],
+m3:[['alb','tg','web','Forward'],['tg','taskA','web','Healthy target'],['tg','taskB','web','Healthy target'],['autoscale','taskA','cicd','Scale'],['autoscale','taskB','cicd','Scale']],
+m4:[['dev','gha','cicd','Push'],['gha','oidc','auth','OIDC'],['gha','ecr','cicd','Build+push'],['ecr','taskdef','cicd','Git SHA'],['taskdef','taskA','cicd','Deploy'],['taskdef','taskB','cicd','Deploy'],['gha','health','cicd','Verify']],
+m5:[['taskA','secret','auth','Get DB secret'],['secret','taskA','auth','Credentials'],['taskA','rds1','data','MariaDB 3306'],['rds1','rds2','data','Multi-AZ'],['taskB','s3','storage','HTTPS']],
+m6:[['user','registrar','network','Domain'],['registrar','r53','network','NS delegation'],['r53','cf','web','DNS'],['cf','alb','web','Origin HTTP 80'],['alb','tg','web','Forward'],['tg','taskA','web','App'],['taskA','cognito','auth','JWT'],['cf','albsg','security','Prefix list'],['albsg','ecssg','security','ALB→ECS'],['ecssg','dbsg','security','ECS→DB']],
+m7:[['s3','eventbridge','event','Object Created'],['eventbridge','sqs','event','Route'],['sqs','lambda','event','Poll'],['lambda','cwlogs','ops','Logs'],['sqs','dlq','event','Max retries']],
+m8:[['s3','eventbridge','event','Document'],['eventbridge','sqs','event','Queue'],['sqs','lambda','event','Process'],['lambda','titan','ai','Embed'],['titan','vectors','ai','Write vectors']],
+m9:[['ecr','dbrestore','cicd','Restore image'],['dbrestore','secret','auth','Credentials'],['dbrestore','rds1','data','Restore 58 tables'],['taskA','rds1','data','Verified TLS'],['taskA','lina','ai','Question'],['lina','titan','ai','Embed query'],['titan','vectors','ai','Search'],['vectors','lina','ai','Relevant chunks'],['lina','haiku','ai','Grounded prompt'],['haiku','lina','ai','Answer']],
+m10:[['taskA','cwdash','ops','Metrics'],['lambda','cwdash','ops','Metrics'],['cwdash','alarms','ops','Thresholds'],['trail','audit','storage','Audit logs']],
+m11:[['dev','quality','security','Push/PR'],['quality','trivy','security','Scan'],['quality','gha','cicd','Pass'],['gha','ecr','cicd','Release'],['ecr','taskdef','cicd','Image'],['taskdef','taskA','cicd','Deploy']],
+m12:[['taskA','resilience','ops','Controlled stop'],['resilience','taskB','ops','Healthy capacity'],['resilience','taskA','ops','Replacement'],['cost','health','cost','Cost reviewed']],
+web:[['user','r53','web','Resolve'],['r53','cf','web','CloudFront'],['cf','alb','web','Origin'],['alb','tg','web','Target group'],['tg','taskA','web','Healthy ECS']],
+auth:[['user','r53','web','Resolve'],['r53','cf','web','HTTPS'],['cf','alb','web','Origin'],['alb','tg','web','Forward'],['tg','taskA','web','API'],['taskA','cognito','auth','Verify JWT']],
+cicd:[['dev','quality','security','Quality gates'],['quality','gha','cicd','Passed'],['gha','oidc','auth','OIDC'],['gha','ecr','cicd','Build'],['ecr','taskdef','cicd','Git SHA'],['taskdef','taskA','cicd','Deploy'],['taskdef','taskB','cicd','Deploy'],['gha','health','cicd','Verify']],
+data:[['taskA','secret','auth','Credentials'],['taskA','rds1','data','MariaDB TLS'],['rds1','rds2','data','Standby'],['taskB','s3','storage','Private S3']],
+eventflow:[['s3','eventbridge','event','Object Created'],['eventbridge','sqs','event','Route'],['sqs','lambda','event','Poll'],['lambda','cwlogs','ops','Logs'],['sqs','dlq','event','Retry exhausted']],
+rag:[['s3','eventbridge','event','Document'],['eventbridge','sqs','event','Queue'],['sqs','lambda','event','Process'],['lambda','titan','ai','Chunk embeddings'],['titan','vectors','ai','Store vectors']],
+lina:[['user','cf','web','Question'],['cf','alb','web','Origin'],['alb','taskA','web','API'],['taskA','lina','ai','/api/lina/ask'],['lina','titan','ai','Embed query'],['titan','vectors','ai','Search'],['vectors','lina','ai','Chunks'],['lina','haiku','ai','Grounded context'],['haiku','lina','ai','Answer']],
+monitoring:[['taskA','cwdash','ops','ECS metrics'],['lambda','cwdash','ops','Lambda metrics'],['cwdash','alarms','ops','9 alarms'],['trail','audit','storage','Audit objects']],
+qualityflow:[['dev','quality','security','Push/PR'],['quality','trivy','security','CRITICAL scan'],['quality','gha','cicd','Pass'],['gha','ecr','cicd','Deploy']],
+resilienceflow:[['taskA','resilience','ops','Stop one task'],['resilience','taskB','ops','Service stays available'],['resilience','taskA','ops','Replacement ~44s'],['taskB','health','web','HTTP 200']],
+costview:[['cost','nat1','cost','NAT hourly'],['cost','rds1','cost','Multi-AZ RDS'],['cost','taskA','cost','Fargate'],['cost','alb','cost','ALB']],
+iac:[['dev','tfcode','network','Terraform'],['tfcode','hcp','network','Plan/apply'],['hcp','alb','network','Infra'],['hcp','rds1','network','Data'],['hcp','eventbridge','network','Events'],['hcp','vectors','network','RAG'],['hcp','trail','network','Governance']],
+recovery:[['morning','hcp','recovery','Recovery run'],['hcp','ecr','recovery','Infra ready'],['ecr','dbrestore','cicd','Restore image'],['dbrestore','secret','auth','DB secret'],['dbrestore','rds1','data','Restore 58 tables'],['ecr','taskdef','cicd','App image'],['taskdef','taskA','cicd','Deploy app'],['gha','cf','recovery','Read CloudFront'],['gha','oidc','auth','Cross-account OIDC'],['oidc','r53','recovery','UPSERT DNS'],['gha','health','recovery','HTTPS /health']]
+};
+
+const nodesByMode={
+m1:['tfcode','hcp','igw','prt1','prt2','nat1','nat2','art1','art2','dbrt1','dbrt2','albsg','ecssg','dbsg'],
+m2:['ecr','taskdef','taskA','taskB','cwlogs','ecssg'],m3:['alb','tg','taskA','taskB','autoscale','albsg','ecssg'],
+m4:['dev','gha','oidc','ecr','taskdef','taskA','taskB','health'],m5:['taskA','taskB','secret','rds1','rds2','s3','dbsg'],
+m6:['user','registrar','r53','cf','cognito','alb','tg','taskA','taskB','albsg','ecssg','dbsg'],
+m7:['s3','eventbridge','sqs','lambda','dlq','cwlogs'],m8:['s3','eventbridge','sqs','lambda','titan','vectors'],
+m9:['taskA','rds1','secret','ecr','dbrestore','lina','titan','vectors','haiku'],m10:['taskA','lambda','cwdash','alarms','trail','audit'],
+m11:['dev','quality','trivy','gha','ecr','taskdef','taskA'],m12:['taskA','taskB','resilience','cost','health','alb','tg']
+};
+
+const desc={
+all:'<b>Live overview:</b> all implemented M1–M12 connections and end-to-end workflows move together. <b>Pause</b> freezes every moving flow; <b>Play</b> resumes it. Use Auto Presentation for the separate sequential tour.',
+m1:'<b>M1:</b> two-AZ network foundation with six subnets, IGW, two NAT Gateways, route tables and layered security groups.',
+m2:'<b>M2:</b> Docker image in ECR, private ECS Fargate tasks and CloudWatch logging.',
+m3:'<b>M3:</b> ALB + IP target group + /health checks + two-task baseline + Auto Scaling 2–4.',
+m4:'<b>M4:</b> GitHub Actions uses OIDC and immutable Git-SHA images for rolling ECS deployment.',
+m5:'<b>M5:</b> private Multi-AZ MariaDB, Secrets Manager and private encrypted/versioned S3.',
+m6:'<b>M6:</b> persistent Route 53, CloudFront/ACM/WAF, CloudFront-only ALB origin access and Cognito JWT auth.',
+m7:'<b>M7:</b> S3 → EventBridge → SQS → Lambda with retries and DLQ.',
+m8:'<b>M8:</b> document chunks → Titan embeddings → S3 Vectors semantic knowledge.',
+m9:'<b>M9:</b> real app, automated 58-table MariaDB restore, verified TLS and Lina grounded RAG.',
+m10:'<b>M10:</b> CloudWatch dashboard + 9 alarms and Multi-Region CloudTrail → private audit S3.',
+m11:'<b>M11:</b> mandatory app, Terraform, container smoke and Trivy quality gates before deployment.',
+m12:'<b>M12:</b> controlled ECS task failure recovered in ~44 seconds while public health stayed 200; real Cost Explorer review completed.',
+web:'<b>Public request:</b> Route 53 → CloudFront/WAF → ALB → healthy private ECS.',
+auth:'<b>Authentication:</b> Cognito issues access token and the Node.js API verifies it.',
+cicd:'<b>CI/CD:</b> quality gates first, then OIDC, Git-SHA build, ECR, rolling ECS deploy and final verification.',
+data:'<b>Data:</b> ECS gets secrets and connects privately to MariaDB over verified TLS; S3 stays private.',
+eventflow:'<b>Events:</b> SQS buffers document events and failed messages move to the DLQ after retries.',
+rag:'<b>RAG ingestion:</b> Lambda chunks text, Titan embeds it and S3 Vectors stores semantic vectors.',
+lina:'<b>Lina:</b> query embedding → vector search → LangNation chunks → Claude Haiku → grounded answer.',
+monitoring:'<b>Monitoring & governance:</b> CloudWatch shows runtime health; CloudTrail preserves management audit history.',
+qualityflow:'<b>Quality gates:</b> a release can proceed only after tests, Terraform validation, smoke testing and Trivy pass.',
+resilienceflow:'<b>Resilience:</b> 2/2/0 → controlled stop → 2/1/1 → automatic replacement → ~44s → 2/2/0.',
+costview:'<b>Cost:</b> October usage before tax ≈ $23.78; NAT hourly charges were a major driver; resilience architecture was intentionally retained.',
+recovery:'<b>OP01:</b> manual sandbox activation → HCP rebuild → DB restore → app deploy → Route 53 sync → public health.',
+iac:'<b>IaC:</b> local fmt/validate; HCP Terraform owns authoritative state, plan, apply and rebuild.'
+};
+
+const steps={
+m1:['Create VPC and six /24 subnets','Attach Internet Gateway','Create one NAT Gateway per AZ','Route private app subnets through same-AZ NAT','Keep DB route tables local-only','Apply ALB → ECS → DB security-group chain'],
+m2:['Build Docker image','Push to ECR','Register ECS task definition','Run private Fargate tasks','Disable public IPs','Send logs to CloudWatch'],
+m3:['Create ALB and IP target group','Use /health checks','Run two baseline tasks across AZs','Configure min 2 / max 4 / CPU 50% Auto Scaling','Validate 2→4 scale-out'],
+m4:['Push code','Assume AWS role through OIDC','Build Git-SHA image','Push to ECR','Register new task revision','Rolling deploy','Verify stability, image SHA, counts and public health'],
+m5:['Deploy private Multi-AZ MariaDB','Allow 3306 only from ECS SG','Manage credentials in Secrets Manager','Create private versioned encrypted S3'],
+m6:['Keep Route 53 persistent','Serve HTTPS with CloudFront + ACM','Attach WAF','Restrict ALB to CloudFront prefix list','Create Cognito User Pool','Validate JWT on /protected'],
+m7:['S3 emits Object Created','EventBridge routes event','SQS buffers it','Lambda processes it','Failure retries after visibility timeout','Repeated failure moves to DLQ'],
+m8:['Read knowledge file','Chunk 200 words / 40 overlap','Create Titan embeddings','Write 1024-dim vectors + metadata','Run semantic query'],
+m9:['Build DB restore image','Run one-off Fargate restore task','Restore sanitized MariaDB seed','Validate 58 tables','Use verified RDS TLS','Question → Titan → S3 Vectors → Claude Haiku','Return grounded answer + source'],
+m10:['Create CloudWatch dashboard','Create nine alarms','Prove ALARM using controlled DLQ messages','Observe return to OK','Create Multi-Region CloudTrail','Deliver real audit logs to private S3'],
+m11:['Application tests + npm audit','Terraform fmt/init/validate','Docker build + /health smoke test','Trivy CRITICAL scan','Fix vulnerable base image','Deploy only after all gates pass'],
+m12:['Confirm 2/2/0 across two AZs','Stop one task','Observe 2/1/1 while /health stays 200','Automatic replacement in ~44 seconds','Review real Cost Explorer data','Keep resilient architecture and document cheaper dev options'],
+web:['Resolve domain','CloudFront terminates HTTPS and WAF checks request','Forward allowed request to ALB','ALB selects healthy ECS target'],
+auth:['Sign in with Cognito','Send Bearer token','API validates token claims','Return 200 or 401'],
+cicd:['Run quality gates','OIDC temporary credentials','Build Git-SHA image','Push to ECR','Rolling ECS deployment','Verify final state'],
+data:['Read DB secret','Connect to MariaDB with verified TLS','Multi-AZ standby maintained','Use private S3 over HTTPS'],
+eventflow:['S3 object created','EventBridge routes','SQS buffers','Lambda processes','Retry failures','DLQ after max receives'],
+rag:['Read source document','Chunk text','Embed chunks with Titan','Store vectors + source metadata','Semantic retrieval'],
+lina:['Receive question','Embed query','Search S3 Vectors','Retrieve source chunks','Generate grounded answer with Claude Haiku'],
+monitoring:['Collect runtime metrics/logs','Evaluate nine alarms','Record AWS management activity','Deliver CloudTrail logs to audit S3'],
+qualityflow:['App checks','Dependency audit','Terraform validation','Container smoke test','Trivy scan','Pass → deploy'],
+resilienceflow:['Start 2/2/0','Stop one ECS task','Observe 2/1/1','ALB keeps serving','Replacement task starts','Return 2/2/0 in ~44 seconds'],
+costview:['Open Cost Explorer','Record ~23.78 USD usage before tax','Investigate NAT hourly cost','Review RDS/ECS/ALB/VPC costs','Document cheaper dev options'],
+recovery:['Activate neue-fische sandbox manually','07:37 primary or manual trigger','HCP Terraform rebuild','Restore sanitized DB and validate 58 tables','Deploy current app','Read CloudFront output','Assume restricted Route 53 role through OIDC','UPSERT DNS and wait INSYNC','Verify public HTTPS /health','08:17 fallback skips if already healthy'],
+iac:['Edit Terraform','Run local fmt + validate','Commit/push','HCP creates authoritative plan','Review/apply','Provision modules']
+};
+
+function center(id){const e=document.getElementById(id),r=e.getBoundingClientRect(),b=board.getBoundingClientRect();return{x:(r.left-b.left+r.width/2)/scale,y:(r.top-b.top+r.height/2)/scale}}
+function edge(id,to){const e=document.getElementById(id),r=e.getBoundingClientRect(),a=center(id),t=center(to),dx=t.x-a.x,dy=t.y-a.y,hw=r.width/(2*scale),hh=r.height/(2*scale);if(Math.abs(dx/hw)>Math.abs(dy/hh))return{x:a.x+(dx>0?hw:-hw),y:a.y+(dy/(Math.abs(dx)||1))*hw};return{x:a.x+(dx/(Math.abs(dy)||1))*hh,y:a.y+(dy>0?hh:-hh)}}
+function pathD(a,b){const p=edge(a,b),q=edge(b,a);if(Math.abs(q.x-p.x)>Math.abs(q.y-p.y)){const m=(p.x+q.x)/2;return`M${p.x},${p.y} C${m},${p.y} ${m},${q.y} ${q.x},${q.y}`}const m=(p.y+q.y)/2;return`M${p.x},${p.y} C${p.x},${m} ${q.x},${m} ${q.x},${q.y}`}
+function se(tag,attrs={}){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);return e}
+function labelPos(a,b){const p=center(a),q=center(b);return{x:(p.x+q.x)/2,y:(p.y+q.y)/2-5}}
+
+function render(mode){
+  svg.innerHTML='';
+  svg.setAttribute('viewBox',`0 0 ${board.clientWidth/scale} ${board.clientHeight/scale}`);
+  svg.setAttribute('width',board.clientWidth/scale);
+  svg.setAttribute('height',board.clientHeight/scale);
+
+  const colors={
+    web:'#7c3aed',cicd:'#f97316',data:'#1682e8',storage:'#16a34a',
+    auth:'#e83e8c',recovery:'#16a34a',network:'#0f9f8f',security:'#e5484d',
+    event:'#d946ef',ai:'#4f46e5',ops:'#0f9f8f',cost:'#d99a15'
+  };
+
+  const defs=se('defs');
+  Object.keys(colors).forEach(k=>{
+    const m=se('marker',{id:'a-'+k,markerWidth:7,markerHeight:7,refX:6,refY:3.5,orient:'auto',markerUnits:'strokeWidth'});
+    m.appendChild(se('path',{d:'M0,0 L7,3.5 L0,7 z',fill:colors[k]}));
+    defs.appendChild(m);
+  });
+  svg.appendChild(defs);
+
+  const allNodes=[...document.querySelectorAll('.node')];
+  allNodes.forEach(n=>n.classList.remove('active','dim'));
+
+  let pairs=[];
+  let active=new Set();
+  let displayMode=mode;
+
+  if(mode==='all'){
+    // Restore the original experience: all milestone and workflow arrows move
+    // concurrently, with Pause/Play controlling the entire SVG animation.
+    allNodes.forEach(n=>active.add(n.id));
+    const seen=new Set();
+    for(const flowMode of overviewFlowModes){
+      for(const edge of (flows[flowMode]||[])){
+        const key=edge[0]+'|'+edge[1]+'|'+edge[2];
+        if(!seen.has(key)){
+          seen.add(key);
+          pairs.push(edge);
+        }
+      }
+    }
+    document.getElementById('overviewStatus').textContent=
+      'LIVE · All M1–M12 milestone and workflow connections animated together';
+  }else if(mode==='auto'){
+    displayMode=autoSequence[overviewIndex % autoSequence.length];
+    pairs=flows[displayMode]||[];
+
+    if(displayMode.startsWith('m')){
+      (nodesByMode[displayMode]||[]).forEach(id=>active.add(id));
+    }
+    pairs.forEach(([a,b])=>{active.add(a);active.add(b)});
+
+    document.getElementById('overviewStatus').textContent=
+      `Auto ${overviewIndex+1}/${autoSequence.length} · ${autoNames[displayMode]}`;
+  }else{
+    pairs=flows[displayMode]||[];
+
+    if(displayMode.startsWith('m')){
+      (nodesByMode[displayMode]||[]).forEach(id=>active.add(id));
+    }
+    pairs.forEach(([a,b])=>{active.add(a);active.add(b)});
+
+    document.getElementById('overviewStatus').textContent=
+      `Selected · ${autoNames[displayMode] || displayMode.toUpperCase()}`;
+  }
+
+  document.querySelectorAll('.pill').forEach(p=>{
+    p.classList.toggle('on', mode==='all' || p.dataset.p===displayMode);
+  });
+
+  allNodes.forEach(n=>{
+    if(active.has(n.id)) n.classList.add('active');
+    else if(mode!=='all') n.classList.add('dim');
+  });
+
+  pairs.forEach(([a,b,k,lab],i)=>{
+    if(!document.getElementById(a)||!document.getElementById(b)) return;
+
+    const d=pathD(a,b);
+    const path=se('path',{d,class:'flow '+k,'marker-end':`url(#a-${k})`});
+    svg.appendChild(path);
+
+    const c=se('circle',{r:4.8,fill:colors[k]||'#1682e8'});
+    svg.appendChild(c);
+
+    c.innerHTML=
+      `<animateMotion dur="${((2+(i%4)*.28)/speed).toFixed(2)}s" `+
+      `begin="${(((i*.18)%1.15)/speed).toFixed(2)}s" `+
+      `repeatCount="indefinite" path="${d}"/>`;
+
+    if(lab && mode!=='all'){
+      const lp=labelPos(a,b);
+      const t=se('text',{x:lp.x,y:lp.y,class:'label'});
+      t.textContent=lab;
+      svg.appendChild(t);
+    }
+  });
+
+  const selected=(mode==='auto')?displayMode:mode;
+
+  if(selected==='all'){
+    note.innerHTML=desc.all;
+    const ss=[
+      'M1–M6 secure multi-AZ platform foundation',
+      'M7 event-driven document processing',
+      'M8 semantic RAG ingestion',
+      'M9 real application + MariaDB restore + Lina',
+      'M10 monitoring and governance',
+      'M11 mandatory release quality gates',
+      'M12 resilience proof and cost analysis',
+      'OP01 complete morning recovery'
+    ];
+    stepsBox.innerHTML=ss.map((s,i)=>
+      `<div class="step"><div class="num">${i+1}</div><div class="txt">${s}</div></div>`
+    ).join('');
+  }else{
+    note.innerHTML=desc[selected]||desc.all;
+    const ss=steps[selected]||['Select a milestone or flow from the dropdown.'];
+    stepsBox.innerHTML=ss.map((s,i)=>
+      `<div class="step"><div class="num">${i+1}</div><div class="txt">${s}</div></div>`
+    ).join('');
+  }
+
+  if(playing && typeof svg.unpauseAnimations==='function'){
+    try{svg.unpauseAnimations()}catch(e){}
+  }
+  if(!playing && typeof svg.pauseAnimations==='function'){
+    try{svg.pauseAnimations()}catch(e){}
+  }
+}
+
+function applyScale(){board.style.transform=`scale(${scale})`;stage.style.paddingBottom=`${Math.max(18,(board.offsetHeight*scale-board.offsetHeight)+18)}px`;setTimeout(()=>render(sel.value),35)}
+function fit(){scale=Math.min(1,Math.max(.42,(stage.clientWidth-34)/board.offsetWidth));applyScale()}
+function clearOverviewTimer(){
+  if(overviewTimer){
+    clearTimeout(overviewTimer);
+    overviewTimer=null;
+  }
+}
+
+function startOverviewTimer(){
+  clearOverviewTimer();
+  if(sel.value!=='auto' || !playing) return;
+
+  const delay=Math.max(2200,5000/speed);
+
+  overviewTimer=setTimeout(()=>{
+    if(sel.value!=='auto' || !playing) return;
+    overviewIndex=(overviewIndex+1)%autoSequence.length;
+    render('auto');
+    startOverviewTimer();
+  },delay);
+}
+
+sel.onchange=()=>{
+  clearOverviewTimer();
+
+  if(sel.value==='auto'){
+    overviewIndex=0;
+    render('auto');
+    startOverviewTimer();
+  }else{
+    render(sel.value);
+  }
+};
+
+document.getElementById('speed').onchange=e=>{
+  speed=parseFloat(e.target.value)||1;
+
+  if(sel.value==='auto'){
+    render('auto');
+    startOverviewTimer();
+  }else{
+    render(sel.value);
+  }
+};
+
+document.getElementById('theme').onclick=()=>{
+  const dark=document.body.getAttribute('data-theme')==='dark';
+  document.body.setAttribute('data-theme',dark?'light':'dark');
+  setTimeout(()=>render(sel.value),40);
+};
+
+document.getElementById('play').onclick=()=>{
+  playing=!playing;
+  document.getElementById('play').textContent=playing?'Pause':'Play';
+
+  if(playing){
+    if(typeof svg.unpauseAnimations==='function'){
+      try{svg.unpauseAnimations()}catch(e){}
+    }
+    if(sel.value==='auto') startOverviewTimer();
+  }else{
+    if(typeof svg.pauseAnimations==='function'){
+      try{svg.pauseAnimations()}catch(e){}
+    }
+    clearOverviewTimer();
+  }
+};
+
+document.getElementById('fit').onclick=fit;
+document.getElementById('plus').onclick=()=>{
+  scale=Math.min(1.25,scale+.07);
+  applyScale();
+};
+document.getElementById('minus').onclick=()=>{
+  scale=Math.max(.38,scale-.07);
+  applyScale();
+};
+document.getElementById('full').onclick=()=>
+  document.documentElement.requestFullscreen?.();
+
+document.addEventListener('keydown',e=>{
+  if(e.key===' '){
+    e.preventDefault();
+    document.getElementById('play').click();
+  }
+
+  if('123456789'.includes(e.key)){
+    clearOverviewTimer();
+    sel.value='m'+e.key;
+    render(sel.value);
+  }
+
+  if(e.key==='0'){
+    clearOverviewTimer();
+    sel.value='m10';
+    render(sel.value);
+  }
+
+  if(e.key.toLowerCase()==='q'){
+    clearOverviewTimer();
+    sel.value='m11';
+    render(sel.value);
+  }
+
+  if(e.key.toLowerCase()==='w'){
+    clearOverviewTimer();
+    sel.value='m12';
+    render(sel.value);
+  }
+
+  if(e.key.toLowerCase()==='a'){
+    clearOverviewTimer();
+    sel.value='all';
+    render('all');
+  }
+
+  if(e.key.toLowerCase()==='s'){
+    clearOverviewTimer();
+    overviewIndex=0;
+    sel.value='auto';
+    render('auto');
+    startOverviewTimer();
+  }
+
+  if(e.key.toLowerCase()==='f'){
+    document.documentElement.requestFullscreen?.();
+  }
+});
+
+window.addEventListener('resize',()=>setTimeout(()=>render(sel.value),70));window.addEventListener('load',()=>{
+  document.body.setAttribute('data-theme','light');
+  sel.value='all';
+  fit();
+  render('all');
+});
+</script>
+</body>
+</html>

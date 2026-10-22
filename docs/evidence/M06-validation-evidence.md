@@ -1,6 +1,13 @@
-# Milestone 6 — Validation Evidence Checklist
+# Milestone 6 — Validation Evidence & Screenshot Checklist
 
-Use this file when collecting screenshots and final-report evidence.
+**Project:** LangNation Cloud Platform  
+**Author:** Seraj Ahmad Siddiqui  
+**Course:** AWS Cloud Computing with AI Bootcamp  
+**Environment:** `dev`  
+**AWS Region:** `us-east-1`  
+**Status:** ✅ Technical validation complete; selected screenshots still pending
+
+Use this file to track final validation proof and screenshot evidence for Milestone 6. The milestone documentation explains the architecture and implementation; this file records the concrete evidence required for the final capstone submission.
 
 ## DNS / Route 53
 
@@ -111,3 +118,14 @@ Use this file when collecting screenshots and final-report evidence.
 - [x] Automated cross-account DNS recovery
 - [x] Manual end-to-end validation
 - [ ] Real scheduled morning-run evidence
+
+
+---
+
+## Evidence File Purpose
+
+This file is intentionally kept separate from the Milestone 6 implementation document.
+
+- `docs/milestones/M06-edge-dns-security-authentication.md` explains the architecture, implementation, security decisions and lessons learned.
+- this evidence file tracks proof, screenshots and final validation artifacts.
+- unchecked items represent evidence still worth capturing; they do not mean the technical milestone is incomplete.
