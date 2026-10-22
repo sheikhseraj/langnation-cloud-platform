@@ -15,7 +15,8 @@
 "use strict";
 
 const mysql = require("mysql2/promise");
-const { env } = require("./env");
+const awsCaBundle = require("aws-ssl-profiles");
+const { env, bool } = require("./env");
 
 let pool = null;
 let enabled = false;
@@ -26,23 +27,40 @@ function init() {
   const user = env("DB_USER");
   const database = env("DB_NAME");
 
+  const useTls = bool(
+  "DB_SSL",
+  /\.rds\.amazonaws\.com$/i.test(host || "")
+);
+
   if (!host || !user || !database) {
     console.log("i  MySQL not configured (DB_HOST/DB_USER/DB_NAME) — enquiries will be logged to disk instead.");
     return false;
   }
 
   pool = mysql.createPool({
-    host,
-    port: Number(env("DB_PORT", 3306)),
-    user,
-    password: env("DB_PASSWORD", ""),
-    database,
-    waitForConnections: true,
-    connectionLimit: Number(env("DB_POOL", 5)),
-    queueLimit: 0,
-    charset: "utf8mb4_general_ci",
-    timezone: "Z",
-  });
+  host,
+  port: Number(env("DB_PORT", 3306)),
+  user,
+  password: env("DB_PASSWORD", ""),
+  database,
+
+  // Amazon RDS MariaDB 11.8 requires encrypted transport.
+  //
+  // RDS endpoints automatically use the AWS CA bundle.
+  // Local MariaDB remains unchanged unless DB_SSL=true is set.
+  ssl: useTls
+    ? {
+        ...awsCaBundle,
+        rejectUnauthorized: true,
+      }
+    : undefined,
+
+  waitForConnections: true,
+  connectionLimit: Number(env("DB_POOL", 5)),
+  queueLimit: 0,
+  charset: "utf8mb4_general_ci",
+  timezone: "Z",
+});
   enabled = true;
   return true;
 }
