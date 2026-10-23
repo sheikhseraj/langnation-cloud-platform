@@ -1,6 +1,12 @@
 # LangNation Cloud Platform
 ## Final AWS Cloud Computing with AI Capstone — Milestones M01–M12
 
+### 🌐 Explore the Live Interactive Architecture
+
+[**▶ Open the final M01–M12 Interactive Architecture**](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-m01-m12.html)
+
+*Explore animated AWS service connections, individual milestones, and end-to-end workflows, including CI/CD, Lina RAG, security, and morning recovery.*
+
 **Project:** LangNation Cloud Platform — Secure, Highly Available, Containerized Learning Platform with AI/RAG on AWS  
 **Author:** Seraj Ahmad Siddiqui  
 **Course:** AWS Cloud Computing with AI Bootcamp  
