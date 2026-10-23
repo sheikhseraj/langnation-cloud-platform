@@ -9,7 +9,7 @@
 **Infrastructure as Code:** Terraform  
 **Remote State / Authoritative Plan & Apply:** HCP Terraform (`cloudforge-capstone` / `langnation-capstone-dev`)  
 **Application Delivery:** GitHub Actions + OIDC + ECR + ECS Fargate  
-**Documentation Status:** M01–M12 implementation and validation documented; final presentation, guides, and report remain editable submission materials
+**Documentation Status:** M01–M12 implementation and validation documented; final report, presentation and guides are published as PDFs
 
 ---
 
@@ -32,12 +32,12 @@ The platform demonstrates six engineering goals:
 |---|---|
 | Understand the whole project | [Root project README](../README.md) |
 | See the AWS design | [Final master architecture](architecture/master/final-platform-m01-m12.png) |
-| Explore animated service connections | [Live interactive M01–M12 walkthrough](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-m01-m12.html) |
+| Explore animated service connections | [Live interactive M01–M12 walkthrough](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-master.html) |
 | Review technical implementation | [Milestone documents](#3-implementation-milestones-m01m12) |
 | Inspect measured validation | [Evidence index](evidence/README.md) |
 | Understand daily rebuild operations | [OP01 recovery runbook](operations/OP01-automated-morning-sandbox-recovery.md) |
 | Submit the written capstone | [Final report — PDF](report/LangNation_Cloud_Platform_Final_Capstone_Report.pdf) |
-| Deliver the presentation | [Final slides — PowerPoint](presentation/LangNation_Final_Capstone_M1-M12.pptx) |
+| Deliver the presentation | [Final presentation — PDF](presentation/LangNation_Final_Capstone.pdf) |
 
 ---
 
@@ -147,9 +147,9 @@ architecture/
 
 ### 4.3 Interactive Architecture
 
-**[▶ Open the final M01–M12 live interactive walkthrough](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-m01-m12.html)**
+**[▶ Open the final M01–M12 live interactive walkthrough](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-master.html)**
 
-[Read the usage guide](interactive/README.md) · [Open HTML source](interactive/langnation-architecture-m01-m12.html)
+[Read the usage guide](interactive/README.md) · [Open HTML source](interactive/langnation-architecture-master.html)
 
 The live overview displays animated service connections together. **Pause / Play** freezes or resumes those connections. A separate Auto Presentation mode tours M01–M12 and selected end-to-end workflows. Light/dark theme, speed controls and fullscreen are included.
 
@@ -213,12 +213,12 @@ OP01 recovery               → infrastructure + database + application + DNS re
 
 | Material | Available versions |
 |---|---|
-| **Final capstone thesis-style report** | [PDF](report/LangNation_Cloud_Platform_Final_Capstone_Report.pdf) · [Word](report/LangNation_Cloud_Platform_Final_Capstone_Report.docx) |
-| **Final M01–M12 presentation** | [PDF](presentation/LangNation_Final_Capstone_M1-M12.pdf) · [PowerPoint](presentation/LangNation_Final_Capstone_M1-M12.pptx) |
-| **AWS Tools Guide M01–M12** | [Word](guides/LangNation_AWS_Tools_Guide_M1-M12.docx) |
-| **Cloud Project Study Guide M01–M12** | [Word](guides/LangNation_Cloud_Project_Study_Guide_M1-M12.docx) |
+| **Final capstone thesis-style report** | [PDF](report/LangNation_Cloud_Platform_Final_Capstone_Report.pdf) |
+| **Final M01–M12 presentation** | [PDF](presentation/LangNation_Final_Capstone.pdf) |
+| **AWS Tools Guide M01–M12** | [PDF](guides/LangNation_AWS_Tools_Guide.pdf) |
+| **Cloud Project Study Guide M01–M12** | [PDF](guides/LangNation_Cloud_Project_Study_Guide.pdf) |
 
-The report, presentation and guides are **editable submission materials** and may receive additional editorial revisions. The technical implementation and recorded tests are documented separately under `milestones/`, `operations/` and `evidence/`.
+The report, presentation and guides are **PDF submission documents**; source drafts are maintained outside the public documentation folder. The technical implementation and recorded tests are documented separately under `milestones/`, `operations/` and `evidence/`.
 
 ---
 
@@ -239,8 +239,8 @@ docs/
 ├── operations/              # OP01 runbooks
 ├── interactive/             # Live HTML + usage README
 ├── guides/                  # Tools and study guides
-├── presentation/            # Final slides (PDF/PPTX)
-└── report/                  # Final written submission (PDF/DOCX)
+├── presentation/            # Final slides (PDF)
+└── report/                  # Final written submission (PDF)
 ```
 
 All paths in this document are relative to `docs/README.md`. The root `README.md` is one directory above (`../README.md`). Keep the separate local `Research/` folder excluded from public Git commits.

@@ -5,7 +5,7 @@
 **Course:** AWS Cloud Computing with AI Bootcamp  
 **Environment:** Development (`dev`)  
 **AWS Region:** `us-east-1`  
-**Status:** Architecture structure standardized; M07–M12 diagrams pending final creation
+**Status:** M01–M12 milestone architecture diagrams and the final master PNG are present in the repository
 
 ---
 
@@ -43,12 +43,12 @@ docs/
     │   ├── m04/
     │   ├── m05/
     │   ├── m06/
-    │   ├── m07/
-    │   ├── m08/
-    │   ├── m09/
-    │   ├── m10/
-    │   ├── m11/
-    │   └── m12/
+    │   ├── M07/
+    │   ├── M08/
+    │   ├── M09/
+    │   ├── M10/
+    │   ├── M11/
+    │   └── M12/
     │
     ├── flows/
     │   ├── cicd-deployment-pipeline-design-sketch.png
@@ -256,18 +256,18 @@ Do not rename these again if they already match this convention.
 
 ---
 
-## 7. M07–M12 Diagram Gap
+## 7. M07–M12 Diagram Requirements (Historical Plan)
 
 M07–M12 milestone documentation already references the canonical architecture filenames.
 
-The missing architecture work is therefore clear.
+The diagram requirements below are preserved from the original design plan. The M07–M12 canonical PNG diagram sets are now present in the repository.
 
 ### M07 — Serverless & Event-Driven Processing
 
 Create:
 
 ```text
-milestones/m07/
+milestones/M07/
 ├── design-sketch.png
 ├── milestone-architecture.png
 ├── design-sketch-platform.png
@@ -295,7 +295,7 @@ failure
 Create:
 
 ```text
-milestones/m08/
+milestones/M08/
 ├── design-sketch.png
 ├── milestone-architecture.png
 ├── design-sketch-platform.png
@@ -324,7 +324,7 @@ Include semantic-query validation as a retrieval path.
 Create/standardize:
 
 ```text
-milestones/m09/
+milestones/M09/
 ├── design-sketch.png
 ├── milestone-architecture.png
 ├── design-sketch-platform.png
@@ -363,7 +363,7 @@ Lina
 Create/standardize:
 
 ```text
-milestones/m10/
+milestones/M10/
 ├── design-sketch.png
 ├── milestone-architecture.png
 ├── design-sketch-platform.png
@@ -403,7 +403,7 @@ AWS management activity
 Create/standardize:
 
 ```text
-milestones/m11/
+milestones/M11/
 ├── design-sketch.png
 ├── milestone-architecture.png
 ├── design-sketch-platform.png
@@ -446,7 +446,7 @@ Git push
 Create:
 
 ```text
-milestones/m12/
+milestones/M12/
 ├── design-sketch.png
 ├── milestone-architecture.png
 ├── design-sketch-platform.png
@@ -825,12 +825,12 @@ morning-sandbox-recovery.png
 ### Create / Standardize
 
 ```text
-milestones/m07/
-milestones/m08/
-milestones/m09/
-milestones/m10/
-milestones/m11/
-milestones/m12/
+milestones/M07/
+milestones/M08/
+milestones/M09/
+milestones/M10/
+milestones/M11/
+milestones/M12/
 
 master/final-platform-m01-m12.excalidraw
 master/final-platform-m01-m12.png
@@ -880,7 +880,7 @@ after confirming the final M1–M12 master has been created.
 
 ---
 
-## 17. Current Architecture Completion Matrix
+## 17. Completed Architecture Matrix
 
 | Milestone | Canonical documentation | Diagram status |
 |---|---|---|
@@ -890,19 +890,19 @@ after confirming the final M1–M12 master has been created.
 | M04 | ✅ | ✅ Existing |
 | M05 | ✅ | ✅ Existing |
 | M06 | ✅ | ✅ Existing |
-| M07 | ✅ | ⏳ Create |
-| M08 | ✅ | ⏳ Create |
-| M09 | ✅ | 🔄 Existing assets need canonical mapping |
-| M10 | ✅ | 🔄 Existing detailed asset + remaining diagrams |
-| M11 | ✅ | 🔄 Existing detailed asset + remaining diagrams |
-| M12 | ✅ | ⏳ Create |
-| Final M1–M12 Master | — | ⏳ Create last |
+| M07 | ✅ | ✅ Existing |
+| M08 | ✅ | ✅ Existing |
+| M09 | ✅ | ✅ Existing |
+| M10 | ✅ | ✅ Existing |
+| M11 | ✅ | ✅ Existing |
+| M12 | ✅ | ✅ Existing |
+| Final M1–M12 Master | — | ✅ Existing |
 
 ---
 
-## 18. Creation Order
+## 18. Original Creation Order (Historical)
 
-Do not create the final master first.
+During design, the recommended order was to complete milestone diagrams before exporting the final master.
 
 Use this order:
 
@@ -927,7 +927,7 @@ This avoids repeatedly rebuilding the master diagram while milestone architectur
 
 ## 19. Final Architecture Validation Checklist
 
-Before the final Git push:
+Use this checklist when validating future diagram revisions:
 
 - [ ] M01 contains exactly the two expected diagrams
 - [ ] M02–M12 use the canonical four-file naming pattern

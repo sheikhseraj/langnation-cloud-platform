@@ -3,7 +3,7 @@
 
 ### 🌐 Explore the Live Interactive Architecture
 
-[**▶ Open the final M01–M12 Interactive Architecture**](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-m01-m12.html)
+[**▶ Open the final M01–M12 Interactive Architecture**](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-master.html)
 
 *Explore animated AWS service connections, individual milestones, and end-to-end workflows, including CI/CD, Lina RAG, security, and morning recovery.*
 
@@ -114,9 +114,9 @@ In M09, the application was integrated with a **sanitized MariaDB dataset of 58 
 
 ## 3. Live Interactive Architecture
 
-**[▶ Open the final M01–M12 Interactive Architecture](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-m01-m12.html)**
+**[▶ Open the final M01–M12 Interactive Architecture](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-master.html)**
 
-[Interactive HTML source](docs/interactive/langnation-architecture-m01-m12.html) · [Instructions and features](docs/interactive/README.md)
+[Interactive HTML source](docs/interactive/langnation-architecture-master.html) · [Instructions and features](docs/interactive/README.md)
 
 The walkthrough contains a live, animated overview of the platform, individual milestone views, and focused request, authentication, CI/CD, event, RAG, monitoring, quality, resilience, cost and recovery flows. Use **Pause / Play** to control the moving connections; the automatic milestone tour is a separate mode.
 
@@ -245,10 +245,10 @@ The local `Research/` directory contains development notes and working drafts an
 
 | Document | Files |
 |---|---|
-| Thesis-style capstone report | [PDF](docs/report/LangNation_Cloud_Platform_Final_Capstone_Report.pdf) · [Word](docs/report/LangNation_Cloud_Platform_Final_Capstone_Report.docx) |
-| Final M01–M12 presentation | [PDF](docs/presentation/LangNation_Final_Capstone_M1-M12.pdf) · [PowerPoint](docs/presentation/LangNation_Final_Capstone_M1-M12.pptx) |
-| AWS Tools Guide (M01–M12) | [Word](docs/guides/LangNation_AWS_Tools_Guide_M1-M12.docx) |
-| Project Study Guide (M01–M12) | [Word](docs/guides/LangNation_Cloud_Project_Study_Guide_M1-M12.docx) |
+| Thesis-style capstone report | [PDF](docs/report/LangNation_Cloud_Platform_Final_Capstone_Report.pdf) |
+| Final M01–M12 presentation | [PDF](docs/presentation/LangNation_Final_Capstone.pdf) |
+| AWS Tools Guide (M01–M12) | [PDF](docs/guides/LangNation_AWS_Tools_Guide.pdf) |
+| Project Study Guide (M01–M12) | [PDF](docs/guides/LangNation_Cloud_Project_Study_Guide.pdf) |
 | Full documentation index | [docs/README.md](docs/README.md) |
 
 The presentation, guides and report may receive further editorial revisions; the infrastructure and validation facts here represent the final documented M01–M12 implementation.

@@ -2,7 +2,7 @@
 
 ## Live Demo
 
-[▶ Open the Live Interactive M1–M12 Architecture](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-m01-m12.html)
+[▶ Open the Live Interactive M1–M12 Architecture](https://sheikhseraj.github.io/langnation-cloud-platform/interactive/langnation-architecture-master.html)
 
 Use the live version to explore the completed LangNation Cloud Platform directly in your browser.
 
@@ -56,7 +56,7 @@ The interactive walkthrough reflects the completed capstone architecture:
 
 The interactive walkthrough is implemented as a standalone HTML file:
 
-[`langnation-architecture-m01-m12.html`](langnation-architecture-m01-m12.html)
+[`langnation-architecture-master.html`](langnation-architecture-master.html)
 
 GitHub displays `.html` files in the repository as source code rather than executing them. Use the **Live Demo** link above to open the rendered interactive version through GitHub Pages.
 
@@ -66,7 +66,7 @@ GitHub displays `.html` files in the repository as source code rather than execu
 docs/
 └── interactive/
     ├── README.md
-    └── langnation-architecture-m01-m12.html
+    └── langnation-architecture-master.html
 ```
 
 The previous `langnation-architecture-m01-m06.html` file can be moved to local `Research/Architecture-History/` after the M1–M12 live page is published and verified.
