@@ -196,7 +196,7 @@ After activation, the OP01 workflow performs:
 6. Route 53 CNAME update and wait for `INSYNC`.
 7. Public HTTPS `/health` validation.
 
-**Schedule:** 07:37 Europe/Berlin (primary); 08:17 Europe/Berlin (health-aware fallback). Scheduled GitHub Actions runs are best-effort.
+**Current trigger: manual only.** Select **Actions → Morning Sandbox Rebuild (Manual Only) → Run workflow** after starting the lab. The original 07:37/08:17 schedules, automatic lab startup, and deployment on application pushes were disabled after submission.
 
 ### 6.1 Ownership Model
 

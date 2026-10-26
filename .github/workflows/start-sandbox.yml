@@ -1,16 +1,7 @@
 name: neue fische AWS Sandbox
 
+# Capstone complete: start/stop the educational lab only on request.
 on:
-  schedule:
-    # 06:00 Germany time. GitHub applies the IANA zone, so CET/CEST is handled.
-    - cron: "0 6 * * *"
-      timezone: "Europe/Berlin"
-
-    # Fallback run: scheduled workflows can be delayed when GitHub is busy.
-    # Starting an already-running lab is a no-op, so a second attempt is safe.
-    - cron: "40 6 * * *"
-      timezone: "Europe/Berlin"
-
   workflow_dispatch:
     inputs:
       action:
@@ -88,7 +79,7 @@ jobs:
           CLOUDLABS_PASSWORD: ${{ secrets.CLOUDLABS_PASSWORD }}
           CLOUDLABS_LAB_NAME: ${{ vars.CLOUDLABS_LAB_NAME || 'AWS Account Lab' }}
           CLOUDLABS_DEBUG: ${{ inputs.debug && '1' || '0' }}
-          # Scheduled runs carry no inputs, so the 06:00 trigger always starts.
+          # Manual action defaults to Start if no explicit action is supplied.
           CLOUDLABS_ACTION: ${{ inputs.action || 'Start' }}
         run: node scripts/start-sandbox.mjs
 

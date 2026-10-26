@@ -59,8 +59,9 @@ public HTTPS health validation
 
 The runbook documents:
 
-- 07:37 Europe/Berlin primary schedule
-- 08:17 Europe/Berlin fallback schedule
+- **manual recovery trigger:** Actions → Morning Sandbox Rebuild (Manual Only) → Run workflow
+- **manual lab activation:** Actions → neue fische AWS Sandbox → Start (if needed)
+- the old 07:37/08:17 schedules are disabled after submission
 - manual sandbox-activation prerequisite
 - dedicated HCP Terraform recovery run
 - database-restore image and one-off ECS Fargate restore task

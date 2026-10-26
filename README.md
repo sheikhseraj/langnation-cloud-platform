@@ -178,7 +178,7 @@ The education sandbox **must be activated manually**. After an active AWS sessio
 5. Assume a restricted role in the persistent personal AWS account and update the Route 53 record.
 6. Wait for DNS synchronization and verify public HTTPS `/health`.
 
-Primary scheduled run: **07:37 Europe/Berlin**. Fallback: **08:17 Europe/Berlin** (skips if already healthy).
+**Current operation (after submission): manual only.** Automatic lab startup, recovery schedules, and deployment on application pushes are disabled. Start the training lab manually (or use **Actions → neue fische AWS Sandbox → Start**) and then choose **Actions → Morning Sandbox Rebuild (Manual Only) → Run workflow**. The separate **Infrastructure AWS → Rebuild** option remains available for infrastructure-only operations. The original 07:37/08:17 schedule is historical.
 
 [Read the OP01 runbook](docs/operations/OP01-automated-morning-sandbox-recovery.md).
 

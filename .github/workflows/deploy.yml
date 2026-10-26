@@ -1,13 +1,7 @@
 name: Deploy LangNation to ECS
 
+# Post-submission: deploy only manually or when explicitly called by recovery.
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "demo-website/**"
-      - ".github/workflows/deploy.yml"
-
   workflow_dispatch:
 
   workflow_call:

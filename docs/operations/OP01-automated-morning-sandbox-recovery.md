@@ -7,11 +7,13 @@
 **Document Type:** Operations Automation<br>
 **Scope:** Automated recovery after manual activation of the disposable development environment<br>
 **Environment:** Development (`dev`)<br>
-**Primary Schedule:** 07:37 Europe/Berlin<br>
-**Fallback Schedule:** 08:17 Europe/Berlin<br>
+**Current execution:** Manual `workflow_dispatch` only<br>
+**Original schedules (retired):** 07:37 and 08:17 Europe/Berlin<br>
 **Status:** ✅ Implemented and manually validated end to end
 
 ---
+
+> **Post-submission operating mode (26 October 2026):** The automatic lab startup, chained morning rebuild, scheduled fallback, and automatic ECS deployment on pushes are disabled. To rebuild the whole environment, start the lab if needed and select **GitHub Actions → Morning Sandbox Rebuild (Manual Only) → Run workflow**. The Infrastructure AWS workflow retains manual Plan/Rebuild/Destroy options. Former scheduling details below are preserved as historical design context.
 
 ## 1. Problem
 
@@ -68,7 +70,7 @@ Manual prerequisite: activate neue-fische training sandbox
         ↓
 Active AWS session available
         ↓
-07:37 primary schedule or manual workflow_dispatch
+Manual workflow_dispatch (Run workflow)
         ↓
 GitHub Actions Morning Sandbox Recovery
         ↓
@@ -113,15 +115,17 @@ Verify https://cloud.namienterprises.in/health
 HTTP 200
 ```
 
-A second schedule at **08:17 Europe/Berlin** acts as a fallback.
+The former 08:17 Europe/Berlin fallback schedule is now disabled.
 
 ---
 
-## 3. Why Two Scheduled Runs?
+## 3. Former Scheduled Recovery Design (Historical — Now Disabled)
+
+The following section documents the original scheduler-based design during capstone development. It is **not active**; all current recovery runs require a manual trigger.
 
 Scheduled GitHub workflows are useful but should not be treated like a guaranteed real-time scheduler.
 
-The recovery design therefore uses:
+The former recovery design used:
 
 ```text
 07:37 Europe/Berlin
@@ -131,7 +135,7 @@ The recovery design therefore uses:
 → fallback check
 ```
 
-The primary run performs the recovery workflow **only when the training sandbox session is active**. The schedules trigger GitHub Actions, but they do not activate the neue-fische sandbox. If the sandbox is inactive, AWS API calls cannot proceed and the recovery must be rerun after manual sandbox activation.
+Historically, the primary run was intended to perform recovery **only when the training sandbox session was active**. The former schedules triggered GitHub Actions, but did not activate the neue-fische sandbox. If the sandbox is inactive, AWS API calls cannot proceed and the recovery must be rerun after manual sandbox activation.
 
 The fallback first checks:
 
@@ -153,21 +157,19 @@ fallback
 → run the complete recovery
 ```
 
-This provides a second opportunity for automatic recovery without rebuilding an already healthy environment.
+The former configuration offered a second automatic recovery opportunity. Both automatic triggers have now been removed.
 
 ---
 
 ## 4. Workflow Entry Points
 
-The workflow supports:
+The current workflow accepts **only** `workflow_dispatch`:
 
 ```text
-scheduled primary run
-scheduled fallback run
-manual workflow_dispatch
+GitHub → Actions → Morning Sandbox Rebuild (Manual Only) → Run workflow
 ```
 
-`workflow_dispatch` is important because the complete recovery process can be tested without waiting for the next scheduled morning.
+Manual execution performs the entire infrastructure, database, application and DNS recovery. The former timed and chained triggers have been removed.
 
 ---
 
@@ -416,9 +418,9 @@ Manual: activate neue-fische training sandbox
         ↓
 Active AWS session available
 
-07:37 Europe/Berlin or manual workflow_dispatch
+Manual workflow_dispatch (Run workflow)
         ↓
-Primary GitHub recovery run
+Manually initiated GitHub recovery run
         ↓
 HCP Terraform rebuild
         ↓
@@ -449,7 +451,7 @@ https://cloud.namienterprises.in/health
 HTTP 200
 ```
 
-Fallback:
+Historical scheduled fallback (disabled):
 
 ```text
 08:17 Europe/Berlin
@@ -527,7 +529,7 @@ It does not bypass WAF by health-checking the ALB directly.
 
 The recovery workflow includes several reliability controls:
 
-- primary and fallback schedules
+- manual-only invocation after submission; former timed triggers are retired
 - fallback health check to avoid duplicate work
 - chained stages instead of independent timers
 - HCP Terraform status polling
@@ -550,7 +552,7 @@ A workflow is considered successful only when the public application is actually
 
 An earlier single scheduled run was not observed at the expected time.
 
-**Improvement:** use a primary schedule plus a later fallback rather than depending on a single scheduled execution.
+**Historical improvement:** a primary schedule with later fallback was implemented during development; both scheduled triggers were removed after submission.
 
 ### Terraform recreated ECR but not the image
 
@@ -635,7 +637,7 @@ Manual: activate training sandbox
         ↓
 active AWS session
         ↓
-07:37 primary or manual trigger
+Manual Run workflow trigger
         ↓
 automatic infrastructure recovery
         ↓
@@ -649,11 +651,7 @@ automatic Route 53 synchronization
         ↓
 automatic public HTTPS validation
 
-08:17 fallback
-        ↓
-health check
-        ↓
-recover only if needed
+(No scheduled fallback after submission)
 ```
 
 After the training sandbox is manually activated, the disposable environment can be recovered as one coordinated operational workflow.
@@ -678,4 +676,4 @@ The architecture diagram explains the recovery sequence, while evidence files an
 
 ## Presentation Summary
 
-> My AWS training sandbox removes resources overnight, while the educational sandbox itself still has to be activated manually before AWS API access is available. Once the session is active, OP01 coordinates the remaining recovery process. A primary GitHub Actions run is scheduled for 07:37 Europe/Berlin, with an 08:17 fallback that first checks whether the public endpoint is already healthy. The workflow calls the HCP Terraform API to recreate the disposable infrastructure through a dedicated recovery run, then builds a database-restore image, launches a one-off ECS Fargate restore task, reads the current RDS credentials from Secrets Manager, restores the sanitized LangNation MariaDB dataset and validates the expected 58 tables. It then invokes the reusable application deployment workflow to build the Git-SHA-tagged image, push it to ECR, update ECS and verify service stability. Finally, the workflow reads the recreated CloudFront domain from HCP Terraform outputs, assumes a least-privilege Route 53 role in the persistent personal AWS account through GitHub OIDC, updates `cloud.namienterprises.in`, waits for `INSYNC` and verifies the public HTTPS `/health` endpoint. Normal Terraform development still keeps global auto-apply disabled; automated apply is isolated to the known recovery path.
+> My AWS training sandbox removes resources overnight, while the educational sandbox itself still has to be activated manually before AWS API access is available. Once the session is active, OP01 coordinates the remaining recovery process. During development, recovery used a 07:37 schedule with an 08:17 fallback. Both were disabled after submission; rebuild now requires an explicit manual GitHub Actions run. The workflow calls the HCP Terraform API to recreate the disposable infrastructure through a dedicated recovery run, then builds a database-restore image, launches a one-off ECS Fargate restore task, reads the current RDS credentials from Secrets Manager, restores the sanitized LangNation MariaDB dataset and validates the expected 58 tables. It then invokes the reusable application deployment workflow to build the Git-SHA-tagged image, push it to ECR, update ECS and verify service stability. Finally, the workflow reads the recreated CloudFront domain from HCP Terraform outputs, assumes a least-privilege Route 53 role in the persistent personal AWS account through GitHub OIDC, updates `cloud.namienterprises.in`, waits for `INSYNC` and verifies the public HTTPS `/health` endpoint. Normal Terraform development still keeps global auto-apply disabled; automated apply is isolated to the known recovery path.

@@ -1,28 +1,8 @@
-name: Morning Sandbox Rebuild
+name: Morning Sandbox Rebuild (Manual Only)
 
+# Capstone completed: only a deliberate GitHub Actions Run workflow can recover AWS.
 on:
-  # ============================================================
-  # PRIMARY TRIGGER
-  # ============================================================
-  # Start recovery automatically after the neue fische sandbox
-  # workflow completes successfully.
-  workflow_run:
-    workflows: ["neue fische AWS Sandbox"]
-    types:
-      - completed
-
-  # ============================================================
-  # FINAL MORNING FALLBACK
-  # ============================================================
-  # If the chained run failed or GitHub delayed/missed something,
-  # check again at 08:17 Germany time.
-  schedule:
-    - cron: "17 8 * * *"
-      timezone: "Europe/Berlin"
-
-  # Manual recovery remains available.
   workflow_dispatch:
-
 
 permissions:
   contents: read
@@ -39,117 +19,29 @@ concurrency:
 jobs:
 
   # ============================================================
-  # 1. CHECK WHETHER RECOVERY IS REQUIRED
+  # 1. AUTHORIZE MANUAL RECOVERY
   # ============================================================
   should-run:
-    name: Check Whether Recovery Is Needed
+    name: Confirm Manual Recovery
     runs-on: ubuntu-latest
 
     outputs:
       run: ${{ steps.check.outputs.run }}
 
     steps:
-
-      - name: Decide whether rebuild is required
+      - name: Validate manual invocation
         id: check
         shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
-          SCHEDULE: ${{ github.event.schedule }}
-          SANDBOX_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-          SANDBOX_EVENT: ${{ github.event.workflow_run.event }}
-
         run: |
           set -euo pipefail
-
-          echo "========================================"
-          echo "LANGNATION MORNING RECOVERY"
-          echo "========================================"
-          echo "Event: ${EVENT_NAME}"
-          echo "========================================"
-
-          # ----------------------------------------------------
-          # Manual runs always perform a full rebuild.
-          # ----------------------------------------------------
-          if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
-            echo "Manual recovery requested."
-            echo "run=true" >> "$GITHUB_OUTPUT"
-            exit 0
+          if [ "${EVENT_NAME}" != "workflow_dispatch" ]; then
+            echo "::error::Only explicit manual Run workflow can rebuild this sandbox."
+            exit 1
           fi
-
-
-          # ----------------------------------------------------
-          # Triggered after neue fische sandbox workflow.
-          # ----------------------------------------------------
-          if [ "${EVENT_NAME}" = "workflow_run" ]; then
-
-            echo "Sandbox workflow completed."
-            echo "Sandbox event:      ${SANDBOX_EVENT}"
-            echo "Sandbox conclusion: ${SANDBOX_CONCLUSION}"
-
-            # The sandbox workflow can also be manually used to
-            # Start or Stop the lab.
-            #
-            # A manual sandbox action must NOT automatically
-            # trigger the complete infrastructure recovery.
-            if [ "${SANDBOX_EVENT}" != "schedule" ]; then
-              echo "Sandbox run was not a scheduled morning run."
-              echo "Manual Start/Stop will not trigger infrastructure recovery."
-              echo "run=false" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-
-
-            # Never start Terraform if the sandbox workflow failed.
-            if [ "${SANDBOX_CONCLUSION}" != "success" ]; then
-              echo "Sandbox workflow did not complete successfully."
-              echo "Infrastructure recovery will not start."
-              echo "The 08:17 fallback remains available."
-              echo "run=false" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-
-            echo "Scheduled sandbox startup completed successfully."
-          fi
-
-
-          # ----------------------------------------------------
-          # Health check
-          #
-          # Used by:
-          # - 06:00 chained run
-          # - 06:40 sandbox fallback chained run
-          # - 08:17 final fallback
-          #
-          # This prevents unnecessary duplicate rebuilds.
-          # ----------------------------------------------------
-          echo "Checking existing LangNation endpoint..."
-
-          if RESPONSE=$(curl \
-            --silent \
-            --show-error \
-            --fail \
-            --connect-timeout 5 \
-            --max-time 10 \
-            "https://cloud.namienterprises.in/health"); then
-
-            echo "Response: ${RESPONSE}"
-
-            if echo "${RESPONSE}" \
-              | jq -e '.status == "healthy"' > /dev/null; then
-
-              echo "Application is already healthy."
-              echo "No infrastructure recovery is required."
-              echo "run=false" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-          fi
-
-
-          echo "Application is not healthy."
-          echo "Infrastructure recovery is required."
+          echo "Manual recovery requested."
           echo "run=true" >> "$GITHUB_OUTPUT"
-
 
   # ============================================================
   # 2. REBUILD AWS INFRASTRUCTURE
@@ -180,25 +72,6 @@ jobs:
       # --------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v7
-
-
-      # --------------------------------------------------------
-      # Allow the training sandbox AWS APIs to become ready.
-      #
-      # CloudLabs may display "running" slightly before all AWS
-      # services reliably accept requests.
-      # --------------------------------------------------------
-      - name: Let the sandbox settle
-        if: ${{ github.event_name == 'workflow_run' }}
-        shell: bash
-
-        run: |
-          set -euo pipefail
-
-          echo "Waiting 3 minutes for the sandbox AWS account to settle..."
-          sleep 180
-
-          echo "Sandbox settle period completed."
 
 
       # --------------------------------------------------------
